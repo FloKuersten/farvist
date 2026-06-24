@@ -14,3 +14,4 @@ _*.site
 # editor/agent config and internal notes
 .claude/
 LAUNCH-KIT.md
+LAUNCH-POSTS.md
