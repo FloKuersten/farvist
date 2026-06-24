@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ava Reed — Portfolio template (Farvist)</title>
+  <meta name="description" content="A glass portfolio / personal site template built with the Farvist CSS framework." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../dist/farvist.css" />
+  <style>
+    .hero { padding-block: clamp(4rem, 11vw, 7rem); }
+    .eyebrow { letter-spacing: .22em; text-transform: uppercase; }
+    .avatar-xxl { width: 8rem; height: 8rem; font-size: 2.75rem; }
+    .project-img { aspect-ratio: 16/10; }
+    .social { display:inline-flex; align-items:center; justify-content:center; width:2.5rem; height:2.5rem; }
+    section { scroll-margin-top: 5rem; }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+
+  <!-- Nav -->
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="#"><span class="text-gradient">◆ Ava Reed</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="#work">Work</a></li>
+      <li><a class="nav-link" href="#about">About</a></li>
+      <li><a class="nav-link" href="#contact">Contact</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-12 col-md-7">
+          <span class="badge badge-soft-success mb-3">● Available for work</span>
+          <h1 class="fs-5xl fw-black mb-3" style="line-height:1.05;">Product designer crafting <span class="text-gradient">glassy</span> interfaces</h1>
+          <p class="fs-xl text-muted mb-4" style="max-width:34rem;">I help startups turn rough ideas into polished, shippable products. A demo portfolio built with Farvist.</p>
+          <div class="d-flex gap-3 flex-wrap mb-4">
+            <a href="#work" class="btn btn-gradient-primary btn-lg">View work</a>
+            <a href="#contact" class="btn btn-glass btn-lg">Get in touch</a>
+          </div>
+          <div class="d-flex gap-2">
+            <a class="btn btn-glass social" href="#" aria-label="GitHub"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-code"/></svg></a>
+            <a class="btn btn-glass social" href="#" aria-label="Email"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-mail"/></svg></a>
+            <a class="btn btn-glass social" href="#" aria-label="Calendar"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-calendar"/></svg></a>
+          </div>
+        </div>
+        <div class="col-12 col-md-5 text-center">
+          <span class="avatar avatar-xxl avatar-primary glow-primary mx-auto">AR</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <section class="container py-6">
+    <div class="card glass-strong"><div class="card-body">
+      <div class="row text-center gy-4">
+        <div class="col-6 col-md-3"><div class="stat-value text-gradient">8+</div><div class="stat-label">Years experience</div></div>
+        <div class="col-6 col-md-3"><div class="stat-value text-gradient-aurora">120</div><div class="stat-label">Projects shipped</div></div>
+        <div class="col-6 col-md-3"><div class="stat-value text-gradient-sunset">40</div><div class="stat-label">Happy clients</div></div>
+        <div class="col-6 col-md-3"><div class="stat-value text-gradient-accent">12</div><div class="stat-label">Awards</div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- Work -->
+  <section id="work" class="container py-7">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-5">
+      <div><p class="eyebrow text-gradient-accent fw-bold mb-1">Selected work</p><h2 class="fs-3xl fw-black mb-0">Recent projects</h2></div>
+      <a href="#" class="btn btn-glass">All projects →</a>
+    </div>
+    <div class="row gy-4">
+      <div class="col-12 col-md-6">
+        <article class="card card-glow hover-lift h-100">
+          <div class="project-img bg-mesh-aurora"></div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-primary">Product</span><span class="chip">2026</span></div>
+            <h3 class="card-title">Nebula Analytics</h3>
+            <p class="card-text">Realtime dashboard suite — design system, data viz and onboarding flow.</p>
+          </div>
+        </article>
+      </div>
+      <div class="col-12 col-md-6">
+        <article class="card card-glow hover-lift h-100">
+          <div class="project-img bg-mesh-sunset"></div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-accent">Branding</span><span class="chip">2025</span></div>
+            <h3 class="card-title">Orbit Finance</h3>
+            <p class="card-text">End-to-end rebrand and marketing site for a fintech startup.</p>
+          </div>
+        </article>
+      </div>
+      <div class="col-12 col-md-4">
+        <article class="card card-glow hover-lift h-100"><div class="project-img bg-mesh-ocean"></div><div class="card-body"><span class="chip chip-success mb-2">Mobile</span><h3 class="card-title fs-lg">Lumen App</h3></div></article>
+      </div>
+      <div class="col-12 col-md-4">
+        <article class="card card-glow hover-lift h-100"><div class="project-img bg-mesh-nebula"></div><div class="card-body"><span class="chip chip-info mb-2">Web</span><h3 class="card-title fs-lg">Forge Studio</h3></div></article>
+      </div>
+      <div class="col-12 col-md-4">
+        <article class="card card-glow hover-lift h-100"><div class="project-img bg-gradient-accent"></div><div class="card-body"><span class="chip chip-warning mb-2">Concept</span><h3 class="card-title fs-lg">Vertex OS</h3></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- About + timeline -->
+  <section id="about" class="container py-7">
+    <div class="row g-5">
+      <div class="col-12 col-md-5">
+        <p class="eyebrow text-gradient fw-bold mb-1">About</p>
+        <h2 class="fs-3xl fw-black mb-3">Design that ships</h2>
+        <p class="fs-lg text-muted mb-4">I've spent the last eight years turning ambiguous problems into clean, usable products — from zero-to-one MVPs to design systems at scale.</p>
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="chip">Product design</span><span class="chip">Design systems</span><span class="chip">Prototyping</span><span class="chip">Front-end</span><span class="chip">Brand</span>
+        </div>
+      </div>
+      <div class="col-12 col-md-7">
+        <div class="card"><div class="card-body">
+          <h3 class="h5 mb-4">Experience</h3>
+          <ul class="timeline">
+            <li class="timeline-item timeline-primary"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Lead Designer · Nebula</div><div class="timeline-time">2023 — present</div></div></li>
+            <li class="timeline-item timeline-accent"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Senior Designer · Orbit</div><div class="timeline-time">2020 — 2023</div></div></li>
+            <li class="timeline-item timeline-info"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Product Designer · Lumen</div><div class="timeline-time">2018 — 2020</div></div></li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="container py-7">
+    <div class="card glass-strong mx-auto" style="max-width:46rem;"><div class="card-body text-center p-7">
+      <span class="rating mb-3" role="img" aria-label="Rated 5 out of 5">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg>
+      </span>
+      <p class="fs-xl mb-4">"A rare designer who thinks in systems and ships like an engineer. (Replace with a real quote.)"</p>
+      <div class="d-flex align-items-center justify-content-center gap-3"><span class="avatar avatar-accent">RC</span><div class="text-start"><div class="fw-semibold">Client name</div><small class="text-muted">Title, Company</small></div></div>
+    </div></div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="container py-7">
+    <div class="card card-glow glow-primary text-center" style="border-color:rgba(109,74,245,.4);"><div class="card-body p-7">
+      <h2 class="fs-3xl fw-black mb-3"><span class="text-gradient">Let's build something</span></h2>
+      <p class="text-muted mb-5">Have a project in mind? I'd love to hear about it.</p>
+      <a href="mailto:hello@example.com" class="btn btn-gradient-primary btn-lg">Say hello</a>
+    </div></div>
+  </section>
+
+  <footer class="container py-6">
+    <hr />
+    <div class="d-flex justify-content-between flex-wrap gap-2"><small class="text-muted">© 2026 Ava Reed</small><small class="text-muted">A <a href="../index.html">Farvist</a> template</small></div>
+  </footer>
+
+  <script src="../assets/farvist.js" defer></script>
+</body>
+</html>

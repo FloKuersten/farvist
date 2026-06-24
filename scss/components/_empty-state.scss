@@ -1,0 +1,37 @@
+// =============================================================================
+// Farvist · Components · Empty state
+// <div class="empty-state">
+//   <svg class="icon empty-state-icon"><use href="...#i-search"/></svg>
+//   <div class="empty-state-title">No results</div>
+//   <p class="empty-state-text">Try a different search.</p>
+//   <button class="btn btn-gradient-primary">New search</button>
+// </div>
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.empty-state {
+  padding: spacer(7) spacer(4);
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: spacer(3);
+  color: var(--fv-muted);
+  opacity: 0.7;
+}
+
+.empty-state-title {
+  margin-bottom: spacer(2);
+  font-size: map.get($font-sizes, 'xl');
+  font-weight: map.get($font-weights, 'semibold');
+}
+
+.empty-state-text {
+  max-width: 28rem;
+  margin: 0 auto spacer(4);
+  color: var(--fv-muted);
+}

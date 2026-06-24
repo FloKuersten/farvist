@@ -1,0 +1,102 @@
+// =============================================================================
+// Farvist · Base · Typography
+// Default element styles. Headings are generated from the `$headings` map so
+// the type scale stays the single source of truth. Surface colors reference
+// theme custom properties so they adapt to dark/light.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+// Generate h1..h6 (and matching .h1..-.h6 classes) from one map.
+@each $level, $size in $headings {
+  h#{$level},
+  .h#{$level} {
+    margin-bottom: spacer(3);
+    font-size: $size;
+    font-weight: $headings-font-weight;
+    line-height: $headings-line-height;
+    letter-spacing: -0.01em;
+  }
+}
+
+p {
+  margin-bottom: spacer(4);
+}
+
+a {
+  transition: color $transition-base;
+}
+
+small,
+.text-small {
+  font-size: map.get($font-sizes, 'sm');
+}
+
+strong,
+b {
+  font-weight: map.get($font-weights, 'semibold');
+}
+
+// Inline & block code share the mono stack.
+code,
+pre,
+kbd,
+samp {
+  font-family: $font-family-mono;
+}
+
+code {
+  padding: 0.2em 0.45em;
+  font-size: 0.875em;
+  color: var(--fv-info);
+  background-color: var(--fv-code-bg);
+  border: $border-width solid var(--fv-border-color);
+  border-radius: map.get($radii, 'sm');
+}
+
+pre {
+  padding: spacer(4);
+  margin-bottom: spacer(4);
+  overflow: auto;
+  font-size: map.get($font-sizes, 'sm');
+  background-color: var(--fv-code-bg);
+  border: $border-width solid var(--fv-border-color);
+  border-radius: map.get($radii, 'md');
+
+  code {
+    padding: 0;
+    color: inherit;
+    background: none;
+    border: 0;
+  }
+}
+
+kbd {
+  padding: 0.15em 0.45em;
+  font-size: 0.85em;
+  color: var(--fv-body-color);
+  background-color: var(--fv-code-bg);
+  border: $border-width solid var(--fv-border-color);
+  border-radius: map.get($radii, 'sm');
+}
+
+blockquote {
+  padding-left: spacer(4);
+  margin-bottom: spacer(4);
+  color: var(--fv-muted);
+  border-left: 3px solid var(--fv-primary);
+}
+
+hr {
+  height: 0;
+  margin: spacer(5) 0;
+  border: 0;
+  border-top: $border-width solid var(--fv-border-color);
+}
+
+ul,
+ol {
+  margin-bottom: spacer(4);
+  padding-left: spacer(5);
+}

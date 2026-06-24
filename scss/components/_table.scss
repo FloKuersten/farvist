@@ -1,0 +1,51 @@
+// =============================================================================
+// Farvist · Components · Table
+// Clean data table with hover/striped modifiers; drop inside a .card for glass.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--fv-body-color);
+
+  th,
+  td {
+    padding: spacer(3) spacer(4);
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: $border-width solid var(--fv-border-color);
+  }
+
+  thead th {
+    font-size: map.get($font-sizes, 'sm');
+    font-weight: map.get($font-weights, 'semibold');
+    color: var(--fv-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tbody tr {
+    transition: background-color $transition-base;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--fv-glass-bg);
+}
+
+.table-striped tbody tr:nth-child(odd) {
+  background-color: var(--fv-glass-bg);
+}
+
+// Horizontal scroll wrapper for narrow viewports.
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

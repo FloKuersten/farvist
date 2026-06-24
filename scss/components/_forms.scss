@@ -1,0 +1,125 @@
+// =============================================================================
+// Farvist · Components · Forms
+// Glass inputs with a neon focus ring. Validation + input-group helpers too.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.form-label {
+  display: inline-block;
+  margin-bottom: spacer(2);
+  font-weight: map.get($font-weights, 'medium');
+}
+
+.form-control,
+.form-select {
+  display: block;
+  width: 100%;
+  padding: spacer(2) spacer(3);
+  font-size: map.get($font-sizes, 'base');
+  line-height: $line-height-base;
+  color: var(--fv-body-color);
+  background-color: var(--fv-glass-bg);
+  backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  border: $border-width solid var(--fv-glass-border);
+  border-radius: var(--fv-border-radius);
+  transition: border-color $transition-base, box-shadow $transition-base;
+
+  &::placeholder {
+    color: var(--fv-muted);
+    opacity: 0.8;
+  }
+
+  &:focus {
+    outline: 0;
+    border-color: var(--fv-primary);
+    box-shadow: var(--fv-focus-ring);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2395a3c4' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: spacer(7);
+}
+
+textarea.form-control {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.form-text {
+  margin-top: spacer(1);
+  font-size: map.get($font-sizes, 'sm');
+  color: var(--fv-muted);
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: spacer(2);
+  margin-bottom: spacer(2);
+}
+
+.form-check-input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--fv-primary);
+  cursor: pointer;
+}
+
+.form-check-label {
+  cursor: pointer;
+}
+
+// Stitch controls together horizontally.
+.input-group {
+  display: flex;
+  align-items: stretch;
+
+  .form-control {
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+  }
+}
+
+.input-group-text {
+  display: flex;
+  align-items: center;
+  padding: spacer(2) spacer(3);
+  color: var(--fv-muted);
+  background-color: var(--fv-glass-bg-strong);
+  border: $border-width solid var(--fv-glass-border);
+}
+
+// Validation states.
+.is-valid {
+  border-color: var(--fv-success) !important;
+}
+
+.is-invalid {
+  border-color: var(--fv-danger) !important;
+}
+
+.valid-feedback {
+  margin-top: spacer(1);
+  font-size: map.get($font-sizes, 'sm');
+  color: var(--fv-success);
+}
+
+.invalid-feedback {
+  margin-top: spacer(1);
+  font-size: map.get($font-sizes, 'sm');
+  color: var(--fv-danger);
+}

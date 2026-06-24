@@ -1,0 +1,65 @@
+// =============================================================================
+// Farvist · Components · Switch (toggle)
+// Markup (give the input a label — visible text or aria-label):
+//   <label class="switch">
+//     <input type="checkbox" aria-label="Dark mode" />
+//     <span class="switch-track"></span>
+//     <span class="switch-thumb"></span>
+//   </label>
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+}
+
+.switch-track {
+  width: 2.6rem;
+  height: 1.5rem;
+  background-color: var(--fv-glass-bg-strong);
+  border: $border-width solid var(--fv-glass-border);
+  border-radius: map.get($radii, 'pill');
+  transition: background-color $transition-base, border-color $transition-base;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0.22rem;
+  width: 1.04rem;
+  height: 1.04rem;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: var(--fv-shadow-sm);
+  transform: translateY(-50%);
+  transition: transform $transition-base;
+}
+
+.switch input:checked ~ .switch-track {
+  background-image: var(--fv-gradient-primary);
+  border-color: transparent;
+}
+
+.switch input:checked ~ .switch-thumb {
+  transform: translateY(-50%) translateX(1.08rem);
+}
+
+.switch input:focus-visible ~ .switch-track {
+  box-shadow: var(--fv-focus-ring);
+}
+
+.switch input:disabled ~ .switch-track {
+  opacity: 0.5;
+}

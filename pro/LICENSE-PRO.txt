@@ -1,0 +1,22 @@
+FARVISTRAP PRO — COMMERCIAL LICENSE (summary)
+
+This license covers the Farvist Pro assets (premium blocks, templates, theme
+packs and design files). The free Farvist framework is separate and remains
+under the MIT License.
+
+WHAT YOU CAN DO
+  • Build unlimited end products (websites, apps, SaaS) for yourself or clients.
+  • Modify the Pro assets freely within your own products.
+  • Use them on the number of seats covered by your tier (Pro = 1 developer,
+    Team = up to 25 developers in one organization).
+
+WHAT YOU CAN'T DO
+  • Redistribute, resell or open-source the Pro assets as a competing component
+    library, template pack, theme or starter kit.
+  • Share your license or download with people outside your seat allowance.
+
+This is a plain-language summary, not the final legal text. Replace it with a
+reviewed commercial EULA (e.g. an adaptation of the Tailwind Plus / standard
+"single-product" digital-asset license) before you start selling.
+
+Copyright (c) 2026 Farvist. All rights reserved.

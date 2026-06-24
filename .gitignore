@@ -1,0 +1,16 @@
+node_modules/
+*.log
+.DS_Store
+.sass-cache/
+*.css.map
+
+# local infra / not for the public repo
+deploy.ps1
+cf-deploy/
+*.site
+_*.site
+*.tgz
+
+# editor/agent config and internal notes
+.claude/
+LAUNCH-KIT.md

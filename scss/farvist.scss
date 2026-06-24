@@ -1,0 +1,60 @@
+// =============================================================================
+// Farvist — a lightweight, Sass-powered CSS framework
+// -----------------------------------------------------------------------------
+// Single entry point. Layers are loaded low-specificity first so that utilities
+// (loaded last) can always win the cascade.
+//
+//   Base      → resets and element defaults
+//   Layout    → container and grid system
+//   Components → buttons, cards, forms, …
+//   Utilities → generated single-purpose helpers
+//
+// Build:  npm run dev   (writes dist/farvist.css and dist/farvist.min.css)
+// =============================================================================
+
+// Base
+@use 'base/root';
+@use 'base/reset';
+@use 'base/typography';
+
+// Layout
+@use 'layout/grid';
+
+// Components
+@use 'components/buttons';
+@use 'components/badges';
+@use 'components/alerts';
+@use 'components/cards';
+@use 'components/forms';
+@use 'components/navbar';
+@use 'components/icon';
+@use 'components/table';
+@use 'components/avatar';
+@use 'components/chip';
+@use 'components/progress';
+@use 'components/spinner';
+@use 'components/skeleton';
+@use 'components/breadcrumb';
+@use 'components/pagination';
+@use 'components/tooltip';
+@use 'components/switch';
+@use 'components/tabs';
+@use 'components/accordion';
+@use 'components/dropdown';
+@use 'components/modal';
+@use 'components/toast';
+@use 'components/stepper';
+@use 'components/timeline';
+@use 'components/segmented';
+@use 'components/rating';
+@use 'components/stat';
+@use 'components/empty-state';
+@use 'components/list-group';
+@use 'components/callout';
+@use 'components/range';
+
+// Utilities (last — highest cascade priority)
+@use 'utilities/spacing';
+@use 'utilities/utilities';
+@use 'utilities/effects';
+@use 'utilities/backgrounds';

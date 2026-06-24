@@ -1,0 +1,118 @@
+// =============================================================================
+// Farvist · Utilities · Futuristic effects
+// Glass, neon glow, gradients and motion — generated from the token maps.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+// -- Glass surfaces -----------------------------------------------------------
+.glass        { @include glass; }
+.glass-strong { @include glass($strong: true); }
+
+// Strip blur when you want a plain translucent panel.
+.glass-flat {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+// -- Gradient backgrounds (from the $gradients map) ---------------------------
+@each $name, $grad in $gradients {
+  .bg-gradient-#{$name} {
+    background-image: $grad !important;
+  }
+}
+
+// -- Gradient text ------------------------------------------------------------
+// `-webkit-text-fill-color` keeps the glyphs transparent even if a `.text-*`
+// color utility (which sets `color !important`) lands on the same element.
+.text-gradient {
+  background-image: var(--fv-gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+@each $name, $grad in $gradients {
+  .text-gradient-#{$name} {
+    background-image: $grad;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+// Light theme: the vivid gradients are tuned for a dark page; darken the
+// clipped text so it stays legible on the near-white background.
+[data-theme='light'] [class*='text-gradient'] {
+  filter: brightness(0.5) saturate(1.4);
+}
+
+// -- Neon glows (from the $glows map) -----------------------------------------
+@each $name, $glow in $glows {
+  .glow-#{$name} { box-shadow: $glow !important; }
+}
+.glow      { box-shadow: var(--fv-glow-primary) !important; }
+.glow-none { box-shadow: none !important; }
+
+// Text glow (neon halo on the type itself).
+.text-glow {
+  text-shadow: 0 0 18px rgba($primary, 0.65);
+}
+
+// (Background patterns/meshes/spotlights live in utilities/_backgrounds.scss.)
+
+// -- Motion -------------------------------------------------------------------
+.hover-lift {
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes fv-gradient-pan {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// Pair with a .bg-gradient-* class for a slowly drifting gradient.
+.bg-animated {
+  background-size: 200% 200%;
+  animation: fv-gradient-pan 9s ease infinite;
+}
+
+@keyframes fv-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: fv-float 6s ease-in-out infinite;
+}
+
+// -- Graceful degradation -----------------------------------------------------
+// When the browser can't blur, fall back to an opaque surface so glass panels
+// stay legible instead of washing out.
+// NB: alerts are intentionally excluded — their translucent colored tint is
+// legible without a blur, and overriding it here would flatten every variant
+// to one opaque surface and erase the semantic color.
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-strong,
+  .navbar,
+  .card,
+  .form-control,
+  .form-select {
+    background-color: var(--fv-surface-solid);
+  }
+}
+
+// Respect reduced-motion for the decorative animations.
+@media (prefers-reduced-motion: reduce) {
+  .bg-animated,
+  .animate-float {
+    animation: none;
+  }
+}

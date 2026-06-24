@@ -1,0 +1,45 @@
+// =============================================================================
+// Farvist · Components · Tooltip (CSS-only)
+// Add `data-tooltip="text"` to any element. Appears above on hover/focus.
+//
+// ACCESSIBILITY: the tooltip text is rendered with `content: attr()`, which is
+// DECORATIVE — it is not exposed to assistive tech. The host must therefore be
+// focusable AND carry its own accessible name. For an icon-only control, give it
+// a real label, e.g. `<button aria-label="Notifications" data-tooltip="Notifications">`.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.5rem);
+  z-index: map.get($z-layers, 'tooltip');
+  padding: spacer(1) spacer(3);
+  font-size: map.get($font-sizes, 'sm');
+  font-weight: map.get($font-weights, 'medium');
+  white-space: nowrap;
+  color: var(--fv-body-color);
+  background-color: var(--fv-glass-bg-strong);
+  backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  border: $border-width solid var(--fv-glass-border);
+  border-radius: map.get($radii, 'md');
+  box-shadow: var(--fv-shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(0.25rem);
+  transition: opacity $transition-base, transform $transition-base;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

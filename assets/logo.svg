@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 48" fill="none">
+  <defs>
+    <linearGradient id="fv-logo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d4af5"/>
+      <stop offset="0.5" stop-color="#e879f9"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect x="11" y="11" width="26" height="26" rx="8" transform="rotate(45 24 24)" fill="url(#fv-logo)"/>
+  <text x="54" y="32" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="23" font-weight="800" letter-spacing="-0.5" fill="#e6ebf5">Farvist</text>
+</svg>

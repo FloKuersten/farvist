@@ -1,0 +1,51 @@
+// =============================================================================
+// Farvist · Components · Pagination
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.pagination {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: spacer(1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.4rem;
+  height: 2.4rem;
+  padding: 0 spacer(2);
+  color: var(--fv-body-color);
+  text-decoration: none;
+  background-color: var(--fv-glass-bg);
+  border: $border-width solid var(--fv-glass-border);
+  border-radius: map.get($radii, 'md');
+  transition: background-color $transition-base, border-color $transition-base;
+
+  &:hover {
+    background-color: var(--fv-glass-bg-strong);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: var(--fv-focus-ring);
+  }
+}
+
+.page-item.active .page-link {
+  color: #ffffff;
+  background-image: var(--fv-gradient-primary);
+  border-color: transparent;
+}
+
+.page-item.disabled .page-link {
+  opacity: 0.45;
+  pointer-events: none;
+}

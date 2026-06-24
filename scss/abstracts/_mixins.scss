@@ -1,0 +1,78 @@
+// =============================================================================
+// Farvist · Abstracts · Mixins
+// Reusable blocks of declarations. Kept separate from utilities so components
+// and utilities can both pull from them.
+// =============================================================================
+
+@use 'sass:color';
+@use 'variables' as *;
+@use 'functions' as *;
+
+// Apply `@content` at a min-width breakpoint. The zero-width base (`xs`)
+// emits the content with no media query, keeping the framework mobile-first.
+@mixin media-up($name) {
+  $min: breakpoint-min($name);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+// Center children on both axes.
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Frosted-glass surface. Reads the runtime `--fv-glass-*` custom properties so
+// the same mixin produces dark or light glass depending on the active theme.
+// Pass `$strong: true` for elevated surfaces (navbar, modals).
+@mixin glass($strong: false) {
+  background-color: var(--fv-glass-bg);
+  @if $strong {
+    background-color: var(--fv-glass-bg-strong);
+  }
+  backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  border: $border-width solid var(--fv-glass-border);
+  // Outer depth + a 1px inner top highlight that sells the "pane of glass" look.
+  box-shadow:
+    var(--fv-shadow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+// Hide an element visually while keeping it available to screen readers.
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  border: 0;
+}
+
+// Emit the custom-property set that paints a solid button. `.btn` reads these
+// `--fv-btn-*` variables, so one mixin call themes every state at once.
+@mixin button-variant($bg, $color: null) {
+  $text: contrast-color($bg);
+  @if $color {
+    $text: $color;
+  }
+
+  --fv-btn-bg: #{$bg};
+  --fv-btn-color: #{$text};
+  --fv-btn-border: #{$bg};
+  --fv-btn-hover-bg: #{color.scale($bg, $lightness: 8%)};
+  --fv-btn-hover-border: #{color.scale($bg, $lightness: 12%)};
+  --fv-btn-active-bg: #{color.scale($bg, $lightness: -10%)};
+  --fv-btn-focus-ring: #{rgba($bg, 0.45)};
+  --fv-btn-glow: 0 0 24px #{rgba($bg, 0.55)};
+}

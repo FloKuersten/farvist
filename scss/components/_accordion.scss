@@ -1,0 +1,64 @@
+// =============================================================================
+// Farvist · Components · Accordion (native <details>, no JS)
+// Markup:
+//   <details class="accordion-item">
+//     <summary>Question</summary>
+//     <div class="accordion-body">Answer…</div>
+//   </details>
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.accordion-item {
+  margin-bottom: spacer(2);
+  border-radius: map.get($radii, 'lg');
+  overflow: hidden;
+  @include glass;
+
+  > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: spacer(3);
+    padding: spacer(3) spacer(4);
+    font-weight: map.get($font-weights, 'semibold');
+    list-style: none;
+    cursor: pointer;
+    transition: background-color $transition-base;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    // CSS chevron that flips when open.
+    &::after {
+      content: '';
+      flex-shrink: 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-right: 2px solid var(--fv-muted);
+      border-bottom: 2px solid var(--fv-muted);
+      transform: rotate(45deg);
+      transition: transform $transition-base;
+    }
+
+    &:hover {
+      background-color: var(--fv-glass-bg);
+    }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: var(--fv-focus-ring);
+    }
+  }
+
+  &[open] > summary::after {
+    transform: rotate(-135deg);
+  }
+}
+
+.accordion-body {
+  padding: 0 spacer(4) spacer(4);
+  color: var(--fv-muted);
+}

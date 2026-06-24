@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farvist — Dashboard template</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../dist/farvist.css" />
+  <style>
+    .dash { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+    .sidebar { position: sticky; top: 0; align-self: start; height: 100vh; padding: 1.25rem 1rem; display: flex; flex-direction: column; gap: .35rem; }
+    .sidebar .nav-link { display: flex; align-items: center; gap: .65rem; }
+    .content { padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 3rem; min-width: 0; }
+    .stat-value { font-size: 2rem; font-weight: 800; letter-spacing: -.02em; }
+    .icon-tile { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: .75rem; }
+    @media (max-width: 820px) { .dash { grid-template-columns: 1fr; } .sidebar { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="dash">
+
+    <!-- Sidebar -->
+    <aside class="sidebar glass-strong">
+      <a class="navbar-brand mb-5" href="../index.html"><span class="text-gradient">◆ Farvist</span></a>
+      <a class="nav-link active" href="#"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-home"/></svg> Overview</a>
+      <a class="nav-link" href="#"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-layers"/></svg> Projects</a>
+      <a class="nav-link" href="#"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-users"/></svg> Team</a>
+      <a class="nav-link" href="#"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-calendar"/></svg> Calendar</a>
+      <a class="nav-link" href="#"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-settings"/></svg> Settings</a>
+      <div class="mt-auto">
+        <div class="alert alert-accent">
+          <div class="alert-heading">Pro plan</div>
+          <p class="mb-3 fs-sm">14 days left in your trial.</p>
+          <button class="btn btn-gradient-primary btn-sm btn-block">Upgrade</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="content">
+
+      <!-- Topbar -->
+      <div class="d-flex align-items-center gap-3 mb-6">
+        <div class="input-group" style="max-width: 22rem;">
+          <span class="input-group-text"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-search"/></svg></span>
+          <input class="form-control" type="search" placeholder="Search…" />
+        </div>
+        <div class="ms-auto d-flex align-items-center gap-2">
+          <button class="btn btn-glass" aria-label="Notifications" data-tooltip="Notifications"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-bell"/></svg></button>
+          <button class="btn btn-glass" data-fv-theme-toggle aria-label="Toggle theme" data-tooltip="Toggle theme"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-moon"/></svg></button>
+          <details class="dropdown">
+            <summary class="avatar avatar-primary" style="cursor:pointer;">AL</summary>
+            <div class="dropdown-menu dropdown-menu-end">
+              <a class="dropdown-item" href="#"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-user"/></svg> Profile</a>
+              <a class="dropdown-item" href="#"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-settings"/></svg> Settings</a>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item">Sign out</button>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center justify-content-between mb-5 flex-wrap gap-3">
+        <div>
+          <h1 class="h2 mb-1">Overview</h1>
+          <p class="text-muted mb-0">Welcome back, Ada.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-glass" onclick="Farvist.toast({title:'Exported', message:'report.csv is ready.', variant:'success'})">Export</button>
+          <button class="btn btn-gradient-primary" data-fv-open="#new-project"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-plus"/></svg> New project</button>
+        </div>
+      </div>
+
+      <!-- Stat tiles -->
+      <div class="row gy-4 mb-6">
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="card card-glow hover-lift"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="icon-tile bg-gradient-primary text-white"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-users"/></svg></span>
+              <span class="badge badge-soft-success">+12%</span>
+            </div>
+            <div class="stat-value">8,420</div>
+            <div class="text-muted">Active users</div>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="card card-glow hover-lift"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="icon-tile bg-gradient-aurora text-white"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-zap"/></svg></span>
+              <span class="badge badge-soft-success">+5%</span>
+            </div>
+            <div class="stat-value">$48.2k</div>
+            <div class="text-muted">Revenue</div>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="card card-glow hover-lift"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="icon-tile bg-gradient-sunset text-white"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-layers"/></svg></span>
+              <span class="badge badge-soft-danger">-3%</span>
+            </div>
+            <div class="stat-value">132</div>
+            <div class="text-muted">Open projects</div>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-6 col-xl-3">
+          <div class="card card-glow hover-lift"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="icon-tile bg-gradient-accent text-white"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg></span>
+              <span class="badge badge-soft-success">+18%</span>
+            </div>
+            <div class="stat-value">4.9</div>
+            <div class="text-muted">Avg. rating</div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="row gy-4">
+        <!-- Team table -->
+        <div class="col-12 col-xl-8">
+          <div class="card"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h2 class="h4 mb-0">Team</h2>
+              <div class="avatar-group">
+                <span class="avatar avatar-sm avatar-primary">AL</span>
+                <span class="avatar avatar-sm avatar-info">JD</span>
+                <span class="avatar avatar-sm avatar-accent">MK</span>
+                <span class="avatar avatar-sm">+6</span>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Load</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><div class="d-flex align-items-center gap-3"><span class="avatar avatar-sm avatar-primary avatar-status">AL</span> Ada Lovelace</div></td>
+                    <td><span class="badge badge-soft-primary">Engineer</span></td>
+                    <td><span class="chip chip-success">Active</span></td>
+                    <td style="min-width:9rem;"><div class="progress"><div class="progress-bar" style="width:72%"></div></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="d-flex align-items-center gap-3"><span class="avatar avatar-sm avatar-info avatar-status avatar-status-away">JD</span> Jian Dao</div></td>
+                    <td><span class="badge badge-soft-info">Designer</span></td>
+                    <td><span class="chip chip-warning">Away</span></td>
+                    <td><div class="progress"><div class="progress-bar" style="width:45%"></div></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="d-flex align-items-center gap-3"><span class="avatar avatar-sm avatar-accent avatar-status avatar-status-busy">MK</span> Mira Koto</div></td>
+                    <td><span class="badge badge-soft-accent">Product</span></td>
+                    <td><span class="chip chip-danger">Busy</span></td>
+                    <td><div class="progress"><div class="progress-bar" style="width:90%"></div></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- Activity / tabs -->
+        <div class="col-12 col-xl-4">
+          <div class="card h-100"><div class="card-body">
+            <div class="tabs">
+              <button class="tab active" data-fv-tab="#tab-activity">Activity</button>
+              <button class="tab" data-fv-tab="#tab-tasks">Tasks</button>
+            </div>
+            <div id="tab-activity" class="tab-panel active">
+              <div class="d-flex flex-column gap-3">
+                <div class="d-flex gap-3"><span class="avatar avatar-sm avatar-success"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg></span><div><div>Deploy succeeded</div><small class="text-muted">2 min ago</small></div></div>
+                <div class="d-flex gap-3"><span class="avatar avatar-sm avatar-info"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-edit"/></svg></span><div><div>Spec updated</div><small class="text-muted">1 hr ago</small></div></div>
+                <div class="d-flex gap-3"><span class="avatar avatar-sm avatar-warning"><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-bell"/></svg></span><div><div>New comment</div><small class="text-muted">3 hr ago</small></div></div>
+              </div>
+            </div>
+            <div id="tab-tasks" class="tab-panel">
+              <label class="form-check"><input class="form-check-input" type="checkbox" checked /> <span class="text-muted">Ship glass edition</span></label>
+              <label class="form-check"><input class="form-check-input" type="checkbox" /> Write the docs</label>
+              <label class="form-check"><input class="form-check-input" type="checkbox" /> Record demo</label>
+              <div class="mt-4"><div class="d-flex justify-content-between mb-1"><small>Sprint</small><small class="text-muted">1 / 3</small></div><div class="progress progress-success"><div class="progress-bar" style="width:33%"></div></div></div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New project modal -->
+  <dialog class="modal" id="new-project">
+    <div class="modal-header">
+      <h2 class="modal-title">New project</h2>
+      <button class="modal-close" data-fv-dismiss aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-4"><label class="form-label" for="pname">Project name</label><input class="form-control" id="pname" placeholder="Aurora" /></div>
+      <label class="form-label" for="pvis">Visibility</label>
+      <select class="form-select" id="pvis"><option>Private</option><option>Team</option><option>Public</option></select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-glass" data-fv-dismiss>Cancel</button>
+      <button class="btn btn-gradient-primary" data-fv-dismiss onclick="Farvist.toast({title:'Project created', variant:'success'})">Create</button>
+    </div>
+  </dialog>
+
+  <script src="../assets/farvist.js" defer></script>
+</body>
+</html>

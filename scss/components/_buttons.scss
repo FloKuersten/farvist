@@ -1,0 +1,163 @@
+// =============================================================================
+// Farvist · Components · Buttons
+// `.btn` is themed entirely through `--fv-btn-*` custom properties. Solid
+// variants get a neon hover glow; gradient and glass variants add flair.
+// =============================================================================
+
+@use 'sass:map';
+@use 'sass:color';
+@use '../abstracts' as *;
+
+.btn {
+  // Neutral defaults; variants below override these.
+  --fv-btn-bg: transparent;
+  --fv-btn-color: var(--fv-body-color);
+  --fv-btn-border: var(--fv-glass-border);
+  --fv-btn-hover-bg: var(--fv-glass-bg-strong);
+  --fv-btn-hover-border: var(--fv-glass-border);
+  --fv-btn-active-bg: var(--fv-glass-bg);
+  --fv-btn-focus-ring: #{rgba($primary, 0.45)};
+  --fv-btn-glow: none;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: spacer(2);
+  padding: spacer(2) spacer(5);
+  font-size: map.get($font-sizes, 'base');
+  font-weight: map.get($font-weights, 'semibold');
+  line-height: $line-height-base;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  color: var(--fv-btn-color);
+  background-color: var(--fv-btn-bg);
+  border: $border-width solid var(--fv-btn-border);
+  border-radius: var(--fv-border-radius);
+  transition:
+    color $transition-base,
+    background-color $transition-base,
+    border-color $transition-base,
+    box-shadow $transition-base,
+    transform $transition-base;
+
+  &:hover {
+    color: var(--fv-btn-color);
+    background-color: var(--fv-btn-hover-bg);
+    border-color: var(--fv-btn-hover-border);
+    box-shadow: var(--fv-btn-glow);
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    background-color: var(--fv-btn-active-bg);
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 3px var(--fv-btn-focus-ring);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    box-shadow: none;
+    transform: none;
+    pointer-events: none;
+  }
+}
+
+// Solid variants — one rule per theme color via @each.
+@each $name, $clr in $theme-colors {
+  .btn-#{$name} {
+    @include button-variant($clr);
+  }
+}
+
+// Outline variants — transparent until hover, then fill + glow.
+@each $name, $clr in $theme-colors {
+  .btn-outline-#{$name} {
+    --fv-btn-bg: transparent;
+    --fv-btn-color: #{$clr};
+    --fv-btn-border: #{$clr};
+    --fv-btn-hover-bg: #{$clr};
+    --fv-btn-hover-border: #{$clr};
+    --fv-btn-active-bg: #{color.scale($clr, $lightness: -10%)};
+    --fv-btn-focus-ring: #{rgba($clr, 0.45)};
+    --fv-btn-glow: 0 0 24px #{rgba($clr, 0.5)};
+
+    &:hover {
+      --fv-btn-color: #{contrast-color($clr)};
+    }
+  }
+}
+
+// Gradient variants — vivid fill, intensifies on hover.
+@each $name, $grad in $gradients {
+  .btn-gradient-#{$name} {
+    --fv-btn-color: #ffffff;
+    --fv-btn-border: transparent;
+    // The gradient image is the fill; keep the base hover/active color layer
+    // transparent so no glass tint paints underneath it.
+    --fv-btn-hover-bg: transparent;
+    --fv-btn-active-bg: transparent;
+    --fv-btn-glow: var(--fv-glow-primary);
+
+    color: var(--fv-btn-color);
+    background-image: #{$grad};
+    border-color: transparent;
+
+    &:hover {
+      filter: brightness(1.08);
+    }
+  }
+}
+
+// Frosted-glass button.
+.btn-glass {
+  @include glass;
+  --fv-btn-color: var(--fv-body-color);
+  box-shadow: none;
+
+  &:hover {
+    background-color: var(--fv-glass-bg-strong);
+    border-color: var(--fv-glass-border);
+  }
+}
+
+// Link-style button.
+.btn-link {
+  --fv-btn-bg: transparent;
+  --fv-btn-border: transparent;
+  --fv-btn-color: var(--fv-primary);
+  --fv-btn-hover-bg: transparent;
+  --fv-btn-hover-border: transparent;
+  --fv-btn-active-bg: transparent;
+  --fv-btn-glow: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Sizes.
+.btn-sm {
+  padding: spacer(1) spacer(3);
+  font-size: map.get($font-sizes, 'sm');
+}
+
+.btn-lg {
+  padding: spacer(3) spacer(6);
+  font-size: map.get($font-sizes, 'lg');
+}
+
+// Full-width block button.
+.btn-block {
+  display: flex;
+  width: 100%;
+}

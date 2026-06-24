@@ -1,0 +1,85 @@
+// =============================================================================
+// Farvist · Abstracts · Functions
+// Pure helpers used by mixins, components and the utility generators.
+// =============================================================================
+
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:color';
+@use 'variables' as *;
+
+// Look up a theme color by name, warning loudly on a typo.
+@function color($name) {
+  @if map.has-key($theme-colors, $name) {
+    @return map.get($theme-colors, $name);
+  }
+  @warn "color(): `#{$name}` is not a theme color. Valid keys: #{map.keys($theme-colors)}.";
+  @return null;
+}
+
+// Look up a spacer value (e.g. spacer(4) -> 1rem).
+@function spacer($key) {
+  @if not map.has-key($spacers, $key) {
+    @warn "spacer(): `#{$key}` is not in $spacers.";
+    @return 0;
+  }
+  @return map.get($spacers, $key);
+}
+
+// The min-width for a breakpoint, or null for the zero-width base (`xs`).
+@function breakpoint-min($name) {
+  $min: map.get($grid-breakpoints, $name);
+  @if $min == 0 {
+    @return null;
+  }
+  @return $min;
+}
+
+// The infix injected into responsive class names: '' for xs, '-md' otherwise.
+@function breakpoint-infix($name) {
+  @if breakpoint-min($name) == null {
+    @return '';
+  }
+  @return '-#{$name}';
+}
+
+// px -> rem against the configured root font size. Accepts unitless or px.
+@function rem($px, $base: $font-size-root) {
+  @if math.is-unitless($px) {
+    $px: $px * 1px;
+  }
+  @return math.div($px, $base) * 1rem;
+}
+
+// WCAG relative luminance of a single 0–255 channel (sRGB → linear).
+@function _channel-lin($value) {
+  $v: math.div($value, 255);
+  @if $v <= 0.03928 {
+    @return math.div($v, 12.92);
+  }
+  @return math.pow(math.div($v + 0.055, 1.055), 2.4);
+}
+
+// WCAG relative luminance of a color (0 = black, 1 = white).
+@function relative-luminance($color) {
+  $r: _channel-lin(color.channel($color, 'red', $space: rgb));
+  $g: _channel-lin(color.channel($color, 'green', $space: rgb));
+  $b: _channel-lin(color.channel($color, 'blue', $space: rgb));
+  @return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
+}
+
+// WCAG contrast ratio between two colors (1 → 21).
+@function contrast-ratio($c1, $c2) {
+  $l1: relative-luminance($c1);
+  $l2: relative-luminance($c2);
+  @return math.div(math.max($l1, $l2) + 0.05, math.min($l1, $l2) + 0.05);
+}
+
+// Choose the readable foreground (dark or light) for a background — whichever
+// yields the higher WCAG contrast ratio. More accurate than the YIQ heuristic.
+@function contrast-color($bg, $dark: $dark, $light: $white) {
+  @if contrast-ratio($bg, $dark) >= contrast-ratio($bg, $light) {
+    @return $dark;
+  }
+  @return $light;
+}

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farvist Pro — premium glass UI blocks & templates (early access)</title>
+  <meta name="description" content="The Farvist framework is free and MIT-licensed. Farvist Pro is an early-access pack of premium glass blocks, page templates and a Figma kit — founder pricing, lifetime updates." />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Farvist Pro — premium glass UI blocks & templates" />
+  <meta property="og:description" content="Free MIT framework + an early-access pack of glass blocks, templates and a Figma kit." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Farvist Pro" />
+  <meta name="twitter:description" content="The futuristic glass CSS framework — free core, premium templates in early access." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dist/farvist.css" />
+  <link rel="canonical" href="https://farvist.com/marketing.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is the framework really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes - the entire Farvist framework is MIT licensed and free forever. Pro is an optional pack of premium blocks, templates and design files built on top of it." } },
+      { "@type": "Question", "name": "What does early access mean?", "acceptedAnswer": { "@type": "Answer", "text": "Pro is still being built in the open. Join now to lock in the founder price and receive every premium block, template and the Figma kit as they ship - at no extra cost." } },
+      { "@type": "Question", "name": "Is Pro a subscription?", "acceptedAnswer": { "@type": "Answer", "text": "No. Pro is a one-time payment with lifetime updates. Buy once, own it forever." } },
+      { "@type": "Question", "name": "Can I use Pro in client and commercial projects?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Build unlimited end products for yourself or clients. You just cannot redistribute the Pro source as a competing component library." } },
+      { "@type": "Question", "name": "Do I need Tailwind or Bootstrap?", "acceptedAnswer": { "@type": "Answer", "text": "No. Farvist is a standalone stylesheet - drop in one link and go. No build step required." } }
+    ]
+  }
+  </script>
+  <style>
+    .section { padding-block: clamp(3rem, 8vw, 6rem); }
+    .eyebrow { letter-spacing: .22em; text-transform: uppercase; }
+    .pop { transform: scale(1.045); }
+    .icon-tile { display:inline-flex; align-items:center; justify-content:center; width:3rem; height:3rem; border-radius:.85rem; }
+    .check { display:flex; align-items:center; gap:.6rem; margin-bottom:.6rem; }
+    @media (max-width: 820px){ .pop { transform:none; } }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="index.html"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="index.html#library">Components</a></li>
+      <li><a class="nav-link" href="examples/dashboard.html">Templates</a></li>
+      <li><a class="nav-link" href="docs/index.html">Docs</a></li>
+      <li><a class="nav-link active" href="marketing.html">Pricing</a></li>
+      <li><a class="btn btn-gradient-primary btn-sm" href="#pricing">Get Pro</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+
+    <!-- Hero -->
+    <header class="section text-center">
+      <span class="badge badge-soft-accent mb-4 eyebrow">Farvist Pro · Early access</span>
+      <h1 class="fs-5xl fw-black mb-4" style="line-height:1.05;">The free framework<br />is just the <span class="text-gradient">starting line</span></h1>
+      <p class="fs-xl text-muted mx-auto mb-5" style="max-width:42rem;">
+        Farvist is free and MIT-licensed forever. <strong>Pro</strong> is in early access — lock in
+        founder pricing and get premium glass blocks, page templates and a Figma kit as they ship.
+      </p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap mb-4">
+        <a href="#pricing" class="btn btn-gradient-primary btn-lg">Join early access — $39</a>
+        <a href="index.html" class="btn btn-glass btn-lg">Browse the free components</a>
+      </div>
+      <p class="text-muted fs-sm mb-0">One-time founder price · lifetime updates</p>
+    </header>
+
+    <!-- Trust strip — factual, verifiable claims only -->
+    <section class="text-center mb-2">
+      <p class="eyebrow text-muted fs-sm mb-4">Free · open-source · tiny</p>
+      <div class="d-flex gap-2 justify-content-center flex-wrap">
+        <span class="chip chip-success">MIT licensed</span>
+        <span class="chip">Zero dependencies</span>
+        <span class="chip">~19 KB gzipped</span>
+        <span class="chip chip-accent">Mesh backgrounds</span>
+        <span class="chip">Dark + light themes</span>
+        <span class="chip">No build step</span>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- What's in Pro (honest: shipping now vs roadmap) -->
+    <section class="section">
+      <div class="text-center mb-6">
+        <p class="eyebrow text-gradient-accent fw-bold mb-2">What's in Pro</p>
+        <h2 class="fs-3xl fw-black">A growing library, shipped as we build</h2>
+        <p class="text-muted">Early access means you get everything below as it lands — at the founder price.</p>
+      </div>
+      <div class="row gy-4">
+        <div class="col-12 col-md-4">
+          <div class="card card-glow hover-lift h-100"><div class="card-body">
+            <span class="icon-tile bg-gradient-primary text-white mb-3"><svg class="icon icon-lg" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-layers"/></svg></span>
+            <h3 class="card-title">Premium blocks <span class="badge badge-soft-success">shipping</span></h3>
+            <p class="card-text">Heroes, pricing, feature grids, auth, navbars and footers. Ten polished blocks in the pack today, with new ones added regularly.</p>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card card-glow hover-lift h-100"><div class="card-body">
+            <span class="icon-tile bg-gradient-aurora text-white mb-3"><svg class="icon icon-lg" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-home"/></svg></span>
+            <h3 class="card-title">Page templates <span class="badge badge-soft-success">shipping</span></h3>
+            <p class="card-text">Production-ready pages. The dashboard and block gallery are already free — more land in Pro.</p>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card card-glow hover-lift h-100"><div class="card-body">
+            <span class="icon-tile bg-gradient-sunset text-white mb-3"><svg class="icon icon-lg" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-edit"/></svg></span>
+            <h3 class="card-title">Figma kit <span class="badge badge-soft-warning">on the roadmap</span></h3>
+            <p class="card-text">Every component as a Figma library with the exact tokens, so design and code never drift.</p>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="section">
+      <div class="text-center mb-6">
+        <p class="eyebrow text-gradient fw-bold mb-2">Pricing</p>
+        <h2 class="fs-3xl fw-black mb-2">Pay once. Own it forever.</h2>
+        <p class="text-muted">No subscriptions. The framework itself is always free.</p>
+      </div>
+
+      <div class="row gy-4 align-items-center">
+        <!-- Free -->
+        <div class="col-12 col-md-4">
+          <div class="card h-100"><div class="card-body p-6">
+            <h3 class="card-title">Free</h3>
+            <p class="text-muted mb-3">The open-source core</p>
+            <div class="fs-5xl fw-black mb-1">$0</div>
+            <p class="text-muted mb-4">MIT licensed</p>
+            <a href="index.html" class="btn btn-glass btn-block mb-5">Get started</a>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> 30+ glass components</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Every utility + the grid</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Background library <span class="badge badge-soft-accent">new</span></div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Dark + light themes</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> 35-icon set</div>
+          </div></div>
+        </div>
+
+        <!-- Pro (featured, early access) -->
+        <div class="col-12 col-md-4">
+          <div class="card card-glow pop h-100" style="border-color:rgba(109,74,245,.5);"><div class="card-body p-6">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <h3 class="card-title mb-0">Pro</h3>
+              <span class="badge badge-soft-accent">Early access</span>
+            </div>
+            <p class="text-muted mb-3">Everything to ship fast</p>
+            <div class="d-flex align-items-end gap-2 mb-1">
+              <span class="fs-5xl fw-black text-gradient">$39</span>
+              <span class="text-muted mb-2">founder price · one-time</span>
+            </div>
+            <p class="text-muted mb-4">1 developer · lifetime updates</p>
+            <a href="mailto:hello@farvist.com?subject=Farvist%20Pro%20early%20access" class="btn btn-gradient-primary btn-block mb-5">Join early access</a>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Everything in Free</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Premium blocks (growing library)</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Page templates</div>
+            <div class="check"><svg class="icon text-warning" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-clock"/></svg> Figma kit (coming soon)</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Lifetime updates</div>
+          </div></div>
+        </div>
+
+        <!-- Team -->
+        <div class="col-12 col-md-4">
+          <div class="card h-100"><div class="card-body p-6">
+            <h3 class="card-title">Team</h3>
+            <p class="text-muted mb-3">For the whole squad</p>
+            <div class="fs-5xl fw-black mb-1">$149</div>
+            <p class="text-muted mb-4">up to 25 developers</p>
+            <a href="mailto:hello@farvist.com?subject=Farvist%20Team%20license" class="btn btn-glass btn-block mb-5">Join as a team</a>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Everything in Pro</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> 25 developer seats</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Priority support</div>
+            <div class="check"><svg class="icon text-success" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-check"/></svg> Unlimited projects</div>
+          </div></div>
+        </div>
+      </div>
+      <p class="text-center text-muted fs-sm mt-5">Prices in USD. Team license covers one organization. Questions? <a href="mailto:hello@farvist.com">Email us</a>.</p>
+    </section>
+
+    <hr />
+
+    <!-- Real proof: the live demos (no mockups) -->
+    <section class="section">
+      <div class="text-center mb-6">
+        <p class="eyebrow text-gradient-aurora fw-bold mb-2">See it in action</p>
+        <h2 class="fs-3xl fw-black mb-2">Everything here is built with Farvist</h2>
+        <p class="text-muted">No mockups — these are live pages you can open right now.</p>
+      </div>
+      <div class="row gy-4">
+        <div class="col-12 col-md-4"><a class="card card-glow hover-lift h-100" href="index.html" style="text-decoration:none;"><div class="card-body"><span class="badge badge-soft-primary mb-3">Live demo</span><h3 class="card-title">Component showcase</h3><p class="card-text">Every component and utility on one page, with a dark/light toggle.</p></div></a></div>
+        <div class="col-12 col-md-4"><a class="card card-glow hover-lift h-100" href="examples/dashboard.html" style="text-decoration:none;"><div class="card-body"><span class="badge badge-soft-info mb-3">Template</span><h3 class="card-title">Glass dashboard</h3><p class="card-text">Sidebar, stat tiles, a data table, tabs and a modal.</p></div></a></div>
+        <div class="col-12 col-md-4"><a class="card card-glow hover-lift h-100" href="examples/blocks.html" style="text-decoration:none;"><div class="card-body"><span class="badge badge-soft-accent mb-3">Blocks</span><h3 class="card-title">Block gallery</h3><p class="card-text">Hero, pricing, features, testimonial, CTA, auth and footer.</p></div></a></div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- FAQ (dogfoods the accordion component) -->
+    <section class="section" style="max-width:46rem; margin-inline:auto;">
+      <div class="text-center mb-6"><p class="eyebrow text-gradient fw-bold mb-2">FAQ</p><h2 class="fs-3xl fw-black">Questions, answered</h2></div>
+      <details class="accordion-item" open><summary>Is the framework really free?</summary><div class="accordion-body">Yes — the entire Farvist framework is MIT licensed and free forever. Pro is an optional pack of premium blocks, templates and design files built on top of it.</div></details>
+      <details class="accordion-item"><summary>What does "early access" mean?</summary><div class="accordion-body">Pro is still being built in the open. Join now to lock in the founder price and receive every premium block, template and the Figma kit as they ship — at no extra cost.</div></details>
+      <details class="accordion-item"><summary>Is Pro a subscription?</summary><div class="accordion-body">No. Pro is a one-time payment with lifetime updates. Buy once, own it forever.</div></details>
+      <details class="accordion-item"><summary>Can I use Pro in client and commercial projects?</summary><div class="accordion-body">Yes. Build unlimited end products for yourself or clients. You just can't redistribute the Pro source as a competing component library.</div></details>
+      <details class="accordion-item"><summary>Do I need Tailwind or Bootstrap?</summary><div class="accordion-body">No. Farvist is a standalone stylesheet — drop in one <code>&lt;link&gt;</code> and go. No build step required.</div></details>
+    </section>
+
+    <!-- Final CTA (dark glass so text stays readable; no light-gradient contrast issue) -->
+    <section class="section">
+      <div class="card card-glow glass-strong glow-primary text-center" style="border-color:rgba(109,74,245,.4);"><div class="card-body p-7">
+        <h2 class="fs-3xl fw-black mb-3"><span class="text-gradient">Ship something that looks like the future</span></h2>
+        <p class="text-muted mb-5">Start free. Join Pro early access when you want the shortcuts.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="#pricing" class="btn btn-gradient-primary btn-lg">See Pro pricing</a>
+          <a href="index.html" class="btn btn-glass btn-lg">Try it free</a>
+        </div>
+      </div></div>
+    </section>
+  </main>
+
+  <footer class="glass-strong text-center p-7" style="border-radius:0;">
+    <div class="container">
+      <p class="mb-1 fw-bold fs-lg"><span class="text-gradient">◆ Farvist</span></p>
+      <p class="text-muted mb-3">A futuristic glass CSS framework · MIT core + optional Pro</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a class="nav-link" href="index.html" style="padding:0;">Docs</a>
+        <a class="nav-link" href="examples/blocks.html" style="padding:0;">Blocks</a>
+        <a class="nav-link" href="#pricing" style="padding:0;">Pricing</a>
+        <a class="nav-link" href="#" style="padding:0;">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/farvist.js" defer></script>
+</body>
+</html>

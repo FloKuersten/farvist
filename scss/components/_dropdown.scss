@@ -1,0 +1,90 @@
+// =============================================================================
+// Farvist · Components · Dropdown (native <details>)
+// Markup:
+//   <details class="dropdown">
+//     <summary class="btn btn-glass">Menu</summary>
+//     <div class="dropdown-menu">
+//       <a class="dropdown-item" href="#">Item</a>
+//       <div class="dropdown-divider"></div>
+//       <button class="dropdown-item">Action</button>
+//     </div>
+//   </details>
+// farvist.js closes it on outside click; CSS handles open/close.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  > summary {
+    list-style: none;
+    cursor: pointer;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  z-index: map.get($z-layers, 'dropdown');
+  min-width: 11rem;
+  padding: spacer(1);
+  border-radius: map.get($radii, 'lg');
+  @include glass($strong: true);
+  animation: fv-dropdown-in 0.15s ease;
+}
+
+// Right-aligned variant.
+.dropdown-menu-end {
+  left: auto;
+  right: 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: spacer(2);
+  width: 100%;
+  padding: spacer(2) spacer(3);
+  font-size: map.get($font-sizes, 'base');
+  color: var(--fv-body-color);
+  text-align: left;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  border-radius: map.get($radii, 'md');
+  cursor: pointer;
+  transition: background-color $transition-base;
+
+  &:hover {
+    background-color: var(--fv-glass-bg);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: var(--fv-focus-ring);
+  }
+}
+
+.dropdown-divider {
+  height: $border-width;
+  margin: spacer(1) 0;
+  background-color: var(--fv-glass-border);
+}
+
+@keyframes fv-dropdown-in {
+  from { opacity: 0; transform: translateY(-0.35rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-menu { animation: none; }
+}

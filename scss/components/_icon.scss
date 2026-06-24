@@ -1,0 +1,25 @@
+// =============================================================================
+// Farvist · Components · Icon
+// Sizing/coloring for inline SVG icons. The icons inherit `currentColor`, so
+// they pick up text color, gradients (via .text-gradient on a parent) and glow.
+//   <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-bell"/></svg>
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-sm { width: 0.85em; height: 0.85em; }
+.icon-lg { width: 1.5em;  height: 1.5em; }
+.icon-xl { width: 2em;    height: 2em; }

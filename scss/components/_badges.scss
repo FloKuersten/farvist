@@ -1,0 +1,54 @@
+// =============================================================================
+// Farvist · Components · Badges
+// Small count / label pills. Solid (auto-contrasted) and soft glass variants.
+// =============================================================================
+
+@use 'sass:map';
+@use 'sass:color';
+@use '../abstracts' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: map.get($font-weights, 'semibold');
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  color: $white;
+  background-color: $secondary;
+  border: $border-width solid transparent;
+  border-radius: map.get($radii, 'sm');
+}
+
+// Solid: filled background, auto-contrasted text.
+@each $name, $clr in $theme-colors {
+  .badge-#{$name} {
+    color: contrast-color($clr);
+    background-color: $clr;
+  }
+}
+
+// Soft: tinted translucent fill with a colored border + same-hue text.
+// Dark theme uses a light tint of the hue; the light theme darkens it (below)
+// so the text clears WCAG AA on a near-white fill.
+@each $name, $clr in $theme-colors {
+  .badge-soft-#{$name} {
+    color: color.mix($white, $clr, 45%);
+    background-color: rgba($clr, 0.16);
+    border-color: rgba($clr, 0.35);
+  }
+}
+
+[data-theme='light'] {
+  @each $name, $clr in $theme-colors {
+    .badge-soft-#{$name} {
+      color: color.mix($body-text-light, $clr, 65%);
+    }
+  }
+}
+
+.badge-pill {
+  border-radius: map.get($radii, 'pill');
+}

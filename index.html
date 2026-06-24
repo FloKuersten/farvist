@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farvist — a futuristic glass CSS framework</title>
+  <meta name="description" content="Farvist is a lightweight (~19 KB), Sass-powered glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 30+ components, dark/light themes. A drop-in alternative to Bootstrap and Tailwind." />
+  <meta name="keywords" content="glassmorphism CSS framework, glass UI kit, dark CSS framework, Sass framework, Bootstrap alternative, Tailwind alternative" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Farvist — futuristic glass CSS framework" />
+  <meta property="og:description" content="Frosted surfaces, neon glow and gradients — generated from Sass tokens. ~19 KB, 30+ components, dark/light themes." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Farvist — futuristic glass CSS framework" />
+  <meta name="twitter:description" content="A lightweight glassmorphism CSS framework. Free & MIT licensed." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dist/farvist.css" />
+  <link rel="canonical" href="https://farvist.com/" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Farvist",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "description": "A lightweight (~19 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, a free backgrounds library, 30+ components and dark/light themes. An alternative to Bootstrap and Tailwind.",
+    "url": "https://farvist.com",
+    "license": "https://opensource.org/licenses/MIT",
+    "softwareVersion": "0.5.0",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <style>
+    /* A few page-only touches that compose Farvist tokens. */
+    .hero { padding-block: clamp(4rem, 12vw, 8rem); }
+    .swatch { height: 3.25rem; border-radius: var(--fv-border-radius); }
+    .section { padding-block: 4.5rem; }
+    .eyebrow { letter-spacing: .25em; text-transform: uppercase; }
+    body { scroll-padding-top: 6rem; }
+    .code-card { font-family: var(--fv-font-mono); font-size: .85rem; line-height: 1.7; }
+    .code-card .tok-key { color: var(--fv-accent); }
+    .code-card .tok-fn  { color: var(--fv-info); }
+    .code-card .tok-str { color: var(--fv-success); }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="#">
+      <span class="text-gradient">◆ Farvist</span>
+    </a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link active" href="#grid">Grid</a></li>
+      <li><a class="nav-link" href="#components">Components</a></li>
+      <li><a class="nav-link" href="#utilities">Utilities</a></li>
+      <li><a class="nav-link" href="#backgrounds">Backgrounds</a></li>
+      <li><a class="nav-link" href="#library">Library</a></li>
+      <li><a class="nav-link" href="examples/dashboard.html">Templates</a></li>
+      <li><a class="nav-link" href="docs/index.html">Docs</a></li>
+      <li><button id="theme-toggle" class="btn btn-glass btn-sm" type="button" aria-label="Toggle color theme">🌙 Dark</button></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container text-center">
+      <span class="badge badge-soft-accent mb-4 eyebrow">v0.5 · components</span>
+      <h1 class="fs-5xl fw-black mb-4" style="line-height:1.05;">
+        The CSS framework with a<br />
+        <span class="text-gradient">futuristic glass</span> soul
+      </h1>
+      <p class="fs-xl text-muted mx-auto mb-6" style="max-width: 42rem;">
+        Frosted surfaces, neon glow and gradient everything — generated from Sass
+        tokens with <code>@for</code> and <code>@each</code> loops. Tiny, themeable,
+        and a little bit from the future.
+      </p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap mb-7">
+        <a href="#components" class="btn btn-gradient-primary btn-lg">Explore components</a>
+        <a href="#grid" class="btn btn-glass btn-lg">See the grid</a>
+      </div>
+
+      <!-- Floating glass code panel -->
+      <div class="card card-glow hover-lift mx-auto animate-float" style="max-width: 36rem; text-align:left;">
+        <div class="card-body code-card">
+          <div class="text-muted mb-2">// one map → hundreds of classes</div>
+          <span class="tok-key">@each</span> $size, $len <span class="tok-key">in</span> $spacers {<br />
+          &nbsp;&nbsp;.p-#{$size} { padding: $len; }<br />
+          }<br />
+          <span class="tok-key">@for</span> $i <span class="tok-key">from</span> 1 <span class="tok-key">through</span> 12 {<br />
+          &nbsp;&nbsp;.col-#{$i} { width: <span class="tok-fn">percentage</span>($i / 12); }<br />
+          }
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container section">
+
+    <!-- Grid -->
+    <section id="grid" class="mb-8">
+      <p class="eyebrow text-gradient-aurora fw-bold mb-1">Layout</p>
+      <h2 class="mb-2">12-column glass grid</h2>
+      <p class="text-muted mb-5">Flexbox columns from a <code>@for</code> loop, responsive at every breakpoint.</p>
+
+      <div class="row gy-3 mb-3">
+        <div class="col-12 col-md-8">
+          <div class="glass p-4 rounded-lg text-center">.col-12 .col-md-8</div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="glass p-4 rounded-lg text-center">.col-md-4</div>
+        </div>
+      </div>
+      <div class="row gy-3">
+        <div class="col-6 col-md-3"><div class="glass p-4 rounded-lg text-center">3</div></div>
+        <div class="col-6 col-md-3"><div class="glass p-4 rounded-lg text-center">3</div></div>
+        <div class="col-6 col-md-3"><div class="glass p-4 rounded-lg text-center">3</div></div>
+        <div class="col-6 col-md-3"><div class="glass p-4 rounded-lg text-center">3</div></div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- Components -->
+    <section id="components" class="section">
+      <p class="eyebrow text-gradient fw-bold mb-1">Components</p>
+      <h2 class="mb-5">Built to glow</h2>
+
+      <!-- Buttons -->
+      <h3 class="h4 mb-3">Buttons <span class="text-muted fs-base fw-normal">— hover for the neon glow</span></h3>
+      <div class="d-flex gap-2 flex-wrap mb-3">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-accent">Accent</button>
+        <button class="btn btn-success">Success</button>
+        <button class="btn btn-danger">Danger</button>
+        <button class="btn btn-warning">Warning</button>
+        <button class="btn btn-info">Info</button>
+      </div>
+      <div class="d-flex gap-2 flex-wrap mb-3">
+        <button class="btn btn-gradient-primary">Gradient</button>
+        <button class="btn btn-gradient-sunset">Sunset</button>
+        <button class="btn btn-gradient-aurora">Aurora</button>
+        <button class="btn btn-glass">Glass</button>
+      </div>
+      <div class="d-flex gap-2 flex-wrap mb-6">
+        <button class="btn btn-outline-primary">Outline</button>
+        <button class="btn btn-outline-accent">Outline</button>
+        <button class="btn btn-link">Link</button>
+        <button class="btn btn-primary btn-sm">Small</button>
+        <button class="btn btn-primary btn-lg">Large</button>
+        <button class="btn btn-primary" disabled>Disabled</button>
+      </div>
+
+      <!-- Badges -->
+      <h3 class="h4 mb-3">Badges</h3>
+      <div class="d-flex gap-2 flex-wrap align-items-center mb-6">
+        <span class="badge badge-primary">primary</span>
+        <span class="badge badge-accent">accent</span>
+        <span class="badge badge-success">success</span>
+        <span class="badge badge-danger badge-pill">9+</span>
+        <span class="badge badge-soft-primary">soft</span>
+        <span class="badge badge-soft-accent">soft accent</span>
+        <span class="badge badge-soft-info">soft info</span>
+      </div>
+
+      <!-- Alerts -->
+      <h3 class="h4 mb-3">Alerts</h3>
+      <div class="alert alert-success">
+        <div class="alert-heading">System online</div>
+        All generators compiled cleanly. <a href="#" class="alert-link">View build log</a>.
+      </div>
+      <div class="alert alert-info">Heads up — this preview uses the compiled <code>dist/farvist.css</code>.</div>
+      <div class="alert alert-danger mb-6">A neutral, readable message on a colored glass panel.</div>
+
+      <!-- Cards -->
+      <h3 class="h4 mb-3">Cards</h3>
+      <div class="row gy-4">
+        <div class="col-12 col-md-4">
+          <article class="card card-glow hover-lift h-100">
+            <div class="card-header">Featured</div>
+            <div class="card-body">
+              <h4 class="card-title">Token-driven</h4>
+              <p class="card-text">Every value traces back to one Sass map. Change a token, restyle the system.</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              <span class="badge badge-soft-primary">Sass</span>
+              <a href="#" class="btn btn-sm btn-outline-primary">Learn more</a>
+            </div>
+          </article>
+        </div>
+        <div class="col-12 col-md-4">
+          <article class="card card-glow hover-lift h-100">
+            <div class="card-body">
+              <h4 class="card-title text-gradient-aurora">Glass surfaces</h4>
+              <p class="card-text">Frosted <code>backdrop-filter</code> panels with an inner highlight and deep shadow.</p>
+              <a href="#utilities" class="btn btn-primary mt-3">Jump to utilities</a>
+            </div>
+          </article>
+        </div>
+        <div class="col-12 col-md-4">
+          <article class="card card-glow hover-lift h-100">
+            <div class="card-body">
+              <h4 class="card-title">Tiny footprint</h4>
+              <p class="card-text">~14 KB gzipped, fully tree-shakeable by trimming the token maps.</p>
+              <div class="d-flex gap-2 mt-3">
+                <span class="badge badge-success">14 KB</span>
+                <span class="badge badge-soft-accent">MIT</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- Forms -->
+    <section id="forms" class="section">
+      <p class="eyebrow text-gradient-sunset fw-bold mb-1">Forms</p>
+      <h2 class="mb-5">Frosted inputs</h2>
+      <div class="row gy-4">
+        <div class="col-12 col-md-6">
+          <form>
+            <div class="mb-4">
+              <label class="form-label" for="name">Name</label>
+              <input class="form-control" id="name" type="text" placeholder="Ada Lovelace" />
+            </div>
+            <div class="mb-4">
+              <label class="form-label" for="email">Email</label>
+              <input class="form-control is-invalid" id="email" type="email" value="not-an-email" />
+              <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label" for="role">Role</label>
+              <select class="form-select" id="role">
+                <option>Engineer</option>
+                <option>Designer</option>
+                <option>Product</option>
+              </select>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" id="terms" type="checkbox" checked />
+              <label class="form-check-label" for="terms">Transmit to the mothership</label>
+            </div>
+            <button class="btn btn-gradient-primary btn-block mt-4" type="button">Submit</button>
+          </form>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="search">Input group</label>
+          <div class="input-group mb-4">
+            <span class="input-group-text">@</span>
+            <input class="form-control" id="search" type="text" placeholder="username" />
+          </div>
+          <label class="form-label" for="bio">Bio</label>
+          <textarea class="form-control" id="bio" placeholder="Tell us about yourself…"></textarea>
+          <p class="form-text">Markdown is supported.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- Utilities -->
+    <section id="utilities" class="section">
+      <p class="eyebrow text-gradient fw-bold mb-1">Utilities</p>
+      <h2 class="mb-5">Generated helpers</h2>
+
+      <h3 class="h4 mb-3">Theme colors</h3>
+      <div class="row gx-3 gy-3 mb-6">
+        <div class="col-6 col-md-3"><div class="swatch bg-primary"></div><small class="text-muted">primary</small></div>
+        <div class="col-6 col-md-3"><div class="swatch bg-accent"></div><small class="text-muted">accent</small></div>
+        <div class="col-6 col-md-3"><div class="swatch bg-info"></div><small class="text-muted">info</small></div>
+        <div class="col-6 col-md-3"><div class="swatch bg-success"></div><small class="text-muted">success</small></div>
+      </div>
+
+      <h3 class="h4 mb-3">Gradients</h3>
+      <div class="row gx-3 gy-3 mb-6">
+        <div class="col-6 col-md-3"><div class="swatch bg-gradient-primary"></div><small class="text-muted">primary</small></div>
+        <div class="col-6 col-md-3"><div class="swatch bg-gradient-accent"></div><small class="text-muted">accent</small></div>
+        <div class="col-6 col-md-3"><div class="swatch bg-gradient-sunset"></div><small class="text-muted">sunset</small></div>
+        <div class="col-6 col-md-3"><div class="swatch bg-gradient-aurora bg-animated"></div><small class="text-muted">aurora · animated</small></div>
+      </div>
+
+      <h3 class="h4 mb-3">Neon glow</h3>
+      <div class="d-flex gap-4 flex-wrap mb-6">
+        <div class="glass p-4 rounded-lg glow-primary">.glow-primary</div>
+        <div class="glass p-4 rounded-lg glow-accent">.glow-accent</div>
+        <div class="glass p-4 rounded-lg glow-info">.glow-info</div>
+      </div>
+
+      <h3 class="h4 mb-3">Type scale</h3>
+      <p class="fs-xs text-muted mb-1">.fs-xs — the quick brown fox</p>
+      <p class="fs-base mb-1">.fs-base — the quick brown fox</p>
+      <p class="fs-2xl fw-semibold mb-1">.fs-2xl — the quick brown fox</p>
+      <p class="fs-4xl fw-black text-gradient">.fs-4xl — gradient headline</p>
+    </section>
+
+    <hr />
+
+    <!-- Backgrounds (free headline feature) -->
+    <section id="backgrounds" class="section">
+      <p class="eyebrow text-gradient-aurora fw-bold mb-1">New · free forever</p>
+      <h2 class="mb-2">Backgrounds Tailwind &amp; Bootstrap don't ship</h2>
+      <p class="text-muted mb-5">Mesh gradients, patterns, spotlights and fade-masks — token-driven, theme-aware, one class. No plugins, no paid tier.</p>
+
+      <h3 class="h4 mb-3">Mesh gradients</h3>
+      <div class="row gx-3 gy-4 mb-6">
+        <div class="col-6 col-md-3"><div class="bg-mesh-aurora rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-mesh-aurora</small></div>
+        <div class="col-6 col-md-3"><div class="bg-mesh-sunset rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-mesh-sunset</small></div>
+        <div class="col-6 col-md-3"><div class="bg-mesh-ocean rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-mesh-ocean</small></div>
+        <div class="col-6 col-md-3"><div class="bg-mesh-nebula bg-drift rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-mesh-nebula .bg-drift</small></div>
+      </div>
+
+      <h3 class="h4 mb-3">Patterns &amp; spotlights</h3>
+      <div class="row gx-3 gy-4">
+        <div class="col-6 col-md-3"><div class="bg-grid bg-fade rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-grid .bg-fade</small></div>
+        <div class="col-6 col-md-3"><div class="bg-dots rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-dots</small></div>
+        <div class="col-6 col-md-3"><div class="bg-lines rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-lines</small></div>
+        <div class="col-6 col-md-3"><div class="bg-spotlight-accent rounded-lg mb-1" style="height:8rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-spotlight-accent</small></div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- Component library (v0.3) -->
+    <section id="library" class="section">
+      <p class="eyebrow text-gradient-accent fw-bold mb-1">New in v0.3</p>
+      <h2 class="mb-2">Component library &amp; assets</h2>
+      <p class="text-muted mb-5">15 new glass components, a 35-icon set, decorative SVGs and a 2.5 KB JS companion.</p>
+
+      <!-- Icons -->
+      <h3 class="h4 mb-3">Icons <span class="text-muted fs-base fw-normal">— currentColor, so they glow with the theme</span></h3>
+      <div class="d-flex gap-4 flex-wrap fs-2xl mb-6">
+        <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-home"/></svg>
+        <svg class="icon text-primary"><use href="assets/icons/farvist-icons.svg#i-bell"/></svg>
+        <svg class="icon text-accent"><use href="assets/icons/farvist-icons.svg#i-heart"/></svg>
+        <svg class="icon text-warning"><use href="assets/icons/farvist-icons.svg#i-star"/></svg>
+        <svg class="icon text-info"><use href="assets/icons/farvist-icons.svg#i-zap"/></svg>
+        <svg class="icon text-success"><use href="assets/icons/farvist-icons.svg#i-check"/></svg>
+        <svg class="icon text-glow text-primary"><use href="assets/icons/farvist-icons.svg#i-sparkles"/></svg>
+        <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-settings"/></svg>
+        <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-search"/></svg>
+        <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-layers"/></svg>
+      </div>
+
+      <div class="row gy-4 mb-2">
+        <!-- Avatars + chips -->
+        <div class="col-12 col-md-6">
+          <div class="card h-100"><div class="card-body">
+            <h3 class="h5 mb-3">Avatars &amp; chips</h3>
+            <div class="avatar-group mb-4">
+              <span class="avatar avatar-primary">AL</span>
+              <span class="avatar avatar-info">JD</span>
+              <span class="avatar avatar-accent avatar-status">MK</span>
+              <span class="avatar">+5</span>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <span class="chip chip-primary">Design <button class="chip-close" aria-label="remove">&times;</button></span>
+              <span class="chip chip-success">Sass</span>
+              <span class="chip chip-accent">Glass</span>
+              <span class="chip">Plain</span>
+            </div>
+          </div></div>
+        </div>
+        <!-- Progress + spinner -->
+        <div class="col-12 col-md-6">
+          <div class="card h-100"><div class="card-body">
+            <h3 class="h5 mb-3">Progress &amp; loaders</h3>
+            <div class="progress mb-3"><div class="progress-bar" style="width:70%"></div></div>
+            <div class="progress progress-success progress-striped progress-animated mb-4"><div class="progress-bar" style="width:45%"></div></div>
+            <div class="d-flex align-items-center gap-4">
+              <span class="spinner"></span>
+              <span class="spinner spinner-accent"></span>
+              <span class="spinner-dots"><span></span><span></span><span></span></span>
+              <span class="skeleton skeleton-btn"></span>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="row gy-4 mb-2">
+        <!-- Tabs -->
+        <div class="col-12 col-md-6">
+          <div class="card h-100"><div class="card-body">
+            <h3 class="h5 mb-3">Tabs</h3>
+            <div class="tabs">
+              <button class="tab active" data-fv-tab="#d-tab1">Overview</button>
+              <button class="tab" data-fv-tab="#d-tab2">Specs</button>
+            </div>
+            <div id="d-tab1" class="tab-panel active"><p class="text-muted mb-0">Pure-CSS panels toggled by the 2.5 KB companion script.</p></div>
+            <div id="d-tab2" class="tab-panel"><p class="text-muted mb-0">No framework, no dependencies — just classes.</p></div>
+          </div></div>
+        </div>
+        <!-- Accordion -->
+        <div class="col-12 col-md-6">
+          <div class="card h-100"><div class="card-body">
+            <h3 class="h5 mb-3">Accordion <span class="text-muted fs-sm fw-normal">(native &lt;details&gt;, no JS)</span></h3>
+            <details class="accordion-item" open><summary>Is it really this small?</summary><div class="accordion-body">Yes — ~19 KB gzipped including every component.</div></details>
+            <details class="accordion-item"><summary>Does it support themes?</summary><div class="accordion-body">Dark by default, with a one-attribute light theme.</div></details>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Interactive row: switch, tooltip, dropdown, modal, toast -->
+      <div class="card mb-5"><div class="card-body d-flex flex-wrap align-items-center gap-4">
+        <label class="switch"><input type="checkbox" aria-label="Demo toggle" checked /><span class="switch-track"></span><span class="switch-thumb"></span></label>
+        <button class="btn btn-glass" data-tooltip="Tooltip on hover ✨">Hover me</button>
+        <details class="dropdown">
+          <summary class="btn btn-glass">Dropdown <svg class="icon icon-sm"><use href="assets/icons/farvist-icons.svg#i-chevron-down"/></svg></summary>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-user"/></svg> Profile</a>
+            <a class="dropdown-item" href="#"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-settings"/></svg> Settings</a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item">Sign out</button>
+          </div>
+        </details>
+        <button class="btn btn-gradient-primary" data-fv-open="#demo-modal">Open modal</button>
+        <button class="btn btn-outline-accent" onclick="Farvist.toast({title:'Hello from Farvist', message:'A glass toast, auto-dismissed.', variant:'accent'})">Show toast</button>
+      </div></div>
+
+      <!-- Breadcrumb + pagination + table -->
+      <ul class="breadcrumb" role="list">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">Components</a></li>
+        <li class="breadcrumb-item active">Table</li>
+      </ul>
+      <div class="card mb-4"><div class="table-responsive">
+        <table class="table table-hover">
+          <thead><tr><th>Member</th><th>Role</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td><div class="d-flex align-items-center gap-3"><span class="avatar avatar-sm avatar-primary">AL</span> Ada Lovelace</div></td><td><span class="badge badge-soft-primary">Engineer</span></td><td><span class="chip chip-success">Active</span></td></tr>
+            <tr><td><div class="d-flex align-items-center gap-3"><span class="avatar avatar-sm avatar-accent">MK</span> Mira Koto</div></td><td><span class="badge badge-soft-accent">Product</span></td><td><span class="chip chip-warning">Away</span></td></tr>
+          </tbody>
+        </table>
+      </div></div>
+      <ul class="pagination">
+        <li class="page-item disabled"><span class="page-link">‹</span></li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">›</a></li>
+      </ul>
+
+      <!-- v0.5 components -->
+      <h3 class="h4 mb-3 mt-7">New in v0.5 <span class="text-muted fs-base fw-normal">— 9 more components</span></h3>
+      <div class="row gy-4 mb-4">
+        <div class="col-12 col-md-6">
+          <div class="card h-100"><div class="card-body">
+            <h4 class="h5 mb-3">Stepper</h4>
+            <ol class="stepper">
+              <li class="step is-done"><span class="step-dot">✓</span><span class="step-label">Account</span></li>
+              <li class="step is-active"><span class="step-dot">2</span><span class="step-label">Plan</span></li>
+              <li class="step"><span class="step-dot">3</span><span class="step-label">Done</span></li>
+            </ol>
+            <h4 class="h5 mb-3 mt-4">Segmented &amp; rating</h4>
+            <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
+              <div class="segmented">
+                <input type="radio" name="seg" id="sg1" checked /><label for="sg1">Day</label>
+                <input type="radio" name="seg" id="sg2" /><label for="sg2">Week</label>
+                <input type="radio" name="seg" id="sg3" /><label for="sg3">Month</label>
+              </div>
+              <span class="rating" role="img" aria-label="Rated 4 out of 5">
+                <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-star"/></svg>
+                <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-star"/></svg>
+                <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-star"/></svg>
+                <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-star"/></svg>
+                <svg class="icon rating-empty"><use href="assets/icons/farvist-icons.svg#i-star"/></svg>
+              </span>
+            </div>
+            <h4 class="h5 mb-2">Range</h4>
+            <input type="range" class="form-range" min="0" max="100" value="65" aria-label="Demo range" />
+          </div></div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="card h-100"><div class="card-body">
+            <h4 class="h5 mb-3">Timeline</h4>
+            <ul class="timeline">
+              <li class="timeline-item timeline-success"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Deployed to production</div><div class="timeline-time">2 min ago</div></div></li>
+              <li class="timeline-item timeline-info"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Spec updated</div><div class="timeline-time">1 hr ago</div></div></li>
+              <li class="timeline-item"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Branch created</div><div class="timeline-time">3 hr ago</div></div></li>
+            </ul>
+          </div></div>
+        </div>
+      </div>
+      <div class="row gy-4">
+        <div class="col-12 col-md-4">
+          <div class="card h-100"><div class="card-body">
+            <div class="stat-value text-gradient">8,420</div>
+            <div class="stat-label mb-4">Active users <span class="stat-trend stat-trend-up">▲ 12%</span></div>
+            <div class="callout callout-info"><div class="callout-title">Callout</div>A lighter note for docs and tips.</div>
+            <div class="callout callout-warning mb-0"><div class="callout-title">Warning</div>Colored accent per theme color.</div>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="list-group">
+            <a class="list-group-item is-active" href="#"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-home"/></svg> Inbox</a>
+            <a class="list-group-item" href="#"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-mail"/></svg> Drafts</a>
+            <a class="list-group-item" href="#"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-star"/></svg> Starred</a>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card h-100"><div class="empty-state">
+            <svg class="icon empty-state-icon"><use href="assets/icons/farvist-icons.svg#i-search"/></svg>
+            <div class="empty-state-title">No results</div>
+            <p class="empty-state-text">Try a different search term.</p>
+            <button class="btn btn-glass btn-sm">Clear filters</button>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Templates callout -->
+      <div class="card card-glow glass-strong glow-accent mt-7" style="border-color:rgba(232,121,249,.4);"><div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3 p-5">
+        <div>
+          <h3 class="mb-1"><span class="text-gradient-accent">Premade templates</span></h3>
+          <p class="text-muted mb-0">A glass dashboard, a SaaS landing, a portfolio, and a copy-paste block gallery.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+          <a class="btn btn-glass" href="examples/dashboard.html">Dashboard →</a>
+          <a class="btn btn-glass" href="examples/saas.html">SaaS →</a>
+          <a class="btn btn-glass" href="examples/portfolio.html">Portfolio →</a>
+          <a class="btn btn-glass" href="examples/blocks.html">Blocks →</a>
+        </div>
+      </div></div>
+    </section>
+
+  </main>
+
+  <!-- Demo modal -->
+  <dialog class="modal" id="demo-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Native &lt;dialog&gt; modal</h3>
+      <button class="modal-close" data-fv-dismiss aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="text-muted mb-0">Frosted glass on a blurred backdrop. Close it with the ×, the button below, a backdrop click, or Esc.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-glass" data-fv-dismiss>Cancel</button>
+      <button class="btn btn-gradient-primary" data-fv-dismiss>Got it</button>
+    </div>
+  </dialog>
+
+  <footer class="glass-strong text-center p-7" style="border-radius:0;">
+    <div class="container">
+      <p class="mb-1 fw-bold fs-lg"><span class="text-gradient">◆ Farvist</span></p>
+      <p class="text-muted mb-0">Built from scratch with Sass · MIT licensed · ~19 KB gzipped · 30+ components</p>
+    </div>
+  </footer>
+
+  <script src="assets/farvist.js" defer></script>
+  <script>
+    // Tiny dual-theme demo: flips the runtime --fv-* surface variables.
+    const btn = document.getElementById('theme-toggle');
+    btn.addEventListener('click', () => {
+      const light = document.documentElement.getAttribute('data-theme') === 'light';
+      if (light) {
+        document.documentElement.removeAttribute('data-theme');
+        btn.textContent = '🌙 Dark';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        btn.textContent = '☀️ Light';
+      }
+    });
+  </script>
+
+</body>
+</html>

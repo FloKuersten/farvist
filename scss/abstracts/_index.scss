@@ -1,0 +1,9 @@
+// =============================================================================
+// Farvist · Abstracts · Forward barrel
+// A single entry point so consumers can `@use '../abstracts' as *;` and reach
+// every variable, function and mixin in one namespace.
+// =============================================================================
+
+@forward 'variables';
+@forward 'functions';
+@forward 'mixins';

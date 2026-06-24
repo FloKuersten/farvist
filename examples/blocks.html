@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farvist — Premade blocks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../dist/farvist.css" />
+  <style>
+    .block { padding-block: 4rem; border-bottom: 1px solid var(--fv-border-color); }
+    .block-label { position: sticky; top: 0; }
+    .pricing-featured { transform: scale(1.04); }
+    .icon-tile { display:inline-flex; align-items:center; justify-content:center; width:3rem; height:3rem; border-radius:.85rem; }
+  </style>
+</head>
+<body>
+
+  <div class="navbar sticky-top">
+    <a class="navbar-brand" href="../index.html"><span class="text-gradient">◆ Farvist</span> <span class="text-muted fs-base fw-normal">blocks</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="dashboard.html">Dashboard template →</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle>Theme</button></li>
+    </ul>
+  </div>
+
+  <main class="container">
+
+    <!-- ===== HERO ===== -->
+    <section class="block text-center">
+      <p class="eyebrow text-muted mb-3" style="letter-spacing:.25em;">HERO</p>
+      <span class="badge badge-soft-accent mb-4">✦ New · glass edition</span>
+      <h1 class="fs-5xl fw-black mb-4">Ship interfaces from <span class="text-gradient">the future</span></h1>
+      <p class="fs-xl text-muted mx-auto mb-5" style="max-width:40rem;">A frosted-glass design system with neon glow, gradients, and 40+ components — all from Sass tokens.</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <button class="btn btn-gradient-primary btn-lg">Get started</button>
+        <button class="btn btn-glass btn-lg">Documentation</button>
+      </div>
+    </section>
+
+    <!-- ===== FEATURE GRID ===== -->
+    <section class="block">
+      <h2 class="eyebrow text-muted mb-3 fs-sm fw-semibold" style="letter-spacing:.25em;">FEATURES</h2>
+      <div class="row gy-4">
+        <div class="col-12 col-md-4">
+          <div class="card card-glow hover-lift h-100"><div class="card-body">
+            <span class="icon-tile bg-gradient-primary text-white mb-3"><svg class="icon icon-lg"><use href="../assets/icons/farvist-icons.svg#i-zap"/></svg></span>
+            <h3 class="card-title">Fast by default</h3>
+            <p class="card-text">14 KB gzipped and tree-shakeable. No runtime, just CSS.</p>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card card-glow hover-lift h-100"><div class="card-body">
+            <span class="icon-tile bg-gradient-aurora text-white mb-3"><svg class="icon icon-lg"><use href="../assets/icons/farvist-icons.svg#i-layers"/></svg></span>
+            <h3 class="card-title">Token-driven</h3>
+            <p class="card-text">One set of Sass maps controls color, spacing, type and motion.</p>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card card-glow hover-lift h-100"><div class="card-body">
+            <span class="icon-tile bg-gradient-sunset text-white mb-3"><svg class="icon icon-lg"><use href="../assets/icons/farvist-icons.svg#i-sparkles"/></svg></span>
+            <h3 class="card-title">Glass & glow</h3>
+            <p class="card-text">Frosted surfaces, neon glow and gradients in every component.</p>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="block">
+      <h2 class="eyebrow text-muted mb-3 fs-sm fw-semibold" style="letter-spacing:.25em;">PRICING</h2>
+      <div class="row gy-4 align-items-center">
+        <div class="col-12 col-md-4">
+          <div class="card h-100"><div class="card-body text-center">
+            <h3 class="card-title">Starter</h3>
+            <div class="fs-4xl fw-black mb-1">$0</div>
+            <p class="text-muted mb-4">for hobby projects</p>
+            <button class="btn btn-glass btn-block mb-4">Choose</button>
+            <ul role="list" class="d-flex flex-column gap-2 text-muted" style="padding:0;">
+              <li><svg class="icon text-success"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg> 1 project</li>
+              <li><svg class="icon text-success"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg> Community support</li>
+            </ul>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card card-glow pricing-featured h-100"><div class="card-body text-center">
+            <span class="badge badge-primary mb-2">Popular</span>
+            <h3 class="card-title">Pro</h3>
+            <div class="fs-4xl fw-black text-gradient mb-1">$19</div>
+            <p class="text-muted mb-4">per month</p>
+            <button class="btn btn-gradient-primary btn-block mb-4">Choose</button>
+            <ul role="list" class="d-flex flex-column gap-2 text-muted" style="padding:0;">
+              <li><svg class="icon text-success"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg> Unlimited projects</li>
+              <li><svg class="icon text-success"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg> Priority support</li>
+              <li><svg class="icon text-success"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg> Glass themes</li>
+            </ul>
+          </div></div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card h-100"><div class="card-body text-center">
+            <h3 class="card-title">Team</h3>
+            <div class="fs-4xl fw-black mb-1">$49</div>
+            <p class="text-muted mb-4">per month</p>
+            <button class="btn btn-glass btn-block mb-4">Choose</button>
+            <ul role="list" class="d-flex flex-column gap-2 text-muted" style="padding:0;">
+              <li><svg class="icon text-success"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg> Everything in Pro</li>
+              <li><svg class="icon text-success"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg> SSO &amp; roles</li>
+            </ul>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TESTIMONIAL ===== -->
+    <section class="block">
+      <h2 class="eyebrow text-muted mb-3 fs-sm fw-semibold" style="letter-spacing:.25em;">TESTIMONIAL</h2>
+      <div class="card glass-strong mx-auto" style="max-width:46rem;"><div class="card-body text-center p-7">
+        <div class="d-flex justify-content-center gap-1 mb-4 text-warning">
+          <svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg>
+        </div>
+        <p class="fs-xl mb-4">"It looks like it costs a fortune, but it's just a few Sass loops. Farvist made our app feel like it's from 2030."</p>
+        <div class="d-flex align-items-center justify-content-center gap-3">
+          <span class="avatar avatar-accent">RC</span>
+          <div class="text-start"><div class="fw-semibold">Riley Chen</div><small class="text-muted">CTO, Nebula</small></div>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="block">
+      <p class="eyebrow text-muted mb-3" style="letter-spacing:.25em;">CTA</p>
+      <div class="card card-glow glass-strong glow-primary text-center" style="border-color:rgba(109,74,245,.4);"><div class="card-body p-7">
+        <h2 class="fs-3xl fw-black mb-3"><span class="text-gradient">Start building today</span></h2>
+        <p class="text-muted mb-5">Drop in one stylesheet and go.</p>
+        <button class="btn btn-gradient-primary btn-lg">Get Farvist</button>
+      </div></div>
+    </section>
+
+    <!-- ===== AUTH ===== -->
+    <section class="block">
+      <p class="eyebrow text-muted mb-3" style="letter-spacing:.25em;">AUTH</p>
+      <div class="card mx-auto" style="max-width:24rem;"><div class="card-body p-6">
+        <h2 class="h3 text-center mb-5">Welcome back</h2>
+        <div class="mb-4"><label class="form-label" for="le">Email</label><input class="form-control" id="le" type="email" placeholder="you@example.com" /></div>
+        <div class="mb-4"><label class="form-label" for="lp">Password</label><input class="form-control" id="lp" type="password" placeholder="••••••••" /></div>
+        <label class="form-check mb-4"><input class="form-check-input" type="checkbox" /> Remember me</label>
+        <button class="btn btn-gradient-primary btn-block mb-3">Sign in</button>
+        <p class="text-center text-muted mb-0 fs-sm">No account? <a href="#">Create one</a></p>
+      </div></div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="block" style="border-bottom:0;">
+      <div class="row gy-4">
+        <div class="col-12 col-md-4">
+          <div class="navbar-brand mb-2"><span class="text-gradient">◆ Farvist</span></div>
+          <p class="text-muted">A futuristic glass CSS framework.</p>
+        </div>
+        <div class="col-6 col-md-2"><div class="fw-semibold mb-2">Product</div><ul role="list" class="d-flex flex-column gap-1 text-muted" style="padding:0;"><li><a class="nav-link" href="#" style="padding:0;">Docs</a></li><li><a class="nav-link" href="#" style="padding:0;">Components</a></li></ul></div>
+        <div class="col-6 col-md-2"><div class="fw-semibold mb-2">Company</div><ul role="list" class="d-flex flex-column gap-1 text-muted" style="padding:0;"><li><a class="nav-link" href="#" style="padding:0;">About</a></li><li><a class="nav-link" href="#" style="padding:0;">Blog</a></li></ul></div>
+        <div class="col-12 col-md-4 text-md-end"><span class="badge badge-soft-success">v0.3</span> <span class="text-muted">· MIT licensed</span></div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="../assets/farvist.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+// =============================================================================
+// Farvist · Components · Navbar
+// A frosted-glass navigation bar. Sticky + backdrop blur reads beautifully over
+// scrolling content.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: spacer(4);
+  padding: spacer(3) spacer(5);
+  @include glass($strong: true);
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+  box-shadow: var(--fv-shadow-md);
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: spacer(2);
+  font-size: map.get($font-sizes, 'xl');
+  font-weight: map.get($font-weights, 'bold');
+  letter-spacing: -0.02em;
+  color: var(--fv-body-color);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: spacer(1);
+  margin-left: auto;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: block;
+  padding: spacer(2) spacer(3);
+  color: var(--fv-muted);
+  border-radius: map.get($radii, 'md');
+  text-decoration: none;
+  transition: color $transition-base, background-color $transition-base;
+
+  &:hover {
+    color: var(--fv-body-color);
+    background-color: var(--fv-glass-bg);
+    text-decoration: none;
+  }
+
+  &.active {
+    color: var(--fv-body-color);
+    font-weight: map.get($font-weights, 'semibold');
+    background-color: var(--fv-glass-bg);
+  }
+}

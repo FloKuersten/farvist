@@ -1,0 +1,252 @@
+// =============================================================================
+// Farvist · Abstracts · Variables
+// -----------------------------------------------------------------------------
+// Every design decision in Farvist is a token defined here. Components and the
+// utility generators read from these maps, so changing one value cascades
+// everywhere. Override any token at import time:
+//
+//   @use 'farvist' with ($primary: #00e0ff, $glass-blur: 22px);
+//
+// Each token carries `!default` so a `with (...)` configuration wins.
+//
+// The default look is a dark, futuristic "glass" theme. A light theme ships as
+// a [data-theme="light"] override in base/_root.scss.
+// =============================================================================
+
+@use 'sass:map';
+
+// -- Brand / theme colors (neon-leaning) --------------------------------------
+$primary:   #6d4af5 !default; // electric violet (AA: white text 5.3:1)
+$secondary: #7c8aa5 !default; // cool slate
+$success:   #34d399 !default; // emerald
+$danger:    #fb5b78 !default; // rose
+$warning:   #fbbf24 !default; // amber
+$info:      #22d3ee !default; // cyan
+$accent:    #e879f9 !default; // fuchsia
+$light:     #e7ecf5 !default;
+$dark:      #0b0f1d !default;
+
+// A map of the theme colors lets `@each` loops stamp out every color variant
+// of a utility or component in a single pass. Add a key here and `.btn-*`,
+// `.badge-*`, `.alert-*`, `.text-*`, `.bg-*`, `.glow-*` all gain it for free.
+$theme-colors: (
+  'primary':   $primary,
+  'secondary': $secondary,
+  'success':   $success,
+  'danger':    $danger,
+  'warning':   $warning,
+  'info':      $info,
+  'accent':    $accent,
+  'light':     $light,
+  'dark':      $dark,
+) !default;
+
+// -- Greyscale ----------------------------------------------------------------
+$white: #ffffff !default;
+$black: #000000 !default;
+
+$grays: (
+  '100': #f1f5f9,
+  '200': #e2e8f0,
+  '300': #cbd5e1,
+  '400': #94a3b8,
+  '500': #64748b,
+  '600': #475569,
+  '700': #334155,
+  '800': #1e293b,
+  '900': #0f172a,
+) !default;
+
+// -- Surfaces (dark theme defaults) -------------------------------------------
+$body-bg-dark:   #060912 !default; // deep space base
+$body-text-dark: #e6ebf5 !default;
+$muted-dark:     #95a3c4 !default;
+
+// Light theme surfaces (used by the [data-theme="light"] override).
+$body-bg-light:   #eef1f8 !default;
+$body-text-light: #0f172a !default;
+$muted-light:     #586b8f !default;
+
+$border-color: rgba($white, 0.10) !default;
+
+// -- Glassmorphism ------------------------------------------------------------
+// The frosted-glass surface is built from translucent fills + a backdrop blur.
+$glass-blur:        16px !default;
+$glass-saturate:    140% !default;
+
+$glass-bg-dark:        rgba(255, 255, 255, 0.06) !default;
+$glass-bg-strong-dark: rgba(255, 255, 255, 0.10) !default;
+$glass-border-dark:    rgba(255, 255, 255, 0.14) !default;
+$surface-solid-dark:   #121a2e !default; // opaque fallback when blur unsupported
+
+$glass-bg-light:        rgba(255, 255, 255, 0.55) !default;
+$glass-bg-strong-light: rgba(255, 255, 255, 0.70) !default;
+$glass-border-light:    rgba(255, 255, 255, 0.80) !default;
+$surface-solid-light:   #ffffff !default;
+
+// -- Gradients ----------------------------------------------------------------
+// Built from the color tokens so a palette change cascades automatically.
+$gradients: (
+  'primary': linear-gradient(135deg, $primary 0%, $info 100%),
+  'accent':  linear-gradient(135deg, $accent 0%, $primary 100%),
+  'sunset':  linear-gradient(135deg, $danger 0%, $warning 100%),
+  'aurora':  linear-gradient(135deg, $success 0%, $info 100%),
+) !default;
+
+// Radial "orbs" painted behind the page so glass surfaces have color to blur.
+$bg-gradient-dark:
+  radial-gradient(48rem 48rem at 82% -12%, rgba($primary, 0.28), transparent 60%),
+  radial-gradient(36rem 36rem at -8% 18%, rgba($info, 0.20), transparent 58%),
+  radial-gradient(40rem 40rem at 50% 118%, rgba($accent, 0.18), transparent 58%) !default;
+$bg-gradient-light:
+  radial-gradient(48rem 48rem at 82% -12%, rgba($primary, 0.18), transparent 60%),
+  radial-gradient(36rem 36rem at -8% 18%, rgba($info, 0.16), transparent 58%),
+  radial-gradient(40rem 40rem at 50% 118%, rgba($accent, 0.14), transparent 58%) !default;
+
+// -- Neon glows ---------------------------------------------------------------
+$glows: (
+  'primary': 0 0 26px rgba($primary, 0.55),
+  'accent':  0 0 26px rgba($accent, 0.55),
+  'info':    0 0 26px rgba($info, 0.55),
+  'success': 0 0 26px rgba($success, 0.50),
+  'danger':  0 0 26px rgba($danger, 0.50),
+  'warning': 0 0 26px rgba($warning, 0.50),
+) !default;
+
+// -- Mesh gradient backdrops --------------------------------------------------
+// Each value is a stack of radial "orbs" used as a background-image. Drives the
+// `.bg-mesh-*` utilities — the headline free feature Tailwind/Bootstrap lack.
+$bg-meshes: (
+  'aurora': (
+    radial-gradient(55rem 55rem at 80% -10%, rgba($primary, 0.35), transparent 60%),
+    radial-gradient(45rem 45rem at -10% 25%, rgba($info, 0.28), transparent 58%),
+    radial-gradient(50rem 50rem at 55% 120%, rgba($accent, 0.24), transparent 58%)
+  ),
+  'sunset': (
+    radial-gradient(55rem 55rem at 85% 0%, rgba($warning, 0.30), transparent 60%),
+    radial-gradient(50rem 50rem at 8% 18%, rgba($danger, 0.28), transparent 58%),
+    radial-gradient(45rem 45rem at 60% 120%, rgba($accent, 0.22), transparent 58%)
+  ),
+  'ocean': (
+    radial-gradient(55rem 55rem at 80% -10%, rgba($info, 0.32), transparent 60%),
+    radial-gradient(50rem 50rem at 0% 30%, rgba($success, 0.24), transparent 58%),
+    radial-gradient(45rem 45rem at 50% 120%, rgba($primary, 0.22), transparent 58%)
+  ),
+  'nebula': (
+    radial-gradient(50rem 50rem at 75% 8%, rgba($primary, 0.40), transparent 55%),
+    radial-gradient(40rem 40rem at 18% 28%, rgba($accent, 0.30), transparent 55%),
+    radial-gradient(45rem 45rem at 55% 115%, rgba($info, 0.25), transparent 58%)
+  ),
+) !default;
+
+// -- Spacing scale ------------------------------------------------------------
+$spacer: 1rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer * 0.25,  //  4px
+  2: $spacer * 0.5,   //  8px
+  3: $spacer * 0.75,  // 12px
+  4: $spacer,         // 16px
+  5: $spacer * 1.5,   // 24px
+  6: $spacer * 2,     // 32px
+  7: $spacer * 3,     // 48px
+  8: $spacer * 4,     // 64px
+) !default;
+
+// -- Typography ---------------------------------------------------------------
+$font-family-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
+  Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji' !default;
+$font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', 'JetBrains Mono', Menlo,
+  Consolas, 'Liberation Mono', monospace !default;
+
+$font-size-root: 16px !default;
+$font-size-base: 1rem !default;
+
+$font-sizes: (
+  'xs':   0.75rem,
+  'sm':   0.875rem,
+  'base': 1rem,
+  'lg':   1.125rem,
+  'xl':   1.25rem,
+  '2xl':  1.5rem,
+  '3xl':  1.875rem,
+  '4xl':  2.25rem,
+  '5xl':  3.25rem,
+) !default;
+
+$font-weights: (
+  'light':    300,
+  'normal':   400,
+  'medium':   500,
+  'semibold': 600,
+  'bold':     700,
+  'black':    800,
+) !default;
+
+$line-height-base:     1.6 !default;
+$headings-line-height: 1.15 !default;
+$headings-font-weight: 700 !default;
+
+$headings: (
+  1: map.get($font-sizes, '4xl'),
+  2: map.get($font-sizes, '3xl'),
+  3: map.get($font-sizes, '2xl'),
+  4: map.get($font-sizes, 'xl'),
+  5: map.get($font-sizes, 'lg'),
+  6: map.get($font-sizes, 'base'),
+) !default;
+
+// -- Borders & radius ---------------------------------------------------------
+$border-width:  1px !default;
+$border-radius: 0.75rem !default; // softer, more modern default
+
+$radii: (
+  'none': 0,
+  'sm':   0.375rem,
+  'md':   0.625rem,
+  'lg':   0.875rem,
+  'xl':   1.125rem,
+  '2xl':  1.5rem,
+  'pill': 50rem,
+  'full': 50%,
+) !default;
+
+// -- Elevation (deep, for dark surfaces) --------------------------------------
+$shadows: (
+  'sm': (0 1px 2px rgba($black, 0.30)),
+  'md': (0 8px 20px rgba($black, 0.35)),
+  'lg': (0 18px 44px rgba($black, 0.45)),
+  'xl': (0 30px 70px rgba($black, 0.55)),
+) !default;
+
+// -- Grid & breakpoints -------------------------------------------------------
+$grid-columns: 12 !default;
+$grid-gutter:  1.5rem !default;
+
+$grid-breakpoints: (
+  'xs':  0,
+  'sm':  576px,
+  'md':  768px,
+  'lg':  992px,
+  'xl':  1200px,
+  'xxl': 1400px,
+) !default;
+
+$container-max-widths: (
+  'sm':  540px,
+  'md':  720px,
+  'lg':  960px,
+  'xl':  1140px,
+  'xxl': 1320px,
+) !default;
+
+// -- Motion & layering --------------------------------------------------------
+$transition-base: 0.2s ease !default;
+
+$z-layers: (
+  'dropdown': 1000,
+  'sticky':   1020,
+  'fixed':    1030,
+  'modal':    1050,
+  'tooltip':  1070,
+) !default;

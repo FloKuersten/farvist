@@ -1,0 +1,95 @@
+// =============================================================================
+// Farvist · Components · Modal (native <dialog>)
+// Markup:
+//   <button data-fv-open="#demo">Open</button>
+//   <dialog class="modal" id="demo">
+//     <div class="modal-header">
+//       <h3 class="modal-title">Title</h3>
+//       <button class="modal-close" data-fv-dismiss aria-label="Close">×</button>
+//     </div>
+//     <div class="modal-body">…</div>
+//     <div class="modal-footer">…</div>
+//   </dialog>
+// farvist.js wires data-fv-open / data-fv-dismiss + backdrop-click close.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.modal {
+  width: calc(100% - #{spacer(5)});
+  max-width: 32rem;
+  padding: 0;
+  color: var(--fv-body-color);
+  border-radius: map.get($radii, 'xl');
+  @include glass($strong: true);
+  box-shadow: var(--fv-shadow-xl);
+
+  &::backdrop {
+    background-color: rgba(6, 9, 18, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  &[open] {
+    animation: fv-modal-in 0.2s ease;
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: spacer(3);
+  padding: spacer(4) spacer(5);
+  border-bottom: $border-width solid var(--fv-glass-border);
+}
+
+.modal-title {
+  margin: 0;
+  font-size: map.get($font-sizes, 'xl');
+  font-weight: map.get($font-weights, 'bold');
+}
+
+.modal-body {
+  padding: spacer(5);
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: spacer(2);
+  padding: spacer(4) spacer(5);
+  border-top: $border-width solid var(--fv-glass-border);
+}
+
+.modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--fv-muted);
+  background: transparent;
+  border: 0;
+  border-radius: map.get($radii, 'md');
+  cursor: pointer;
+  transition: color $transition-base, background-color $transition-base;
+
+  &:hover {
+    color: var(--fv-body-color);
+    background-color: var(--fv-glass-bg);
+  }
+}
+
+@keyframes fv-modal-in {
+  from { opacity: 0; transform: translateY(1rem) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal[open] { animation: none; }
+}

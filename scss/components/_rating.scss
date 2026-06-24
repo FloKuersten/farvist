@@ -1,0 +1,26 @@
+// =============================================================================
+// Farvist · Components · Rating
+// <span class="rating" role="img" aria-label="Rated 4 out of 5">
+//   <svg class="icon"><use href="...#i-star"/></svg> x4
+//   <svg class="icon rating-empty"><use href="...#i-star"/></svg>
+// </span>
+// =============================================================================
+
+@use '../abstracts' as *;
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  color: var(--fv-warning);
+}
+
+.rating .icon {
+  width: 1.1em;
+  height: 1.1em;
+  fill: currentColor;
+}
+
+.rating-empty {
+  color: var(--fv-glass-border);
+}
