@@ -8637,6 +8637,23 @@ button.list-group-item:focus-visible {
   cursor: pointer;
 }
 
+.list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+
+.list-inline {
+  padding-left: 0;
+  list-style: none;
+}
+
+.list-inline-item {
+  display: inline-block;
+}
+.list-inline-item:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
 .glass {
   background-color: var(--fv-glass-bg);
   backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));

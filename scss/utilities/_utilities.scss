@@ -203,3 +203,11 @@ $align: (
 .pe-none             { pointer-events: none; }
 .pe-auto             { pointer-events: auto; }
 .cursor-pointer      { cursor: pointer; }
+
+// -- Lists --------------------------------------------------------------------
+.list-unstyled { padding-left: 0; list-style: none; }
+.list-inline   { padding-left: 0; list-style: none; }
+.list-inline-item {
+  display: inline-block;
+  &:not(:last-child) { margin-right: spacer(2); }
+}
