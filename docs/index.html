@@ -13,6 +13,7 @@
     .docs-nav { position: sticky; top: 5rem; align-self: start; max-height: calc(100vh - 7rem); overflow: auto; padding: 1rem; }
     .docs-nav a { display: block; padding: .3rem .6rem; color: var(--fv-muted); text-decoration: none; border-radius: .5rem; font-size: .9rem; }
     .docs-nav a:hover { color: var(--fv-body-color); background-color: var(--fv-glass-bg); }
+    .docs-nav a.active { color: var(--fv-body-color); background-color: var(--fv-glass-bg); font-weight: 600; }
     .docs-nav .grp { margin: 1.1rem 0 .3rem; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--fv-muted); opacity: .65; }
     .docs-main { min-width: 0; }
     .docs-main section { scroll-margin-top: 5.5rem; padding-top: 2.5rem; }
@@ -52,6 +53,12 @@
       <a href="#cards">Cards &amp; badges</a>
       <a href="#forms">Forms</a>
       <a href="#overlays">Modal · Tabs · Toast</a>
+      <a href="#feedback">Feedback</a>
+      <a href="#navigation">Navigation</a>
+      <a href="#data">Data display</a>
+      <a href="#indicators">Indicators</a>
+      <a href="#inputs">Inputs</a>
+      <a href="#misc">Icons &amp; accordion</a>
       <div class="grp">AI</div>
       <a href="#ai">Chat &amp; AI kit ✦</a>
       <div class="grp">Scripting</div>
@@ -77,19 +84,19 @@
       <section id="install">
         <h2 class="mb-3">Installation</h2>
         <p class="text-muted mb-3">Drop in one stylesheet — no build step. Add the optional 2.5 KB script for modals, tabs, toasts and the theme toggle.</p>
-        <pre><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css"&gt;
+        <pre class="snippet"><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css"&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer&gt;&lt;/script&gt;</code></pre>
         <p class="text-muted mt-3 mb-2">Or build from the Sass source to customize the tokens:</p>
-        <pre><code>npm install
+        <pre class="snippet"><code>npm install
 npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
       </section>
 
       <section id="theming">
         <h2 class="mb-3">Theming</h2>
         <p class="text-muted mb-3">Everything is driven by <code>--fv-*</code> custom properties. The default is the dark glass theme; add <code>data-theme="light"</code> to <code>&lt;html&gt;</code> to flip every surface at runtime — no recompile.</p>
-        <pre><code>document.documentElement.setAttribute('data-theme', 'light'); // or remove for dark</code></pre>
+        <pre class="snippet"><code>document.documentElement.setAttribute('data-theme', 'light'); // or remove for dark</code></pre>
         <p class="text-muted mt-3 mb-2">Re-theme at build time by configuring the module:</p>
-        <pre><code>@use 'farvist/scss/farvist' with (
+        <pre class="snippet"><code>@use 'farvist/scss/farvist' with (
   $primary: #00e0ff,
   $accent:  #ff4dd2,
   $glass-blur: 22px
@@ -98,7 +105,7 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
 
         <h3 class="h5 mb-2 mt-4">Cascade layers — easy overrides</h3>
         <p class="text-muted mb-2">Farvist's CSS is wrapped in cascade layers — <code>@layer reset, base, layout, components, utilities</code> — so utilities beat components by <strong>layer order, not <code>!important</code></strong>. The practical win: <strong>any CSS you write outside a layer beats all of Farvist</strong>, no specificity battles or <code>!important</code> needed.</p>
-        <pre><code>/* your stylesheet, loaded after farvist.css */
+        <pre class="snippet"><code>/* your stylesheet, loaded after farvist.css */
 .btn { border-radius: 0; }     /* unlayered → wins over Farvist's .btn */</code></pre>
         <p class="text-muted mt-2">Prefer to keep your overrides organized? Put them in your own layer after <code>utilities</code>.</p>
         <p class="text-muted mt-2"><strong>Browser support:</strong> the shipped CSS is autoprefixed (PostCSS + Autoprefixer). Everything works in Chrome/Edge&nbsp;111+, Safari&nbsp;16.4+, Firefox&nbsp;113+ (~early 2023); older browsers degrade gracefully — glass falls back to an opaque surface via <code>@supports</code>, and the <code>color-mix</code> status pulse simply doesn't animate. Full matrix in the <a href="https://github.com/FloKuersten/farvist#browser-support">readme</a>.</p>
@@ -113,7 +120,7 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
             <div class="col-12 col-md-4"><div class="glass-strong p-3 rounded-md text-center">.col-md-4</div></div>
           </div>
         </div>
-        <pre><code>&lt;div class="row gy-2"&gt;
+        <pre class="snippet"><code>&lt;div class="row gy-2"&gt;
   &lt;div class="col-12 col-md-8"&gt;…&lt;/div&gt;
   &lt;div class="col-12 col-md-4"&gt;…&lt;/div&gt;
 &lt;/div&gt;</code></pre>
@@ -122,7 +129,7 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
       <section id="utilities">
         <h2 class="mb-3">Utilities</h2>
         <p class="text-muted mb-3">Spacing, display, flex, text, color and sizing — all generated. Spacing follows <code>{m|p}{t e b s x y}-{0–8}</code> with optional <code>-{breakpoint}-</code>.</p>
-        <pre><code>.mt-3   .px-4   .p-0   .m-md-5   .mx-auto      &lt;!-- spacing --&gt;
+        <pre class="snippet"><code>.mt-3   .px-4   .p-0   .m-md-5   .mx-auto      &lt;!-- spacing --&gt;
 .d-flex .justify-content-between .align-items-center .gap-3
 .fs-2xl .fw-bold .text-center .text-muted        &lt;!-- type --&gt;
 .bg-primary .text-accent .rounded-lg .shadow-lg  &lt;!-- color/shape --&gt;</code></pre>
@@ -137,7 +144,7 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
           <div class="col-6 col-md-3"><div class="bg-grid bg-fade rounded-lg mb-1" style="height:6rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-grid .bg-fade</small></div>
           <div class="col-6 col-md-3"><div class="bg-spotlight-accent rounded-lg mb-1" style="height:6rem;border:1px solid var(--fv-glass-border);"></div><small class="text-muted">.bg-spotlight-accent</small></div>
         </div>
-        <pre><code>&lt;section class="bg-mesh-aurora"&gt;…&lt;/section&gt;        &lt;!-- mesh gradient --&gt;
+        <pre class="snippet"><code>&lt;section class="bg-mesh-aurora"&gt;…&lt;/section&gt;        &lt;!-- mesh gradient --&gt;
 &lt;div class="bg-grid bg-fade"&gt;…&lt;/div&gt;              &lt;!-- pattern, faded at edges --&gt;
 &lt;header class="bg-spotlight-primary"&gt;…&lt;/header&gt;   &lt;!-- radial glow --&gt;</code></pre>
         <p class="text-muted mt-3"><strong>Meshes:</strong> aurora · sunset · ocean · nebula. <strong>Patterns:</strong> grid · graph · dots · lines · noise. <strong>Modifiers:</strong> <code>.bg-fade</code> (put on a decorative layer — it masks children too), <code>.bg-drift</code> (animate a mesh).</p>
@@ -151,7 +158,7 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
           <button class="btn btn-outline-accent">Outline</button>
           <button class="btn btn-glass">Glass</button>
         </div>
-        <pre><code>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
+        <pre class="snippet"><code>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
 &lt;button class="btn btn-gradient-primary"&gt;Gradient&lt;/button&gt;
 &lt;button class="btn btn-outline-accent"&gt;Outline&lt;/button&gt;</code></pre>
         <p class="text-muted mt-2">Colors: <code>primary secondary success danger warning info accent light dark</code>. Sizes <code>.btn-sm</code> / <code>.btn-lg</code>; full-width <code>.btn-block</code>.</p>
@@ -166,7 +173,7 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
             <span class="badge badge-soft-primary">badge</span> <span class="badge badge-success">solid</span>
           </div></div>
         </div>
-        <pre><code>&lt;article class="card card-glow"&gt;
+        <pre class="snippet"><code>&lt;article class="card card-glow"&gt;
   &lt;div class="card-body"&gt;
     &lt;h3 class="card-title"&gt;Glass card&lt;/h3&gt;
     &lt;p class="card-text"&gt;…&lt;/p&gt;
@@ -181,7 +188,7 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
           <input class="form-control mb-3" id="d-e" type="email" placeholder="you@example.com" />
           <label class="switch"><input type="checkbox" aria-label="Subscribe" checked /><span class="switch-track"></span><span class="switch-thumb"></span></label>
         </div>
-        <pre><code>&lt;label class="form-label"&gt;Email&lt;/label&gt;
+        <pre class="snippet"><code>&lt;label class="form-label"&gt;Email&lt;/label&gt;
 &lt;input class="form-control" type="email"&gt;</code></pre>
       </section>
 
@@ -192,10 +199,108 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
           <button class="btn btn-gradient-primary" data-fv-open="#doc-modal">Open modal</button>
           <button class="btn btn-glass" onclick="Farvist.toast({title:'Hello from the docs', variant:'accent'})">Show toast</button>
         </div>
-        <pre><code>&lt;button data-fv-open="#m"&gt;Open&lt;/button&gt;
+        <pre class="snippet"><code>&lt;button data-fv-open="#m"&gt;Open&lt;/button&gt;
 &lt;dialog class="modal" id="m"&gt; … &lt;/dialog&gt;
 
 Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
+      </section>
+
+      <section id="feedback">
+        <h2 class="mb-3">Feedback</h2>
+        <p class="text-muted mb-3">Alerts, callouts and empty states.</p>
+        <div class="example glass rounded-lg">
+          <div class="alert alert-success mb-3"><div class="alert-heading">Saved</div>Your changes are live.</div>
+          <div class="callout callout-accent mb-3">Callouts draw the eye to a tip or aside.</div>
+          <div class="empty-state"><div class="empty-state-icon">📭</div><p class="mb-0 text-muted">Nothing here yet.</p></div>
+        </div>
+        <pre class="snippet"><code>&lt;div class="alert alert-success"&gt;&lt;div class="alert-heading"&gt;Saved&lt;/div&gt;…&lt;/div&gt;
+&lt;div class="callout callout-accent"&gt;A tip or aside.&lt;/div&gt;
+&lt;div class="empty-state"&gt;&lt;div class="empty-state-icon"&gt;📭&lt;/div&gt;&lt;p&gt;Nothing yet.&lt;/p&gt;&lt;/div&gt;</code></pre>
+      </section>
+
+      <section id="navigation">
+        <h2 class="mb-3">Navigation</h2>
+        <p class="text-muted mb-3">Breadcrumb, pagination and dropdown. (The collapsing navbar is at the top of every page.)</p>
+        <div class="example glass rounded-lg">
+          <ol class="breadcrumb mb-3"><li class="breadcrumb-item"><a href="#">Home</a></li><li class="breadcrumb-item"><a href="#">Docs</a></li><li class="breadcrumb-item active">Navigation</li></ol>
+          <nav aria-label="Pagination" class="mb-3"><ul class="pagination"><li class="page-item disabled"><span class="page-link" aria-label="Previous page">‹</span></li><li class="page-item active"><a class="page-link" href="#">1</a></li><li class="page-item"><a class="page-link" href="#">2</a></li><li class="page-item"><a class="page-link" href="#" aria-label="Next page">›</a></li></ul></nav>
+          <details class="dropdown"><summary class="btn btn-glass" style="cursor:pointer;">Menu ▾</summary><div class="dropdown-menu"><a class="dropdown-item" href="#">Profile</a><a class="dropdown-item" href="#">Settings</a></div></details>
+        </div>
+        <pre class="snippet"><code>&lt;ol class="breadcrumb"&gt;&lt;li class="breadcrumb-item active"&gt;Now&lt;/li&gt;&lt;/ol&gt;
+&lt;nav aria-label="Pagination"&gt;&lt;ul class="pagination"&gt;
+  &lt;li class="page-item active"&gt;&lt;a class="page-link" href="#"&gt;1&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/nav&gt;
+&lt;details class="dropdown"&gt;&lt;summary class="btn btn-glass"&gt;Menu&lt;/summary&gt;
+  &lt;div class="dropdown-menu"&gt;&lt;a class="dropdown-item" href="#"&gt;Profile&lt;/a&gt;&lt;/div&gt;&lt;/details&gt;</code></pre>
+      </section>
+
+      <section id="data">
+        <h2 class="mb-3">Data display</h2>
+        <div class="example glass rounded-lg">
+          <div class="table-responsive mb-3"><table class="table table-hover"><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Ada</td><td><span class="chip chip-success">Active</span></td></tr><tr><td>Mira</td><td><span class="chip chip-warning">Away</span></td></tr></tbody></table></div>
+          <div class="row gy-3 align-items-center">
+            <div class="col-6"><ul class="list-group"><li class="list-group-item">Inbox</li><li class="list-group-item">Drafts</li></ul></div>
+            <div class="col-6 text-center"><div class="stat-value text-gradient">8.4k</div><div class="stat-label">Users</div></div>
+          </div>
+          <ul class="timeline mt-3"><li class="timeline-item timeline-primary"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Shipped v0.11</div><div class="timeline-time">today</div></div></li><li class="timeline-item timeline-accent"><div class="timeline-marker"></div><div class="timeline-content"><div class="timeline-title">Docs polish</div><div class="timeline-time">earlier</div></div></li></ul>
+          <ol class="stepper mt-3"><li class="step is-done"><span class="step-dot">1</span><span class="step-label">Account</span></li><li class="step is-active"><span class="step-dot">2</span><span class="step-label">Plan</span></li><li class="step"><span class="step-dot">3</span><span class="step-label">Done</span></li></ol>
+        </div>
+        <pre class="snippet"><code>&lt;div class="table-responsive"&gt;&lt;table class="table table-hover"&gt;…&lt;/table&gt;&lt;/div&gt;
+&lt;ul class="list-group"&gt;&lt;li class="list-group-item"&gt;Inbox&lt;/li&gt;&lt;/ul&gt;
+&lt;div class="stat-value text-gradient"&gt;8.4k&lt;/div&gt;&lt;div class="stat-label"&gt;Users&lt;/div&gt;
+&lt;ul class="timeline"&gt;&lt;li class="timeline-item timeline-primary"&gt;
+  &lt;div class="timeline-marker"&gt;&lt;/div&gt;&lt;div class="timeline-content"&gt;…&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;
+&lt;ol class="stepper"&gt;&lt;li class="step is-active"&gt;&lt;span class="step-dot"&gt;2&lt;/span&gt;…&lt;/li&gt;&lt;/ol&gt;</code></pre>
+      </section>
+
+      <section id="indicators">
+        <h2 class="mb-3">Indicators</h2>
+        <div class="example glass rounded-lg">
+          <div class="progress mb-4"><div class="progress-bar" style="width:60%"></div></div>
+          <div class="d-flex align-items-center gap-4 flex-wrap">
+            <div class="spinner spinner-primary"></div>
+            <div class="spinner-dots"><span></span><span></span><span></span></div>
+            <span class="rating" role="img" aria-label="Rated 4 of 5"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><svg class="icon rating-empty" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg></span>
+            <span class="status status-online">Online</span>
+            <span class="status status-error">Failed</span>
+          </div>
+          <div class="skeleton skeleton-text mt-4" style="width:60%"></div>
+        </div>
+        <pre class="snippet"><code>&lt;div class="progress"&gt;&lt;div class="progress-bar" style="width:60%"&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class="spinner spinner-primary"&gt;&lt;/div&gt;
+&lt;div class="spinner-dots"&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;span class="status status-online"&gt;Online&lt;/span&gt;
+&lt;div class="skeleton skeleton-text"&gt;&lt;/div&gt;</code></pre>
+      </section>
+
+      <section id="inputs">
+        <h2 class="mb-3">More inputs</h2>
+        <p class="text-muted mb-3">A styled range slider and a JS-free segmented control. (The switch is in <a href="#forms">Forms</a>.)</p>
+        <div class="example glass rounded-lg">
+          <input type="range" class="form-range mb-4" value="60" aria-label="Volume" />
+          <div class="segmented"><input type="radio" id="seg-d" name="seg" checked /><label for="seg-d">Day</label><input type="radio" id="seg-w" name="seg" /><label for="seg-w">Week</label><input type="radio" id="seg-m" name="seg" /><label for="seg-m">Month</label></div>
+        </div>
+        <pre class="snippet"><code>&lt;input type="range" class="form-range"&gt;
+&lt;div class="segmented"&gt;
+  &lt;input type="radio" id="d" name="seg" checked&gt;&lt;label for="d"&gt;Day&lt;/label&gt;
+  &lt;input type="radio" id="w" name="seg"&gt;&lt;label for="w"&gt;Week&lt;/label&gt;&lt;/div&gt;</code></pre>
+      </section>
+
+      <section id="misc">
+        <h2 class="mb-3">Icons &amp; accordion</h2>
+        <div class="example glass rounded-lg">
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-home"/></svg>
+            <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-zap"/></svg>
+            <svg class="icon text-accent" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg>
+            <span class="text-muted fs-sm">35-icon set · driven by <code>currentColor</code></span>
+          </div>
+          <details class="accordion-item" open><summary>Is it accessible?</summary><div class="accordion-body">Yes — ARIA is wired up automatically by farvist.js.</div></details>
+          <details class="accordion-item"><summary>Does it need a build step?</summary><div class="accordion-body">No — one &lt;link&gt; and you're set.</div></details>
+        </div>
+        <pre class="snippet"><code>&lt;svg class="icon"&gt;&lt;use href="assets/icons/farvist-icons.svg#i-home"/&gt;&lt;/svg&gt;
+&lt;details class="accordion-item"&gt;
+  &lt;summary&gt;Question&lt;/summary&gt;
+  &lt;div class="accordion-body"&gt;Answer.&lt;/div&gt;&lt;/details&gt;</code></pre>
       </section>
 
       <section id="ai">
@@ -223,7 +328,7 @@ Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
             <div class="message-body"><div class="message-bubble"><span class="typing"><span></span><span></span><span></span></span></div></div>
           </div>
         </div>
-<pre><code>&lt;div class="chat"&gt;
+<pre class="snippet"><code>&lt;div class="chat"&gt;
   &lt;div class="message"&gt;                  &lt;!-- assistant (left) --&gt;
     &lt;span class="avatar avatar-sm avatar-accent"&gt;AI&lt;/span&gt;
     &lt;div class="message-body"&gt;
@@ -252,19 +357,23 @@ Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
 
         <h3 class="h5 mb-2 mt-4">Streaming messages</h3>
         <p class="text-muted mb-2" style="max-width:46rem;">After injecting new messages into the DOM, call <code>Farvist.enhance()</code> so any new tooltips, tabs and ARIA get wired up.</p>
-<pre><code>chat.insertAdjacentHTML('beforeend', bubbleHTML);
+<pre class="snippet"><code>chat.insertAdjacentHTML('beforeend', bubbleHTML);
 Farvist.enhance();   // re-run progressive enhancement</code></pre>
       </section>
 
       <section id="js">
         <h2 class="mb-3">JS companion</h2>
         <p class="text-muted mb-3">~2.5 KB, no dependencies. It auto-applies ARIA to tabs &amp; progress bars and wires these data-attributes:</p>
-        <pre><code>data-fv-open="#id"      // open a &lt;dialog class="modal"&gt;
+        <pre class="snippet"><code>data-fv-open="#id"      // open a &lt;dialog class="modal"&gt;
 data-fv-dismiss          // close the nearest dialog
 data-fv-tab="#panel"     // switch tabs (arrow-key nav included)
 data-fv-theme-toggle     // flip dark / light
+data-fv-nav-toggle       // toggle the mobile navbar
+&lt;pre class="snippet"&gt;   // gets a copy button (or use any [data-fv-copy])
 
-Farvist.toast({ title, message, variant, timeout });</code></pre>
+Farvist.toast({ title, message, variant, timeout });
+Farvist.copy(text);      // copy text to the clipboard
+Farvist.enhance();       // re-wire after injecting DOM dynamically</code></pre>
       </section>
 
       <section id="a11y">
@@ -284,7 +393,7 @@ Farvist.toast({ title, message, variant, timeout });</code></pre>
 
         <h3 class="h5 mb-2">Skip link</h3>
         <p class="text-muted mb-2">Make it the first element in <code>&lt;body&gt;</code>; it stays hidden until focused, then pins to the top-left.</p>
-        <pre><code>&lt;a class="skip-link" href="#main"&gt;Skip to content&lt;/a&gt;
+        <pre class="snippet"><code>&lt;a class="skip-link" href="#main"&gt;Skip to content&lt;/a&gt;
 &lt;main id="main" tabindex="-1"&gt; … &lt;/main&gt;</code></pre>
 
         <h3 class="h5 mb-2 mt-4">Form validation — try tabbing to the field</h3>
@@ -296,7 +405,7 @@ Farvist.toast({ title, message, variant, timeout });</code></pre>
             <div class="invalid-feedback">Enter a valid email address.</div>
           </div>
           <div class="col-12 col-md-6">
-<pre><code>&lt;label class="form-label" for="email"&gt;Email&lt;/label&gt;
+<pre class="snippet"><code>&lt;label class="form-label" for="email"&gt;Email&lt;/label&gt;
 &lt;input class="form-control is-invalid" id="email"&gt;
 &lt;div class="invalid-feedback"&gt;Enter a valid email.&lt;/div&gt;
 &lt;!-- JS adds aria-invalid + aria-describedby --&gt;</code></pre>

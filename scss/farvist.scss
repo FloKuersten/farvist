@@ -58,6 +58,7 @@
 @use 'components/chat';
 @use 'components/prompt';
 @use 'components/status';
+@use 'components/snippet';
 
 // Utilities (last — highest cascade priority)
 @use 'utilities/spacing';

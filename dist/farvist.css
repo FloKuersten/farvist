@@ -3552,6 +3552,43 @@
     }
   }
 }
+@layer components {
+  .snippet-wrap {
+    position: relative;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--fv-muted);
+    background-color: var(--fv-glass-bg-strong);
+    border: 1px solid var(--fv-glass-border);
+    border-radius: 0.625rem;
+    cursor: pointer;
+    opacity: 0.65;
+    transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .copy-btn:hover {
+    color: var(--fv-body-color);
+  }
+  .copy-btn:focus-visible {
+    outline: 0;
+    opacity: 1;
+    box-shadow: var(--fv-focus-ring);
+  }
+  .copy-btn.is-copied {
+    color: var(--fv-success);
+    border-color: var(--fv-success);
+  }
+  .snippet-wrap:hover .copy-btn,
+  .snippet-wrap:focus-within .copy-btn {
+    opacity: 1;
+  }
+}
 @layer utilities {
   .mt-0 {
     margin-top: 0;

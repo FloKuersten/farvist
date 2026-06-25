@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Farvist — a futuristic glass CSS framework</title>
-  <meta name="description" content="Farvist is a lightweight (~20 KB), Sass-powered glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 30+ components, dark/light themes. A drop-in alternative to Bootstrap and Tailwind." />
+  <meta name="description" content="Farvist is a lightweight (~20 KB), Sass-powered glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 34 components, dark/light themes. A drop-in alternative to Bootstrap and Tailwind." />
   <meta name="keywords" content="glassmorphism CSS framework, glass UI kit, dark CSS framework, Sass framework, Bootstrap alternative, Tailwind alternative" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Farvist — futuristic glass CSS framework" />
-  <meta property="og:description" content="Frosted surfaces, neon glow and gradients — generated from Sass tokens. ~20 KB, 30+ components, dark/light themes." />
+  <meta property="og:description" content="Frosted surfaces, neon glow and gradients — generated from Sass tokens. ~20 KB, 34 components, dark/light themes." />
   <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -28,10 +28,10 @@
     "name": "Farvist",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Web",
-    "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, a free backgrounds library, 30+ components and dark/light themes. An alternative to Bootstrap and Tailwind.",
+    "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, a free backgrounds library, 34 components and dark/light themes. An alternative to Bootstrap and Tailwind.",
     "url": "https://farvist.com",
     "license": "https://opensource.org/licenses/MIT",
-    "softwareVersion": "0.10.0",
+    "softwareVersion": "0.11.0",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -72,7 +72,7 @@
   <!-- Hero -->
   <header class="hero">
     <div class="container text-center">
-      <span class="badge badge-soft-accent mb-4 eyebrow">v0.10 · prefixed</span>
+      <a href="https://github.com/FloKuersten/farvist/releases" style="text-decoration:none;" aria-label="Changelog"><span class="badge badge-soft-accent mb-4 eyebrow">v0.11 · docs</span></a>
       <h1 class="fs-5xl fw-black mb-4" style="line-height:1.05;">
         The CSS framework with a<br />
         <span class="text-gradient">futuristic glass</span> soul
@@ -103,6 +103,23 @@
   </header>
 
   <main id="main" tabindex="-1" class="container section">
+
+    <!-- Get started -->
+    <section class="mb-8">
+      <p class="eyebrow text-gradient fw-bold mb-1">Get started</p>
+      <h2 class="mb-4">Drop it in — 10 seconds, no build step</h2>
+      <div class="row gy-3">
+        <div class="col-12 col-lg-7">
+          <p class="text-muted mb-2">CDN — paste into your <code>&lt;head&gt;</code>:</p>
+          <pre class="snippet"><code>&lt;link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css"&gt;</code></pre>
+        </div>
+        <div class="col-12 col-lg-5">
+          <p class="text-muted mb-2">Or install from npm:</p>
+          <pre class="snippet"><code>npm i farvist</code></pre>
+        </div>
+      </div>
+    </section>
 
     <!-- Grid -->
     <section id="grid" class="mb-8">
@@ -517,6 +534,28 @@
         </div>
       </div>
 
+      <!-- Comparison -->
+      <section class="mb-8">
+        <p class="eyebrow text-gradient-accent fw-bold mb-1">How it compares</p>
+        <h2 class="mb-4">Farvist vs the usual suspects</h2>
+        <div class="table-responsive">
+          <table class="table">
+            <thead><tr><th>Feature</th><th>Farvist</th><th>Bootstrap</th><th>Tailwind</th></tr></thead>
+            <tbody>
+              <tr><td>Glass aesthetic built-in</td><td><span class="text-success">●</span> Yes</td><td class="text-muted">—</td><td class="text-muted">—</td></tr>
+              <tr><td>Free backgrounds library</td><td><span class="text-success">●</span> Mesh · patterns · spotlights</td><td class="text-muted">—</td><td class="text-muted">Linear gradients</td></tr>
+              <tr><td>Prebuilt components</td><td><span class="text-success">●</span> 34</td><td><span class="text-success">●</span> Many</td><td class="text-muted">— (utility-only)</td></tr>
+              <tr><td>Dark + light themes</td><td><span class="text-success">●</span> One attribute</td><td><span class="text-success">●</span> Yes</td><td><span class="text-success">●</span> Yes</td></tr>
+              <tr><td>Cascade layers (<code>@layer</code>)</td><td><span class="text-success">●</span> Yes</td><td class="text-muted">—</td><td><span class="text-success">●</span> v4</td></tr>
+              <tr><td>Build step required</td><td><span class="text-success">●</span> No — one <code>&lt;link&gt;</code></td><td><span class="text-success">●</span> No</td><td class="text-muted">Yes</td></tr>
+              <tr><td>Min size (gzip)</td><td>~20 KB</td><td class="text-muted">~30 KB</td><td class="text-muted">varies (purged)</td></tr>
+              <tr><td>License</td><td>MIT</td><td>MIT</td><td>MIT</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted fs-sm mt-2">Honest take: Bootstrap and Tailwind are mature, huge-ecosystem tools — pick them for that. Farvist is for a dark, glassy look with batteries included.</p>
+      </section>
+
       <!-- Templates callout -->
       <div class="card card-glow glass-strong glow-accent mt-7" style="border-color:rgba(232,121,249,.4);"><div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3 p-5">
         <div>
@@ -553,7 +592,7 @@
   <footer class="glass-strong text-center p-7" style="border-radius:0;">
     <div class="container">
       <p class="mb-1 fw-bold fs-lg"><span class="text-gradient">◆ Farvist</span></p>
-      <p class="text-muted mb-0">Built from scratch with Sass · MIT licensed · ~20 KB gzipped · 30+ components</p>
+      <p class="text-muted mb-0">Built from scratch with Sass · MIT licensed · ~20 KB gzipped · 34 components</p>
       <p class="mb-0"><a class="nav-link d-inline" href="https://github.com/FloKuersten/farvist" style="padding:0;">★ Star on GitHub</a></p>
     </div>
   </footer>

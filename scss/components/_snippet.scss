@@ -1,0 +1,51 @@
+// =============================================================================
+// Farvist · Components · Snippet (code block + copy button)
+// Mark a code block with `.snippet`; farvist.js wraps it and adds a copy button.
+//   <pre class="snippet"><code>…</code></pre>
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+@layer components {
+  // farvist.js wraps each `pre.snippet` in this (non-scrolling) positioning context
+  // so the button stays put even when the code scrolls horizontally.
+  .snippet-wrap {
+    position: relative;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: spacer(2);
+    right: spacer(2);
+    padding: spacer(1) spacer(3);
+    font-size: map.get($font-sizes, 'sm');
+    font-weight: map.get($font-weights, 'medium');
+    line-height: 1.2;
+    color: var(--fv-muted);
+    background-color: var(--fv-glass-bg-strong);
+    border: $border-width solid var(--fv-glass-border);
+    border-radius: map.get($radii, 'md');
+    cursor: pointer;
+    opacity: 0.65;
+    transition: opacity $transition-base, color $transition-base, border-color $transition-base;
+
+    &:hover { color: var(--fv-body-color); }
+
+    &:focus-visible {
+      outline: 0;
+      opacity: 1;
+      box-shadow: var(--fv-focus-ring);
+    }
+
+    &.is-copied {
+      color: var(--fv-success);
+      border-color: var(--fv-success);
+    }
+  }
+
+  .snippet-wrap:hover .copy-btn,
+  .snippet-wrap:focus-within .copy-btn {
+    opacity: 1;
+  }
+}

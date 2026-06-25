@@ -2,6 +2,15 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [0.11.0] — 2026-06-25
+### Added
+- **Copy-to-clipboard** — `pre.snippet` code blocks get a copy button automatically (and any `[data-fv-copy]` element works); `Farvist.copy(text)` is exposed on the API.
+- **Docs scrollspy** — the sidebar highlights the section you're currently reading.
+- **Full component docs** — every one of the 34 components now has a dedicated docs section with a live example (new Feedback, Navigation, Data display, Indicators, Inputs, and Icons & accordion groups).
+- **Homepage**: a "Get started" install block (CDN + npm) and an honest Farvist-vs-Bootstrap-vs-Tailwind comparison table.
+### Fixed
+- **Social previews** — `og:image` referenced `assets/og-image.png`, which never existed (only the `.svg` did). Generated the real 1200×630 PNG so link previews render on every platform.
+
 ## [0.10.0] — 2026-06-25
 ### Added
 - **Autoprefixer build step.** The shipped `dist/*.css` is now run through PostCSS + Autoprefixer (`npm run build:prefix`, chained into `build:all`) against a `browserslist` target, adding the vendor prefixes the hand-written source missed — `-webkit-user-select`, `-moz-column-gap` (Firefox flex-gap), `-moz-appearance`, `-moz-placeholder` — while preserving Safari's required `-webkit-backdrop-filter`.

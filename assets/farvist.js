@@ -104,6 +104,16 @@
       if (root.getAttribute('data-theme') === 'light') root.removeAttribute('data-theme');
       else root.setAttribute('data-theme', 'light');
     }
+
+    // Copy-to-clipboard: .copy-btn (auto-added to pre.snippet) or any [data-fv-copy].
+    var copyBtn = t.closest('.copy-btn, [data-fv-copy]');
+    if (copyBtn) {
+      var text, ref = copyBtn.getAttribute('data-fv-copy');
+      if (ref && ref.charAt(0) === '#') { var tgt = document.querySelector(ref); text = tgt ? tgt.textContent : ''; }
+      else if (ref) { text = ref; }
+      else { var wrap = copyBtn.closest('.snippet-wrap'); var pre = wrap && wrap.querySelector('pre'); text = pre ? (pre.querySelector('code') || pre).textContent : ''; }
+      copy(text, copyBtn.classList.contains('copy-btn') ? copyBtn : null);
+    }
   });
 
   // ---- Keyboard: Esc closes dropdowns; arrows move between tabs ----
@@ -214,9 +224,62 @@
       host.parentNode.insertBefore(desc, host.nextSibling);
       addDescribedBy(host, desc.id);
     });
+
+    // Copy buttons: wrap each `pre.snippet` and add a copy button (idempotent).
+    qsa('pre.snippet').forEach(function (pre) {
+      if (pre.parentNode && pre.parentNode.classList.contains('snippet-wrap')) return;
+      if (!pre.parentNode) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'snippet-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-btn';
+      btn.setAttribute('aria-label', 'Copy code to clipboard');
+      btn.setAttribute('aria-live', 'polite');
+      btn.textContent = 'Copy';
+      wrap.appendChild(btn);
+    });
+
+    // Docs scrollspy: highlight the sidebar link for the section in view (once).
+    var dnav = document.querySelector('.docs-nav');
+    if (dnav && 'IntersectionObserver' in window && !window.__fvSpy) {
+      window.__fvSpy = true;
+      var links = {};
+      qsa('a[href^="#"]', dnav).forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting && links[en.target.id]) {
+            Object.keys(links).forEach(function (k) { links[k].classList.toggle('active', k === en.target.id); });
+          }
+        });
+      }, { rootMargin: '0px 0px -80% 0px' });
+      qsa('.docs-main section[id]').forEach(function (s) { spy.observe(s); });
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance);
   else enhance();
+
+  // ---- Copy to clipboard ----
+  function copy(text, btn) {
+    function ok() {
+      if (!btn) return;
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('is-copied');
+      setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('is-copied'); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(ok, function () { legacyCopy(text); ok(); });
+    } else { legacyCopy(text); ok(); }
+  }
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    ta.remove();
+  }
 
   // ---- Toasts ----
   function toast(opts) {
@@ -276,5 +339,5 @@
   }
 
   // Public API. `Farvist` is the current name; `Farvistrap` kept as an alias.
-  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance };
+  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance, copy: copy };
 })();
