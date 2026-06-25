@@ -2,6 +2,18 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [0.6.0] — 2026-06-25
+### Added
+- **Mobile navbar**: the navbar collapses to a hamburger below `lg` (`.navbar-toggle` + a `farvist.js` toggle) and expands to the horizontal bar from `lg` up. Esc and tapping a link close it.
+- **Fluid typography**: the large type scale (`3xl`/`4xl`/`5xl`, and the headings built on them) now uses `clamp()`, so display text down-scales gracefully on phones.
+- `.list-unstyled` / `.list-inline` list utilities.
+- A fourth template — a portfolio / personal site (`examples/portfolio.html`) — and a Pro landing page at `/pro/`.
+### Changed
+- Tabs scroll horizontally on mobile instead of wrapping; the stepper stacks vertically on phones.
+- Roomier container gutter on phones (1rem); `.btn-sm` keeps a 44px touch target on coarse pointers; dropdown menus are clamped to the viewport width.
+### Fixed
+- Eliminated horizontal overflow at mobile widths across the demo, templates, docs, marketing and Pro pages (verified at 375px).
+
 ## [0.5.0] — 2026-06-24
 ### Added
 - 9 components: stepper, timeline, segmented control, rating, stat, empty-state, list-group, callout and a styled range input (`.form-range`).

@@ -178,7 +178,7 @@ table {
 h1,
 .h1 {
   margin-bottom: 0.75rem;
-  font-size: 2.25rem;
+  font-size: clamp(1.75rem, 6vw, 2.25rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -187,7 +187,7 @@ h1,
 h2,
 .h2 {
   margin-bottom: 0.75rem;
-  font-size: 1.875rem;
+  font-size: clamp(1.5rem, 5vw, 1.875rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -312,9 +312,15 @@ ol {
 .container-fluid {
   width: 100%;
   margin-inline: auto;
-  padding-inline: 0.75rem;
+  padding-inline: 1rem;
 }
 
+@media (min-width: 576px) {
+  .container,
+  .container-fluid {
+    padding-inline: 0.75rem;
+  }
+}
 @media (min-width: 576px) {
   .container {
     max-width: 540px;
@@ -1371,6 +1377,12 @@ ol {
   font-size: 0.875rem;
 }
 
+@media (pointer: coarse) {
+  .btn-sm {
+    min-height: 44px;
+    padding-block: 0.5rem;
+  }
+}
 .btn-lg {
   padding: 0.75rem 2rem;
   font-size: 1.125rem;
@@ -1894,6 +1906,7 @@ textarea.form-control {
 
 .navbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
   padding: 0.75rem 1.5rem;
@@ -1914,6 +1927,7 @@ textarea.form-control {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  margin-right: auto;
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -1924,18 +1938,79 @@ textarea.form-control {
   text-decoration: none;
 }
 
-.navbar-nav {
-  display: flex;
+.navbar-toggle {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--fv-body-color);
+  background-color: var(--fv-glass-bg);
+  border: 1px solid var(--fv-glass-border);
+  border-radius: 0.625rem;
+  cursor: pointer;
+}
+.navbar-toggle:focus-visible {
+  outline: 0;
+  box-shadow: var(--fv-focus-ring);
+}
+
+.navbar-toggle-icon {
+  position: relative;
+  display: block;
+  width: 1.25rem;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+.navbar-toggle-icon::before, .navbar-toggle-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1.25rem;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: transform 0.2s ease;
+}
+.navbar-toggle-icon::before {
+  top: -6px;
+}
+.navbar-toggle-icon::after {
+  top: 6px;
+}
+
+.navbar.is-open .navbar-toggle-icon {
+  background-color: transparent;
+}
+.navbar.is-open .navbar-toggle-icon::before {
+  transform: translateY(6px) rotate(45deg);
+}
+.navbar.is-open .navbar-toggle-icon::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.navbar-nav {
+  display: none;
+  flex-basis: 100%;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.25rem;
-  margin-left: auto;
-  margin-bottom: 0;
+  margin: 0;
   padding-left: 0;
   list-style: none;
 }
 
+.navbar.is-open .navbar-nav {
+  display: flex;
+}
+
 .nav-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   padding: 0.5rem 0.75rem;
   color: var(--fv-muted);
   border-radius: 0.625rem;
@@ -1953,6 +2028,18 @@ textarea.form-control {
   background-color: var(--fv-glass-bg);
 }
 
+@media (min-width: 992px) {
+  .navbar-toggle {
+    display: none;
+  }
+  .navbar-nav {
+    display: flex;
+    flex-basis: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+  }
+}
 .icon {
   display: inline-block;
   width: 1em;
@@ -2667,7 +2754,11 @@ textarea.form-control {
 
 .tabs {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
   gap: 0.25rem;
   padding: 0.25rem;
   margin-bottom: 1rem;
@@ -2677,6 +2768,8 @@ textarea.form-control {
 }
 
 .tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
   padding: 0.5rem 1rem;
   font-size: 1rem;
   font-weight: 500;
@@ -2791,6 +2884,7 @@ textarea.form-control {
   left: 0;
   z-index: 1000;
   min-width: 11rem;
+  max-width: calc(100vw - 1rem);
   padding: 0.25rem;
   border-radius: 0.875rem;
   background-color: var(--fv-glass-bg);
@@ -3122,6 +3216,25 @@ textarea.form-control {
   color: var(--fv-body-color);
 }
 
+@media (max-width: 575.98px) {
+  .stepper {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .step {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    text-align: left;
+  }
+  .step:not(:last-child)::after {
+    top: 2rem;
+    left: calc(1rem - 1px);
+    width: 2px;
+    height: calc(100% - 2rem + 0.75rem);
+  }
+}
 .timeline {
   padding: 0;
   margin: 0;
@@ -3272,7 +3385,7 @@ textarea.form-control {
 }
 
 .stat-value {
-  font-size: 1.875rem;
+  font-size: clamp(1.5rem, 5vw, 1.875rem);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -8025,15 +8138,15 @@ button.list-group-item:focus-visible {
 }
 
 .fs-3xl {
-  font-size: 1.875rem;
+  font-size: clamp(1.5rem, 5vw, 1.875rem);
 }
 
 .fs-4xl {
-  font-size: 2.25rem;
+  font-size: clamp(1.75rem, 6vw, 2.25rem);
 }
 
 .fs-5xl {
-  font-size: 3.25rem;
+  font-size: clamp(2.25rem, 8vw, 3.25rem);
 }
 
 .fw-light {

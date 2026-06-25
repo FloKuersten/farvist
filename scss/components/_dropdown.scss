@@ -35,6 +35,7 @@
   left: 0;
   z-index: map.get($z-layers, 'dropdown');
   min-width: 11rem;
+  max-width: calc(100vw - #{spacer(4)});   // never exceed the viewport on mobile
   padding: spacer(1);
   border-radius: map.get($radii, 'lg');
   @include glass($strong: true);

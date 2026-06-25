@@ -47,6 +47,28 @@
       if (!dd.contains(t)) dd.removeAttribute('open');
     });
 
+    // Navbar hamburger: toggle the collapsed menu open/closed.
+    var navToggle = t.closest('[data-fv-nav-toggle]');
+    if (navToggle) {
+      var bar = navToggle.closest('.navbar');
+      if (bar) {
+        var isOpen = bar.classList.toggle('is-open');
+        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+      return;
+    }
+
+    // Tapping a nav link closes the open mobile menu (but still navigates).
+    var navLink = t.closest('.navbar-nav .nav-link');
+    if (navLink) {
+      var openBar = navLink.closest('.navbar.is-open');
+      if (openBar) {
+        openBar.classList.remove('is-open');
+        var tgl = openBar.querySelector('[data-fv-nav-toggle]');
+        if (tgl) tgl.setAttribute('aria-expanded', 'false');
+      }
+    }
+
     var opener = t.closest('[data-fv-open]');
     if (opener) {
       var dlg = document.querySelector(opener.getAttribute('data-fv-open'));
@@ -83,6 +105,11 @@
         dd.removeAttribute('open');
         var s = dd.querySelector('summary');
         if (s) s.focus();
+      });
+      qsa('.navbar.is-open').forEach(function (nav) {
+        nav.classList.remove('is-open');
+        var tgl = nav.querySelector('[data-fv-nav-toggle]');
+        if (tgl) { tgl.setAttribute('aria-expanded', 'false'); tgl.focus(); }
       });
     }
 

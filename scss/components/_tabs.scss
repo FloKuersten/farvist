@@ -9,7 +9,11 @@
 
 .tabs {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
   gap: spacer(1);
   padding: spacer(1);
   margin-bottom: spacer(4);
@@ -19,6 +23,8 @@
 }
 
 .tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
   padding: spacer(2) spacer(4);
   font-size: map.get($font-sizes, 'base');
   font-weight: map.get($font-weights, 'medium');

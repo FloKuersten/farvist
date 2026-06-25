@@ -76,3 +76,24 @@
 .step.is-done .step-label {
   color: var(--fv-body-color);
 }
+
+// Stack vertically on phones so labels never collide; the connector runs down
+// the left edge through the dots.
+@media (max-width: 575.98px) {
+  .stepper { flex-direction: column; gap: spacer(3); }
+
+  .step {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: spacer(3);
+    text-align: left;
+  }
+
+  .step:not(:last-child)::after {
+    top: 2rem;
+    left: calc(1rem - 1px);
+    width: 2px;
+    height: calc(100% - 2rem + #{spacer(3)});
+  }
+}

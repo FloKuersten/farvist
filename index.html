@@ -31,7 +31,7 @@
     "description": "A lightweight (~19 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, a free backgrounds library, 30+ components and dark/light themes. An alternative to Bootstrap and Tailwind.",
     "url": "https://farvist.com",
     "license": "https://opensource.org/licenses/MIT",
-    "softwareVersion": "0.5.0",
+    "softwareVersion": "0.6.0",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -55,7 +55,8 @@
     <a class="navbar-brand" href="#">
       <span class="text-gradient">◆ Farvist</span>
     </a>
-    <ul class="navbar-nav" role="list">
+    <button class="navbar-toggle" type="button" data-fv-nav-toggle aria-controls="nav-primary" aria-expanded="false" aria-label="Toggle menu"><span class="navbar-toggle-icon"></span></button>
+    <ul class="navbar-nav" id="nav-primary" role="list">
       <li><a class="nav-link active" href="#grid">Grid</a></li>
       <li><a class="nav-link" href="#components">Components</a></li>
       <li><a class="nav-link" href="#utilities">Utilities</a></li>

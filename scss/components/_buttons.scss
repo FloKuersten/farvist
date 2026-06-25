@@ -151,6 +151,15 @@
   font-size: map.get($font-sizes, 'sm');
 }
 
+// On touch screens keep small buttons tappable (~44px) without changing their
+// look on mouse/precision pointers.
+@media (pointer: coarse) {
+  .btn-sm {
+    min-height: 44px;
+    padding-block: spacer(2);
+  }
+}
+
 .btn-lg {
   padding: spacer(3) spacer(6);
   font-size: map.get($font-sizes, 'lg');
