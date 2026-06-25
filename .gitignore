@@ -15,3 +15,4 @@ _*.site
 .claude/
 LAUNCH-KIT.md
 LAUNCH-POSTS.md
+cf-setup.ps1
