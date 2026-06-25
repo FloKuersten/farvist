@@ -224,6 +224,10 @@
   a {
     transition: color 0.2s ease;
   }
+  p a:not([class]),
+  li a:not([class]) {
+    text-decoration: underline;
+  }
   small,
   .text-small {
     font-size: 0.875rem;

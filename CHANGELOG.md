@@ -2,6 +2,14 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.0.0] — 2026-06-25
+**Farvist is stable.** Public class names and the component API follow [SemVer](https://semver.org) from here — breaking changes mean a major bump.
+### Added
+- **CI quality gates** (GitHub Actions, on every push/PR): the Sass build, a "committed build artifacts are fresh" check, **stylelint**, a **bundle-size budget** (gzip ≤ 22 KB), and **axe-core accessibility** (via pa11y-ci) over the key pages. CI badge added to the README. (axe's `color-contrast` is excluded in CI — it can't evaluate gradient text / translucent glass over gradient backgrounds in headless; contrast is verified in-browser and via the `--fv-primary-text` palette.)
+### Fixed
+- `aria-label` on disabled pagination `<span>`s was ARIA-prohibited → now `aria-hidden`.
+- Inline prose links are underlined (WCAG 1.4.1 — distinguishable without relying on colour).
+
 ## [0.11.0] — 2026-06-25
 ### Added
 - **Copy-to-clipboard** — `pre.snippet` code blocks get a copy button automatically (and any `[data-fv-copy]` element works); `Farvist.copy(text)` is exposed on the API.

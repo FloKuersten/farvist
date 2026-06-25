@@ -1,5 +1,6 @@
 # Farvist <span>· glass edition</span>
 
+[![CI](https://github.com/FloKuersten/farvist/actions/workflows/ci.yml/badge.svg)](https://github.com/FloKuersten/farvist/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/farvist?color=6d4af5)](https://www.npmjs.com/package/farvist)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/farvist?color=22d3ee)](https://bundlephobia.com/package/farvist)
 [![license](https://img.shields.io/badge/license-MIT-e879f9)](LICENSE)

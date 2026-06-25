@@ -2,7 +2,7 @@
 
 > A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 34 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 0.11.0 · MIT · https://farvist.com · 1976 utility/component classes.
+Version 1.0.0 · MIT · https://farvist.com · 1976 utility/component classes.
 
 ## Install
 ```html
