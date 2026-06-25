@@ -25,7 +25,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 
 ### Use the compiled CSS
 
-Via CDN (no build step — once published to npm it's on jsDelivr automatically):
+Via CDN (no build step — live on jsDelivr and unpkg):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css" />
