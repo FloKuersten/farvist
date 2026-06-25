@@ -88,7 +88,8 @@
     font-size: 16px;
     -webkit-text-size-adjust: 100%;
     -moz-tab-size: 4;
-    tab-size: 4;
+    -o-tab-size: 4;
+       tab-size: 4;
     scroll-behavior: smooth;
   }
   body {
@@ -859,7 +860,8 @@
     gap: 0;
   }
   .gx-0 {
-    column-gap: 0;
+    -moz-column-gap: 0;
+         column-gap: 0;
   }
   .gy-0 {
     row-gap: 0;
@@ -868,7 +870,8 @@
     gap: 0.25rem;
   }
   .gx-1 {
-    column-gap: 0.25rem;
+    -moz-column-gap: 0.25rem;
+         column-gap: 0.25rem;
   }
   .gy-1 {
     row-gap: 0.25rem;
@@ -877,7 +880,8 @@
     gap: 0.5rem;
   }
   .gx-2 {
-    column-gap: 0.5rem;
+    -moz-column-gap: 0.5rem;
+         column-gap: 0.5rem;
   }
   .gy-2 {
     row-gap: 0.5rem;
@@ -886,7 +890,8 @@
     gap: 0.75rem;
   }
   .gx-3 {
-    column-gap: 0.75rem;
+    -moz-column-gap: 0.75rem;
+         column-gap: 0.75rem;
   }
   .gy-3 {
     row-gap: 0.75rem;
@@ -895,7 +900,8 @@
     gap: 1rem;
   }
   .gx-4 {
-    column-gap: 1rem;
+    -moz-column-gap: 1rem;
+         column-gap: 1rem;
   }
   .gy-4 {
     row-gap: 1rem;
@@ -904,7 +910,8 @@
     gap: 1.5rem;
   }
   .gx-5 {
-    column-gap: 1.5rem;
+    -moz-column-gap: 1.5rem;
+         column-gap: 1.5rem;
   }
   .gy-5 {
     row-gap: 1.5rem;
@@ -913,7 +920,8 @@
     gap: 2rem;
   }
   .gx-6 {
-    column-gap: 2rem;
+    -moz-column-gap: 2rem;
+         column-gap: 2rem;
   }
   .gy-6 {
     row-gap: 2rem;
@@ -922,7 +930,8 @@
     gap: 3rem;
   }
   .gx-7 {
-    column-gap: 3rem;
+    -moz-column-gap: 3rem;
+         column-gap: 3rem;
   }
   .gy-7 {
     row-gap: 3rem;
@@ -931,7 +940,8 @@
     gap: 4rem;
   }
   .gx-8 {
-    column-gap: 4rem;
+    -moz-column-gap: 4rem;
+         column-gap: 4rem;
   }
   .gy-8 {
     row-gap: 4rem;
@@ -960,7 +970,9 @@
     white-space: nowrap;
     vertical-align: middle;
     cursor: pointer;
-    user-select: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
     color: var(--fv-btn-color);
     background-color: var(--fv-btn-bg);
     border: 1px solid var(--fv-btn-border);
@@ -1647,7 +1659,8 @@
   }
   .card-img-top {
     width: 100%;
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
   }
 }
 @layer components {
@@ -1671,6 +1684,10 @@
     border-radius: var(--fv-border-radius);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
+  .form-control::-moz-placeholder, .form-select::-moz-placeholder {
+    color: var(--fv-muted);
+    opacity: 0.8;
+  }
   .form-control::placeholder,
   .form-select::placeholder {
     color: var(--fv-muted);
@@ -1688,7 +1705,9 @@
     cursor: not-allowed;
   }
   .form-select {
-    appearance: none;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2395a3c4' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
@@ -1966,12 +1985,15 @@
     border: 1px solid var(--fv-glass-border);
     border-radius: 50%;
     overflow: hidden;
-    user-select: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
   }
   .avatar img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
   }
   .avatar-sm {
     width: 1.75rem;
@@ -3295,7 +3317,8 @@
     padding: 0;
     background: transparent;
     -webkit-appearance: none;
-    appearance: none;
+    -moz-appearance: none;
+         appearance: none;
     cursor: pointer;
   }
   .form-range:focus {
@@ -3454,6 +3477,10 @@
     resize: none;
     field-sizing: content;
     overflow-y: auto;
+  }
+  .prompt-field::-moz-placeholder {
+    color: var(--fv-muted);
+    opacity: 0.8;
   }
   .prompt-field::placeholder {
     color: var(--fv-muted);
@@ -8289,10 +8316,14 @@
     box-shadow: var(--fv-shadow-lg);
   }
   .user-select-none {
-    user-select: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
   }
   .user-select-all {
-    user-select: all;
+    -webkit-user-select: all;
+       -moz-user-select: all;
+            user-select: all;
   }
   .pe-none {
     pointer-events: none;

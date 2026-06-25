@@ -346,7 +346,22 @@ The architecture follows the **7-1 pattern** and Sass's modern module system: ea
 
 ## Browser support
 
-Modern evergreen browsers (Chrome, Edge, Firefox, Safari). The glass effect uses `backdrop-filter`; browsers without it fall back to opaque surfaces via `@supports`. Also relies on CSS custom properties, flexbox, logical properties (`margin-inline`) and `:focus-visible`.
+Modern evergreen browsers. The shipped `dist/*.css` is **autoprefixed** (via PostCSS + Autoprefixer against the
+`browserslist` in `package.json`), so Safari's `-webkit-backdrop-filter`, Firefox's `-moz-` flex-gap/appearance,
+and other vendor prefixes are added for you.
+
+**Baseline (everything works): Chrome/Edge 111+, Safari 16.4+, Firefox 113+** (~early 2023) — set by `@layer`
+(Mar 2022) and `color-mix()`. Below that it degrades gracefully:
+
+| Feature | Needs | Below baseline |
+| --- | --- | --- |
+| Cascade layers (`@layer`) | Chrome 99 · Safari 15.4 · Firefox 97 | utilities still win via source order |
+| `backdrop-filter` glass | Chrome 76 · Safari 9 (`-webkit-`) · Firefox 103 | opaque surface via `@supports` fallback |
+| `color-mix()` (status pulse ring) | Chrome 111 · Safari 16.2 · Firefox 113 | dot shows, ring just doesn't animate |
+| `field-sizing` (auto-grow textarea) | Chrome 123+ | fixed min/max-height |
+
+Building from the SCSS source instead of the shipped CSS? Run Autoprefixer on your output, or rely on the
+`dist/` files.
 
 ## License
 

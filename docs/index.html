@@ -100,7 +100,8 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
         <p class="text-muted mb-2">Farvist's CSS is wrapped in cascade layers — <code>@layer reset, base, layout, components, utilities</code> — so utilities beat components by <strong>layer order, not <code>!important</code></strong>. The practical win: <strong>any CSS you write outside a layer beats all of Farvist</strong>, no specificity battles or <code>!important</code> needed.</p>
         <pre><code>/* your stylesheet, loaded after farvist.css */
 .btn { border-radius: 0; }     /* unlayered → wins over Farvist's .btn */</code></pre>
-        <p class="text-muted mt-2">Prefer to keep your overrides organized? Put them in your own layer after <code>utilities</code>. Requires a modern browser (Chrome/Edge&nbsp;99, Safari&nbsp;15.4, Firefox&nbsp;97; Mar&nbsp;2022).</p>
+        <p class="text-muted mt-2">Prefer to keep your overrides organized? Put them in your own layer after <code>utilities</code>.</p>
+        <p class="text-muted mt-2"><strong>Browser support:</strong> the shipped CSS is autoprefixed (PostCSS + Autoprefixer). Everything works in Chrome/Edge&nbsp;111+, Safari&nbsp;16.4+, Firefox&nbsp;113+ (~early 2023); older browsers degrade gracefully — glass falls back to an opaque surface via <code>@supports</code>, and the <code>color-mix</code> status pulse simply doesn't animate. Full matrix in the <a href="https://github.com/FloKuersten/farvist#browser-support">readme</a>.</p>
       </section>
 
       <section id="grid">

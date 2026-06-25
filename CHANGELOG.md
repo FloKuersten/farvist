@@ -2,6 +2,11 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [0.10.0] — 2026-06-25
+### Added
+- **Autoprefixer build step.** The shipped `dist/*.css` is now run through PostCSS + Autoprefixer (`npm run build:prefix`, chained into `build:all`) against a `browserslist` target, adding the vendor prefixes the hand-written source missed — `-webkit-user-select`, `-moz-column-gap` (Firefox flex-gap), `-moz-appearance`, `-moz-placeholder` — while preserving Safari's required `-webkit-backdrop-filter`.
+- A documented **browser-support matrix** (README + docs): baseline Chrome/Edge 111+, Safari 16.4+, Firefox 113+ (~early 2023), with graceful degradation for `@layer`, `backdrop-filter`, `color-mix()` and `field-sizing`.
+
 ## [0.9.0] — 2026-06-25
 ### Changed
 - **CSS cascade layers.** The framework is now wrapped in `@layer reset, base, layout, components, utilities`, so utilities beat components by **layer order instead of `!important`** — 45 utility `!important` declarations removed (54 → 9; the rest are intentional: form validation, reduced-motion, visually-hidden/skip-link).
