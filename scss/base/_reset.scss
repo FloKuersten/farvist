@@ -85,7 +85,7 @@ ol[role='list'] {
 }
 
 a {
-  color: $primary;
+  color: var(--fv-primary-text); // theme-aware: lighter on dark for AA contrast
   text-decoration: none;
 
   &:hover {

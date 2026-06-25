@@ -31,7 +31,7 @@
     "description": "A lightweight (~19 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, a free backgrounds library, 30+ components and dark/light themes. An alternative to Bootstrap and Tailwind.",
     "url": "https://farvist.com",
     "license": "https://opensource.org/licenses/MIT",
-    "softwareVersion": "0.6.0",
+    "softwareVersion": "0.7.0",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -49,6 +49,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- Navbar -->
   <nav class="navbar sticky-top">
@@ -71,7 +72,7 @@
   <!-- Hero -->
   <header class="hero">
     <div class="container text-center">
-      <span class="badge badge-soft-accent mb-4 eyebrow">v0.5 · components</span>
+      <span class="badge badge-soft-accent mb-4 eyebrow">v0.7 · accessible</span>
       <h1 class="fs-5xl fw-black mb-4" style="line-height:1.05;">
         The CSS framework with a<br />
         <span class="text-gradient">futuristic glass</span> soul
@@ -101,7 +102,7 @@
     </div>
   </header>
 
-  <main class="container section">
+  <main id="main" tabindex="-1" class="container section">
 
     <!-- Grid -->
     <section id="grid" class="mb-8">
@@ -439,13 +440,15 @@
           </tbody>
         </table>
       </div></div>
-      <ul class="pagination">
-        <li class="page-item disabled"><span class="page-link">‹</span></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">›</a></li>
-      </ul>
+      <nav aria-label="Pagination">
+        <ul class="pagination">
+          <li class="page-item disabled"><span class="page-link" aria-label="Previous page" aria-disabled="true">‹</span></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#" aria-label="Next page">›</a></li>
+        </ul>
+      </nav>
 
       <!-- v0.5 components -->
       <h3 class="h4 mb-3 mt-7">New in v0.5 <span class="text-muted fs-base fw-normal">— 9 more components</span></h3>

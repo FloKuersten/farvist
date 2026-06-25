@@ -24,6 +24,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <nav class="navbar sticky-top">
     <a class="navbar-brand" href="../index.html"><span class="text-gradient">◆ Farvist</span> <span class="text-muted fs-base fw-normal">docs</span></a>
@@ -53,11 +54,12 @@
       <a href="#overlays">Modal · Tabs · Toast</a>
       <div class="grp">Scripting</div>
       <a href="#js">JS companion</a>
+      <a href="#a11y">Accessibility ✦</a>
       <a href="#contribute">Contribute</a>
     </aside>
 
     <!-- Content -->
-    <main class="docs-main">
+    <main id="main" tabindex="-1" class="docs-main">
 
       <section id="intro">
         <h1 class="fs-4xl fw-black mb-3">Farvist <span class="text-gradient">docs</span></h1>
@@ -196,6 +198,51 @@ data-fv-tab="#panel"     // switch tabs (arrow-key nav included)
 data-fv-theme-toggle     // flip dark / light
 
 Farvist.toast({ title, message, variant, timeout });</code></pre>
+      </section>
+
+      <section id="a11y">
+        <h2 class="mb-3">Accessibility</h2>
+        <p class="text-muted mb-4" style="max-width:46rem;">Farvist aims to be <strong>accessible by default</strong>. The optional <code>farvist.js</code> companion progressively enhances your markup on load, adding the ARIA that's tedious to hand-write — drop it in and most of the list below is automatic.</p>
+
+        <h3 class="h5 mb-2">Automatic (via <code>farvist.js</code>)</h3>
+        <ul class="text-muted mb-4" style="max-width:46rem;">
+          <li>Tabs — full <code>tablist</code>/<code>tab</code>/<code>tabpanel</code> roles, roving tabindex, arrow-key nav.</li>
+          <li>Progress bars — <code>role="progressbar"</code> + <code>aria-valuenow/min/max</code>.</li>
+          <li>Breadcrumb · stepper · pagination — <code>aria-current</code> on the active item.</li>
+          <li>Forms — <code>.is-invalid</code> gets <code>aria-invalid</code> and is linked to its <code>.invalid-feedback</code> via <code>aria-describedby</code>.</li>
+          <li>Tooltips — the <code>data-tooltip</code> text is exposed to screen readers and shows on keyboard focus.</li>
+          <li>Toasts — announced via a live region; <code>variant:'danger'</code> is assertive (<code>role="alert"</code>), others polite (<code>role="status"</code>).</li>
+          <li>Modal — native <code>&lt;dialog&gt;</code> (focus trap + Esc); the navbar hamburger exposes <code>aria-expanded</code>.</li>
+        </ul>
+
+        <h3 class="h5 mb-2">Skip link</h3>
+        <p class="text-muted mb-2">Make it the first element in <code>&lt;body&gt;</code>; it stays hidden until focused, then pins to the top-left.</p>
+        <pre><code>&lt;a class="skip-link" href="#main"&gt;Skip to content&lt;/a&gt;
+&lt;main id="main" tabindex="-1"&gt; … &lt;/main&gt;</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Form validation — try tabbing to the field</h3>
+        <p class="text-muted mb-3">Mark the control <code>.is-invalid</code> and put the message in a sibling <code>.invalid-feedback</code>; the JS wires the rest.</p>
+        <div class="row g-4 align-items-start mb-2">
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="a11y-email">Email</label>
+            <input class="form-control is-invalid" id="a11y-email" type="email" value="not-an-email" />
+            <div class="invalid-feedback">Enter a valid email address.</div>
+          </div>
+          <div class="col-12 col-md-6">
+<pre><code>&lt;label class="form-label" for="email"&gt;Email&lt;/label&gt;
+&lt;input class="form-control is-invalid" id="email"&gt;
+&lt;div class="invalid-feedback"&gt;Enter a valid email.&lt;/div&gt;
+&lt;!-- JS adds aria-invalid + aria-describedby --&gt;</code></pre>
+          </div>
+        </div>
+
+        <h3 class="h5 mb-2 mt-4">Good to know</h3>
+        <ul class="text-muted" style="max-width:46rem;">
+          <li><strong>Tooltips describe, they don't name</strong> — give icon-only controls their own <code>aria-label</code>.</li>
+          <li><strong>Pagination</strong> — wrap it in <code>&lt;nav aria-label="Pagination"&gt;</code> and label the prev/next arrows.</li>
+          <li><strong>Focus</strong> is always visible for keyboard users; restyle it via the <code>--fv-focus-ring</code> token.</li>
+          <li><strong>Reduced motion</strong> — animation and transition are suppressed under <code>prefers-reduced-motion: reduce</code>.</li>
+        </ul>
       </section>
 
       <section id="contribute">

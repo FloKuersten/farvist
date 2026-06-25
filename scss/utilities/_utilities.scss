@@ -198,6 +198,31 @@ $align: (
 
 // -- Interaction & a11y -------------------------------------------------------
 .visually-hidden     { @include visually-hidden; }
+
+// Skip-to-content link: hidden until focused, then pinned top-left so keyboard
+// users can jump past the nav. Place it as the first child of <body>.
+.skip-link { @include visually-hidden; }
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed !important;       // beat the mixin's `position: absolute !important`
+  top: spacer(2);
+  left: spacer(2);
+  z-index: map.get($z-layers, 'fixed');
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: spacer(2) spacer(4);
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: nowrap;
+  color: var(--fv-body-color);
+  background-color: var(--fv-glass-bg-strong);
+  border: $border-width solid var(--fv-glass-border);
+  border-radius: map.get($radii, 'md');
+  box-shadow: var(--fv-shadow-lg);
+}
+
 .user-select-none    { user-select: none; }
 .user-select-all     { user-select: all; }
 .pe-none             { pointer-events: none; }

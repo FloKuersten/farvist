@@ -130,6 +130,12 @@
     font-weight: map.get($font-weights, 'semibold');
     background-color: var(--fv-glass-bg);
   }
+
+  &:focus-visible {
+    outline: 0;
+    color: var(--fv-body-color);
+    box-shadow: var(--fv-focus-ring);
+  }
 }
 
 // -- Expanded bar (`lg` and up): horizontal, no hamburger ---------------------

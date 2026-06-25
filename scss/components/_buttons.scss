@@ -83,7 +83,7 @@
 @each $name, $clr in $theme-colors {
   .btn-outline-#{$name} {
     --fv-btn-bg: transparent;
-    --fv-btn-color: #{$clr};
+    --fv-btn-color: var(--fv-#{$name}-text, #{$clr});
     --fv-btn-border: #{$clr};
     --fv-btn-hover-bg: #{$clr};
     --fv-btn-hover-border: #{$clr};
@@ -134,7 +134,7 @@
 .btn-link {
   --fv-btn-bg: transparent;
   --fv-btn-border: transparent;
-  --fv-btn-color: var(--fv-primary);
+  --fv-btn-color: var(--fv-primary-text);
   --fv-btn-hover-bg: transparent;
   --fv-btn-hover-border: transparent;
   --fv-btn-active-bg: transparent;

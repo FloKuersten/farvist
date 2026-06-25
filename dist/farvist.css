@@ -24,6 +24,7 @@
   --fv-bg-gradient: radial-gradient(48rem 48rem at 82% -12%, rgba(109, 74, 245, 0.28), transparent 60%), radial-gradient(36rem 36rem at -8% 18%, rgba(34, 211, 238, 0.2), transparent 58%), radial-gradient(40rem 40rem at 50% 118%, rgba(232, 121, 249, 0.18), transparent 58%);
   --fv-body-color: #e6ebf5;
   --fv-muted: #95a3c4;
+  --fv-primary-text: rgb(149.88, 124.68, 247.8);
   --fv-border-color: rgba(255, 255, 255, 0.1);
   --fv-code-bg: rgba(255, 255, 255, 0.07);
   --fv-bg-pattern: rgba(255, 255, 255, 0.10);
@@ -63,6 +64,7 @@
   --fv-bg-gradient: radial-gradient(48rem 48rem at 82% -12%, rgba(109, 74, 245, 0.18), transparent 60%), radial-gradient(36rem 36rem at -8% 18%, rgba(34, 211, 238, 0.16), transparent 58%), radial-gradient(40rem 40rem at 50% 118%, rgba(232, 121, 249, 0.14), transparent 58%);
   --fv-body-color: #0f172a;
   --fv-muted: #586b8f;
+  --fv-primary-text: #6d4af5;
   --fv-border-color: rgba(15, 23, 42, 0.12);
   --fv-code-bg: rgba(15, 23, 42, 0.06);
   --fv-bg-pattern: rgba(15, 23, 42, 0.10);
@@ -146,7 +148,7 @@ ol[role=list] {
 }
 
 a {
-  color: #6d4af5;
+  color: var(--fv-primary-text);
   text-decoration: none;
 }
 a:hover {
@@ -1165,7 +1167,7 @@ ol {
 
 .btn-outline-primary {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #6d4af5;
+  --fv-btn-color: var(--fv-primary-text, #6d4af5);
   --fv-btn-border: #6d4af5;
   --fv-btn-hover-bg: #6d4af5;
   --fv-btn-hover-border: #6d4af5;
@@ -1179,7 +1181,7 @@ ol {
 
 .btn-outline-secondary {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #7c8aa5;
+  --fv-btn-color: var(--fv-secondary-text, #7c8aa5);
   --fv-btn-border: #7c8aa5;
   --fv-btn-hover-bg: #7c8aa5;
   --fv-btn-hover-border: #7c8aa5;
@@ -1193,7 +1195,7 @@ ol {
 
 .btn-outline-success {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #34d399;
+  --fv-btn-color: var(--fv-success-text, #34d399);
   --fv-btn-border: #34d399;
   --fv-btn-hover-bg: #34d399;
   --fv-btn-hover-border: #34d399;
@@ -1207,7 +1209,7 @@ ol {
 
 .btn-outline-danger {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #fb5b78;
+  --fv-btn-color: var(--fv-danger-text, #fb5b78);
   --fv-btn-border: #fb5b78;
   --fv-btn-hover-bg: #fb5b78;
   --fv-btn-hover-border: #fb5b78;
@@ -1221,7 +1223,7 @@ ol {
 
 .btn-outline-warning {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #fbbf24;
+  --fv-btn-color: var(--fv-warning-text, #fbbf24);
   --fv-btn-border: #fbbf24;
   --fv-btn-hover-bg: #fbbf24;
   --fv-btn-hover-border: #fbbf24;
@@ -1235,7 +1237,7 @@ ol {
 
 .btn-outline-info {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #22d3ee;
+  --fv-btn-color: var(--fv-info-text, #22d3ee);
   --fv-btn-border: #22d3ee;
   --fv-btn-hover-bg: #22d3ee;
   --fv-btn-hover-border: #22d3ee;
@@ -1249,7 +1251,7 @@ ol {
 
 .btn-outline-accent {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #e879f9;
+  --fv-btn-color: var(--fv-accent-text, #e879f9);
   --fv-btn-border: #e879f9;
   --fv-btn-hover-bg: #e879f9;
   --fv-btn-hover-border: #e879f9;
@@ -1263,7 +1265,7 @@ ol {
 
 .btn-outline-light {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #e7ecf5;
+  --fv-btn-color: var(--fv-light-text, #e7ecf5);
   --fv-btn-border: #e7ecf5;
   --fv-btn-hover-bg: #e7ecf5;
   --fv-btn-hover-border: #e7ecf5;
@@ -1277,7 +1279,7 @@ ol {
 
 .btn-outline-dark {
   --fv-btn-bg: transparent;
-  --fv-btn-color: #0b0f1d;
+  --fv-btn-color: var(--fv-dark-text, #0b0f1d);
   --fv-btn-border: #0b0f1d;
   --fv-btn-hover-bg: #0b0f1d;
   --fv-btn-hover-border: #0b0f1d;
@@ -1362,7 +1364,7 @@ ol {
 .btn-link {
   --fv-btn-bg: transparent;
   --fv-btn-border: transparent;
-  --fv-btn-color: var(--fv-primary);
+  --fv-btn-color: var(--fv-primary-text);
   --fv-btn-hover-bg: transparent;
   --fv-btn-hover-border: transparent;
   --fv-btn-active-bg: transparent;
@@ -2027,6 +2029,11 @@ textarea.form-control {
   font-weight: 600;
   background-color: var(--fv-glass-bg);
 }
+.nav-link:focus-visible {
+  outline: 0;
+  color: var(--fv-body-color);
+  box-shadow: var(--fv-focus-ring);
+}
 
 @media (min-width: 992px) {
   .navbar-toggle {
@@ -2268,6 +2275,11 @@ textarea.form-control {
 .chip-close:hover {
   opacity: 1;
   background-color: var(--fv-glass-bg-strong);
+}
+.chip-close:focus-visible {
+  outline: 0;
+  opacity: 1;
+  box-shadow: var(--fv-focus-ring);
 }
 
 .chip-primary {
@@ -8728,6 +8740,40 @@ button.list-group-item:focus-visible {
   clip: rect(0, 0, 0, 0);
   clip-path: inset(50%);
   border: 0;
+}
+
+.skip-link {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  border: 0;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed !important;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1030;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: nowrap;
+  color: var(--fv-body-color);
+  background-color: var(--fv-glass-bg-strong);
+  border: 1px solid var(--fv-glass-border);
+  border-radius: 0.625rem;
+  box-shadow: var(--fv-shadow-lg);
 }
 
 .user-select-none {

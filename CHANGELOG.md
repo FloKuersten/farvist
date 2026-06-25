@@ -2,6 +2,22 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [0.7.0] — 2026-06-25
+### Added
+- **Accessibility pass** — most ARIA is now applied automatically by `farvist.js`:
+  - Forms — `.is-invalid` gets `aria-invalid` and is linked to its `.invalid-feedback` via `aria-describedby`.
+  - Toasts — announced via an `aria-live` region; `variant:'danger'` is assertive (`role="alert"`), others polite (`role="status"`).
+  - Tooltips — the `data-tooltip` text is exposed to screen readers and shows on keyboard focus.
+  - `aria-current` on the active breadcrumb / stepper / pagination item.
+  - Progress bars get a fallback accessible name; wide tables and long code blocks become keyboard-scrollable when they overflow.
+- **`.skip-link`** utility (hidden until focused) + skip links on every page.
+- A documented **Accessibility** section in the docs.
+### Changed
+- New theme-aware **`--fv-primary-text`** token — a lighter primary for readable text on the dark surface. Plain links, `.btn-link` and `.btn-outline-primary` now use it, fixing WCAG AA contrast. Verified: **0 axe-core violations** across every page in both themes.
+- `.chip-close` and `.nav-link` gained `:focus-visible` rings.
+### Fixed
+- The JS companion is now exposed as `window.Farvist` (with `Farvistrap` kept as an alias) — `Farvist.toast(...)` calls in the demos previously threw a ReferenceError.
+
 ## [0.6.0] — 2026-06-25
 ### Added
 - **Mobile navbar**: the navbar collapses to a hamburger below `lg` (`.navbar-toggle` + a `farvist.js` toggle) and expands to the horizontal bar from `lg` up. Esc and tapping a link close it.

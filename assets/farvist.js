@@ -20,6 +20,14 @@
     return Array.prototype.slice.call((root || document).querySelectorAll(sel));
   };
 
+  var fvUid = 0; // unique-id source for generated a11y associations
+
+  // Append an id to aria-describedby without dropping author-set tokens.
+  function addDescribedBy(el, id) {
+    var d = el.getAttribute('aria-describedby') || '';
+    if (d.split(/\s+/).indexOf(id) === -1) el.setAttribute('aria-describedby', (d + ' ' + id).trim());
+  }
+
   // Activate a tab and its panel — scoped to the tab's OWN .tabs group, so
   // sibling tab groups under one container don't clobber each other.
   function activateTab(tab) {
@@ -152,6 +160,59 @@
       bar.setAttribute('aria-valuemax', '100');
       var w = bar.style.width;
       if (w && w.indexOf('%') > -1) bar.setAttribute('aria-valuenow', String(parseFloat(w)));
+      if (!bar.getAttribute('aria-label') && !bar.getAttribute('aria-labelledby')) {
+        bar.setAttribute('aria-label', 'Progress');
+      }
+    });
+
+    // Scrollable regions (wide tables, long code blocks) must be keyboard-focusable
+    // so they can be scrolled without a mouse — but only when they actually overflow.
+    qsa('.table-responsive, pre').forEach(function (region) {
+      if (!region.hasAttribute('tabindex') && region.scrollWidth > region.clientWidth + 1) {
+        region.setAttribute('tabindex', '0');
+      }
+    });
+
+    // Current-state semantics (idempotent: only set when absent).
+    qsa('.breadcrumb-item.active').forEach(function (el) {
+      if (!el.hasAttribute('aria-current')) el.setAttribute('aria-current', 'page');
+    });
+    qsa('.step.is-active').forEach(function (el) {
+      if (!el.hasAttribute('aria-current')) el.setAttribute('aria-current', 'step');
+    });
+    qsa('.pagination .page-item.active').forEach(function (item) {
+      var link = item.querySelector('.page-link') || item;
+      if (!link.hasAttribute('aria-current')) link.setAttribute('aria-current', 'page');
+    });
+
+    // Form validation: wire aria-invalid + aria-describedby to the feedback message.
+    qsa('.form-control.is-invalid, .form-select.is-invalid').forEach(function (ctrl) {
+      ctrl.setAttribute('aria-invalid', 'true');
+      var fb = ctrl.parentNode && ctrl.parentNode.querySelector('.invalid-feedback');
+      if (fb) {
+        if (!fb.id) fb.id = (ctrl.id || 'fv-fld-' + (fvUid++)) + '-err';
+        addDescribedBy(ctrl, fb.id);
+      }
+    });
+    qsa('.form-control.is-valid, .form-select.is-valid').forEach(function (ctrl) {
+      ctrl.setAttribute('aria-invalid', 'false');
+    });
+
+    // Tooltips: expose the decorative CSS text to assistive tech. The description
+    // span is inserted as a SIBLING (not a child) so it never pollutes the host's
+    // accessible name; it is referenced purely via aria-describedby.
+    qsa('[data-tooltip]').forEach(function (host) {
+      var interactive = /^(a|button|input|select|textarea)$/i.test(host.tagName) ||
+        host.hasAttribute('tabindex') || host.isContentEditable;
+      if (!interactive) host.setAttribute('tabindex', '0');
+      if (host.getAttribute('data-fv-tt') === '1' || !host.parentNode) return; // creates DOM: guard
+      host.setAttribute('data-fv-tt', '1');
+      var desc = document.createElement('span');
+      desc.className = 'visually-hidden';
+      desc.id = 'fv-tt-' + (fvUid++);
+      desc.textContent = host.getAttribute('data-tooltip') || '';
+      host.parentNode.insertBefore(desc, host.nextSibling);
+      addDescribedBy(host, desc.id);
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhance);
@@ -164,12 +225,16 @@
     if (!container) {
       container = document.createElement('div');
       container.className = 'toast-container';
+      container.setAttribute('aria-live', 'polite');
+      container.setAttribute('aria-atomic', 'false');
       document.body.appendChild(container);
     }
 
     var el = document.createElement('div');
     el.className = 'toast' + (opts.variant ? ' toast-' + opts.variant : '');
-    el.setAttribute('role', 'status');
+    var assertive = opts.variant === 'danger' || opts.variant === 'error';
+    el.setAttribute('role', assertive ? 'alert' : 'status');
+    el.setAttribute('aria-live', assertive ? 'assertive' : 'polite');
 
     var body = document.createElement('div');
     body.className = 'toast-body';
@@ -210,5 +275,6 @@
     return el;
   }
 
-  window.Farvistrap = { toast: toast, enhance: enhance };
+  // Public API. `Farvist` is the current name; `Farvistrap` kept as an alias.
+  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance };
 })();

@@ -5,6 +5,7 @@
 // `data-theme="light"` to <html> swaps the surface variables.
 // =============================================================================
 
+@use 'sass:color';
 @use '../abstracts' as *;
 
 :root {
@@ -28,6 +29,9 @@
   --fv-bg-gradient: #{$bg-gradient-dark};
   --fv-body-color: #{$body-text-dark};
   --fv-muted: #{$muted-dark};
+  // Lighter primary for readable TEXT on the dark surface (the brand --fv-primary
+  // is tuned dark for fills/light-bg, which is too low-contrast as text on dark).
+  --fv-primary-text: #{color.scale($primary, $lightness: 28%)};
   --fv-border-color: #{$border-color};
   --fv-code-bg: rgba(255, 255, 255, 0.07);
   --fv-bg-pattern: rgba(255, 255, 255, 0.10); // ink for .bg-grid/.bg-dots/etc.
@@ -76,6 +80,7 @@
   --fv-bg-gradient: #{$bg-gradient-light};
   --fv-body-color: #{$body-text-light};
   --fv-muted: #{$muted-light};
+  --fv-primary-text: #{$primary}; // the brand primary reads fine on the light surface
   --fv-border-color: rgba(15, 23, 42, 0.12);
   --fv-code-bg: rgba(15, 23, 42, 0.06);
   --fv-bg-pattern: rgba(15, 23, 42, 0.10); // dark ink so patterns read on the light surface
