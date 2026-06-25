@@ -23,6 +23,25 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 
 ## Quick start
 
+### Install from npm
+
+```bash
+npm install farvist
+```
+
+Import the CSS (and the optional 2.5 KB JS) through your bundler:
+
+```js
+import 'farvist/dist/farvist.min.css';
+import 'farvist/assets/farvist.js'; // optional — modals, tabs, toasts, theme toggle
+```
+
+Or pull in the Sass source to theme it from the token maps (with `node_modules` on your Sass load path):
+
+```scss
+@use 'farvist/scss/farvist';
+```
+
 ### Use the compiled CSS
 
 Via CDN (no build step — live on jsDelivr and unpkg):
