@@ -8,85 +8,88 @@
 @use 'sass:color';
 @use '../abstracts' as *;
 
-:root {
-  color-scheme: dark;
+@layer base {
 
-  // Theme colors -> --fv-primary, --fv-accent, --fv-danger, ...
-  @each $name, $value in $theme-colors {
-    --fv-#{$name}: #{$value};
+  :root {
+    color-scheme: dark;
+
+    // Theme colors -> --fv-primary, --fv-accent, --fv-danger, ...
+    @each $name, $value in $theme-colors {
+      --fv-#{$name}: #{$value};
+    }
+
+    // Greyscale -> --fv-gray-100 ... --fv-gray-900
+    @each $key, $value in $grays {
+      --fv-gray-#{$key}: #{$value};
+    }
+
+    --fv-white: #{$white};
+    --fv-black: #{$black};
+
+    // Surfaces & text (dark theme)
+    --fv-body-bg: #{$body-bg-dark};
+    --fv-bg-gradient: #{$bg-gradient-dark};
+    --fv-body-color: #{$body-text-dark};
+    --fv-muted: #{$muted-dark};
+    // Lighter primary for readable TEXT on the dark surface (the brand --fv-primary
+    // is tuned dark for fills/light-bg, which is too low-contrast as text on dark).
+    --fv-primary-text: #{color.scale($primary, $lightness: 28%)};
+    --fv-border-color: #{$border-color};
+    --fv-code-bg: rgba(255, 255, 255, 0.07);
+    --fv-bg-pattern: rgba(255, 255, 255, 0.10); // ink for .bg-grid/.bg-dots/etc.
+
+    // Glass surface variables (consumed by the glass() mixin & .glass utilities)
+    --fv-glass-bg: #{$glass-bg-dark};
+    --fv-glass-bg-strong: #{$glass-bg-strong-dark};
+    --fv-glass-border: #{$glass-border-dark};
+    --fv-glass-blur: #{$glass-blur};
+    --fv-glass-saturate: #{$glass-saturate};
+    --fv-surface-solid: #{$surface-solid-dark};
+
+    // Typography
+    --fv-font-base: #{$font-family-base};
+    --fv-font-mono: #{$font-family-mono};
+    --fv-line-height: #{$line-height-base};
+
+    // Shape & motion
+    --fv-border-radius: #{$border-radius};
+    --fv-border-width: #{$border-width};
+    --fv-transition: #{$transition-base};
+    --fv-focus-ring: 0 0 0 3px #{rgba($primary, 0.45)};
+
+    // Elevation -> --fv-shadow-sm ... --fv-shadow-xl
+    @each $name, $value in $shadows {
+      --fv-shadow-#{$name}: #{$value};
+    }
+
+    // Neon glows -> --fv-glow-primary ...
+    @each $name, $value in $glows {
+      --fv-glow-#{$name}: #{$value};
+    }
+
+    // Gradients -> --fv-gradient-primary ...
+    @each $name, $value in $gradients {
+      --fv-gradient-#{$name}: #{$value};
+    }
   }
 
-  // Greyscale -> --fv-gray-100 ... --fv-gray-900
-  @each $key, $value in $grays {
-    --fv-gray-#{$key}: #{$value};
+  // -- Light theme --------------------------------------------------------------
+  :root[data-theme='light'],
+  [data-theme='light'] {
+    color-scheme: light;
+
+    --fv-body-bg: #{$body-bg-light};
+    --fv-bg-gradient: #{$bg-gradient-light};
+    --fv-body-color: #{$body-text-light};
+    --fv-muted: #{$muted-light};
+    --fv-primary-text: #{$primary}; // the brand primary reads fine on the light surface
+    --fv-border-color: rgba(15, 23, 42, 0.12);
+    --fv-code-bg: rgba(15, 23, 42, 0.06);
+    --fv-bg-pattern: rgba(15, 23, 42, 0.10); // dark ink so patterns read on the light surface
+
+    --fv-glass-bg: #{$glass-bg-light};
+    --fv-glass-bg-strong: #{$glass-bg-strong-light};
+    --fv-glass-border: #{$glass-border-light};
+    --fv-surface-solid: #{$surface-solid-light};
   }
-
-  --fv-white: #{$white};
-  --fv-black: #{$black};
-
-  // Surfaces & text (dark theme)
-  --fv-body-bg: #{$body-bg-dark};
-  --fv-bg-gradient: #{$bg-gradient-dark};
-  --fv-body-color: #{$body-text-dark};
-  --fv-muted: #{$muted-dark};
-  // Lighter primary for readable TEXT on the dark surface (the brand --fv-primary
-  // is tuned dark for fills/light-bg, which is too low-contrast as text on dark).
-  --fv-primary-text: #{color.scale($primary, $lightness: 28%)};
-  --fv-border-color: #{$border-color};
-  --fv-code-bg: rgba(255, 255, 255, 0.07);
-  --fv-bg-pattern: rgba(255, 255, 255, 0.10); // ink for .bg-grid/.bg-dots/etc.
-
-  // Glass surface variables (consumed by the glass() mixin & .glass utilities)
-  --fv-glass-bg: #{$glass-bg-dark};
-  --fv-glass-bg-strong: #{$glass-bg-strong-dark};
-  --fv-glass-border: #{$glass-border-dark};
-  --fv-glass-blur: #{$glass-blur};
-  --fv-glass-saturate: #{$glass-saturate};
-  --fv-surface-solid: #{$surface-solid-dark};
-
-  // Typography
-  --fv-font-base: #{$font-family-base};
-  --fv-font-mono: #{$font-family-mono};
-  --fv-line-height: #{$line-height-base};
-
-  // Shape & motion
-  --fv-border-radius: #{$border-radius};
-  --fv-border-width: #{$border-width};
-  --fv-transition: #{$transition-base};
-  --fv-focus-ring: 0 0 0 3px #{rgba($primary, 0.45)};
-
-  // Elevation -> --fv-shadow-sm ... --fv-shadow-xl
-  @each $name, $value in $shadows {
-    --fv-shadow-#{$name}: #{$value};
-  }
-
-  // Neon glows -> --fv-glow-primary ...
-  @each $name, $value in $glows {
-    --fv-glow-#{$name}: #{$value};
-  }
-
-  // Gradients -> --fv-gradient-primary ...
-  @each $name, $value in $gradients {
-    --fv-gradient-#{$name}: #{$value};
-  }
-}
-
-// -- Light theme --------------------------------------------------------------
-:root[data-theme='light'],
-[data-theme='light'] {
-  color-scheme: light;
-
-  --fv-body-bg: #{$body-bg-light};
-  --fv-bg-gradient: #{$bg-gradient-light};
-  --fv-body-color: #{$body-text-light};
-  --fv-muted: #{$muted-light};
-  --fv-primary-text: #{$primary}; // the brand primary reads fine on the light surface
-  --fv-border-color: rgba(15, 23, 42, 0.12);
-  --fv-code-bg: rgba(15, 23, 42, 0.06);
-  --fv-bg-pattern: rgba(15, 23, 42, 0.10); // dark ink so patterns read on the light surface
-
-  --fv-glass-bg: #{$glass-bg-light};
-  --fv-glass-bg-strong: #{$glass-bg-strong-light};
-  --fv-glass-border: #{$glass-border-light};
-  --fv-surface-solid: #{$surface-solid-light};
 }

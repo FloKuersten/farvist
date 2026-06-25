@@ -14,64 +14,67 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.timeline {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
+@layer components {
 
-.timeline-item {
-  display: flex;
-  gap: spacer(4);
-}
+  .timeline {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
 
-.timeline-marker {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .timeline-item {
+    display: flex;
+    gap: spacer(4);
+  }
 
-.timeline-marker::before {
-  content: '';
-  flex: 0 0 auto;
-  width: 0.9rem;
-  height: 0.9rem;
-  margin-top: 0.3rem;
-  background-color: var(--fv-primary);
-  border: 2px solid var(--fv-body-bg);
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px var(--fv-glass-border);
-}
+  .timeline-marker {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.timeline-marker::after {
-  content: '';
-  flex: 1 1 auto;
-  width: 2px;
-  margin-top: 0.25rem;
-  background-color: var(--fv-glass-border);
-}
+  .timeline-marker::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-top: 0.3rem;
+    background-color: var(--fv-primary);
+    border: 2px solid var(--fv-body-bg);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--fv-glass-border);
+  }
 
-.timeline-item:last-child .timeline-marker::after {
-  display: none;
-}
+  .timeline-marker::after {
+    content: '';
+    flex: 1 1 auto;
+    width: 2px;
+    margin-top: 0.25rem;
+    background-color: var(--fv-glass-border);
+  }
 
-.timeline-content {
-  padding-bottom: spacer(5);
-}
+  .timeline-item:last-child .timeline-marker::after {
+    display: none;
+  }
 
-.timeline-title {
-  font-weight: map.get($font-weights, 'semibold');
-}
+  .timeline-content {
+    padding-bottom: spacer(5);
+  }
 
-.timeline-time {
-  font-size: map.get($font-sizes, 'sm');
-  color: var(--fv-muted);
-}
+  .timeline-title {
+    font-weight: map.get($font-weights, 'semibold');
+  }
 
-// Per-item dot colors.
-@each $name, $clr in $theme-colors {
-  .timeline-#{$name} .timeline-marker::before {
-    background-color: $clr;
+  .timeline-time {
+    font-size: map.get($font-sizes, 'sm');
+    color: var(--fv-muted);
+  }
+
+  // Per-item dot colors.
+  @each $name, $clr in $theme-colors {
+    .timeline-#{$name} .timeline-marker::before {
+      background-color: $clr;
+    }
   }
 }

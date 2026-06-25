@@ -8,103 +8,106 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-// -- Mesh gradient backdrops (generated from the $bg-meshes map) --------------
-@each $name, $layers in $bg-meshes {
-  .bg-mesh-#{$name} {
+@layer utilities {
+
+  // -- Mesh gradient backdrops (generated from the $bg-meshes map) --------------
+  @each $name, $layers in $bg-meshes {
+    .bg-mesh-#{$name} {
+      background-color: var(--fv-body-bg);
+      background-image: $layers;
+      background-repeat: no-repeat;
+    }
+  }
+  // `.bg-mesh` defaults to aurora.
+  .bg-mesh {
     background-color: var(--fv-body-bg);
-    background-image: $layers;
+    background-image: map.get($bg-meshes, 'aurora');
     background-repeat: no-repeat;
   }
-}
-// `.bg-mesh` defaults to aurora.
-.bg-mesh {
-  background-color: var(--fv-body-bg);
-  background-image: map.get($bg-meshes, 'aurora');
-  background-repeat: no-repeat;
-}
 
-// -- Pattern backgrounds (theme-aware via --fv-glass-border) -------------------
-.bg-grid {
-  background-image:
-    linear-gradient(var(--fv-bg-pattern) 1px, transparent 1px),
-    linear-gradient(90deg, var(--fv-bg-pattern) 1px, transparent 1px);
-  background-size: 2rem 2rem;
-}
+  // -- Pattern backgrounds (theme-aware via --fv-glass-border) -------------------
+  .bg-grid {
+    background-image:
+      linear-gradient(var(--fv-bg-pattern) 1px, transparent 1px),
+      linear-gradient(90deg, var(--fv-bg-pattern) 1px, transparent 1px);
+    background-size: 2rem 2rem;
+  }
 
-.bg-graph {
-  background-image:
-    linear-gradient(var(--fv-bg-pattern) 1px, transparent 1px),
-    linear-gradient(90deg, var(--fv-bg-pattern) 1px, transparent 1px);
-  background-size: 0.75rem 0.75rem;
-}
+  .bg-graph {
+    background-image:
+      linear-gradient(var(--fv-bg-pattern) 1px, transparent 1px),
+      linear-gradient(90deg, var(--fv-bg-pattern) 1px, transparent 1px);
+    background-size: 0.75rem 0.75rem;
+  }
 
-.bg-dots {
-  background-image: radial-gradient(var(--fv-bg-pattern) 1.2px, transparent 1.2px);
-  background-size: 1.25rem 1.25rem;
-}
+  .bg-dots {
+    background-image: radial-gradient(var(--fv-bg-pattern) 1.2px, transparent 1.2px);
+    background-size: 1.25rem 1.25rem;
+  }
 
-.bg-lines {
-  background-image: repeating-linear-gradient(
-    45deg,
-    var(--fv-bg-pattern) 0, var(--fv-bg-pattern) 1px,
-    transparent 1px, transparent 12px
-  );
-}
+  .bg-lines {
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--fv-bg-pattern) 0, var(--fv-bg-pattern) 1px,
+      transparent 1px, transparent 12px
+    );
+  }
 
-// Subtle film grain via an inline SVG fractal-noise (no external file needed).
-.bg-noise {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-}
+  // Subtle film grain via an inline SVG fractal-noise (no external file needed).
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
 
-// Pattern tile-size modifiers.
-.bg-pattern-sm { background-size: 1rem 1rem; }
-.bg-pattern-lg { background-size: 3rem 3rem; }
+  // Pattern tile-size modifiers.
+  .bg-pattern-sm { background-size: 1rem 1rem; }
+  .bg-pattern-lg { background-size: 3rem 3rem; }
 
-// -- Spotlight (radial glow, themeable per color) -----------------------------
-.bg-spotlight {
-  background-color: var(--fv-body-bg);
-  background-image: radial-gradient(42rem 26rem at 50% -12%, rgba($primary, 0.30), transparent 70%);
-  background-repeat: no-repeat;
-}
-// Chromatic colors only — the light/dark surface tokens make no glow.
-@each $name, $clr in map.remove($theme-colors, 'light', 'dark') {
-  .bg-spotlight-#{$name} {
+  // -- Spotlight (radial glow, themeable per color) -----------------------------
+  .bg-spotlight {
     background-color: var(--fv-body-bg);
-    background-image: radial-gradient(42rem 26rem at 50% -12%, rgba($clr, 0.30), transparent 70%);
+    background-image: radial-gradient(42rem 26rem at 50% -12%, rgba($primary, 0.30), transparent 70%);
     background-repeat: no-repeat;
   }
-}
+  // Chromatic colors only — the light/dark surface tokens make no glow.
+  @each $name, $clr in map.remove($theme-colors, 'light', 'dark') {
+    .bg-spotlight-#{$name} {
+      background-color: var(--fv-body-bg);
+      background-image: radial-gradient(42rem 26rem at 50% -12%, rgba($clr, 0.30), transparent 70%);
+      background-repeat: no-repeat;
+    }
+  }
 
-// -- Fade masks ----------------------------------------------------------------
-// NOTE: `mask-image` fades the WHOLE element incl. its children, so put these on
-// a dedicated decorative layer (an empty/absolutely-positioned div), not on a box
-// that holds text. Best with the transparent-base PATTERNS (`.bg-grid.bg-fade`);
-// over an opaque `.bg-mesh-*`/`.bg-spotlight*` the fade reveals the parent, not
-// the surface — fade the section's background layer instead.
-.bg-fade {
-  -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 0%, #000 35%, transparent 100%);
-  mask-image: radial-gradient(ellipse 80% 65% at 50% 0%, #000 35%, transparent 100%);
-}
-.bg-fade-b {
-  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
-}
-.bg-fade-x {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
-}
+  // -- Fade masks ----------------------------------------------------------------
+  // NOTE: `mask-image` fades the WHOLE element incl. its children, so put these on
+  // a dedicated decorative layer (an empty/absolutely-positioned div), not on a box
+  // that holds text. Best with the transparent-base PATTERNS (`.bg-grid.bg-fade`);
+  // over an opaque `.bg-mesh-*`/`.bg-spotlight*` the fade reveals the parent, not
+  // the surface — fade the section's background layer instead.
+  .bg-fade {
+    -webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 0%, #000 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 65% at 50% 0%, #000 35%, transparent 100%);
+  }
+  .bg-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+  .bg-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  }
 
-// -- Animated drift (for .bg-mesh-* / .bg-spotlight* — not the tiled patterns) -
-// It forces background-size:150%, which would blow up a pattern's fixed tile size.
-@keyframes fv-bg-drift {
-  0%, 100% { background-position: 0% 0%; }
-  50%      { background-position: 100% 100%; }
-}
-.bg-drift {
-  background-size: 150% 150%;
-  animation: fv-bg-drift 22s ease-in-out infinite;
-}
+  // -- Animated drift (for .bg-mesh-* / .bg-spotlight* — not the tiled patterns) -
+  // It forces background-size:150%, which would blow up a pattern's fixed tile size.
+  @keyframes fv-bg-drift {
+    0%, 100% { background-position: 0% 0%; }
+    50%      { background-position: 100% 100%; }
+  }
+  .bg-drift {
+    background-size: 150% 150%;
+    animation: fv-bg-drift 22s ease-in-out infinite;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .bg-drift { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .bg-drift { animation: none; }
+  }
 }

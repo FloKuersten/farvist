@@ -9,24 +9,27 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.stat-value {
-  font-size: map.get($font-sizes, '3xl');
-  font-weight: map.get($font-weights, 'black');
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
+@layer components {
 
-.stat-label {
-  color: var(--fv-muted);
-}
+  .stat-value {
+    font-size: map.get($font-sizes, '3xl');
+    font-weight: map.get($font-weights, 'black');
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
 
-.stat-trend {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: map.get($font-sizes, 'sm');
-  font-weight: map.get($font-weights, 'semibold');
-}
+  .stat-label {
+    color: var(--fv-muted);
+  }
 
-.stat-trend-up   { color: var(--fv-success); }
-.stat-trend-down { color: var(--fv-danger); }
+  .stat-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: map.get($font-sizes, 'sm');
+    font-weight: map.get($font-weights, 'semibold');
+  }
+
+  .stat-trend-up   { color: var(--fv-success); }
+  .stat-trend-down { color: var(--fv-danger); }
+}

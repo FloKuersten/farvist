@@ -9,144 +9,147 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.navbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: spacer(4);
-  padding: spacer(3) spacer(5);
-  @include glass($strong: true);
-  border-top: 0;
-  border-right: 0;
-  border-left: 0;
-  border-radius: 0;
-  box-shadow: var(--fv-shadow-md);
-}
+@layer components {
 
-.navbar-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: spacer(2);
-  margin-right: auto;          // pushes the toggle / nav to the right
-  font-size: map.get($font-sizes, 'xl');
-  font-weight: map.get($font-weights, 'bold');
-  letter-spacing: -0.02em;
-  color: var(--fv-body-color);
-  text-decoration: none;
+  .navbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: spacer(4);
+    padding: spacer(3) spacer(5);
+    @include glass($strong: true);
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+    box-shadow: var(--fv-shadow-md);
+  }
 
-  &:hover {
+  .navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
+    margin-right: auto;          // pushes the toggle / nav to the right
+    font-size: map.get($font-sizes, 'xl');
+    font-weight: map.get($font-weights, 'bold');
+    letter-spacing: -0.02em;
+    color: var(--fv-body-color);
     text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
-}
 
-// -- Hamburger toggle (shown below `lg`) --------------------------------------
-.navbar-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  color: var(--fv-body-color);
-  background-color: var(--fv-glass-bg);
-  border: $border-width solid var(--fv-glass-border);
-  border-radius: map.get($radii, 'md');
-  cursor: pointer;
+  // -- Hamburger toggle (shown below `lg`) --------------------------------------
+  .navbar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    color: var(--fv-body-color);
+    background-color: var(--fv-glass-bg);
+    border: $border-width solid var(--fv-glass-border);
+    border-radius: map.get($radii, 'md');
+    cursor: pointer;
 
-  &:focus-visible {
-    outline: 0;
-    box-shadow: var(--fv-focus-ring);
+    &:focus-visible {
+      outline: 0;
+      box-shadow: var(--fv-focus-ring);
+    }
   }
-}
 
-.navbar-toggle-icon {
-  position: relative;
-  display: block;
-  width: 1.25rem;
-  height: 2px;
-  background-color: currentColor;
-  border-radius: 2px;
-  transition: background-color $transition-base;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
+  .navbar-toggle-icon {
+    position: relative;
+    display: block;
     width: 1.25rem;
     height: 2px;
     background-color: currentColor;
     border-radius: 2px;
-    transition: transform $transition-base;
+    transition: background-color $transition-base;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 1.25rem;
+      height: 2px;
+      background-color: currentColor;
+      border-radius: 2px;
+      transition: transform $transition-base;
+    }
+
+    &::before { top: -6px; }
+    &::after  { top: 6px; }
   }
 
-  &::before { top: -6px; }
-  &::after  { top: 6px; }
-}
+  // Animate the bars into an X while the menu is open.
+  .navbar.is-open .navbar-toggle-icon {
+    background-color: transparent;
 
-// Animate the bars into an X while the menu is open.
-.navbar.is-open .navbar-toggle-icon {
-  background-color: transparent;
-
-  &::before { transform: translateY(6px) rotate(45deg); }
-  &::after  { transform: translateY(-6px) rotate(-45deg); }
-}
-
-// -- Nav list -----------------------------------------------------------------
-// Mobile-first: collapsed behind the toggle, expands to a full-width column.
-.navbar-nav {
-  display: none;
-  flex-basis: 100%;
-  flex-direction: column;
-  align-items: stretch;
-  gap: spacer(1);
-  margin: 0;
-  padding-left: 0;
-  list-style: none;
-}
-
-.navbar.is-open .navbar-nav {
-  display: flex;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  min-height: 44px;              // comfortable touch target
-  padding: spacer(2) spacer(3);
-  color: var(--fv-muted);
-  border-radius: map.get($radii, 'md');
-  text-decoration: none;
-  transition: color $transition-base, background-color $transition-base;
-
-  &:hover {
-    color: var(--fv-body-color);
-    background-color: var(--fv-glass-bg);
-    text-decoration: none;
+    &::before { transform: translateY(6px) rotate(45deg); }
+    &::after  { transform: translateY(-6px) rotate(-45deg); }
   }
 
-  &.active {
-    color: var(--fv-body-color);
-    font-weight: map.get($font-weights, 'semibold');
-    background-color: var(--fv-glass-bg);
-  }
-
-  &:focus-visible {
-    outline: 0;
-    color: var(--fv-body-color);
-    box-shadow: var(--fv-focus-ring);
-  }
-}
-
-// -- Expanded bar (`lg` and up): horizontal, no hamburger ---------------------
-@include media-up('lg') {
-  .navbar-toggle { display: none; }
-
+  // -- Nav list -----------------------------------------------------------------
+  // Mobile-first: collapsed behind the toggle, expands to a full-width column.
   .navbar-nav {
-    display: flex;
-    flex-basis: auto;
-    flex-direction: row;
-    align-items: center;
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
     gap: spacer(1);
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .navbar.is-open .navbar-nav {
+    display: flex;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;              // comfortable touch target
+    padding: spacer(2) spacer(3);
+    color: var(--fv-muted);
+    border-radius: map.get($radii, 'md');
+    text-decoration: none;
+    transition: color $transition-base, background-color $transition-base;
+
+    &:hover {
+      color: var(--fv-body-color);
+      background-color: var(--fv-glass-bg);
+      text-decoration: none;
+    }
+
+    &.active {
+      color: var(--fv-body-color);
+      font-weight: map.get($font-weights, 'semibold');
+      background-color: var(--fv-glass-bg);
+    }
+
+    &:focus-visible {
+      outline: 0;
+      color: var(--fv-body-color);
+      box-shadow: var(--fv-focus-ring);
+    }
+  }
+
+  // -- Expanded bar (`lg` and up): horizontal, no hamburger ---------------------
+  @include media-up('lg') {
+    .navbar-toggle { display: none; }
+
+    .navbar-nav {
+      display: flex;
+      flex-basis: auto;
+      flex-direction: row;
+      align-items: center;
+      gap: spacer(1);
+    }
   }
 }

@@ -10,51 +10,54 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.list-group {
-  display: flex;
-  flex-direction: column;
-  border-radius: map.get($radii, 'lg');
-  overflow: hidden;
-  @include glass;
-}
+@layer components {
 
-.list-group-item {
-  display: flex;
-  align-items: center;
-  gap: spacer(3);
-  padding: spacer(3) spacer(4);
-  color: var(--fv-body-color);
-  background-color: transparent;
-  border: 0;
-  border-bottom: $border-width solid var(--fv-glass-border);
-  text-align: left;
-}
+  .list-group {
+    display: flex;
+    flex-direction: column;
+    border-radius: map.get($radii, 'lg');
+    overflow: hidden;
+    @include glass;
+  }
 
-.list-group-item:last-child {
-  border-bottom: 0;
-}
+  .list-group-item {
+    display: flex;
+    align-items: center;
+    gap: spacer(3);
+    padding: spacer(3) spacer(4);
+    color: var(--fv-body-color);
+    background-color: transparent;
+    border: 0;
+    border-bottom: $border-width solid var(--fv-glass-border);
+    text-align: left;
+  }
 
-// Interactive variants (anchors / buttons).
-a.list-group-item,
-button.list-group-item {
-  width: 100%;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color $transition-base;
-}
+  .list-group-item:last-child {
+    border-bottom: 0;
+  }
 
-a.list-group-item:hover,
-button.list-group-item:hover {
-  background-color: var(--fv-glass-bg);
-}
+  // Interactive variants (anchors / buttons).
+  a.list-group-item,
+  button.list-group-item {
+    width: 100%;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color $transition-base;
+  }
 
-a.list-group-item:focus-visible,
-button.list-group-item:focus-visible {
-  outline: 0;
-  box-shadow: var(--fv-focus-ring);
-}
+  a.list-group-item:hover,
+  button.list-group-item:hover {
+    background-color: var(--fv-glass-bg);
+  }
 
-.list-group-item.is-active {
-  color: var(--fv-body-color);
-  background-color: var(--fv-glass-bg-strong);
+  a.list-group-item:focus-visible,
+  button.list-group-item:focus-visible {
+    outline: 0;
+    box-shadow: var(--fv-focus-ring);
+  }
+
+  .list-group-item.is-active {
+    color: var(--fv-body-color);
+    background-color: var(--fv-glass-bg-strong);
+  }
 }

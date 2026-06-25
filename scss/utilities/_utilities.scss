@@ -8,231 +8,234 @@
 @use 'sass:math';
 @use '../abstracts' as *;
 
-// -- Display (responsive) -----------------------------------------------------
-$display-values: none, block, inline, inline-block, flex, inline-flex, grid, table;
+@layer utilities {
 
-@each $bp in map.keys($grid-breakpoints) {
-  $infix: breakpoint-infix($bp);
-  @include media-up($bp) {
-    @each $value in $display-values {
-      .d#{$infix}-#{$value} { display: $value; }
+  // -- Display (responsive) -----------------------------------------------------
+  $display-values: none, block, inline, inline-block, flex, inline-flex, grid, table;
+
+  @each $bp in map.keys($grid-breakpoints) {
+    $infix: breakpoint-infix($bp);
+    @include media-up($bp) {
+      @each $value in $display-values {
+        .d#{$infix}-#{$value} { display: $value; }
+      }
     }
   }
-}
 
-// -- Flexbox (responsive) -----------------------------------------------------
-$justify: (
-  'start': flex-start,
-  'end': flex-end,
-  'center': center,
-  'between': space-between,
-  'around': space-around,
-  'evenly': space-evenly,
-);
-$align: (
-  'start': flex-start,
-  'end': flex-end,
-  'center': center,
-  'baseline': baseline,
-  'stretch': stretch,
-);
+  // -- Flexbox (responsive) -----------------------------------------------------
+  $justify: (
+    'start': flex-start,
+    'end': flex-end,
+    'center': center,
+    'between': space-between,
+    'around': space-around,
+    'evenly': space-evenly,
+  );
+  $align: (
+    'start': flex-start,
+    'end': flex-end,
+    'center': center,
+    'baseline': baseline,
+    'stretch': stretch,
+  );
 
-@each $bp in map.keys($grid-breakpoints) {
-  $infix: breakpoint-infix($bp);
-  @include media-up($bp) {
-    .flex#{$infix}-row        { flex-direction: row; }
-    .flex#{$infix}-row-reverse { flex-direction: row-reverse; }
-    .flex#{$infix}-column     { flex-direction: column; }
-    .flex#{$infix}-column-reverse { flex-direction: column-reverse; }
-    .flex#{$infix}-wrap       { flex-wrap: wrap; }
-    .flex#{$infix}-nowrap     { flex-wrap: nowrap; }
-    .flex#{$infix}-fill       { flex: 1 1 auto; }
-    .flex#{$infix}-grow-0     { flex-grow: 0; }
-    .flex#{$infix}-grow-1     { flex-grow: 1; }
-    .flex#{$infix}-shrink-0   { flex-shrink: 0; }
-    .flex#{$infix}-shrink-1   { flex-shrink: 1; }
+  @each $bp in map.keys($grid-breakpoints) {
+    $infix: breakpoint-infix($bp);
+    @include media-up($bp) {
+      .flex#{$infix}-row        { flex-direction: row; }
+      .flex#{$infix}-row-reverse { flex-direction: row-reverse; }
+      .flex#{$infix}-column     { flex-direction: column; }
+      .flex#{$infix}-column-reverse { flex-direction: column-reverse; }
+      .flex#{$infix}-wrap       { flex-wrap: wrap; }
+      .flex#{$infix}-nowrap     { flex-wrap: nowrap; }
+      .flex#{$infix}-fill       { flex: 1 1 auto; }
+      .flex#{$infix}-grow-0     { flex-grow: 0; }
+      .flex#{$infix}-grow-1     { flex-grow: 1; }
+      .flex#{$infix}-shrink-0   { flex-shrink: 0; }
+      .flex#{$infix}-shrink-1   { flex-shrink: 1; }
 
-    @each $key, $value in $justify {
-      .justify-content#{$infix}-#{$key} { justify-content: $value; }
-    }
-    @each $key, $value in $align {
-      .align-items#{$infix}-#{$key} { align-items: $value; }
-      .align-self#{$infix}-#{$key}  { align-self: $value; }
+      @each $key, $value in $justify {
+        .justify-content#{$infix}-#{$key} { justify-content: $value; }
+      }
+      @each $key, $value in $align {
+        .align-items#{$infix}-#{$key} { align-items: $value; }
+        .align-self#{$infix}-#{$key}  { align-self: $value; }
+      }
     }
   }
-}
 
-// Gap utilities from the spacing scale.
-@each $key, $value in $spacers {
-  .gap-#{$key} { gap: $value; }
-}
-
-// -- Text alignment (responsive) ---------------------------------------------
-@each $bp in map.keys($grid-breakpoints) {
-  $infix: breakpoint-infix($bp);
-  @include media-up($bp) {
-    .text#{$infix}-start  { text-align: left; }
-    .text#{$infix}-center { text-align: center; }
-    .text#{$infix}-end    { text-align: right; }
+  // Gap utilities from the spacing scale.
+  @each $key, $value in $spacers {
+    .gap-#{$key} { gap: $value; }
   }
-}
 
-// -- Type utilities -----------------------------------------------------------
-@each $key, $size in $font-sizes {
-  .fs-#{$key} { font-size: $size; }
-}
-@each $key, $weight in $font-weights {
-  .fw-#{$key} { font-weight: $weight; }
-}
+  // -- Text alignment (responsive) ---------------------------------------------
+  @each $bp in map.keys($grid-breakpoints) {
+    $infix: breakpoint-infix($bp);
+    @include media-up($bp) {
+      .text#{$infix}-start  { text-align: left; }
+      .text#{$infix}-center { text-align: center; }
+      .text#{$infix}-end    { text-align: right; }
+    }
+  }
 
-.fst-italic               { font-style: italic; }
-.fst-normal               { font-style: normal; }
-.text-decoration-underline { text-decoration: underline; }
-.text-decoration-none     { text-decoration: none; }
-.text-uppercase           { text-transform: uppercase; }
-.text-lowercase           { text-transform: lowercase; }
-.text-capitalize          { text-transform: capitalize; }
-.text-nowrap              { white-space: nowrap; }
-.text-break               { overflow-wrap: break-word; }
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.lh-1    { line-height: 1; }
-.lh-base { line-height: $line-height-base; }
-.lh-lg   { line-height: 1.8; }
-.font-monospace { font-family: $font-family-mono; }
+  // -- Type utilities -----------------------------------------------------------
+  @each $key, $size in $font-sizes {
+    .fs-#{$key} { font-size: $size; }
+  }
+  @each $key, $weight in $font-weights {
+    .fw-#{$key} { font-weight: $weight; }
+  }
 
-// -- Color utilities ----------------------------------------------------------
-@each $name, $clr in $theme-colors {
-  .text-#{$name}   { color: $clr !important; }
-  .bg-#{$name}     { background-color: $clr !important; }
-  .border-#{$name} { border-color: $clr !important; }
-}
+  .fst-italic               { font-style: italic; }
+  .fst-normal               { font-style: normal; }
+  .text-decoration-underline { text-decoration: underline; }
+  .text-decoration-none     { text-decoration: none; }
+  .text-uppercase           { text-transform: uppercase; }
+  .text-lowercase           { text-transform: lowercase; }
+  .text-capitalize          { text-transform: capitalize; }
+  .text-nowrap              { white-space: nowrap; }
+  .text-break               { overflow-wrap: break-word; }
+  .text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .lh-1    { line-height: 1; }
+  .lh-base { line-height: $line-height-base; }
+  .lh-lg   { line-height: 1.8; }
+  .font-monospace { font-family: $font-family-mono; }
 
-.text-white       { color: $white !important; }
-.text-body        { color: var(--fv-body-color) !important; }
-.text-muted       { color: var(--fv-muted) !important; }
-.bg-white         { background-color: $white !important; }
-.bg-body          { background-color: var(--fv-body-bg) !important; }
-.bg-surface       { background-color: var(--fv-surface-solid) !important; }
-.bg-transparent   { background-color: transparent !important; }
+  // -- Color utilities ----------------------------------------------------------
+  @each $name, $clr in $theme-colors {
+    .text-#{$name}   { color: $clr; }
+    .bg-#{$name}     { background-color: $clr; }
+    .border-#{$name} { border-color: $clr; }
+  }
 
-@each $key, $value in $grays {
-  .text-gray-#{$key} { color: $value !important; }
-  .bg-gray-#{$key}   { background-color: $value !important; }
-}
+  .text-white       { color: $white; }
+  .text-body        { color: var(--fv-body-color); }
+  .text-muted       { color: var(--fv-muted); }
+  .bg-white         { background-color: $white; }
+  .bg-body          { background-color: var(--fv-body-bg); }
+  .bg-surface       { background-color: var(--fv-surface-solid); }
+  .bg-transparent   { background-color: transparent; }
 
-// -- Borders ------------------------------------------------------------------
-.border        { border: $border-width solid var(--fv-border-color) !important; }
-.border-0      { border: 0 !important; }
-.border-top    { border-top: $border-width solid var(--fv-border-color) !important; }
-.border-end    { border-right: $border-width solid var(--fv-border-color) !important; }
-.border-bottom { border-bottom: $border-width solid var(--fv-border-color) !important; }
-.border-start  { border-left: $border-width solid var(--fv-border-color) !important; }
+  @each $key, $value in $grays {
+    .text-gray-#{$key} { color: $value; }
+    .bg-gray-#{$key}   { background-color: $value; }
+  }
 
-@each $key, $value in $radii {
-  .rounded-#{$key} { border-radius: $value !important; }
-}
-.rounded        { border-radius: $border-radius !important; }
-.rounded-0      { border-radius: 0 !important; }
-.rounded-circle { border-radius: 50% !important; }
+  // -- Borders ------------------------------------------------------------------
+  .border        { border: $border-width solid var(--fv-border-color); }
+  .border-0      { border: 0; }
+  .border-top    { border-top: $border-width solid var(--fv-border-color); }
+  .border-end    { border-right: $border-width solid var(--fv-border-color); }
+  .border-bottom { border-bottom: $border-width solid var(--fv-border-color); }
+  .border-start  { border-left: $border-width solid var(--fv-border-color); }
 
-// -- Shadows ------------------------------------------------------------------
-@each $key, $value in $shadows {
-  .shadow-#{$key} { box-shadow: $value !important; }
-}
-.shadow-none { box-shadow: none !important; }
+  @each $key, $value in $radii {
+    .rounded-#{$key} { border-radius: $value; }
+  }
+  .rounded        { border-radius: $border-radius; }
+  .rounded-0      { border-radius: 0; }
+  .rounded-circle { border-radius: 50%; }
 
-// -- Sizing -------------------------------------------------------------------
-// Fractional width/height built with an @for loop over quartiles.
-@for $i from 1 through 4 {
-  $pct: math.percentage(math.div($i, 4));
-  .w-#{$i * 25} { width: $pct; }
-  .h-#{$i * 25} { height: $pct; }
-}
-.w-auto    { width: auto; }
-.h-auto    { height: auto; }
-.mw-100    { max-width: 100%; }
-.mh-100    { max-height: 100%; }
-.vw-100    { width: 100vw; }
-.vh-100    { height: 100vh; }
-.min-vh-100 { min-height: 100vh; }
+  // -- Shadows ------------------------------------------------------------------
+  @each $key, $value in $shadows {
+    .shadow-#{$key} { box-shadow: $value; }
+  }
+  .shadow-none { box-shadow: none; }
 
-// -- Position -----------------------------------------------------------------
-@each $pos in static, relative, absolute, fixed, sticky {
-  .position-#{$pos} { position: $pos; }
-}
-.top-0    { top: 0; }
-.bottom-0 { bottom: 0; }
-.start-0  { left: 0; }
-.end-0    { right: 0; }
-.fixed-top {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: map.get($z-layers, 'fixed');
-}
-.sticky-top {
-  position: sticky;
-  top: 0;
-  z-index: map.get($z-layers, 'sticky');
-}
+  // -- Sizing -------------------------------------------------------------------
+  // Fractional width/height built with an @for loop over quartiles.
+  @for $i from 1 through 4 {
+    $pct: math.percentage(math.div($i, 4));
+    .w-#{$i * 25} { width: $pct; }
+    .h-#{$i * 25} { height: $pct; }
+  }
+  .w-auto    { width: auto; }
+  .h-auto    { height: auto; }
+  .mw-100    { max-width: 100%; }
+  .mh-100    { max-height: 100%; }
+  .vw-100    { width: 100vw; }
+  .vh-100    { height: 100vh; }
+  .min-vh-100 { min-height: 100vh; }
 
-// -- Z-index (from the layer map) --------------------------------------------
-@each $key, $value in $z-layers {
-  .z-#{$key} { z-index: $value; }
-}
+  // -- Position -----------------------------------------------------------------
+  @each $pos in static, relative, absolute, fixed, sticky {
+    .position-#{$pos} { position: $pos; }
+  }
+  .top-0    { top: 0; }
+  .bottom-0 { bottom: 0; }
+  .start-0  { left: 0; }
+  .end-0    { right: 0; }
+  .fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: map.get($z-layers, 'fixed');
+  }
+  .sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: map.get($z-layers, 'sticky');
+  }
 
-// -- Opacity (generated with an @for loop, 0–100 in steps of 10) --------------
-@for $i from 0 through 10 {
-  .opacity-#{$i * 10} { opacity: math.div($i, 10); }
-}
+  // -- Z-index (from the layer map) --------------------------------------------
+  @each $key, $value in $z-layers {
+    .z-#{$key} { z-index: $value; }
+  }
 
-// -- Overflow -----------------------------------------------------------------
-@each $value in auto, hidden, visible, scroll {
-  .overflow-#{$value} { overflow: $value; }
-}
+  // -- Opacity (generated with an @for loop, 0–100 in steps of 10) --------------
+  @for $i from 0 through 10 {
+    .opacity-#{$i * 10} { opacity: math.div($i, 10); }
+  }
 
-// -- Interaction & a11y -------------------------------------------------------
-.visually-hidden     { @include visually-hidden; }
+  // -- Overflow -----------------------------------------------------------------
+  @each $value in auto, hidden, visible, scroll {
+    .overflow-#{$value} { overflow: $value; }
+  }
 
-// Skip-to-content link: hidden until focused, then pinned top-left so keyboard
-// users can jump past the nav. Place it as the first child of <body>.
-.skip-link { @include visually-hidden; }
-.skip-link:focus,
-.skip-link:focus-visible {
-  position: fixed !important;       // beat the mixin's `position: absolute !important`
-  top: spacer(2);
-  left: spacer(2);
-  z-index: map.get($z-layers, 'fixed');
-  width: auto;
-  height: auto;
-  margin: 0;
-  padding: spacer(2) spacer(4);
-  overflow: visible;
-  clip: auto;
-  clip-path: none;
-  white-space: nowrap;
-  color: var(--fv-body-color);
-  background-color: var(--fv-glass-bg-strong);
-  border: $border-width solid var(--fv-glass-border);
-  border-radius: map.get($radii, 'md');
-  box-shadow: var(--fv-shadow-lg);
-}
+  // -- Interaction & a11y -------------------------------------------------------
+  .visually-hidden     { @include visually-hidden; }
 
-.user-select-none    { user-select: none; }
-.user-select-all     { user-select: all; }
-.pe-none             { pointer-events: none; }
-.pe-auto             { pointer-events: auto; }
-.cursor-pointer      { cursor: pointer; }
+  // Skip-to-content link: hidden until focused, then pinned top-left so keyboard
+  // users can jump past the nav. Place it as the first child of <body>.
+  .skip-link { @include visually-hidden; }
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    position: fixed !important;       // beat the mixin's `position: absolute !important`
+    top: spacer(2);
+    left: spacer(2);
+    z-index: map.get($z-layers, 'fixed');
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: spacer(2) spacer(4);
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    white-space: nowrap;
+    color: var(--fv-body-color);
+    background-color: var(--fv-glass-bg-strong);
+    border: $border-width solid var(--fv-glass-border);
+    border-radius: map.get($radii, 'md');
+    box-shadow: var(--fv-shadow-lg);
+  }
 
-// -- Lists --------------------------------------------------------------------
-.list-unstyled { padding-left: 0; list-style: none; }
-.list-inline   { padding-left: 0; list-style: none; }
-.list-inline-item {
-  display: inline-block;
-  &:not(:last-child) { margin-right: spacer(2); }
+  .user-select-none    { user-select: none; }
+  .user-select-all     { user-select: all; }
+  .pe-none             { pointer-events: none; }
+  .pe-auto             { pointer-events: auto; }
+  .cursor-pointer      { cursor: pointer; }
+
+  // -- Lists --------------------------------------------------------------------
+  .list-unstyled { padding-left: 0; list-style: none; }
+  .list-inline   { padding-left: 0; list-style: none; }
+  .list-inline-item {
+    display: inline-block;
+    &:not(:last-child) { margin-right: spacer(2); }
+  }
 }

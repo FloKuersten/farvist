@@ -6,47 +6,50 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.skeleton {
-  display: block;
-  background-image: linear-gradient(
-    100deg,
-    var(--fv-glass-bg) 30%,
-    var(--fv-glass-bg-strong) 50%,
-    var(--fv-glass-bg) 70%
-  );
-  background-size: 200% 100%;
-  border-radius: map.get($radii, 'md');
-  animation: fv-skeleton 1.4s ease-in-out infinite;
-}
+@layer components {
 
-.skeleton-text {
-  height: 0.8em;
-  margin-bottom: spacer(2);
-  border-radius: map.get($radii, 'sm');
-}
+  .skeleton {
+    display: block;
+    background-image: linear-gradient(
+      100deg,
+      var(--fv-glass-bg) 30%,
+      var(--fv-glass-bg-strong) 50%,
+      var(--fv-glass-bg) 70%
+    );
+    background-size: 200% 100%;
+    border-radius: map.get($radii, 'md');
+    animation: fv-skeleton 1.4s ease-in-out infinite;
+  }
 
-.skeleton-title {
-  width: 50%;
-  height: 1.4em;
-  margin-bottom: spacer(3);
-}
+  .skeleton-text {
+    height: 0.8em;
+    margin-bottom: spacer(2);
+    border-radius: map.get($radii, 'sm');
+  }
 
-.skeleton-avatar {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-}
+  .skeleton-title {
+    width: 50%;
+    height: 1.4em;
+    margin-bottom: spacer(3);
+  }
 
-.skeleton-btn {
-  width: 7rem;
-  height: 2.6rem;
-}
+  .skeleton-avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
 
-@keyframes fv-skeleton {
-  from { background-position: 200% 0; }
-  to   { background-position: -200% 0; }
-}
+  .skeleton-btn {
+    width: 7rem;
+    height: 2.6rem;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .skeleton { animation: none; }
+  @keyframes fv-skeleton {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton { animation: none; }
+  }
 }

@@ -6,55 +6,58 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.progress {
-  position: relative;
-  display: flex;
-  height: 0.625rem;
-  overflow: hidden;
-  background-color: var(--fv-glass-bg);
-  border: $border-width solid var(--fv-glass-border);
-  border-radius: map.get($radii, 'pill');
-}
+@layer components {
 
-.progress-bar {
-  width: 0;
-  height: 100%;
-  background-image: var(--fv-gradient-primary);
-  border-radius: inherit;
-  transition: width 0.4s ease;
-}
-
-.progress-lg { height: 1rem; }
-.progress-sm { height: 0.35rem; }
-
-// Solid color variants override the gradient fill.
-@each $name, $clr in $theme-colors {
-  .progress-#{$name} .progress-bar {
-    background-image: none;
-    background-color: $clr;
+  .progress {
+    position: relative;
+    display: flex;
+    height: 0.625rem;
+    overflow: hidden;
+    background-color: var(--fv-glass-bg);
+    border: $border-width solid var(--fv-glass-border);
+    border-radius: map.get($radii, 'pill');
   }
-}
 
-// Diagonal stripes (optionally animated).
-.progress-striped .progress-bar {
-  background-image: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.18) 25%, transparent 25%,
-    transparent 50%, rgba(255, 255, 255, 0.18) 50%,
-    rgba(255, 255, 255, 0.18) 75%, transparent 75%, transparent
-  );
-  background-size: 1rem 1rem;
-}
+  .progress-bar {
+    width: 0;
+    height: 100%;
+    background-image: var(--fv-gradient-primary);
+    border-radius: inherit;
+    transition: width 0.4s ease;
+  }
 
-.progress-animated .progress-bar {
-  animation: fv-progress-stripes 1s linear infinite;
-}
+  .progress-lg { height: 1rem; }
+  .progress-sm { height: 0.35rem; }
 
-@keyframes fv-progress-stripes {
-  from { background-position: 1rem 0; }
-  to   { background-position: 0 0; }
-}
+  // Solid color variants override the gradient fill.
+  @each $name, $clr in $theme-colors {
+    .progress-#{$name} .progress-bar {
+      background-image: none;
+      background-color: $clr;
+    }
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .progress-animated .progress-bar { animation: none; }
+  // Diagonal stripes (optionally animated).
+  .progress-striped .progress-bar {
+    background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.18) 25%, transparent 25%,
+      transparent 50%, rgba(255, 255, 255, 0.18) 50%,
+      rgba(255, 255, 255, 0.18) 75%, transparent 75%, transparent
+    );
+    background-size: 1rem 1rem;
+  }
+
+  .progress-animated .progress-bar {
+    animation: fv-progress-stripes 1s linear infinite;
+  }
+
+  @keyframes fv-progress-stripes {
+    from { background-position: 1rem 0; }
+    to   { background-position: 0 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-animated .progress-bar { animation: none; }
+  }
 }

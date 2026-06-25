@@ -1,0 +1,8 @@
+// =============================================================================
+// Farvist · Base · Cascade-layer order
+// Declared first so layer precedence is authoritative regardless of partial
+// emit order. Utilities sit in the last layer, so they beat components WITHOUT
+// `!important`. Anything you write OUTSIDE a layer (plain CSS) beats all of these.
+// =============================================================================
+
+@layer reset, base, layout, components, utilities;

@@ -16,80 +16,83 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.chat {
-  display: flex;
-  flex-direction: column;
-  gap: spacer(4);
-}
+@layer components {
 
-.message {
-  display: flex;
-  gap: spacer(3);
-  align-items: flex-start;
-}
+  .chat {
+    display: flex;
+    flex-direction: column;
+    gap: spacer(4);
+  }
 
-.message-body {
-  min-width: 0;                 // let long content wrap instead of overflowing
-  max-width: min(42rem, 80%);
-}
+  .message {
+    display: flex;
+    gap: spacer(3);
+    align-items: flex-start;
+  }
 
-.message-bubble {
-  padding: spacer(3) spacer(4);
-  border-radius: map.get($radii, 'lg');
-  color: var(--fv-body-color);
-  @include glass;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;        // preserve newlines from model output
-
-  > :last-child { margin-bottom: 0; }
-}
-
-.message-meta {
-  margin-top: spacer(1);
-  font-size: map.get($font-sizes, 'sm');
-  color: var(--fv-muted);
-}
-
-// Outgoing (the user): mirror the row to the right and tint the bubble.
-.message-out {
-  flex-direction: row-reverse;
+  .message-body {
+    min-width: 0;                 // let long content wrap instead of overflowing
+    max-width: min(42rem, 80%);
+  }
 
   .message-bubble {
-    color: #ffffff;
-    background-image: var(--fv-gradient-primary);
-    border-color: transparent;
+    padding: spacer(3) spacer(4);
+    border-radius: map.get($radii, 'lg');
+    color: var(--fv-body-color);
+    @include glass;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;        // preserve newlines from model output
+
+    > :last-child { margin-bottom: 0; }
   }
-  .message-meta { text-align: right; }
-}
 
-// Typing / streaming indicator — three pulsing dots inside an assistant bubble.
-.typing {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.15rem 0;
-}
+  .message-meta {
+    margin-top: spacer(1);
+    font-size: map.get($font-sizes, 'sm');
+    color: var(--fv-muted);
+  }
 
-.typing span {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background-color: var(--fv-muted);
-  animation: fv-typing 1.2s infinite ease-in-out;
+  // Outgoing (the user): mirror the row to the right and tint the bubble.
+  .message-out {
+    flex-direction: row-reverse;
 
-  &:nth-child(2) { animation-delay: 0.15s; }
-  &:nth-child(3) { animation-delay: 0.3s; }
-}
+    .message-bubble {
+      color: #ffffff;
+      background-image: var(--fv-gradient-primary);
+      border-color: transparent;
+    }
+    .message-meta { text-align: right; }
+  }
 
-@keyframes fv-typing {
-  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-  30%           { opacity: 1;   transform: translateY(-0.2rem); }
-}
+  // Typing / streaming indicator — three pulsing dots inside an assistant bubble.
+  .typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0;
+  }
 
-@media (prefers-reduced-motion: reduce) {
   .typing span {
-    animation-duration: 0.01ms;
-    animation-iteration-count: 1;
-    opacity: 0.7;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background-color: var(--fv-muted);
+    animation: fv-typing 1.2s infinite ease-in-out;
+
+    &:nth-child(2) { animation-delay: 0.15s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+  }
+
+  @keyframes fv-typing {
+    0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+    30%           { opacity: 1;   transform: translateY(-0.2rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .typing span {
+      animation-duration: 0.01ms;
+      animation-iteration-count: 1;
+      opacity: 0.7;
+    }
   }
 }

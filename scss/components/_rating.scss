@@ -8,19 +8,22 @@
 
 @use '../abstracts' as *;
 
-.rating {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.1rem;
-  color: var(--fv-warning);
-}
+@layer components {
 
-.rating .icon {
-  width: 1.1em;
-  height: 1.1em;
-  fill: currentColor;
-}
+  .rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+    color: var(--fv-warning);
+  }
 
-.rating-empty {
-  color: var(--fv-glass-border);
+  .rating .icon {
+    width: 1.1em;
+    height: 1.1em;
+    fill: currentColor;
+  }
+
+  .rating-empty {
+    color: var(--fv-glass-border);
+  }
 }

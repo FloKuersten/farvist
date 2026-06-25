@@ -7,61 +7,64 @@
 @use 'sass:color';
 @use '../abstracts' as *;
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: spacer(2);
-  padding: spacer(1) spacer(3);
-  font-size: map.get($font-sizes, 'sm');
-  font-weight: map.get($font-weights, 'medium');
-  color: var(--fv-body-color);
-  background-color: var(--fv-glass-bg);
-  border: $border-width solid var(--fv-glass-border);
-  border-radius: map.get($radii, 'pill');
-}
+@layer components {
 
-.chip-close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.15em;
-  height: 1.15em;
-  margin-right: -0.25rem;
-  padding: 0;
-  font-size: 1.1em;
-  line-height: 1;
-  color: inherit;
-  background: transparent;
-  border: 0;
-  border-radius: 50%;
-  cursor: pointer;
-  opacity: 0.7;
-
-  &:hover {
-    opacity: 1;
-    background-color: var(--fv-glass-bg-strong);
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
+    padding: spacer(1) spacer(3);
+    font-size: map.get($font-sizes, 'sm');
+    font-weight: map.get($font-weights, 'medium');
+    color: var(--fv-body-color);
+    background-color: var(--fv-glass-bg);
+    border: $border-width solid var(--fv-glass-border);
+    border-radius: map.get($radii, 'pill');
   }
 
-  &:focus-visible {
-    outline: 0;
-    opacity: 1;
-    box-shadow: var(--fv-focus-ring);
-  }
-}
+  .chip-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15em;
+    height: 1.15em;
+    margin-right: -0.25rem;
+    padding: 0;
+    font-size: 1.1em;
+    line-height: 1;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0.7;
 
-// Soft color variants (dark-theme tint; light theme darkens below).
-@each $name, $clr in $theme-colors {
-  .chip-#{$name} {
-    color: color.mix($white, $clr, 45%);
-    background-color: rgba($clr, 0.16);
-    border-color: rgba($clr, 0.35);
-  }
-}
+    &:hover {
+      opacity: 1;
+      background-color: var(--fv-glass-bg-strong);
+    }
 
-[data-theme='light'] {
+    &:focus-visible {
+      outline: 0;
+      opacity: 1;
+      box-shadow: var(--fv-focus-ring);
+    }
+  }
+
+  // Soft color variants (dark-theme tint; light theme darkens below).
   @each $name, $clr in $theme-colors {
     .chip-#{$name} {
-      color: color.mix($body-text-light, $clr, 65%);
+      color: color.mix($white, $clr, 45%);
+      background-color: rgba($clr, 0.16);
+      border-color: rgba($clr, 0.35);
+    }
+  }
+
+  [data-theme='light'] {
+    @each $name, $clr in $theme-colors {
+      .chip-#{$name} {
+        color: color.mix($body-text-light, $clr, 65%);
+      }
     }
   }
 }

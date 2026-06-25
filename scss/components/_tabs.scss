@@ -7,64 +7,67 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.tabs {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  gap: spacer(1);
-  padding: spacer(1);
-  margin-bottom: spacer(4);
-  background-color: var(--fv-glass-bg);
-  border: $border-width solid var(--fv-glass-border);
-  border-radius: map.get($radii, 'lg');
-}
+@layer components {
 
-.tab {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  padding: spacer(2) spacer(4);
-  font-size: map.get($font-sizes, 'base');
-  font-weight: map.get($font-weights, 'medium');
-  color: var(--fv-muted);
-  background: transparent;
-  border: 0;
-  border-radius: map.get($radii, 'md');
-  cursor: pointer;
-  transition: color $transition-base, background-color $transition-base;
-
-  &:hover {
-    color: var(--fv-body-color);
+  .tabs {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    gap: spacer(1);
+    padding: spacer(1);
+    margin-bottom: spacer(4);
+    background-color: var(--fv-glass-bg);
+    border: $border-width solid var(--fv-glass-border);
+    border-radius: map.get($radii, 'lg');
   }
 
-  &:focus-visible {
-    outline: 0;
-    box-shadow: var(--fv-focus-ring);
+  .tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: spacer(2) spacer(4);
+    font-size: map.get($font-sizes, 'base');
+    font-weight: map.get($font-weights, 'medium');
+    color: var(--fv-muted);
+    background: transparent;
+    border: 0;
+    border-radius: map.get($radii, 'md');
+    cursor: pointer;
+    transition: color $transition-base, background-color $transition-base;
+
+    &:hover {
+      color: var(--fv-body-color);
+    }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: var(--fv-focus-ring);
+    }
+
+    &.active {
+      color: var(--fv-body-color);
+      background-color: var(--fv-glass-bg-strong);
+      box-shadow: var(--fv-shadow-sm);
+    }
   }
 
-  &.active {
-    color: var(--fv-body-color);
-    background-color: var(--fv-glass-bg-strong);
-    box-shadow: var(--fv-shadow-sm);
+  .tab-panel {
+    display: none;
+
+    &.active {
+      display: block;
+      animation: fv-fade-in 0.25s ease;
+    }
   }
-}
 
-.tab-panel {
-  display: none;
-
-  &.active {
-    display: block;
-    animation: fv-fade-in 0.25s ease;
+  @keyframes fv-fade-in {
+    from { opacity: 0; transform: translateY(0.4rem); }
+    to   { opacity: 1; transform: none; }
   }
-}
 
-@keyframes fv-fade-in {
-  from { opacity: 0; transform: translateY(0.4rem); }
-  to   { opacity: 1; transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tab-panel.active { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .tab-panel.active { animation: none; }
+  }
 }

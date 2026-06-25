@@ -1,8 +1,8 @@
 // =============================================================================
 // Farvist — a lightweight, Sass-powered CSS framework
 // -----------------------------------------------------------------------------
-// Single entry point. Layers are loaded low-specificity first so that utilities
-// (loaded last) can always win the cascade.
+// Single entry point. Output is wrapped in CSS cascade layers (declared in
+// base/_layers.scss) so utilities beat components by LAYER ORDER, not !important.
 //
 //   Base      → resets and element defaults
 //   Layout    → container and grid system
@@ -11,6 +11,9 @@
 //
 // Build:  npm run dev   (writes dist/farvist.css and dist/farvist.min.css)
 // =============================================================================
+
+// Cascade-layer order (must come first)
+@use 'base/layers';
 
 // Base
 @use 'base/root';

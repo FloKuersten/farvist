@@ -9,43 +9,46 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.segmented {
-  display: inline-flex;
-  gap: 0.2rem;
-  padding: 0.25rem;
-  background-color: var(--fv-glass-bg);
-  border: $border-width solid var(--fv-glass-border);
-  border-radius: map.get($radii, 'lg');
-}
+@layer components {
 
-.segmented input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
+  .segmented {
+    display: inline-flex;
+    gap: 0.2rem;
+    padding: 0.25rem;
+    background-color: var(--fv-glass-bg);
+    border: $border-width solid var(--fv-glass-border);
+    border-radius: map.get($radii, 'lg');
+  }
 
-.segmented label {
-  padding: spacer(1) spacer(4);
-  font-size: map.get($font-sizes, 'sm');
-  font-weight: map.get($font-weights, 'medium');
-  color: var(--fv-muted);
-  border-radius: map.get($radii, 'md');
-  cursor: pointer;
-  transition: color $transition-base, background-color $transition-base;
-}
+  .segmented input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
 
-.segmented label:hover {
-  color: var(--fv-body-color);
-}
+  .segmented label {
+    padding: spacer(1) spacer(4);
+    font-size: map.get($font-sizes, 'sm');
+    font-weight: map.get($font-weights, 'medium');
+    color: var(--fv-muted);
+    border-radius: map.get($radii, 'md');
+    cursor: pointer;
+    transition: color $transition-base, background-color $transition-base;
+  }
 
-.segmented input:checked + label {
-  color: var(--fv-body-color);
-  background-color: var(--fv-glass-bg-strong);
-  box-shadow: var(--fv-shadow-sm);
-}
+  .segmented label:hover {
+    color: var(--fv-body-color);
+  }
 
-.segmented input:focus-visible + label {
-  box-shadow: var(--fv-focus-ring);
+  .segmented input:checked + label {
+    color: var(--fv-body-color);
+    background-color: var(--fv-glass-bg-strong);
+    box-shadow: var(--fv-shadow-sm);
+  }
+
+  .segmented input:focus-visible + label {
+    box-shadow: var(--fv-focus-ring);
+  }
 }

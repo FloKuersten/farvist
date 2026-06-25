@@ -9,42 +9,45 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.status {
-  --fv-status: var(--fv-muted);
-  display: inline-flex;
-  align-items: center;
-  gap: spacer(2);
-  font-size: map.get($font-sizes, 'sm');
-  font-weight: map.get($font-weights, 'medium');
-  color: var(--fv-body-color);
+@layer components {
 
-  &::before {
-    content: '';
-    flex: 0 0 auto;
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    background-color: var(--fv-status);
+  .status {
+    --fv-status: var(--fv-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
+    font-size: map.get($font-sizes, 'sm');
+    font-weight: map.get($font-weights, 'medium');
+    color: var(--fv-body-color);
+
+    &::before {
+      content: '';
+      flex: 0 0 auto;
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+      background-color: var(--fv-status);
+    }
   }
-}
 
-.status-online { --fv-status: var(--fv-success); }
-.status-busy   { --fv-status: var(--fv-warning); }
-.status-idle   { --fv-status: var(--fv-muted); }
-.status-error  { --fv-status: var(--fv-danger); }
+  .status-online { --fv-status: var(--fv-success); }
+  .status-busy   { --fv-status: var(--fv-warning); }
+  .status-idle   { --fv-status: var(--fv-muted); }
+  .status-error  { --fv-status: var(--fv-danger); }
 
-// "Live" states pulse a fading ring around the dot.
-.status-online::before,
-.status-busy::before {
-  animation: fv-pulse 1.8s infinite ease-out;
-}
+  // "Live" states pulse a fading ring around the dot.
+  .status-online::before,
+  .status-busy::before {
+    animation: fv-pulse 1.8s infinite ease-out;
+  }
 
-@keyframes fv-pulse {
-  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fv-status) 55%, transparent); }
-  70%  { box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--fv-status) 0%, transparent); }
-  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fv-status) 0%, transparent); }
-}
+  @keyframes fv-pulse {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fv-status) 55%, transparent); }
+    70%  { box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--fv-status) 0%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--fv-status) 0%, transparent); }
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .status::before { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .status::before { animation: none; }
+  }
 }

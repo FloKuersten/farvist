@@ -5,40 +5,43 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.breadcrumb {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: spacer(2);
-  padding: 0;
-  margin-bottom: spacer(4);
-  font-size: map.get($font-sizes, 'sm');
-  list-style: none;
-}
+@layer components {
 
-.breadcrumb-item {
-  display: inline-flex;
-  align-items: center;
-  gap: spacer(2);
-  color: var(--fv-muted);
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: spacer(2);
+    padding: 0;
+    margin-bottom: spacer(4);
+    font-size: map.get($font-sizes, 'sm');
+    list-style: none;
+  }
 
-  a {
+  .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
     color: var(--fv-muted);
-    text-decoration: none;
-    transition: color $transition-base;
-  }
 
-  a:hover {
-    color: var(--fv-body-color);
-  }
+    a {
+      color: var(--fv-muted);
+      text-decoration: none;
+      transition: color $transition-base;
+    }
 
-  &.active {
-    color: var(--fv-body-color);
-  }
+    a:hover {
+      color: var(--fv-body-color);
+    }
 
-  &:not(:last-child)::after {
-    content: '/';
-    color: var(--fv-muted);
-    opacity: 0.5;
+    &.active {
+      color: var(--fv-body-color);
+    }
+
+    &:not(:last-child)::after {
+      content: '/';
+      color: var(--fv-muted);
+      opacity: 0.5;
+    }
   }
 }

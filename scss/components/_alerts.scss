@@ -8,55 +8,58 @@
 @use 'sass:color';
 @use '../abstracts' as *;
 
-.alert {
-  position: relative;
-  // Neutral, theme-aware text stays readable on both dark and light glass.
-  color: var(--fv-body-color);
-  padding: spacer(4) spacer(5);
-  margin-bottom: spacer(4);
-  border: $border-width solid transparent;
-  border-radius: map.get($radii, 'lg');
-  backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
-  -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
-}
+@layer components {
 
-.alert-heading {
-  margin-bottom: spacer(2);
-  font-weight: map.get($font-weights, 'bold');
-}
-
-.alert > :last-child {
-  margin-bottom: 0;
-}
-
-// Each variant contributes the hue via a translucent fill, a colored border
-// and a colored left accent — readable in either theme.
-@each $name, $clr in $theme-colors {
-  .alert-#{$name} {
-    background-color: rgba($clr, 0.13);
-    border-color: rgba($clr, 0.42);
-    border-left: 3px solid $clr;
-
-    .alert-heading {
-      color: $clr;
-    }
-
-    .alert-link {
-      color: $clr;
-      font-weight: map.get($font-weights, 'semibold');
-      text-decoration: underline;
-    }
+  .alert {
+    position: relative;
+    // Neutral, theme-aware text stays readable on both dark and light glass.
+    color: var(--fv-body-color);
+    padding: spacer(4) spacer(5);
+    margin-bottom: spacer(4);
+    border: $border-width solid transparent;
+    border-radius: map.get($radii, 'lg');
+    backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+    -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
   }
-}
 
-// In the light theme the near-white alert fill needs darker accent text. Mix
-// the hue toward the light ink so the heading/link clear WCAG AA (≥ 4.5:1).
-[data-theme='light'] {
+  .alert-heading {
+    margin-bottom: spacer(2);
+    font-weight: map.get($font-weights, 'bold');
+  }
+
+  .alert > :last-child {
+    margin-bottom: 0;
+  }
+
+  // Each variant contributes the hue via a translucent fill, a colored border
+  // and a colored left accent — readable in either theme.
   @each $name, $clr in $theme-colors {
     .alert-#{$name} {
-      .alert-heading,
+      background-color: rgba($clr, 0.13);
+      border-color: rgba($clr, 0.42);
+      border-left: 3px solid $clr;
+
+      .alert-heading {
+        color: $clr;
+      }
+
       .alert-link {
-        color: color.mix($body-text-light, $clr, 65%);
+        color: $clr;
+        font-weight: map.get($font-weights, 'semibold');
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // In the light theme the near-white alert fill needs darker accent text. Mix
+  // the hue toward the light ink so the heading/link clear WCAG AA (≥ 4.5:1).
+  [data-theme='light'] {
+    @each $name, $clr in $theme-colors {
+      .alert-#{$name} {
+        .alert-heading,
+        .alert-link {
+          color: color.mix($body-text-light, $clr, 65%);
+        }
       }
     }
   }

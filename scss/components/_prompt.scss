@@ -14,49 +14,52 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.prompt {
-  display: flex;
-  align-items: flex-end;
-  gap: spacer(3);
-  padding: spacer(3);
-  border-radius: map.get($radii, 'lg');
-  @include glass($strong: true);
-  transition: border-color $transition-base, box-shadow $transition-base;
+@layer components {
 
-  &:focus-within {
-    border-color: var(--fv-primary);
-    box-shadow: var(--fv-focus-ring);
+  .prompt {
+    display: flex;
+    align-items: flex-end;
+    gap: spacer(3);
+    padding: spacer(3);
+    border-radius: map.get($radii, 'lg');
+    @include glass($strong: true);
+    transition: border-color $transition-base, box-shadow $transition-base;
+
+    &:focus-within {
+      border-color: var(--fv-primary);
+      box-shadow: var(--fv-focus-ring);
+    }
   }
-}
 
-.prompt-field {
-  flex: 1 1 auto;
-  min-width: 0;
-  min-height: 2.75rem;
-  max-height: 12rem;
-  padding: spacer(2) spacer(3);
-  color: var(--fv-body-color);
-  font: inherit;
-  line-height: $line-height-base;
-  background: transparent;
-  border: 0;
-  resize: none;
-  field-sizing: content;        // progressive: auto-grow to content, capped above
-  overflow-y: auto;
+  .prompt-field {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 2.75rem;
+    max-height: 12rem;
+    padding: spacer(2) spacer(3);
+    color: var(--fv-body-color);
+    font: inherit;
+    line-height: $line-height-base;
+    background: transparent;
+    border: 0;
+    resize: none;
+    field-sizing: content;        // progressive: auto-grow to content, capped above
+    overflow-y: auto;
 
-  &::placeholder { color: var(--fv-muted); opacity: 0.8; }
-  &:focus { outline: 0; }       // the .prompt wrapper shows the ring instead
-}
+    &::placeholder { color: var(--fv-muted); opacity: 0.8; }
+    &:focus { outline: 0; }       // the .prompt wrapper shows the ring instead
+  }
 
-.prompt-actions {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: spacer(2);
-}
+  .prompt-actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: spacer(2);
+  }
 
-.prompt-meta {
-  font-size: map.get($font-sizes, 'sm');
-  color: var(--fv-muted);
-  white-space: nowrap;
+  .prompt-meta {
+    font-size: map.get($font-sizes, 'sm');
+    color: var(--fv-muted);
+    white-space: nowrap;
+  }
 }

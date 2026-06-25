@@ -2,6 +2,11 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [0.9.0] — 2026-06-25
+### Changed
+- **CSS cascade layers.** The framework is now wrapped in `@layer reset, base, layout, components, utilities`, so utilities beat components by **layer order instead of `!important`** — 45 utility `!important` declarations removed (54 → 9; the rest are intentional: form validation, reduced-motion, visually-hidden/skip-link).
+- **Easier overrides (one behavior change):** because Farvist's styles are now layered, any CSS you write *outside* a layer (plain author CSS) — and inline styles — beat the framework without `!important`. This is the intended upgrade. Requires a modern browser (Chrome/Edge 99, Safari 15.4, Firefox 97 — Mar 2022).
+
 ## [0.8.0] — 2026-06-25
 ### Added
 - **AI UI kit** — three components for AI products, built on the glass system:

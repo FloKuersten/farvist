@@ -13,64 +13,67 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-// Side abbreviation -> the physical property/properties it sets.
-$spacing-sides: (
-  't': top,
-  'e': right,
-  'b': bottom,
-  's': left,
-  'x': (left, right),
-  'y': (top, bottom),
-  '':  all,
-);
+@layer utilities {
 
-@each $bp in map.keys($grid-breakpoints) {
-  $infix: breakpoint-infix($bp);
+  // Side abbreviation -> the physical property/properties it sets.
+  $spacing-sides: (
+    't': top,
+    'e': right,
+    'b': bottom,
+    's': left,
+    'x': (left, right),
+    'y': (top, bottom),
+    '':  all,
+  );
 
-  @include media-up($bp) {
-    // property loop: margin (m) and padding (p)
-    @each $prop, $abbrev in (margin: 'm', padding: 'p') {
-      // scale loop: every step of $spacers
-      @each $size, $length in $spacers {
-        // side loop: t / e / b / s / x / y / all
-        @each $side, $targets in $spacing-sides {
-          .#{$abbrev}#{$side}#{$infix}-#{$size} {
-            @if $targets == all {
-              #{$prop}: $length !important;
-            } @else {
-              @each $target in $targets {
-                #{$prop}-#{$target}: $length !important;
+  @each $bp in map.keys($grid-breakpoints) {
+    $infix: breakpoint-infix($bp);
+
+    @include media-up($bp) {
+      // property loop: margin (m) and padding (p)
+      @each $prop, $abbrev in (margin: 'm', padding: 'p') {
+        // scale loop: every step of $spacers
+        @each $size, $length in $spacers {
+          // side loop: t / e / b / s / x / y / all
+          @each $side, $targets in $spacing-sides {
+            .#{$abbrev}#{$side}#{$infix}-#{$size} {
+              @if $targets == all {
+                #{$prop}: $length;
+              } @else {
+                @each $target in $targets {
+                  #{$prop}-#{$target}: $length;
+                }
               }
             }
           }
         }
       }
-    }
 
-    // Negative margins (handy for pulling elements over gutters).
-    @each $size, $length in $spacers {
-      @if $length != 0 {
-        .m#{$infix}-n#{$size}  { margin: -$length !important; }
-        .mt#{$infix}-n#{$size} { margin-top: -$length !important; }
-        .mb#{$infix}-n#{$size} { margin-bottom: -$length !important; }
-        .ms#{$infix}-n#{$size} { margin-left: -$length !important; }
-        .me#{$infix}-n#{$size} { margin-right: -$length !important; }
-        .mx#{$infix}-n#{$size} {
-          margin-left: -$length !important;
-          margin-right: -$length !important;
+      // Negative margins (handy for pulling elements over gutters).
+      @each $size, $length in $spacers {
+        @if $length != 0 {
+          .m#{$infix}-n#{$size}  { margin: -$length; }
+          .mt#{$infix}-n#{$size} { margin-top: -$length; }
+          .mb#{$infix}-n#{$size} { margin-bottom: -$length; }
+          .ms#{$infix}-n#{$size} { margin-left: -$length; }
+          .me#{$infix}-n#{$size} { margin-right: -$length; }
+          .mx#{$infix}-n#{$size} {
+            margin-left: -$length;
+            margin-right: -$length;
+          }
         }
       }
-    }
 
-    // Auto margins for centering / pushing.
-    .m#{$infix}-auto  { margin: auto !important; }
-    .mt#{$infix}-auto { margin-top: auto !important; }
-    .mb#{$infix}-auto { margin-bottom: auto !important; }
-    .ms#{$infix}-auto { margin-left: auto !important; }
-    .me#{$infix}-auto { margin-right: auto !important; }
-    .mx#{$infix}-auto {
-      margin-left: auto !important;
-      margin-right: auto !important;
+      // Auto margins for centering / pushing.
+      .m#{$infix}-auto  { margin: auto; }
+      .mt#{$infix}-auto { margin-top: auto; }
+      .mb#{$infix}-auto { margin-bottom: auto; }
+      .ms#{$infix}-auto { margin-left: auto; }
+      .me#{$infix}-auto { margin-right: auto; }
+      .mx#{$infix}-auto {
+        margin-left: auto;
+        margin-right: auto;
+      }
     }
   }
 }

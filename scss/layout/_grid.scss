@@ -8,84 +8,87 @@
 @use 'sass:math';
 @use '../abstracts' as *;
 
-// -- Containers ---------------------------------------------------------------
-.container,
-.container-fluid {
-  width: 100%;
-  margin-inline: auto;
-  padding-inline: 1rem;          // roomier gutter on phones (was 0.75rem)
-}
+@layer layout {
 
-// Restore the tighter desktop gutter from `sm` up.
-@include media-up('sm') {
+  // -- Containers ---------------------------------------------------------------
   .container,
   .container-fluid {
-    padding-inline: math.div($grid-gutter, 2);
-  }
-}
-
-// A fixed `.container` steps up to each breakpoint's max-width.
-@each $name, $width in $container-max-widths {
-  @include media-up($name) {
-    .container {
-      max-width: $width;
-    }
-  }
-}
-
-// -- Row ----------------------------------------------------------------------
-// Negative inline margin cancels the columns' gutter padding so edges align.
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-inline: math.div(-$grid-gutter, 2);
-
-  > * {
     width: 100%;
-    max-width: 100%;
-    padding-inline: math.div($grid-gutter, 2);
+    margin-inline: auto;
+    padding-inline: 1rem;          // roomier gutter on phones (was 0.75rem)
   }
-}
 
-// -- Auto / equal-width columns ----------------------------------------------
-.col {
-  flex: 1 0 0%;
-}
-
-.col-auto {
-  flex: 0 0 auto;
-  width: auto;
-}
-
-// -- Generated fixed-width columns & offsets ---------------------------------
-@each $bp in map.keys($grid-breakpoints) {
-  $infix: breakpoint-infix($bp);
-
-  @include media-up($bp) {
-    // .col-6, .col-md-4, ... built with a @for loop over the column count.
-    @for $i from 1 through $grid-columns {
-      .col#{$infix}-#{$i} {
-        flex: 0 0 auto;
-        width: math.percentage(math.div($i, $grid-columns));
-      }
+  // Restore the tighter desktop gutter from `sm` up.
+  @include media-up('sm') {
+    .container,
+    .container-fluid {
+      padding-inline: math.div($grid-gutter, 2);
     }
+  }
 
-    // .offset-3, .offset-lg-2, ... push a column to the right.
-    @for $i from 0 through $grid-columns - 1 {
-      $offset: 0;
-      @if $i != 0 {
-        $offset: math.percentage(math.div($i, $grid-columns));
-      }
-      .offset#{$infix}-#{$i} {
-        margin-left: $offset;
+  // A fixed `.container` steps up to each breakpoint's max-width.
+  @each $name, $width in $container-max-widths {
+    @include media-up($name) {
+      .container {
+        max-width: $width;
       }
     }
   }
-}
 
-// -- Gutter utilities (gap-based, opt-in) ------------------------------------
-@each $key, $value in $spacers {
-  .g-#{$key}  { gap: $value; }
-  .gx-#{$key} { column-gap: $value; }
-  .gy-#{$key} { row-gap: $value; }
+  // -- Row ----------------------------------------------------------------------
+  // Negative inline margin cancels the columns' gutter padding so edges align.
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-inline: math.div(-$grid-gutter, 2);
+
+    > * {
+      width: 100%;
+      max-width: 100%;
+      padding-inline: math.div($grid-gutter, 2);
+    }
+  }
+
+  // -- Auto / equal-width columns ----------------------------------------------
+  .col {
+    flex: 1 0 0%;
+  }
+
+  .col-auto {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  // -- Generated fixed-width columns & offsets ---------------------------------
+  @each $bp in map.keys($grid-breakpoints) {
+    $infix: breakpoint-infix($bp);
+
+    @include media-up($bp) {
+      // .col-6, .col-md-4, ... built with a @for loop over the column count.
+      @for $i from 1 through $grid-columns {
+        .col#{$infix}-#{$i} {
+          flex: 0 0 auto;
+          width: math.percentage(math.div($i, $grid-columns));
+        }
+      }
+
+      // .offset-3, .offset-lg-2, ... push a column to the right.
+      @for $i from 0 through $grid-columns - 1 {
+        $offset: 0;
+        @if $i != 0 {
+          $offset: math.percentage(math.div($i, $grid-columns));
+        }
+        .offset#{$infix}-#{$i} {
+          margin-left: $offset;
+        }
+      }
+    }
+  }
+
+  // -- Gutter utilities (gap-based, opt-in) ------------------------------------
+  @each $key, $value in $spacers {
+    .g-#{$key}  { gap: $value; }
+    .gx-#{$key} { column-gap: $value; }
+    .gy-#{$key} { row-gap: $value; }
+  }
 }

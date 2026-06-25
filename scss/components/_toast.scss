@@ -6,74 +6,77 @@
 @use 'sass:map';
 @use '../abstracts' as *;
 
-.toast-container {
-  position: fixed;
-  top: spacer(5);
-  right: spacer(5);
-  z-index: map.get($z-layers, 'tooltip');
-  display: flex;
-  flex-direction: column;
-  gap: spacer(2);
-  width: min(22rem, calc(100vw - #{spacer(6)}));
-}
+@layer components {
 
-.toast {
-  display: flex;
-  align-items: flex-start;
-  gap: spacer(3);
-  padding: spacer(3) spacer(4);
-  border-radius: map.get($radii, 'lg');
-  border-left: 3px solid var(--fv-primary);
-  @include glass($strong: true);
-  box-shadow: var(--fv-shadow-xl);
-  animation: fv-toast-in 0.3s ease;
-}
+  .toast-container {
+    position: fixed;
+    top: spacer(5);
+    right: spacer(5);
+    z-index: map.get($z-layers, 'tooltip');
+    display: flex;
+    flex-direction: column;
+    gap: spacer(2);
+    width: min(22rem, calc(100vw - #{spacer(6)}));
+  }
 
-.toast-body {
-  flex: 1 1 auto;
-  min-width: 0;
-}
+  .toast {
+    display: flex;
+    align-items: flex-start;
+    gap: spacer(3);
+    padding: spacer(3) spacer(4);
+    border-radius: map.get($radii, 'lg');
+    border-left: 3px solid var(--fv-primary);
+    @include glass($strong: true);
+    box-shadow: var(--fv-shadow-xl);
+    animation: fv-toast-in 0.3s ease;
+  }
 
-.toast-title {
-  font-weight: map.get($font-weights, 'semibold');
-}
+  .toast-body {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
 
-.toast-message {
-  font-size: map.get($font-sizes, 'sm');
-  color: var(--fv-muted);
-}
+  .toast-title {
+    font-weight: map.get($font-weights, 'semibold');
+  }
 
-.toast-close {
-  flex-shrink: 0;
-  padding: 0;
-  font-size: 1.2rem;
-  line-height: 1;
-  color: var(--fv-muted);
-  background: transparent;
-  border: 0;
-  cursor: pointer;
+  .toast-message {
+    font-size: map.get($font-sizes, 'sm');
+    color: var(--fv-muted);
+  }
 
-  &:hover { color: var(--fv-body-color); }
-}
+  .toast-close {
+    flex-shrink: 0;
+    padding: 0;
+    font-size: 1.2rem;
+    line-height: 1;
+    color: var(--fv-muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
 
-// Colored left accent per variant.
-@each $name, $clr in $theme-colors {
-  .toast-#{$name} { border-left-color: $clr; }
-}
+    &:hover { color: var(--fv-body-color); }
+  }
 
-.toast.is-leaving {
-  animation: fv-toast-out 0.25s ease forwards;
-}
+  // Colored left accent per variant.
+  @each $name, $clr in $theme-colors {
+    .toast-#{$name} { border-left-color: $clr; }
+  }
 
-@keyframes fv-toast-in {
-  from { opacity: 0; transform: translateX(1rem); }
-  to   { opacity: 1; transform: none; }
-}
+  .toast.is-leaving {
+    animation: fv-toast-out 0.25s ease forwards;
+  }
 
-@keyframes fv-toast-out {
-  to { opacity: 0; transform: translateX(1rem); }
-}
+  @keyframes fv-toast-in {
+    from { opacity: 0; transform: translateX(1rem); }
+    to   { opacity: 1; transform: none; }
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .toast { animation: none; }
+  @keyframes fv-toast-out {
+    to { opacity: 0; transform: translateX(1rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast { animation: none; }
+  }
 }
