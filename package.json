@@ -1,7 +1,7 @@
 {
   "name": "farvist",
-  "version": "0.7.0",
-  "description": "A lightweight (~19 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 30+ components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
+  "version": "0.8.0",
+  "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 30+ components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "license": "MIT",
   "author": "FloKuersten",
   "homepage": "https://farvist.com",
@@ -36,12 +36,16 @@
   "files": [
     "scss",
     "dist",
-    "assets"
+    "assets",
+    "llms.txt",
+    "llms-full.txt",
+    "ai-context.json"
   ],
   "scripts": {
     "build": "sass scss/farvist.scss dist/farvist.css --style=expanded --no-source-map",
     "build:min": "sass scss/farvist.scss dist/farvist.min.css --style=compressed --no-source-map",
-    "build:all": "npm run build && npm run build:min",
+    "build:all": "npm run build && npm run build:min && npm run build:ai",
+    "build:ai": "node scripts/gen-ai-context.mjs",
     "watch": "sass --watch scss/farvist.scss dist/farvist.css --style=expanded",
     "dev": "npm run build:all",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File deploy.ps1",

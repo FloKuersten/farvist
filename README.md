@@ -16,7 +16,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 - 🎨 **Assets included** — a 35-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 2.5 KB optional JS companion for the interactive bits.
 - 🖼️ **Premade templates** — a glass dashboard and a copy-paste block gallery in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
-- 🪶 **~19 KB gzipped** (127 KB minified) — and shrinks further when you trim the token maps.
+- 🪶 **~20 KB gzipped** (127 KB minified) — and shrinks further when you trim the token maps.
 - 🦾 **Modern & accessible** — `@use`/`@forward` modules (no deprecated `@import`), `:focus-visible` rings, `prefers-reduced-motion` support, and a `@supports` fallback for browsers without `backdrop-filter`.
 
 ---
@@ -299,6 +299,16 @@ Everything else (accordion, dropdown, tooltip, switch, progress…) is pure CSS 
 `.d-{none|block|flex|grid|…}` (responsive) · `.flex-{row|column|wrap}` `.justify-content-*` `.align-items-*` `.gap-*` · `.h1`–`.h6` (heading scale on any element) `.fs-{xs…5xl}` `.fw-{light…black}` `.text-{start|center|end}` `.text-truncate` · `.text-{color|muted|body}` `.bg-{color|surface}` `.border-{color}` · `.border` `.rounded-{sm…2xl|pill|circle}` `.shadow-{sm…xl}` · `.w-{25…100}` `.vh-100` · `.position-*` `.sticky-top` `.fixed-top` `.z-*` `.opacity-{0…100}`
 
 ---
+
+## For AI assistants
+
+Farvist ships machine-readable context so AI coding tools (Cursor, Claude, Copilot) generate correct markup:
+
+- [`llms.txt`](https://farvist.com/llms.txt) — concise index (the [llms.txt](https://llmstxt.org) convention).
+- [`llms-full.txt`](https://farvist.com/llms-full.txt) — every convention + component class with a copy-paste example; paste it into your assistant.
+- [`ai-context.json`](https://farvist.com/ai-context.json) — JSON catalog of components, utility families and conventions.
+
+These are regenerated from the compiled CSS on every build (`npm run build:ai`) and shipped in the npm package.
 
 ## Project structure
 

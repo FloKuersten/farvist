@@ -2,6 +2,16 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [0.8.0] — 2026-06-25
+### Added
+- **AI UI kit** — three components for AI products, built on the glass system:
+  - **Chat** (`.chat`, `.message`, `.message-out`, `.message-bubble`, `.message-body`, `.message-meta`) + a `.typing` indicator.
+  - **Prompt composer** (`.prompt`, `.prompt-field` auto-sizing textarea, `.prompt-actions`, `.prompt-meta`).
+  - **Agent status** (`.status` + `.status-online/busy/idle/error`) with a pulsing "live" dot.
+- A fifth template — **`examples/ai-console.html`**, a full glass chat console with a dynamic-message demo.
+- A docs **"Chat & AI kit"** section.
+- **AI-assistant enablement**: `llms.txt` (the llms.txt convention), `llms-full.txt` (full paste-in context: conventions + every component's classes), and `ai-context.json` (machine-readable catalog) — generated from the compiled CSS by `npm run build:ai` (wired into `build:all`), served at `farvist.com/*`, and shipped in the npm package.
+
 ## [0.7.0] — 2026-06-25
 ### Added
 - **Accessibility pass** — most ARIA is now applied automatically by `farvist.js`:

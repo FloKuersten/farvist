@@ -1,0 +1,25 @@
+# Farvist
+
+> A lightweight glassmorphism CSS framework — frosted-glass surfaces, neon glow, gradients, a free backgrounds library, 30+ components and dark/light themes. Drop in one `<link>`, no build step.
+
+Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses a class model like Bootstrap's (components + utilities), but token-driven. The optional 3 KB `farvist.js` wires modals, tabs, toasts, the mobile navbar, and accessibility ARIA. Built for AI products too: chat, prompt-composer and agent-status components.
+
+## Start here (for AI assistants)
+- [Full context](https://farvist.com/llms-full.txt): every convention + component class with a copy-paste example. Paste this into your assistant before generating Farvist markup.
+- [Machine-readable catalog](https://farvist.com/ai-context.json): JSON of components, utility families and conventions.
+
+## Docs
+- [Documentation](https://farvist.com/docs/): components, utilities, theming, backgrounds, accessibility, the AI kit.
+- [Live demo](https://farvist.com): every component on one page.
+- [AI console template](https://farvist.com/examples/ai-console.html): a full chat UI built with Farvist.
+
+## Install
+- CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css">`
+- npm: `npm i farvist`
+
+## Conventions (quick reference)
+- Colors: primary, secondary, success, danger, warning, info, accent, light, dark (suffixes: `btn-primary`, `text-success`, `bg-accent`).
+- Breakpoints: sm 576, md 768, lg 992, xl 1200 — infix after the prefix: `col-md-6`, `d-lg-flex`.
+- Spacing: 0–7 scale → `p-4` = 1rem, `gap-3` = .75rem.
+- JS hooks: `data-fv-open`, `data-fv-dismiss`, `data-fv-tab`, `data-fv-theme-toggle`, `data-fv-nav-toggle`, `data-tooltip`; JS API `Farvist.toast()`, `Farvist.enhance()`.
+- Give the page a rich background (e.g. `<body class="bg-mesh-aurora">`) so the glass reads.

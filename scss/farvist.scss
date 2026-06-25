@@ -52,6 +52,9 @@
 @use 'components/list-group';
 @use 'components/callout';
 @use 'components/range';
+@use 'components/chat';
+@use 'components/prompt';
+@use 'components/status';
 
 // Utilities (last — highest cascade priority)
 @use 'utilities/spacing';

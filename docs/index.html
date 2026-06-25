@@ -52,6 +52,8 @@
       <a href="#cards">Cards &amp; badges</a>
       <a href="#forms">Forms</a>
       <a href="#overlays">Modal · Tabs · Toast</a>
+      <div class="grp">AI</div>
+      <a href="#ai">Chat &amp; AI kit ✦</a>
       <div class="grp">Scripting</div>
       <a href="#js">JS companion</a>
       <a href="#a11y">Accessibility ✦</a>
@@ -63,7 +65,7 @@
 
       <section id="intro">
         <h1 class="fs-4xl fw-black mb-3">Farvist <span class="text-gradient">docs</span></h1>
-        <p class="lead text-muted mb-4">A lightweight (~19 KB), Sass-powered glassmorphism CSS framework. Frosted surfaces, neon glow, gradients and a free backgrounds library — generated from design tokens with <code>@for</code> / <code>@each</code> loops.</p>
+        <p class="lead text-muted mb-4">A lightweight (~20 KB), Sass-powered glassmorphism CSS framework. Frosted surfaces, neon glow, gradients and a free backgrounds library — generated from design tokens with <code>@for</code> / <code>@each</code> loops.</p>
         <div class="d-flex gap-2 flex-wrap mb-3">
           <span class="chip chip-success">MIT</span>
           <span class="chip">Zero dependencies</span>
@@ -187,6 +189,64 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
 &lt;dialog class="modal" id="m"&gt; … &lt;/dialog&gt;
 
 Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
+      </section>
+
+      <section id="ai">
+        <h2 class="mb-3">Chat &amp; AI kit ✦</h2>
+        <p class="text-muted mb-4" style="max-width:46rem;">Components for AI products — a conversation thread, a prompt composer and agent-status indicators — all built on the glass system. See the full <a href="../examples/ai-console.html">AI console template</a>.</p>
+
+        <h3 class="h5 mb-3">Chat thread</h3>
+        <div class="chat mb-3" style="max-width:40rem;">
+          <div class="message">
+            <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+            <div class="message-body">
+              <div class="message-bubble">How can I help?</div>
+              <div class="message-meta">Assistant · now</div>
+            </div>
+          </div>
+          <div class="message message-out">
+            <span class="avatar avatar-sm avatar-primary" aria-hidden="true">You</span>
+            <div class="message-body">
+              <div class="message-bubble">Scaffold a pricing page.</div>
+              <div class="message-meta">You</div>
+            </div>
+          </div>
+          <div class="message">
+            <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+            <div class="message-body"><div class="message-bubble"><span class="typing"><span></span><span></span><span></span></span></div></div>
+          </div>
+        </div>
+<pre><code>&lt;div class="chat"&gt;
+  &lt;div class="message"&gt;                  &lt;!-- assistant (left) --&gt;
+    &lt;span class="avatar avatar-sm avatar-accent"&gt;AI&lt;/span&gt;
+    &lt;div class="message-body"&gt;
+      &lt;div class="message-bubble"&gt;How can I help?&lt;/div&gt;
+      &lt;div class="message-meta"&gt;Assistant&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="message message-out"&gt; … &lt;/div&gt;   &lt;!-- user (right) --&gt;
+&lt;/div&gt;
+&lt;!-- typing dots --&gt;
+&lt;span class="typing"&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;</code></pre>
+
+        <h3 class="h5 mb-3 mt-4">Prompt composer</h3>
+        <form class="prompt mb-3" style="max-width:40rem;" onsubmit="return false;">
+          <textarea class="prompt-field" aria-label="Message" placeholder="Message…" rows="1"></textarea>
+          <div class="prompt-actions"><span class="prompt-meta">0 / 4000</span><button class="btn btn-gradient-primary" type="button" aria-label="Send">Send</button></div>
+        </form>
+
+        <h3 class="h5 mb-2 mt-4">Agent status</h3>
+        <div class="d-flex gap-4 flex-wrap mb-3">
+          <span class="status status-online">Online</span>
+          <span class="status status-busy">Thinking</span>
+          <span class="status status-idle">Idle</span>
+          <span class="status status-error">Failed</span>
+        </div>
+
+        <h3 class="h5 mb-2 mt-4">Streaming messages</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">After injecting new messages into the DOM, call <code>Farvist.enhance()</code> so any new tooltips, tabs and ARIA get wired up.</p>
+<pre><code>chat.insertAdjacentHTML('beforeend', bubbleHTML);
+Farvist.enhance();   // re-run progressive enhancement</code></pre>
       </section>
 
       <section id="js">

@@ -1,0 +1,247 @@
+# farvist — full context for AI assistants
+
+> A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 30+ components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
+
+Version 0.8.0 · MIT · https://farvist.com · 1973 utility/component classes.
+
+## Install
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css">
+<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script> <!-- optional, for modal/tabs/toast/theme -->
+```
+Or: `npm i farvist`. Dark theme by default — give the page a rich background so the glass reads.
+
+## Conventions
+- **Colors:** primary, secondary, success, danger, warning, info, accent, light, dark (use as suffixes: btn-primary, text-success, bg-accent).
+- **Theming:** Dark by default. Add data-theme="light" to <html> to switch at runtime. Colors are CSS custom properties: --fv-primary, --fv-primary-text (readable on dark), --fv-body-color, --fv-muted, --fv-glass-bg, --fv-gradient-primary, etc.
+- **Breakpoints:** sm=576px, md=768px, lg=992px, xl=1200px. Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.
+- **Spacing scale:** 0,1,2,3,4,5,6,7 → 0, .25, .5, .75, 1, 1.5, 2, 3rem (e.g. p-4 = 1rem, gap-3 = .75rem).
+- **Notes:** For glass to read, give the page a rich background (e.g. body class="bg-mesh-aurora"). Utilities win the cascade (no !important needed by you).
+
+## JavaScript hooks
+<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script> — auto-runs enhance() on load.
+- `data-fv-open="#id"` — open a <dialog class="modal" id="id">
+- `data-fv-dismiss` — close the nearest dialog
+- `data-fv-tab="#panelId"` — switch tabs (arrow-key nav added automatically)
+- `data-fv-theme-toggle` — flip light/dark theme
+- `data-fv-nav-toggle` — toggle the collapsed mobile navbar
+- `data-tooltip="text"` — CSS tooltip; text is exposed to assistive tech
+- API: Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.
+
+## Utility families
+- `col-*` — grid columns (74): col, col-1, col-10, col-11, col-12, col-2, col-3, col-4, col-5, col-6, col-7, col-8, col-9, col-auto, …
+- `offset-*` — column offsets (72): offset-0, offset-1, offset-10, offset-11, offset-2, offset-3, offset-4, offset-5, offset-6, offset-7, offset-8, offset-9, offset-lg-0, offset-lg-1, …
+- `g-*` — grid gutters (9): g-0, g-1, g-2, g-3, g-4, g-5, g-6, g-7, g-8
+- `gx-*` — column gutter (9): gx-0, gx-1, gx-2, gx-3, gx-4, gx-5, gx-6, gx-7, gx-8
+- `gy-*` — row gutter (9): gy-0, gy-1, gy-2, gy-3, gy-4, gy-5, gy-6, gy-7, gy-8
+- `m-*` — margin (108): m-0, m-1, m-2, m-3, m-4, m-5, m-6, m-7, m-8, m-auto, m-lg-0, m-lg-1, m-lg-2, m-lg-3, …
+- `mt-*` — margin-top (108): mt-0, mt-1, mt-2, mt-3, mt-4, mt-5, mt-6, mt-7, mt-8, mt-auto, mt-lg-0, mt-lg-1, mt-lg-2, mt-lg-3, …
+- `mb-*` — margin-bottom (108): mb-0, mb-1, mb-2, mb-3, mb-4, mb-5, mb-6, mb-7, mb-8, mb-auto, mb-lg-0, mb-lg-1, mb-lg-2, mb-lg-3, …
+- `ms-*` — margin-start (108): ms-0, ms-1, ms-2, ms-3, ms-4, ms-5, ms-6, ms-7, ms-8, ms-auto, ms-lg-0, ms-lg-1, ms-lg-2, ms-lg-3, …
+- `me-*` — margin-end (108): me-0, me-1, me-2, me-3, me-4, me-5, me-6, me-7, me-8, me-auto, me-lg-0, me-lg-1, me-lg-2, me-lg-3, …
+- `mx-*` — margin-x (108): mx-0, mx-1, mx-2, mx-3, mx-4, mx-5, mx-6, mx-7, mx-8, mx-auto, mx-lg-0, mx-lg-1, mx-lg-2, mx-lg-3, …
+- `my-*` — margin-y (54): my-0, my-1, my-2, my-3, my-4, my-5, my-6, my-7, my-8, my-lg-0, my-lg-1, my-lg-2, my-lg-3, my-lg-4, …
+- `p-*` — padding (54): p-0, p-1, p-2, p-3, p-4, p-5, p-6, p-7, p-8, p-lg-0, p-lg-1, p-lg-2, p-lg-3, p-lg-4, …
+- `pt-*` — padding-top (54): pt-0, pt-1, pt-2, pt-3, pt-4, pt-5, pt-6, pt-7, pt-8, pt-lg-0, pt-lg-1, pt-lg-2, pt-lg-3, pt-lg-4, …
+- `pb-*` — padding-bottom (54): pb-0, pb-1, pb-2, pb-3, pb-4, pb-5, pb-6, pb-7, pb-8, pb-lg-0, pb-lg-1, pb-lg-2, pb-lg-3, pb-lg-4, …
+- `ps-*` — padding-start (54): ps-0, ps-1, ps-2, ps-3, ps-4, ps-5, ps-6, ps-7, ps-8, ps-lg-0, ps-lg-1, ps-lg-2, ps-lg-3, ps-lg-4, …
+- `pe-*` — padding-end (56): pe-0, pe-1, pe-2, pe-3, pe-4, pe-5, pe-6, pe-7, pe-8, pe-auto, pe-lg-0, pe-lg-1, pe-lg-2, pe-lg-3, …
+- `px-*` — padding-x (54): px-0, px-1, px-2, px-3, px-4, px-5, px-6, px-7, px-8, px-lg-0, px-lg-1, px-lg-2, px-lg-3, px-lg-4, …
+- `py-*` — padding-y (54): py-0, py-1, py-2, py-3, py-4, py-5, py-6, py-7, py-8, py-lg-0, py-lg-1, py-lg-2, py-lg-3, py-lg-4, …
+- `d-*` — display (48): d-block, d-flex, d-grid, d-inline, d-inline-block, d-inline-flex, d-lg-block, d-lg-flex, d-lg-grid, d-lg-inline, d-lg-inline-block, d-lg-inline-flex, d-lg-none, d-lg-table, …
+- `flex-*` — flex (66): flex-column, flex-column-reverse, flex-fill, flex-grow-0, flex-grow-1, flex-lg-column, flex-lg-column-reverse, flex-lg-fill, flex-lg-grow-0, flex-lg-grow-1, flex-lg-nowrap, flex-lg-row, flex-lg-row-reverse, flex-lg-shrink-0, …
+- `justify-*` — justify-content (36): justify-content-around, justify-content-between, justify-content-center, justify-content-end, justify-content-evenly, justify-content-lg-around, justify-content-lg-between, justify-content-lg-center, justify-content-lg-end, justify-content-lg-evenly, justify-content-lg-start, justify-content-md-around, justify-content-md-between, justify-content-md-center, …
+- `align-*` — align-items (60): align-items-baseline, align-items-center, align-items-end, align-items-lg-baseline, align-items-lg-center, align-items-lg-end, align-items-lg-start, align-items-lg-stretch, align-items-md-baseline, align-items-md-center, align-items-md-end, align-items-md-start, align-items-md-stretch, align-items-sm-baseline, …
+- `gap-*` — gap (9): gap-0, gap-1, gap-2, gap-3, gap-4, gap-5, gap-6, gap-7, gap-8
+- `text-*` — text color / alignment (54): text-accent, text-body, text-break, text-capitalize, text-center, text-danger, text-dark, text-decoration-none, text-decoration-underline, text-end, text-glow, text-gradient, text-gradient-accent, text-gradient-aurora, …
+- `bg-*` — background (colors, gradients, meshes, patterns, spotlights) (51): bg-accent, bg-animated, bg-body, bg-danger, bg-dark, bg-dots, bg-drift, bg-fade, bg-fade-b, bg-fade-x, bg-gradient-accent, bg-gradient-aurora, bg-gradient-primary, bg-gradient-sunset, …
+- `fs-*` — font-size (9): fs-2xl, fs-3xl, fs-4xl, fs-5xl, fs-base, fs-lg, fs-sm, fs-xl, fs-xs
+- `fw-*` — font-weight (6): fw-black, fw-bold, fw-light, fw-medium, fw-normal, fw-semibold
+- `lh-*` — line-height (3): lh-1, lh-base, lh-lg
+- `rounded*` — border-radius (11): rounded, rounded-0, rounded-2xl, rounded-circle, rounded-full, rounded-lg, rounded-md, rounded-none, rounded-pill, rounded-sm, rounded-xl
+- `border*` — border (15): border, border-0, border-accent, border-bottom, border-danger, border-dark, border-end, border-info, border-light, border-primary, border-secondary, border-start, border-success, border-top, …
+- `shadow-*` — box-shadow (5): shadow-lg, shadow-md, shadow-none, shadow-sm, shadow-xl
+- `glow*` — neon glow (8): glow, glow-accent, glow-danger, glow-info, glow-none, glow-primary, glow-success, glow-warning
+- `glass*` — glass surface (3): glass, glass-flat, glass-strong
+- `w-*` — width (5): w-100, w-25, w-50, w-75, w-auto
+- `h-*` — height (5): h-100, h-25, h-50, h-75, h-auto
+- `mw-*` — max-width (1): mw-100
+- `mh-*` — max-height (1): mh-100
+- `opacity-*` — opacity (11): opacity-0, opacity-10, opacity-100, opacity-20, opacity-30, opacity-40, opacity-50, opacity-60, opacity-70, opacity-80, opacity-90
+- `overflow-*` — overflow (4): overflow-auto, overflow-hidden, overflow-scroll, overflow-visible
+- `position-*` — position (5): position-absolute, position-fixed, position-relative, position-static, position-sticky
+- `z-*` — z-index (5): z-dropdown, z-fixed, z-modal, z-sticky, z-tooltip
+- `hover-*` — hover effects (1): hover-lift
+- `animate-*` — animation (1): animate-float
+
+## Components
+### buttons
+Classes: `btn`, `btn-{color}`, `btn-outline-{color}`, `btn-gradient-{primary|sunset|aurora}`, `btn-glass`, `btn-link`, `btn-sm`, `btn-lg`, `btn-block`
+```html
+<button class="btn btn-gradient-primary">Save</button>
+```
+### badges
+Classes: `badge`, `badge-{color}`, `badge-soft-{color}`, `badge-pill`
+```html
+<span class="badge badge-soft-success">New</span>
+```
+### alerts
+Classes: `alert`, `alert-{color}`, `alert-heading`
+```html
+<div class="alert alert-info">Heads up.</div>
+```
+### cards
+Classes: `card`, `card-body`, `card-header`, `card-footer`, `card-title`, `card-text`, `card-glow`, `card-solid`, `hover-lift`
+```html
+<div class="card"><div class="card-body"><h3 class="card-title">Title</h3></div></div>
+```
+### chips
+Classes: `chip`, `chip-{color}`, `chip-close`
+```html
+<span class="chip chip-primary">Design <button class="chip-close" aria-label="Remove">&times;</button></span>
+```
+### avatar
+Classes: `avatar`, `avatar-{sm|lg|xl}`, `avatar-{color}`, `avatar-status`, `avatar-group`
+```html
+<span class="avatar avatar-primary">AL</span>
+```
+### forms
+Classes: `form-control`, `form-label`, `form-text`, `form-select`, `form-check`, `is-invalid`, `invalid-feedback`, `input-group`, `input-group-text`
+```html
+<label class="form-label" for="e">Email</label><input id="e" class="form-control">
+```
+### range
+Classes: `form-range`
+```html
+<input type="range" class="form-range">
+```
+### switch
+Classes: `switch`
+```html
+<label class="switch"><input type="checkbox"><span></span></label>
+```
+### table
+Classes: `table`, `table-hover`, `table-responsive`
+```html
+<div class="table-responsive"><table class="table table-hover">…</table></div>
+```
+### navbar
+Classes: `navbar`, `navbar-brand`, `navbar-nav`, `nav-link`, `navbar-toggle (data-fv-nav-toggle)`, `sticky-top`
+```html
+<nav class="navbar sticky-top">…</nav>
+```
+### dropdown
+Classes: `dropdown (<details>)`, `dropdown-menu`, `dropdown-menu-end`, `dropdown-item`, `dropdown-divider`
+```html
+<details class="dropdown"><summary class="btn btn-glass">Menu</summary><div class="dropdown-menu">…</div></details>
+```
+### modal
+Classes: `modal (<dialog>)`, `modal-header`, `modal-title`, `modal-body`, `modal-footer`, `modal-close`
+```html
+<button data-fv-open="#m">Open</button><dialog class="modal" id="m">…</dialog>
+```
+### tabs
+Classes: `tabs`, `tab (data-fv-tab="#id")`, `tab-panel`
+```html
+<div class="tabs"><button class="tab active" data-fv-tab="#p1">One</button></div><div class="tab-panel active" id="p1">…</div>
+```
+### accordion
+Classes: `accordion (<details>)`, `accordion-item`, `accordion-header`, `accordion-body`
+```html
+<details class="accordion-item" open><summary class="accordion-header">Q</summary><div class="accordion-body">A</div></details>
+```
+### toast
+Classes: `(JS only)`
+```html
+Farvist.toast({ title: 'Saved', variant: 'success' })
+```
+### tooltip
+Classes: `data-tooltip="text"`
+```html
+<button class="btn btn-glass" data-tooltip="Settings" aria-label="Settings">⚙</button>
+```
+### progress
+Classes: `progress`, `progress-bar`, `progress-striped`, `progress-animated`
+```html
+<div class="progress"><div class="progress-bar" style="width:60%"></div></div>
+```
+### spinner
+Classes: `spinner`, `spinner-{sm|lg}`, `spinner-{color}`, `spinner-dots`
+```html
+<div class="spinner spinner-primary"></div>
+```
+### skeleton
+Classes: `skeleton`, `skeleton-text`, `skeleton-circle`
+```html
+<div class="skeleton skeleton-text"></div>
+```
+### breadcrumb
+Classes: `breadcrumb`, `breadcrumb-item`, `active (gets aria-current)`
+```html
+<ol class="breadcrumb"><li class="breadcrumb-item active">Now</li></ol>
+```
+### pagination
+Classes: `pagination`, `page-item`, `page-link`, `active`
+```html
+<nav aria-label="Pagination"><ul class="pagination"><li class="page-item active"><a class="page-link" href="#">1</a></li></ul></nav>
+```
+### stepper
+Classes: `stepper`, `step`, `step-dot`, `step-label`, `is-active`, `is-done`
+```html
+<ol class="stepper"><li class="step is-active"><span class="step-dot">1</span><span class="step-label">Plan</span></li></ol>
+```
+### timeline
+Classes: `timeline`, `timeline-item`, `timeline-marker`, `timeline-{color}`, `timeline-title`, `timeline-time`
+```html
+<ul class="timeline"><li class="timeline-item timeline-primary"><div class="timeline-marker"></div><div class="timeline-content">…</div></li></ul>
+```
+### segmented
+Classes: `segmented (radio group, no JS)`
+```html
+<div class="segmented"><input type="radio" id="a" name="g" checked><label for="a">A</label></div>
+```
+### rating
+Classes: `rating`, `rating-empty`
+```html
+<span class="rating" role="img" aria-label="4 of 5">★★★★☆</span>
+```
+### stat
+Classes: `stat-value`, `stat-label`
+```html
+<div class="stat-value text-gradient">8.4k</div><div class="stat-label">Users</div>
+```
+### empty-state
+Classes: `empty-state`, `empty-state-icon`
+```html
+<div class="empty-state"><div class="empty-state-icon">📭</div><p>Nothing here yet.</p></div>
+```
+### list-group
+Classes: `list-group`, `list-group-item`
+```html
+<ul class="list-group"><li class="list-group-item">Item</li></ul>
+```
+### callout
+Classes: `callout`, `callout-{color}`
+```html
+<div class="callout callout-accent">Note.</div>
+```
+### backgrounds
+Classes: `bg-mesh-{aurora|sunset|ocean|nebula}`, `bg-grid`, `bg-dots`, `bg-graph`, `bg-spotlight`, `bg-spotlight-{color}`, `bg-fade`, `bg-drift`
+```html
+<body class="bg-mesh-aurora">
+```
+### chat (AI)
+Classes: `chat`, `message`, `message-out (user)`, `message-body`, `message-bubble`, `message-meta`, `typing`
+```html
+<div class="chat"><div class="message"><span class="avatar avatar-sm avatar-accent">AI</span><div class="message-body"><div class="message-bubble">Hi</div></div></div></div>
+```
+### prompt (AI)
+Classes: `prompt`, `prompt-field`, `prompt-actions`, `prompt-meta`
+```html
+<form class="prompt"><textarea class="prompt-field" aria-label="Message"></textarea><div class="prompt-actions"><button class="btn btn-gradient-primary">Send</button></div></form>
+```
+### status (AI)
+Classes: `status`, `status-{online|busy|idle|error}`
+```html
+<span class="status status-online">Agent online</span>
+```
