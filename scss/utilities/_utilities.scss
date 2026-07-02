@@ -108,9 +108,9 @@
 
   // -- Color utilities ----------------------------------------------------------
   @each $name, $clr in $theme-colors {
-    .text-#{$name}   { color: $clr; }
-    .bg-#{$name}     { background-color: $clr; }
-    .border-#{$name} { border-color: $clr; }
+    .text-#{$name}   { color: var(--fv-#{$name}); }
+    .bg-#{$name}     { background-color: var(--fv-#{$name}); }
+    .border-#{$name} { border-color: var(--fv-#{$name}); }
   }
 
   .text-white       { color: $white; }

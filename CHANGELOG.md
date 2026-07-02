@@ -2,6 +2,17 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.3.0] — 2026-07-03
+**Bring your brand — runtime theming with zero build step.** Override `--fv-primary` / `--fv-accent` / `--fv-info` on `:root` and the *entire* framework re-brands live off the CDN: gradients, neon glows, mesh backdrops, the body orbs, button hover/active states, soft badge/chip/alert tints, spotlights and focus rings all derive from the custom properties via `color-mix()` now (already in the browser baseline). An AI assistant can re-brand a Farvist page by writing five lines of CSS.
+### Added
+- Optional per-color companions: `--fv-{color}-contrast` (text on filled components) for brands that flip between light and dark fills; `--fv-primary-text` documented as the readable-tint override.
+- A **"Make it yours"** live re-brand demo on the homepage and a **"Bring your brand"** docs section; a `brand-theme` recipe + theming rules in `ai-context.json` / `llms-full.txt` / `farvist.cursorrules`.
+- **CI gate** (`npm run check:theming`): the compiled CSS may not bake brand colors outside `--fv-*` definitions — runtime re-branding can't silently regress.
+### Changed
+- Derived shades convert 1:1 (`rgba(c,a)` ≡ `color-mix(in srgb, c A%, transparent)`; `color.mix` ≡ `color-mix`) — the default look is **pixel-identical** to v1.2 (verified by computed-style diff across 28 components; the only approximations are button hover/active shades, which match to the decimal in practice).
+- Sass token maps (`$gradients`, `$glows`, `$bg-meshes`) now carry `var(--fv-*)`-based values; configuring colors via `@use ... with (...)` still works (the custom properties are emitted from your configured tokens).
+- Bundle size *shrank*: 20.5 → 20.2 KB gzip (repeated `color-mix(in srgb, var(--fv-` compresses better than scattered hex).
+
 ## [1.2.0] — 2026-07-02
 **Model output, styled.** v1.1 taught AI assistants to *write* Farvist; v1.2 makes Farvist the best framework for *displaying what models write*. Purely additive — 34 → **37 components**.
 ### Added

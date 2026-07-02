@@ -92,6 +92,24 @@ document.documentElement.setAttribute('data-theme', 'light'); // or remove it fo
 
 Components reference the variables (`--fv-body-bg`, `--fv-glass-bg`, `--fv-glass-border`, `--fv-muted`, …) so they retheme instantly — no recompile.
 
+### Bring your brand — runtime re-branding (v1.3)
+
+Every *derived* color — gradients, neon glows, mesh backdrops, body orbs, button hover/active states, soft tints, focus rings — derives from the `--fv-*` custom properties at runtime via `color-mix()`. Override a handful of variables and the whole framework re-brands, straight off the CDN:
+
+```css
+:root {
+  --fv-primary: #10b981;   /* your brand */
+  --fv-accent:  #a3e635;
+  --fv-info:    #2dd4bf;
+
+  /* optional companions when your brand flips brightness: */
+  --fv-primary-text: #6ee7b7;      /* readable tint for text/links on the dark surface */
+  --fv-primary-contrast: #06281d;  /* text on primary-filled buttons/badges */
+}
+```
+
+Same for `--fv-success` / `--fv-danger` / `--fv-warning` / `--fv-secondary`, each with an optional `--fv-{color}-contrast`. CI enforces this with a theming gate — no component rule may bake a brand color.
+
 ### Re-theme at build time
 
 Because everything is a token, you can recolor the whole framework by configuring the module:

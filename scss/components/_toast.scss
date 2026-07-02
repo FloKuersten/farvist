@@ -61,7 +61,7 @@
 
   // Colored left accent per variant.
   @each $name, $clr in $theme-colors {
-    .toast-#{$name} { border-left-color: $clr; }
+    .toast-#{$name} { border-left-color: var(--fv-#{$name}); }
   }
 
   .toast.is-leaving {

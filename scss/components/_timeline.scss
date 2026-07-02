@@ -74,7 +74,7 @@
   // Per-item dot colors.
   @each $name, $clr in $theme-colors {
     .timeline-#{$name} .timeline-marker::before {
-      background-color: $clr;
+      background-color: var(--fv-#{$name});
     }
   }
 }

@@ -18,7 +18,7 @@
     --fv-btn-hover-bg: var(--fv-glass-bg-strong);
     --fv-btn-hover-border: var(--fv-glass-border);
     --fv-btn-active-bg: var(--fv-glass-bg);
-    --fv-btn-focus-ring: #{rgba($primary, 0.45)};
+    --fv-btn-focus-ring: color-mix(in srgb, var(--fv-primary) 45%, transparent);
     --fv-btn-glow: none;
 
     display: inline-flex;
@@ -74,10 +74,11 @@
     }
   }
 
-  // Solid variants — one rule per theme color via @each.
+  // Solid variants — one rule per theme color via @each. The $token arm makes
+  // every derived state follow the runtime --fv-* custom properties.
   @each $name, $clr in $theme-colors {
     .btn-#{$name} {
-      @include button-variant($clr);
+      @include button-variant($clr, $token: $name);
     }
   }
 
@@ -85,16 +86,16 @@
   @each $name, $clr in $theme-colors {
     .btn-outline-#{$name} {
       --fv-btn-bg: transparent;
-      --fv-btn-color: var(--fv-#{$name}-text, #{$clr});
-      --fv-btn-border: #{$clr};
-      --fv-btn-hover-bg: #{$clr};
-      --fv-btn-hover-border: #{$clr};
-      --fv-btn-active-bg: #{color.scale($clr, $lightness: -10%)};
-      --fv-btn-focus-ring: #{rgba($clr, 0.45)};
-      --fv-btn-glow: 0 0 24px #{rgba($clr, 0.5)};
+      --fv-btn-color: var(--fv-#{$name}-text, var(--fv-#{$name}));
+      --fv-btn-border: var(--fv-#{$name});
+      --fv-btn-hover-bg: var(--fv-#{$name});
+      --fv-btn-hover-border: var(--fv-#{$name});
+      --fv-btn-active-bg: color-mix(in srgb, var(--fv-#{$name}) 90%, black);
+      --fv-btn-focus-ring: color-mix(in srgb, var(--fv-#{$name}) 45%, transparent);
+      --fv-btn-glow: 0 0 24px color-mix(in srgb, var(--fv-#{$name}) 50%, transparent);
 
       &:hover {
-        --fv-btn-color: #{contrast-color($clr)};
+        --fv-btn-color: var(--fv-#{$name}-contrast, #{contrast-color($clr)});
       }
     }
   }
@@ -111,7 +112,7 @@
       --fv-btn-glow: var(--fv-glow-primary);
 
       color: var(--fv-btn-color);
-      background-image: #{$grad};
+      background-image: var(--fv-gradient-#{$name});
       border-color: transparent;
 
       &:hover {

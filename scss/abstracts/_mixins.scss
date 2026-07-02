@@ -61,18 +61,35 @@
 
 // Emit the custom-property set that paints a solid button. `.btn` reads these
 // `--fv-btn-*` variables, so one mixin call themes every state at once.
-@mixin button-variant($bg, $color: null) {
+@mixin button-variant($bg, $color: null, $token: null) {
   $text: contrast-color($bg);
   @if $color {
     $text: $color;
   }
 
-  --fv-btn-bg: #{$bg};
-  --fv-btn-color: #{$text};
-  --fv-btn-border: #{$bg};
-  --fv-btn-hover-bg: #{color.scale($bg, $lightness: 8%)};
-  --fv-btn-hover-border: #{color.scale($bg, $lightness: 12%)};
-  --fv-btn-active-bg: #{color.scale($bg, $lightness: -10%)};
-  --fv-btn-focus-ring: #{rgba($bg, 0.45)};
-  --fv-btn-glow: 0 0 24px #{rgba($bg, 0.55)};
+  @if $token {
+    // Runtime path (framework variants): every shade derives from the
+    // --fv-#{$token} custom property, so overriding it re-brands the button —
+    // hover/active/glow included. The text color is compile-time WCAG math for
+    // the DEFAULT palette; override --fv-#{$token}-contrast when a re-brand
+    // flips a fill between light and dark.
+    --fv-btn-bg: var(--fv-#{$token});
+    --fv-btn-color: var(--fv-#{$token}-contrast, #{$text});
+    --fv-btn-border: var(--fv-#{$token});
+    --fv-btn-hover-bg: color-mix(in srgb, var(--fv-#{$token}) 92%, white);
+    --fv-btn-hover-border: color-mix(in srgb, var(--fv-#{$token}) 88%, white);
+    --fv-btn-active-bg: color-mix(in srgb, var(--fv-#{$token}) 90%, black);
+    --fv-btn-focus-ring: color-mix(in srgb, var(--fv-#{$token}) 45%, transparent);
+    --fv-btn-glow: 0 0 24px color-mix(in srgb, var(--fv-#{$token}) 55%, transparent);
+  } @else {
+    // Compiled path — for custom buttons built from an arbitrary color.
+    --fv-btn-bg: #{$bg};
+    --fv-btn-color: #{$text};
+    --fv-btn-border: #{$bg};
+    --fv-btn-hover-bg: #{color.scale($bg, $lightness: 8%)};
+    --fv-btn-hover-border: #{color.scale($bg, $lightness: 12%)};
+    --fv-btn-active-bg: #{color.scale($bg, $lightness: -10%)};
+    --fv-btn-focus-ring: #{rgba($bg, 0.45)};
+    --fv-btn-glow: 0 0 24px #{rgba($bg, 0.55)};
+  }
 }

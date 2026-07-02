@@ -55,7 +55,7 @@
     --fv-border-radius: #{$border-radius};
     --fv-border-width: #{$border-width};
     --fv-transition: #{$transition-base};
-    --fv-focus-ring: 0 0 0 3px #{rgba($primary, 0.45)};
+    --fv-focus-ring: 0 0 0 3px color-mix(in srgb, var(--fv-primary) 45%, transparent);
 
     // Elevation -> --fv-shadow-sm ... --fv-shadow-xl
     @each $name, $value in $shadows {
@@ -82,7 +82,7 @@
     --fv-bg-gradient: #{$bg-gradient-light};
     --fv-body-color: #{$body-text-light};
     --fv-muted: #{$muted-light};
-    --fv-primary-text: #{$primary}; // the brand primary reads fine on the light surface
+    --fv-primary-text: var(--fv-primary); // the brand primary reads fine on the light surface
     --fv-border-color: rgba(15, 23, 42, 0.12);
     --fv-code-bg: rgba(15, 23, 42, 0.06);
     --fv-bg-pattern: rgba(15, 23, 42, 0.10); // dark ink so patterns read on the light surface

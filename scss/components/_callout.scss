@@ -32,9 +32,9 @@
 
   @each $name, $clr in $theme-colors {
     .callout-#{$name} {
-      border-left-color: $clr;
+      border-left-color: var(--fv-#{$name});
 
-      .callout-title { color: $clr; }
+      .callout-title { color: var(--fv-#{$name}); }
     }
   }
 }

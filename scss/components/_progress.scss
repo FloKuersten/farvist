@@ -33,7 +33,7 @@
   @each $name, $clr in $theme-colors {
     .progress-#{$name} .progress-bar {
       background-image: none;
-      background-color: $clr;
+      background-color: var(--fv-#{$name});
     }
   }
 

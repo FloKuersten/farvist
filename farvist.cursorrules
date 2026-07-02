@@ -11,6 +11,7 @@ Setup
 Conventions
 - Components + utilities, like Bootstrap's class model (NOT Tailwind atomic-only). Prefer Farvist classes over hand-written CSS.
 - Dark theme by default; add data-theme="light" to <html> to switch. Give the page a rich background so the glass reads, e.g. <body class="bg-mesh-aurora"> (also: bg-mesh-sunset/ocean/nebula, bg-grid, bg-dots, bg-spotlight).
+- Re-branding: override --fv-primary / --fv-accent / --fv-info on :root and EVERYTHING follows at runtime (gradients, glows, meshes, hover states, focus rings). Add --fv-primary-text (readable tint on dark) and --fv-{color}-contrast (text on fills) when the brand flips brightness. Never re-color by overriding component CSS.
 - Colors: primary, secondary, success, danger, warning, info, accent, light, dark — used as suffixes: btn-primary, text-success, bg-accent, badge-soft-info.
 - Breakpoints: sm 576, md 768, lg 992, xl 1200 — infix after the prefix: col-md-6, d-lg-flex, text-md-center.
 - Spacing 0–7 scale: p-4 = 1rem, m-0, gap-3 = .75rem, py-6.

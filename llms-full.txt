@@ -2,7 +2,7 @@
 
 > A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 37 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 1.2.0 · MIT · https://farvist.com · 1994 utility/component classes.
+Version 1.3.0 · MIT · https://farvist.com · 1994 utility/component classes.
 
 ## Install
 ```html
@@ -13,7 +13,7 @@ Or: `npm i farvist`. Dark theme by default — give the page a rich background s
 
 ## Conventions
 - **Colors:** primary, secondary, success, danger, warning, info, accent, light, dark (use as suffixes: btn-primary, text-success, bg-accent).
-- **Theming:** Dark by default. Add data-theme="light" to <html> to switch at runtime. Colors are CSS custom properties: --fv-primary, --fv-primary-text (readable on dark), --fv-body-color, --fv-muted, --fv-glass-bg, --fv-gradient-primary, etc.
+- **Theming:** Dark by default. Add data-theme="light" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS.
 - **Breakpoints:** sm=576px, md=768px, lg=992px, xl=1200px. Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.
 - **Spacing scale:** 0,1,2,3,4,5,6,7 → 0, .25, .5, .75, 1, 1.5, 2, 3rem (e.g. p-4 = 1rem, gap-3 = .75rem).
 - **Notes:** For glass to read, give the page a rich background (e.g. body class="bg-mesh-aurora"). Utilities win the cascade (no !important needed by you).
@@ -306,4 +306,16 @@ Names (55): i-alert, i-arrow-left, i-arrow-right, i-bell, i-bot, i-brain, i-cale
 ### rag-answer-with-citations
 ```html
 <div class="message"><span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span><div class="message-body"><div class="message-bubble"><div class="prose prose-sm"><p>Glass surfaces need a rich backdrop to blur<a class="cite" href="#src-1">1</a>, so give the page a mesh background<a class="cite" href="#src-2">2</a>.</p><ol class="sources"><li id="src-1"><a href="#">docs/backgrounds — why glass needs a backdrop</a></li><li id="src-2"><a href="#">llms-full.txt — conventions</a></li></ol></div></div></div></div>
+```
+### brand-theme
+```html
+<style>
+:root {
+  --fv-primary: #10b981;   /* brand color — gradients, glows, meshes, buttons all follow */
+  --fv-accent:  #a3e635;
+  --fv-info:    #2dd4bf;
+  --fv-primary-text: #6ee7b7;      /* readable tint for text/links on the dark surface */
+  /* --fv-primary-contrast: #06281d;  uncomment when the fill needs dark text */
+}
+</style>
 ```

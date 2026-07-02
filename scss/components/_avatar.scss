@@ -38,8 +38,8 @@
   // Initials avatars in theme colors.
   @each $name, $clr in $theme-colors {
     .avatar-#{$name} {
-      color: contrast-color($clr);
-      background-color: $clr;
+      color: var(--fv-#{$name}-contrast, #{contrast-color($clr)});
+      background-color: var(--fv-#{$name});
       border-color: transparent;
     }
   }

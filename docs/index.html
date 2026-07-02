@@ -108,6 +108,20 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
         <h2 class="mb-3">Theming</h2>
         <p class="text-muted mb-3">Everything is driven by <code>--fv-*</code> custom properties. The default is the dark glass theme; add <code>data-theme="light"</code> to <code>&lt;html&gt;</code> to flip every surface at runtime — no recompile.</p>
         <pre class="snippet"><code>document.documentElement.setAttribute('data-theme', 'light'); // or remove for dark</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Bring your brand — no build step <span class="badge badge-soft-accent">v1.3</span></h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">Every derived color — gradients, neon glows, mesh backdrops, the body orbs, button hover/active states, soft badge tints, focus rings — now derives from the <code>--fv-*</code> custom properties at <strong>runtime</strong>. Override a handful of variables and the whole framework re-brands, straight off the CDN:</p>
+<pre class="snippet"><code>:root {
+  --fv-primary: #10b981;   /* your brand */
+  --fv-accent:  #a3e635;
+  --fv-info:    #2dd4bf;
+
+  /* optional companions when your brand flips brightness: */
+  --fv-primary-text: #6ee7b7;      /* readable tint for text/links on the dark surface */
+  --fv-primary-contrast: #06281d;  /* text on primary-filled buttons/badges */
+}</code></pre>
+        <p class="text-muted mt-2" style="max-width:46rem;">Same for <code>--fv-success</code>, <code>--fv-danger</code>, <code>--fv-warning</code>, <code>--fv-secondary</code> — each accepts an optional <code>--fv-{color}-contrast</code>. Derivations use <code>color-mix()</code>, which is already in Farvist's browser baseline. This also means your AI assistant can re-brand a page by writing five lines of CSS.</p>
+
         <p class="text-muted mt-3 mb-2">Re-theme at build time by configuring the module:</p>
         <pre class="snippet"><code>@use 'farvist/scss/farvist' with (
   $primary: #00e0ff,

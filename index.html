@@ -127,6 +127,21 @@
       </div>
     </section>
 
+    <!-- Bring your brand (v1.3) -->
+    <section id="brand" class="mb-8">
+      <p class="eyebrow text-gradient fw-bold mb-1">Make it yours</p>
+      <h2 class="mb-2">Re-brand the whole framework with five lines of CSS</h2>
+      <p class="text-muted mb-4" style="max-width:46rem;">Every gradient, glow, mesh, hover state and focus ring derives from the <code>--fv-*</code> variables at runtime. Click a brand — this entire page recolors live. No build step, which also means <strong>your AI assistant can do it</strong>.</p>
+      <div class="d-flex gap-2 flex-wrap mb-3" role="group" aria-label="Try a brand">
+        <button class="btn btn-glass btn-sm" type="button" data-brand="default">◆ Farvist</button>
+        <button class="btn btn-glass btn-sm" type="button" data-brand="emerald"><span aria-hidden="true" style="color:#10b981">●</span> Emerald</button>
+        <button class="btn btn-glass btn-sm" type="button" data-brand="crimson"><span aria-hidden="true" style="color:#f43f5e">●</span> Crimson</button>
+        <button class="btn btn-glass btn-sm" type="button" data-brand="gold"><span aria-hidden="true" style="color:#f59e0b">●</span> Gold</button>
+      </div>
+      <pre class="snippet"><code id="brand-css">/* click a brand above — the CSS it takes appears here */
+:root { }</code></pre>
+    </section>
+
     <!-- Grid -->
     <section id="grid" class="mb-8">
       <p class="eyebrow text-gradient-aurora fw-bold mb-1">Layout</p>
@@ -605,6 +620,30 @@
 
   <script src="assets/farvist.js" defer></script>
   <script>
+    // "Make it yours" — live runtime re-brand demo (v1.3 Bring Your Brand).
+    (function () {
+      var brands = {
+        default: {},
+        emerald: { '--fv-primary': '#10b981', '--fv-accent': '#a3e635', '--fv-info': '#2dd4bf', '--fv-primary-text': '#6ee7b7' },
+        crimson: { '--fv-primary': '#f43f5e', '--fv-accent': '#fb923c', '--fv-info': '#f472b6', '--fv-primary-text': '#fda4af' },
+        gold:    { '--fv-primary': '#f59e0b', '--fv-accent': '#fde047', '--fv-info': '#fb923c', '--fv-primary-text': '#fcd34d', '--fv-primary-contrast': '#1c1917' }
+      };
+      var out = document.getElementById('brand-css');
+      document.querySelectorAll('[data-brand]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var root = document.documentElement;
+          Object.keys(brands).forEach(function (k) {
+            Object.keys(brands[k]).forEach(function (v) { root.style.removeProperty(v); });
+          });
+          var vars = brands[b.getAttribute('data-brand')];
+          Object.keys(vars).forEach(function (v) { root.style.setProperty(v, vars[v]); });
+          out.textContent = Object.keys(vars).length
+            ? ':root {\n' + Object.keys(vars).map(function (v) { return '  ' + v + ': ' + vars[v] + ';'; }).join('\n') + '\n}'
+            : '/* the default — ship no CSS at all */\n:root { }';
+        });
+      });
+    })();
+
     // Tiny dual-theme demo: flips the runtime --fv-* surface variables.
     const btn = document.getElementById('theme-toggle');
     btn.addEventListener('click', () => {

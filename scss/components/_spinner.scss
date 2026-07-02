@@ -23,7 +23,7 @@
   .spinner-lg { width: 2.5rem; height: 2.5rem; border-width: 4px; }
 
   @each $name, $clr in $theme-colors {
-    .spinner-#{$name} { border-top-color: $clr; }
+    .spinner-#{$name} { border-top-color: var(--fv-#{$name}); }
   }
 
   // Three bouncing dots.

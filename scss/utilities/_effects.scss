@@ -21,7 +21,7 @@
   // -- Gradient backgrounds (from the $gradients map) ---------------------------
   @each $name, $grad in $gradients {
     .bg-gradient-#{$name} {
-      background-image: $grad;
+      background-image: var(--fv-gradient-#{$name});
     }
   }
 
@@ -37,7 +37,7 @@
   }
   @each $name, $grad in $gradients {
     .text-gradient-#{$name} {
-      background-image: $grad;
+      background-image: var(--fv-gradient-#{$name});
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -53,14 +53,14 @@
 
   // -- Neon glows (from the $glows map) -----------------------------------------
   @each $name, $glow in $glows {
-    .glow-#{$name} { box-shadow: $glow; }
+    .glow-#{$name} { box-shadow: var(--fv-glow-#{$name}); }
   }
   .glow      { box-shadow: var(--fv-glow-primary); }
   .glow-none { box-shadow: none; }
 
   // Text glow (neon halo on the type itself).
   .text-glow {
-    text-shadow: 0 0 18px rgba($primary, 0.65);
+    text-shadow: 0 0 18px color-mix(in srgb, var(--fv-primary) 65%, transparent);
   }
 
   // (Background patterns/meshes/spotlights live in utilities/_backgrounds.scss.)

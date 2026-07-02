@@ -65,14 +65,14 @@
   // -- Spotlight (radial glow, themeable per color) -----------------------------
   .bg-spotlight {
     background-color: var(--fv-body-bg);
-    background-image: radial-gradient(42rem 26rem at 50% -12%, rgba($primary, 0.30), transparent 70%);
+    background-image: radial-gradient(42rem 26rem at 50% -12%, color-mix(in srgb, var(--fv-primary) 30%, transparent), transparent 70%);
     background-repeat: no-repeat;
   }
   // Chromatic colors only — the light/dark surface tokens make no glow.
   @each $name, $clr in map.remove($theme-colors, 'light', 'dark') {
     .bg-spotlight-#{$name} {
       background-color: var(--fv-body-bg);
-      background-image: radial-gradient(42rem 26rem at 50% -12%, rgba($clr, 0.30), transparent 70%);
+      background-image: radial-gradient(42rem 26rem at 50% -12%, color-mix(in srgb, var(--fv-#{$name}) 30%, transparent), transparent 70%);
       background-repeat: no-repeat;
     }
   }

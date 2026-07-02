@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 37 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
@@ -13,10 +13,10 @@
     "classes": 1994,
     "components": 37,
     "icons": 55,
-    "recipes": 10
+    "recipes": 11
   },
   "conventions": {
-    "theming": "Dark by default. Add data-theme=\"light\" to <html> to switch at runtime. Colors are CSS custom properties: --fv-primary, --fv-primary-text (readable on dark), --fv-body-color, --fv-muted, --fv-glass-bg, --fv-gradient-primary, etc.",
+    "theming": "Dark by default. Add data-theme=\"light\" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS.",
     "colors": [
       "primary",
       "secondary",
@@ -1235,6 +1235,10 @@
     {
       "name": "rag-answer-with-citations",
       "html": "<div class=\"message\"><span class=\"avatar avatar-sm avatar-accent\" aria-hidden=\"true\">AI</span><div class=\"message-body\"><div class=\"message-bubble\"><div class=\"prose prose-sm\"><p>Glass surfaces need a rich backdrop to blur<a class=\"cite\" href=\"#src-1\">1</a>, so give the page a mesh background<a class=\"cite\" href=\"#src-2\">2</a>.</p><ol class=\"sources\"><li id=\"src-1\"><a href=\"#\">docs/backgrounds — why glass needs a backdrop</a></li><li id=\"src-2\"><a href=\"#\">llms-full.txt — conventions</a></li></ol></div></div></div></div>"
+    },
+    {
+      "name": "brand-theme",
+      "html": "<style>\n:root {\n  --fv-primary: #10b981;   /* brand color — gradients, glows, meshes, buttons all follow */\n  --fv-accent:  #a3e635;\n  --fv-info:    #2dd4bf;\n  --fv-primary-text: #6ee7b7;      /* readable tint for text/links on the dark surface */\n  /* --fv-primary-contrast: #06281d;  uncomment when the fill needs dark text */\n}\n</style>"
     }
   ]
 }
