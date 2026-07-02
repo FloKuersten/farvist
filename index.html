@@ -48,8 +48,12 @@
     .code-card .tok-str { color: var(--fv-success); }
   </style>
   <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
 </head>
-<body>
+<body class="bg-mesh-aurora">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- Navbar -->
@@ -78,14 +82,15 @@
         The CSS framework with a<br />
         <span class="text-gradient">futuristic glass</span> soul
       </h1>
-      <p class="fs-xl text-muted mx-auto mb-6" style="max-width: 42rem;">
+      <p class="fs-xl text-muted mx-auto mb-6" style="max-width: 44rem;">
         Frosted surfaces, neon glow and gradient everything — generated from Sass
-        tokens with <code>@for</code> and <code>@each</code> loops. Tiny, themeable,
-        and a little bit from the future.
+        tokens, ~20&nbsp;KB, no build step. And it's the framework
+        <strong class="text-gradient">built for the AI era</strong>: your AI assistant
+        already knows how to write it.
       </p>
       <div class="d-flex gap-3 justify-content-center flex-wrap mb-7">
-        <a href="#components" class="btn btn-gradient-primary btn-lg">Explore components</a>
-        <a href="#grid" class="btn btn-glass btn-lg">See the grid</a>
+        <a href="docs/index.html" class="btn btn-gradient-primary btn-lg">Get started</a>
+        <a href="#components" class="btn btn-glass btn-lg">Explore components</a>
       </div>
 
       <!-- Floating glass code panel -->
@@ -194,7 +199,7 @@
         <div class="alert-heading">System online</div>
         All generators compiled cleanly. <a href="#" class="alert-link">View build log</a>.
       </div>
-      <div class="alert alert-info">Heads up — this preview uses the compiled <code>dist/farvist.css</code>.</div>
+      <div class="alert alert-info">Every component on this page is styled by one stylesheet — <code>dist/farvist.min.css</code>, ~20 KB.</div>
       <div class="alert alert-danger mb-6">A neutral, readable message on a colored glass panel.</div>
 
       <!-- Cards -->
@@ -252,8 +257,8 @@
             </div>
             <div class="mb-4">
               <label class="form-label" for="email">Email</label>
-              <input class="form-control is-invalid" id="email" type="email" value="not-an-email" />
-              <div class="invalid-feedback">Please enter a valid email.</div>
+              <input class="form-control" id="email" type="email" placeholder="ada@example.com" />
+              <div class="form-text">Validation states: add <code>.is-valid</code> / <code>.is-invalid</code> — ARIA is wired automatically.</div>
             </div>
             <div class="mb-4">
               <label class="form-label" for="role">Role</label>

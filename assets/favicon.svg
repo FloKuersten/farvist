@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="fv-fav" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d4af5"/>
+      <stop offset="0.5" stop-color="#e879f9"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="32" height="32" rx="9" transform="rotate(45 24 24)" fill="url(#fv-fav)"/>
+</svg>
