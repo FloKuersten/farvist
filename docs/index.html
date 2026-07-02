@@ -359,7 +359,7 @@ Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
 
       <section id="ai">
         <h2 class="mb-3">Chat &amp; AI kit ✦</h2>
-        <p class="text-muted mb-4" style="max-width:46rem;">Components for AI products — a conversation thread, a prompt composer and agent-status indicators — all built on the glass system. See the full <a href="../examples/ai-console.html">AI console template</a>.</p>
+        <p class="text-muted mb-4" style="max-width:46rem;">Components for AI products — a conversation thread, a prompt composer, agent status, and the <strong>model-output layer</strong>: rendered markdown (<code>.prose</code>), a streaming caret, tool-call cards, reasoning disclosures and citations. See the full <a href="../examples/ai-console.html">AI console template</a>.</p>
 
         <h3 class="h5 mb-3">Chat thread</h3>
         <div class="chat mb-3" style="max-width:40rem;">
@@ -409,7 +409,96 @@ Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
           <span class="status status-error">Failed</span>
         </div>
 
-        <h3 class="h5 mb-2 mt-4">Streaming messages</h3>
+        <h3 class="h5 mb-2 mt-4">Prose — rendered model output</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">Bubbles preserve raw newlines (<code>white-space: pre-wrap</code>) for plain text. When you render <strong>markdown to HTML</strong>, wrap it in <code>.prose</code> (compact: <code>.prose-sm</code>) — it restores normal flow and styles headings, lists, tables and images at content scale.</p>
+        <div class="message mb-3" style="max-width:40rem;">
+          <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+          <div class="message-body">
+            <div class="message-bubble"><div class="prose prose-sm">
+              <p>Two ways to install:</p>
+              <ul><li><strong>CDN</strong> — one <code>&lt;link&gt;</code> tag</li><li><strong>npm</strong> — <code>npm i farvist</code></li></ul>
+              <table><thead><tr><th>Option</th><th>Best for</th></tr></thead><tbody><tr><td>CDN</td><td>prototypes</td></tr><tr><td>npm</td><td>apps with a build</td></tr></tbody></table>
+            </div></div>
+            <div class="message-meta">Assistant · rendered markdown</div>
+          </div>
+        </div>
+<pre class="snippet"><code>&lt;div class="message-bubble"&gt;
+  &lt;div class="prose prose-sm"&gt; …rendered markdown HTML… &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Streaming caret &amp; message actions</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">Add <code>.streaming</code> to a bubble while tokens arrive — a pulsing caret marks live output (static under reduced motion). <code>.message-actions</code> is a copy/vote row that reveals on hover or focus (always visible on touch). A bare <code>data-fv-copy</code> in the row copies the message's bubble text and flashes the button green.</p>
+        <div class="message mb-3" style="max-width:40rem;">
+          <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+          <div class="message-body">
+            <div class="message-bubble streaming">Glass surfaces need a rich backdrop to blur, so give the page a mesh</div>
+            <div class="message-actions">
+              <button class="btn btn-glass btn-sm" data-fv-copy aria-label="Copy"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-copy"/></svg></button>
+              <button class="btn btn-glass btn-sm" aria-label="Good response"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-thumbs-up"/></svg></button>
+              <button class="btn btn-glass btn-sm" aria-label="Bad response"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-thumbs-down"/></svg></button>
+              <button class="btn btn-glass btn-sm" aria-label="Regenerate"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-refresh"/></svg></button>
+            </div>
+            <div class="message-meta">Assistant · streaming</div>
+          </div>
+        </div>
+<pre class="snippet"><code>&lt;div class="message-bubble streaming"&gt;…tokens so far…&lt;/div&gt;
+&lt;div class="message-actions"&gt;
+  &lt;button class="btn btn-glass btn-sm" data-fv-copy aria-label="Copy"&gt;…&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Tool calls</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">An agent's tool invocation as a compact card. The state classes tint the rail — keep the <code>.tool-call-status</code> <strong>text</strong> so meaning never relies on colour alone.</p>
+        <div style="max-width:40rem;">
+          <div class="tool-call tool-call-running">
+            <div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">fetch_metrics</span><span class="tool-call-status">Running…</span></div>
+            <div class="tool-call-args">{"range": "30d"}</div>
+          </div>
+          <div class="tool-call tool-call-done">
+            <div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">search_docs</span><span class="tool-call-status">Done</span></div>
+            <div class="tool-call-args">query: "backgrounds library"</div>
+            <div class="tool-call-result">3 sections matched — backgrounds, effects, utilities.</div>
+          </div>
+          <div class="tool-call tool-call-error mb-3">
+            <div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">deploy_site</span><span class="tool-call-status">Failed</span></div>
+            <div class="tool-call-result">Error: missing credentials.</div>
+          </div>
+        </div>
+<pre class="snippet"><code>&lt;div class="tool-call tool-call-done"&gt;
+  &lt;div class="tool-call-header"&gt;
+    &lt;svg class="icon" aria-hidden="true"&gt;&lt;use href="…#i-terminal"/&gt;&lt;/svg&gt;
+    &lt;span class="tool-call-name"&gt;search_docs&lt;/span&gt;
+    &lt;span class="tool-call-status"&gt;Done&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="tool-call-args"&gt;query: "backgrounds library"&lt;/div&gt;
+  &lt;div class="tool-call-result"&gt;3 sections matched.&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Reasoning</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">A collapsible "thinking" disclosure on the native <code>&lt;details&gt;</code> element — keyboard and screen-reader accessible with zero JS.</p>
+        <details class="reasoning mb-3" style="max-width:40rem;">
+          <summary class="reasoning-summary">Thought for 12 seconds</summary>
+          <div class="reasoning-body">The user wants current data, so search the docs first, then compose the answer from the matched sections.</div>
+        </details>
+<pre class="snippet"><code>&lt;details class="reasoning"&gt;
+  &lt;summary class="reasoning-summary"&gt;Thought for 12 seconds&lt;/summary&gt;
+  &lt;div class="reasoning-body"&gt;…model thinking…&lt;/div&gt;
+&lt;/details&gt;</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Citations</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">Superscript <code>.cite</code> chips link claims to a <code>.sources</code> footnote list — the RAG answer pattern.</p>
+        <div class="message-bubble mb-3" style="max-width:40rem;"><div class="prose prose-sm">
+          <p>Glass surfaces need a rich backdrop to blur<a class="cite" href="#doc-src-1">1</a>, so give the page a mesh background<a class="cite" href="#doc-src-2">2</a>.</p>
+          <ol class="sources">
+            <li id="doc-src-1"><a href="#backgrounds">docs/backgrounds — why glass needs a backdrop</a></li>
+            <li id="doc-src-2"><a href="#use-with-ai">llms-full.txt — conventions</a></li>
+          </ol>
+        </div></div>
+<pre class="snippet"><code>…to blur&lt;a class="cite" href="#src-1"&gt;1&lt;/a&gt;
+&lt;ol class="sources"&gt;
+  &lt;li id="src-1"&gt;&lt;a href="…"&gt;docs/backgrounds&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Streaming messages (JS)</h3>
         <p class="text-muted mb-2" style="max-width:46rem;">After injecting new messages into the DOM, call <code>Farvist.enhance()</code> so any new tooltips, tabs and ARIA get wired up.</p>
 <pre class="snippet"><code>chat.insertAdjacentHTML('beforeend', bubbleHTML);
 Farvist.enhance();   // re-run progressive enhancement</code></pre>

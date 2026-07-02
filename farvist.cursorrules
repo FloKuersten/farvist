@@ -18,6 +18,7 @@ Conventions
 - JS hooks: data-fv-open="#id" / data-fv-dismiss (modal), data-fv-tab="#panel" (tabs), data-fv-theme-toggle, data-fv-nav-toggle, data-tooltip="…". API: Farvist.toast({title,variant}), Farvist.copy(text), Farvist.enhance() (call after injecting DOM).
 - Icons: <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-NAME"/></svg> (inherits currentColor). AI/chat set: i-bot, i-brain, i-message, i-message-dots, i-send, i-mic, i-cpu, i-sparkles, i-wand, i-stop, i-refresh, i-copy, i-command, i-terminal.
 - AI UIs: chat thread = .chat > .message (.message-out for the user) > .message-body > .message-bubble; composer = .prompt > .prompt-field + .prompt-actions; agent status = .status.status-online/busy/idle/error; typing = .typing.
+- LLM output: ALWAYS wrap rendered-markdown HTML in .prose (use .prose.prose-sm inside bubbles — bubbles preserve raw newlines otherwise). Streaming = add .streaming to the bubble. Tool calls = .tool-call.tool-call-{running|done|error} > .tool-call-header (.tool-call-name + .tool-call-status text) + .tool-call-args/.tool-call-result. Thinking = <details class="reasoning"><summary class="reasoning-summary">. Citations = <a class="cite"> superscript chips + <ol class="sources">.
 
 Authoritative, always-current context (read these before generating):
 - https://farvist.com/llms-full.txt   (every convention, component, icon, and copy-paste recipe)

@@ -59,6 +59,9 @@
 @use 'components/prompt';
 @use 'components/status';
 @use 'components/snippet';
+@use 'components/prose';
+@use 'components/tool-call';
+@use 'components/reasoning';
 
 // Utilities (last — highest cascade priority)
 @use 'utilities/spacing';

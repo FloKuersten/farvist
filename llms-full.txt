@@ -1,8 +1,8 @@
 # farvist — full context for AI assistants
 
-> A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 34 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
+> A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 37 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 1.1.0 · MIT · https://farvist.com · 1976 utility/component classes.
+Version 1.2.0 · MIT · https://farvist.com · 1994 utility/component classes.
 
 ## Install
 ```html
@@ -19,14 +19,16 @@ Or: `npm i farvist`. Dark theme by default — give the page a rich background s
 - **Notes:** For glass to read, give the page a rich background (e.g. body class="bg-mesh-aurora"). Utilities win the cascade (no !important needed by you).
 
 ## JavaScript hooks
-<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script> — auto-runs enhance() on load.
+<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).
 - `data-fv-open="#id"` — open a <dialog class="modal" id="id">
 - `data-fv-dismiss` — close the nearest dialog
 - `data-fv-tab="#panelId"` — switch tabs (arrow-key nav added automatically)
 - `data-fv-theme-toggle` — flip light/dark theme
 - `data-fv-nav-toggle` — toggle the collapsed mobile navbar
+- `data-fv-copy` — copy to clipboard on click — bare form copies the nearest pre.snippet, or the .message-bubble text when inside a chat .message-actions row; or pass "#sel" / literal text. The button flashes success.
+- `class="snippet" on <pre>` — farvist.js wraps the code block and adds a hover copy button (requires the JS include)
 - `data-tooltip="text"` — CSS tooltip; text is exposed to assistive tech
-- API: Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.
+- API: Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.
 
 ## Utility families
 - `col-*` — grid columns (74): col, col-1, col-10, col-11, col-12, col-2, col-3, col-4, col-5, col-6, col-7, col-8, col-9, col-auto, …
@@ -231,9 +233,9 @@ Classes: `bg-mesh-{aurora|sunset|ocean|nebula}`, `bg-grid`, `bg-dots`, `bg-graph
 <body class="bg-mesh-aurora">
 ```
 ### chat (AI)
-Classes: `chat`, `message`, `message-out (user)`, `message-body`, `message-bubble`, `message-meta`, `typing`
+Classes: `chat`, `message`, `message-out (user)`, `message-body`, `message-bubble`, `message-meta`, `message-actions (hover copy/vote row)`, `typing`, `streaming (caret while tokens arrive)`, `cite (superscript source chip)`, `sources (footnote list)`
 ```html
-<div class="chat"><div class="message"><span class="avatar avatar-sm avatar-accent">AI</span><div class="message-body"><div class="message-bubble">Hi</div></div></div></div>
+<div class="chat"><div class="message"><span class="avatar avatar-sm avatar-accent">AI</span><div class="message-body"><div class="message-bubble streaming">Hi</div></div></div></div>
 ```
 ### prompt (AI)
 Classes: `prompt`, `prompt-field`, `prompt-actions`, `prompt-meta`
@@ -244,6 +246,21 @@ Classes: `prompt`, `prompt-field`, `prompt-actions`, `prompt-meta`
 Classes: `status`, `status-{online|busy|idle|error}`
 ```html
 <span class="status status-online">Agent online</span>
+```
+### prose (AI)
+Classes: `prose`, `prose-sm`
+```html
+<div class="message-bubble"><div class="prose prose-sm">…rendered markdown…</div></div> — ALWAYS wrap rendered-markdown HTML in .prose (bubbles preserve raw newlines otherwise); also styles bare tables/images from model output.
+```
+### tool-call (AI)
+Classes: `tool-call`, `tool-call-header`, `tool-call-name`, `tool-call-status`, `tool-call-args`, `tool-call-result`, `tool-call-{running|done|error}`
+```html
+<div class="tool-call tool-call-running"><div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">fetch_data</span><span class="tool-call-status">Running…</span></div><div class="tool-call-args">{"id": 42}</div></div> — state classes tint the rail; keep the status TEXT so meaning never relies on color.
+```
+### reasoning (AI)
+Classes: `reasoning (<details>)`, `reasoning-summary (<summary>)`, `reasoning-body`
+```html
+<details class="reasoning"><summary class="reasoning-summary">Thought for 12 seconds</summary><div class="reasoning-body">…model thinking…</div></details>
 ```
 ## Icons
 <svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-NAME"/></svg> — inherits currentColor; size via font-size or width/height.
@@ -277,4 +294,16 @@ Names (55): i-alert, i-arrow-left, i-arrow-right, i-bell, i-bot, i-brain, i-cale
 ### contact-form
 ```html
 <section class="container py-7" style="max-width:34rem"><h2 class="fs-3xl fw-black mb-4 text-center">Get in touch</h2><form><div class="row gy-3"><div class="col-12 col-md-6"><label class="form-label" for="n">Name</label><input class="form-control" id="n"></div><div class="col-12 col-md-6"><label class="form-label" for="e">Email</label><input class="form-control" id="e" type="email"></div></div><label class="form-label mt-3" for="m">Message</label><textarea class="form-control" id="m" rows="4"></textarea><button class="btn btn-gradient-primary btn-block mt-4" type="submit">Send</button></form></section>
+```
+### assistant-markdown-reply
+```html
+<div class="message"><span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span><div class="message-body"><div class="message-bubble"><div class="prose prose-sm"><p>Two ways to do it:</p><ul><li><strong>CDN</strong> — one <code>&lt;link&gt;</code> tag</li><li><strong>npm</strong> — <code>npm i farvist</code></li></ul><pre class="snippet"><code>&lt;link rel="stylesheet" href="…farvist.min.css"&gt;</code></pre></div></div><div class="message-actions"><button class="btn btn-glass btn-sm" data-fv-copy aria-label="Copy"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-copy"/></svg></button><button class="btn btn-glass btn-sm" aria-label="Good response"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-thumbs-up"/></svg></button></div><div class="message-meta">Assistant · now</div></div></div>
+```
+### agent-tool-call-turn
+```html
+<div class="message"><span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span><div class="message-body"><details class="reasoning"><summary class="reasoning-summary">Thought for 4 seconds</summary><div class="reasoning-body">The user wants current data, so search first.</div></details><div class="tool-call tool-call-done"><div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">search_docs</span><span class="tool-call-status">Done</span></div><div class="tool-call-args">query: "backgrounds library"</div></div><div class="message-bubble streaming"><div class="prose prose-sm"><p>The backgrounds library ships mesh gradients and patterns…</p></div></div></div></div>
+```
+### rag-answer-with-citations
+```html
+<div class="message"><span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span><div class="message-body"><div class="message-bubble"><div class="prose prose-sm"><p>Glass surfaces need a rich backdrop to blur<a class="cite" href="#src-1">1</a>, so give the page a mesh background<a class="cite" href="#src-2">2</a>.</p><ol class="sources"><li id="src-1"><a href="#">docs/backgrounds — why glass needs a backdrop</a></li><li id="src-2"><a href="#">llms-full.txt — conventions</a></li></ol></div></div></div></div>
 ```

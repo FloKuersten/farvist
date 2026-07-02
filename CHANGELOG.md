@@ -2,6 +2,19 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.2.0] — 2026-07-02
+**Model output, styled.** v1.1 taught AI assistants to *write* Farvist; v1.2 makes Farvist the best framework for *displaying what models write*. Purely additive — 34 → **37 components**.
+### Added
+- **`.prose` / `.prose-sm`** — an opt-in typography scope for rendered LLM markdown (content-scale headings, lists, bare tables that scroll, images). Inside a `.message-bubble` it restores normal whitespace — bubbles keep `pre-wrap` for plain text, `.prose` is for rendered HTML.
+- **`.tool-call`** — an agent's tool invocation as a compact glass card (`-header`, `-name`, `-status`, `-args`, `-result`) with `running/done/error` rail states; works as a `<div>` or a collapsible `<details>`. The status *text* carries the meaning — never colour alone.
+- **`.reasoning`** — a collapsible "thinking" disclosure on native `<details>`/`<summary>` (keyboard + screen-reader accessible with zero JS).
+- **Citations** — `.cite` superscript source chips + a `.sources` footnote list, the RAG-answer pattern.
+- **`.streaming`** — a pulsing caret on a bubble while tokens arrive (static under `prefers-reduced-motion`); **`.message-actions`** — a hover/focus-revealed copy/vote row (always visible on touch).
+- 3 new AI recipes (`assistant-markdown-reply`, `agent-tool-call-turn`, `rag-answer-with-citations`) in `ai-context.json` / `llms-full.txt`, a `.prose` rule in `farvist.cursorrules`, five new docs subsections, and the AI console template now streams a cited, tool-calling markdown answer.
+- A bare `data-fv-copy` inside a chat `.message-actions` row now copies the message's bubble text, and **every** copy trigger (not just snippet buttons) flashes success visually and announces "Copied" to assistive tech.
+### Fixed
+- **Toast accent rails never rendered** — the glass mixin's `border` shorthand (declared after `border-left`) reset the 3px colored rail to 1px on every toast since v0.3. Toasts now show their variant rail.
+
 ## [1.1.0] — 2026-06-26
 ### Added
 - **Built for AI discovery + use.** `robots.txt` now welcomes the AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot…); every page `<head>` links `/llms.txt`; the AI files are in the sitemap.

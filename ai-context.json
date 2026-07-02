@@ -1,7 +1,7 @@
 {
   "name": "farvist",
-  "version": "1.1.0",
-  "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 34 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
+  "version": "1.2.0",
+  "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 37 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
   "install": {
@@ -10,10 +10,10 @@
     "npm": "npm i farvist"
   },
   "totals": {
-    "classes": 1976,
-    "components": 34,
+    "classes": 1994,
+    "components": 37,
     "icons": 55,
-    "recipes": 7
+    "recipes": 10
   },
   "conventions": {
     "theming": "Dark by default. Add data-theme=\"light\" to <html> to switch at runtime. Colors are CSS custom properties: --fv-primary, --fv-primary-text (readable on dark), --fv-body-color, --fv-muted, --fv-glass-bg, --fv-gradient-primary, etc.",
@@ -38,16 +38,18 @@
     "spacingScale": "0,1,2,3,4,5,6,7 → 0, .25, .5, .75, 1, 1.5, 2, 3rem (e.g. p-4 = 1rem, gap-3 = .75rem).",
     "notes": "For glass to read, give the page a rich background (e.g. body class=\"bg-mesh-aurora\"). Utilities win the cascade (no !important needed by you).",
     "js": {
-      "include": "<script src=\"https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js\" defer></script> — auto-runs enhance() on load.",
+      "include": "<script src=\"https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js\" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).",
       "attributes": {
         "data-fv-open=\"#id\"": "open a <dialog class=\"modal\" id=\"id\">",
         "data-fv-dismiss": "close the nearest dialog",
         "data-fv-tab=\"#panelId\"": "switch tabs (arrow-key nav added automatically)",
         "data-fv-theme-toggle": "flip light/dark theme",
         "data-fv-nav-toggle": "toggle the collapsed mobile navbar",
+        "data-fv-copy": "copy to clipboard on click — bare form copies the nearest pre.snippet, or the .message-bubble text when inside a chat .message-actions row; or pass \"#sel\" / literal text. The button flashes success.",
+        "class=\"snippet\" on <pre>": "farvist.js wraps the code block and adds a hover copy button (requires the JS include)",
         "data-tooltip=\"text\"": "CSS tooltip; text is exposed to assistive tech"
       },
-      "api": "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired."
+      "api": "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired."
     }
   },
   "utilities": {
@@ -1076,9 +1078,13 @@
         "message-body",
         "message-bubble",
         "message-meta",
-        "typing"
+        "message-actions (hover copy/vote row)",
+        "typing",
+        "streaming (caret while tokens arrive)",
+        "cite (superscript source chip)",
+        "sources (footnote list)"
       ],
-      "example": "<div class=\"chat\"><div class=\"message\"><span class=\"avatar avatar-sm avatar-accent\">AI</span><div class=\"message-body\"><div class=\"message-bubble\">Hi</div></div></div></div>"
+      "example": "<div class=\"chat\"><div class=\"message\"><span class=\"avatar avatar-sm avatar-accent\">AI</span><div class=\"message-body\"><div class=\"message-bubble streaming\">Hi</div></div></div></div>"
     },
     {
       "name": "prompt (AI)",
@@ -1097,6 +1103,36 @@
         "status-{online|busy|idle|error}"
       ],
       "example": "<span class=\"status status-online\">Agent online</span>"
+    },
+    {
+      "name": "prose (AI)",
+      "classes": [
+        "prose",
+        "prose-sm"
+      ],
+      "example": "<div class=\"message-bubble\"><div class=\"prose prose-sm\">…rendered markdown…</div></div> — ALWAYS wrap rendered-markdown HTML in .prose (bubbles preserve raw newlines otherwise); also styles bare tables/images from model output."
+    },
+    {
+      "name": "tool-call (AI)",
+      "classes": [
+        "tool-call",
+        "tool-call-header",
+        "tool-call-name",
+        "tool-call-status",
+        "tool-call-args",
+        "tool-call-result",
+        "tool-call-{running|done|error}"
+      ],
+      "example": "<div class=\"tool-call tool-call-running\"><div class=\"tool-call-header\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-terminal\"/></svg><span class=\"tool-call-name\">fetch_data</span><span class=\"tool-call-status\">Running…</span></div><div class=\"tool-call-args\">{\"id\": 42}</div></div> — state classes tint the rail; keep the status TEXT so meaning never relies on color."
+    },
+    {
+      "name": "reasoning (AI)",
+      "classes": [
+        "reasoning (<details>)",
+        "reasoning-summary (<summary>)",
+        "reasoning-body"
+      ],
+      "example": "<details class=\"reasoning\"><summary class=\"reasoning-summary\">Thought for 12 seconds</summary><div class=\"reasoning-body\">…model thinking…</div></details>"
     }
   ],
   "icons": {
@@ -1187,6 +1223,18 @@
     {
       "name": "contact-form",
       "html": "<section class=\"container py-7\" style=\"max-width:34rem\"><h2 class=\"fs-3xl fw-black mb-4 text-center\">Get in touch</h2><form><div class=\"row gy-3\"><div class=\"col-12 col-md-6\"><label class=\"form-label\" for=\"n\">Name</label><input class=\"form-control\" id=\"n\"></div><div class=\"col-12 col-md-6\"><label class=\"form-label\" for=\"e\">Email</label><input class=\"form-control\" id=\"e\" type=\"email\"></div></div><label class=\"form-label mt-3\" for=\"m\">Message</label><textarea class=\"form-control\" id=\"m\" rows=\"4\"></textarea><button class=\"btn btn-gradient-primary btn-block mt-4\" type=\"submit\">Send</button></form></section>"
+    },
+    {
+      "name": "assistant-markdown-reply",
+      "html": "<div class=\"message\"><span class=\"avatar avatar-sm avatar-accent\" aria-hidden=\"true\">AI</span><div class=\"message-body\"><div class=\"message-bubble\"><div class=\"prose prose-sm\"><p>Two ways to do it:</p><ul><li><strong>CDN</strong> — one <code>&lt;link&gt;</code> tag</li><li><strong>npm</strong> — <code>npm i farvist</code></li></ul><pre class=\"snippet\"><code>&lt;link rel=\"stylesheet\" href=\"…farvist.min.css\"&gt;</code></pre></div></div><div class=\"message-actions\"><button class=\"btn btn-glass btn-sm\" data-fv-copy aria-label=\"Copy\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-copy\"/></svg></button><button class=\"btn btn-glass btn-sm\" aria-label=\"Good response\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-thumbs-up\"/></svg></button></div><div class=\"message-meta\">Assistant · now</div></div></div>"
+    },
+    {
+      "name": "agent-tool-call-turn",
+      "html": "<div class=\"message\"><span class=\"avatar avatar-sm avatar-accent\" aria-hidden=\"true\">AI</span><div class=\"message-body\"><details class=\"reasoning\"><summary class=\"reasoning-summary\">Thought for 4 seconds</summary><div class=\"reasoning-body\">The user wants current data, so search first.</div></details><div class=\"tool-call tool-call-done\"><div class=\"tool-call-header\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-terminal\"/></svg><span class=\"tool-call-name\">search_docs</span><span class=\"tool-call-status\">Done</span></div><div class=\"tool-call-args\">query: \"backgrounds library\"</div></div><div class=\"message-bubble streaming\"><div class=\"prose prose-sm\"><p>The backgrounds library ships mesh gradients and patterns…</p></div></div></div></div>"
+    },
+    {
+      "name": "rag-answer-with-citations",
+      "html": "<div class=\"message\"><span class=\"avatar avatar-sm avatar-accent\" aria-hidden=\"true\">AI</span><div class=\"message-body\"><div class=\"message-bubble\"><div class=\"prose prose-sm\"><p>Glass surfaces need a rich backdrop to blur<a class=\"cite\" href=\"#src-1\">1</a>, so give the page a mesh background<a class=\"cite\" href=\"#src-2\">2</a>.</p><ol class=\"sources\"><li id=\"src-1\"><a href=\"#\">docs/backgrounds — why glass needs a backdrop</a></li><li id=\"src-2\"><a href=\"#\">llms-full.txt — conventions</a></li></ol></div></div></div></div>"
     }
   ]
 }

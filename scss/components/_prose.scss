@@ -1,0 +1,70 @@
+// =============================================================================
+// Farvist · Components · Prose (rendered LLM / markdown output)
+// Opt-in typography scope for HTML rendered from markdown — model replies,
+// docs, CMS content. Inside a .message-bubble it also restores normal
+// whitespace (the bubble preserves newlines for PLAIN text; rendered HTML
+// brings its own structure).
+//   <div class="message-bubble"><div class="prose"> …rendered markdown… </div></div>
+// Headings are re-scaled so a model's "# Heading" reads as content, not a hero.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+@layer components {
+
+  .prose {
+    white-space: normal;          // undo .message-bubble's pre-wrap for rendered HTML
+    overflow-wrap: anywhere;
+
+    > :first-child { margin-top: 0; }
+    > :last-child  { margin-bottom: 0; }
+
+    // Content-scale headings: an LLM's h1 shouldn't render at display size.
+    h1 { font-size: map.get($font-sizes, 'xl'); }
+    h2 { font-size: map.get($font-sizes, 'lg'); }
+    h3, h4, h5, h6 { font-size: map.get($font-sizes, 'base'); }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: spacer(4);
+      margin-bottom: spacer(2);
+    }
+
+    p, ul, ol, pre, blockquote, table {
+      margin-bottom: spacer(3);
+    }
+
+    li + li { margin-top: spacer(1); }
+
+    img {
+      max-width: 100%;
+      border-radius: map.get($radii, 'md');
+    }
+
+    // Markdown emits bare <table> — give it readable defaults. Keep display:
+    // table (changing it strips table semantics from the accessibility tree);
+    // farvist.js wraps overflowing prose tables in .table-responsive so wide
+    // ones scroll without losing row/column navigation.
+    table {
+      max-width: 100%;
+      border-collapse: collapse;
+      font-size: map.get($font-sizes, 'sm');
+    }
+
+    th, td {
+      padding: spacer(2) spacer(3);
+      text-align: left;
+      border-bottom: $border-width solid var(--fv-border-color);
+    }
+
+    th { font-weight: map.get($font-weights, 'semibold'); }
+  }
+
+  // Compact variant for chat bubbles.
+  .prose-sm {
+    font-size: map.get($font-sizes, 'sm');
+
+    p, ul, ol, pre, blockquote, table { margin-bottom: spacer(2); }
+    h1, h2, h3, h4, h5, h6 { margin-top: spacer(3); margin-bottom: spacer(1); }
+  }
+}

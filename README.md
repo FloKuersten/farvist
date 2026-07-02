@@ -256,6 +256,14 @@ Mesh stops come from the `$bg-meshes` map and reference your theme colors, so th
 
 **Callout** — `.callout` `.callout-{color}` `.callout-title`
 
+**Chat (AI)** — `.chat` `.message` (`.message-out`) `.message-body` `.message-bubble` `.message-meta` `.message-actions` · `.typing` · `.streaming` (live caret) · citations: `.cite` + `.sources`
+
+**Prompt composer (AI)** — `.prompt` `.prompt-field` (auto-sizing) `.prompt-actions` `.prompt-meta` · **Agent status** — `.status` `.status-{online|busy|idle|error}`
+
+**Prose (AI)** — `.prose` / `.prose-sm`: wrap **rendered LLM markdown** so headings, lists, bare tables and images read at content scale (bubbles preserve raw newlines otherwise)
+
+**Tool call (AI)** — `.tool-call` (`.tool-call-{running|done|error}`) `.tool-call-header/-name/-status/-args/-result` · **Reasoning** — `.reasoning` on native `<details>` (`.reasoning-summary` `.reasoning-body`)
+
 Theme colors: `primary · secondary · success · danger · warning · info · accent · light · dark`.
 
 ### Icons, assets & JavaScript

@@ -106,13 +106,24 @@
     }
 
     // Copy-to-clipboard: .copy-btn (auto-added to pre.snippet) or any [data-fv-copy].
+    // A bare data-fv-copy copies the nearest snippet — or, in a chat
+    // .message-actions row, the sibling .message-bubble's text.
     var copyBtn = t.closest('.copy-btn, [data-fv-copy]');
     if (copyBtn) {
-      var text, ref = copyBtn.getAttribute('data-fv-copy');
+      var text = '', ref = copyBtn.getAttribute('data-fv-copy');
       if (ref && ref.charAt(0) === '#') { var tgt = document.querySelector(ref); text = tgt ? tgt.textContent : ''; }
       else if (ref) { text = ref; }
-      else { var wrap = copyBtn.closest('.snippet-wrap'); var pre = wrap && wrap.querySelector('pre'); text = pre ? (pre.querySelector('code') || pre).textContent : ''; }
-      copy(text, copyBtn.classList.contains('copy-btn') ? copyBtn : null);
+      else {
+        var wrap = copyBtn.closest('.snippet-wrap');
+        var pre = wrap && wrap.querySelector('pre');
+        if (pre) { text = (pre.querySelector('code') || pre).textContent; }
+        else {
+          var body = copyBtn.closest('.message-body');
+          var bubble = body && body.querySelector('.message-bubble');
+          text = bubble ? bubble.textContent.trim() : '';
+        }
+      }
+      if (text) copy(text, copyBtn);
     }
   });
 
@@ -175,9 +186,22 @@
       }
     });
 
-    // Scrollable regions (wide tables, long code blocks) must be keyboard-focusable
-    // so they can be scrolled without a mouse — but only when they actually overflow.
-    qsa('.table-responsive, pre').forEach(function (region) {
+    // Rendered-markdown tables (bare <table> inside .prose) keep display:table
+    // for accessibility, so wide ones need an overflow wrapper to scroll.
+    qsa('.prose table').forEach(function (table) {
+      if (table.parentElement && table.parentElement.classList.contains('table-responsive')) return;
+      if (table.scrollWidth > table.clientWidth + 1 || table.offsetWidth > table.parentElement.clientWidth + 1) {
+        var shell = document.createElement('div');
+        shell.className = 'table-responsive';
+        table.parentNode.insertBefore(shell, table);
+        shell.appendChild(table);
+      }
+    });
+
+    // Scrollable regions (wide tables, long code blocks, tool-call payloads)
+    // must be keyboard-focusable so they can be scrolled without a mouse —
+    // but only when they actually overflow.
+    qsa('.table-responsive, pre, .tool-call-args, .tool-call-result').forEach(function (region) {
       if (!region.hasAttribute('tabindex') && region.scrollWidth > region.clientWidth + 1) {
         region.setAttribute('tabindex', '0');
       }
@@ -265,9 +289,22 @@
   function copy(text, btn) {
     function ok() {
       if (!btn) return;
-      btn.textContent = 'Copied ✓';
       btn.classList.add('is-copied');
-      setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('is-copied'); }, 1600);
+      if (btn.classList.contains('copy-btn')) {
+        // Text button: swap the label.
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('is-copied'); }, 1600);
+      } else {
+        // Icon-only button: announce via aria-label on a live region so
+        // assistive tech hears the success too, then restore.
+        var label = btn.getAttribute('aria-label');
+        if (!btn.hasAttribute('aria-live')) btn.setAttribute('aria-live', 'polite');
+        btn.setAttribute('aria-label', 'Copied');
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          if (label) btn.setAttribute('aria-label', label);
+        }, 1600);
+      }
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(ok, function () { legacyCopy(text); ok(); });

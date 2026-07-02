@@ -25,8 +25,9 @@
     gap: spacer(3);
     padding: spacer(3) spacer(4);
     border-radius: map.get($radii, 'lg');
-    border-left: 3px solid var(--fv-primary);
     @include glass($strong: true);
+    // AFTER the glass include — its `border` shorthand would reset this rail.
+    border-left: 3px solid var(--fv-primary);
     box-shadow: var(--fv-shadow-xl);
     animation: fv-toast-in 0.3s ease;
   }

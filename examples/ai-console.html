@@ -74,16 +74,33 @@
               <div class="message-meta">You</div>
             </div>
           </div>
-          <!-- Assistant w/ tool call + citation -->
+          <!-- Assistant w/ reasoning + tool call + prose answer + citations + actions -->
           <div class="message">
             <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
             <div class="message-body">
-              <div class="card card-solid mb-2"><div class="card-body" style="padding:.6rem .85rem;">
-                <div class="d-flex align-items-center gap-2 mb-1"><span class="chip chip-info">tool</span> <span class="tool">search_docs</span></div>
-                <div class="text-muted tool">query: "backgrounds library"</div>
+              <details class="reasoning">
+                <summary class="reasoning-summary">Thought for 4 seconds</summary>
+                <div class="reasoning-body">The user wants the docs, so search first, then answer with sources.</div>
+              </details>
+              <div class="tool-call tool-call-done">
+                <div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">search_docs</span><span class="tool-call-status">Done</span></div>
+                <div class="tool-call-args">query: "backgrounds library"</div>
+              </div>
+              <div class="message-bubble"><div class="prose prose-sm">
+                <p>The free backgrounds library covers three families<a class="cite" href="#src-bg">1</a>:</p>
+                <ul>
+                  <li><strong>Meshes</strong> — <code>.bg-mesh-aurora</code>, <code>.bg-mesh-sunset</code>, <code>.bg-mesh-ocean</code>, <code>.bg-mesh-nebula</code></li>
+                  <li><strong>Patterns</strong> — <code>.bg-grid</code>, <code>.bg-dots</code>, <code>.bg-graph</code></li>
+                  <li><strong>Spotlights</strong> — <code>.bg-spotlight</code>, <code>.bg-spotlight-primary</code></li>
+                </ul>
+                <ol class="sources"><li id="src-bg"><a href="../docs/index.html#backgrounds">docs/backgrounds</a></li></ol>
               </div></div>
-              <div class="message-bubble">The free backgrounds library covers mesh gradients, patterns and spotlights — one class each (<code>.bg-mesh-aurora</code>, <code>.bg-grid</code>, <code>.bg-spotlight</code>).</div>
-              <div class="message-meta">Assistant · <a href="../docs/index.html#backgrounds">docs/backgrounds</a></div>
+              <div class="message-actions">
+                <button class="btn btn-glass btn-sm" data-fv-copy aria-label="Copy answer"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-copy"/></svg></button>
+                <button class="btn btn-glass btn-sm" aria-label="Good response"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-thumbs-up"/></svg></button>
+                <button class="btn btn-glass btn-sm" aria-label="Bad response"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-thumbs-down"/></svg></button>
+              </div>
+              <div class="message-meta">Assistant · cited</div>
             </div>
           </div>
         </div>
@@ -145,9 +162,23 @@
 
         setTimeout(function () {
           thinking.remove();
-          bubble('in', "This is a canned reply to show the pattern — append a message, show <code>.typing</code>, then call <code>Farvist.enhance()</code> so new bits get their ARIA wired up.");
-          if (window.Farvist) Farvist.enhance();
-        }, 1100);
+          // Stream the canned reply token-by-token: .streaming shows the caret,
+          // remove it (and re-enhance) when the last chunk lands.
+          var msg = bubble('in', '');
+          var target = msg.querySelector('.message-bubble');
+          target.classList.add('streaming');
+          var reply = "This is a canned reply showing the pattern — append a bubble with .streaming, add tokens as they arrive, then drop the class and call Farvist.enhance() so new bits get their ARIA wired up.";
+          var words = reply.split(' '), i = 0;
+          var tick = setInterval(function () {
+            target.textContent += (i ? ' ' : '') + words[i];
+            thread.scrollTop = thread.scrollHeight;
+            if (++i >= words.length) {
+              clearInterval(tick);
+              target.classList.remove('streaming');
+              if (window.Farvist) Farvist.enhance();
+            }
+          }, 45);
+        }, 900);
       });
     })();
   </script>

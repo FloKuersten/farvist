@@ -1,0 +1,64 @@
+// =============================================================================
+// Farvist · Components · Reasoning
+// A collapsible "thinking" disclosure for AI answers, styled on the native
+// <details>/<summary> pair — keyboard and screen-reader accessible for free.
+//   <details class="reasoning">
+//     <summary class="reasoning-summary">Thought for 12 seconds</summary>
+//     <div class="reasoning-body">…model reasoning…</div>
+//   </details>
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+@layer components {
+
+  .reasoning {
+    margin-bottom: spacer(2);
+    font-size: map.get($font-sizes, 'sm');
+  }
+
+  .reasoning-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
+    padding: spacer(1) spacer(2);
+    color: var(--fv-muted);
+    cursor: pointer;
+    list-style: none;
+    border-radius: map.get($radii, 'md');
+    transition: color $transition-base;
+
+    &::-webkit-details-marker { display: none; }
+
+    // Disclosure chevron that rotates open — pure CSS, inherits currentColor.
+    &::before {
+      content: '';
+      width: 0.55em;
+      height: 0.55em;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(-45deg);
+      transition: transform $transition-base;
+      flex: none;
+    }
+
+    &:hover { color: var(--fv-body-color); }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: var(--fv-focus-ring);
+    }
+  }
+
+  .reasoning[open] > .reasoning-summary::before {
+    transform: rotate(45deg);
+  }
+
+  .reasoning-body {
+    padding: spacer(2) spacer(3);
+    margin-top: spacer(1);
+    color: var(--fv-muted);
+    border-left: 2px solid var(--fv-border-color);
+  }
+}

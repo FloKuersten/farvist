@@ -1,0 +1,86 @@
+// =============================================================================
+// Farvist · Components · Tool call
+// An agent's tool invocation as a compact glass card. Works as a plain <div>
+// or as a collapsible <details> (make the header the <summary>).
+//   <div class="tool-call tool-call-done">
+//     <div class="tool-call-header">
+//       <svg class="icon">…#i-terminal</svg>
+//       <span class="tool-call-name">search_docs</span>
+//       <span class="tool-call-status">Done</span>
+//     </div>
+//     <div class="tool-call-args">query: "backgrounds library"</div>
+//     <div class="tool-call-result">…</div>
+//   </div>
+// States pair a tinted rail with the visible .tool-call-status TEXT — never
+// color alone: .tool-call-running / .tool-call-done / .tool-call-error.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+@layer components {
+
+  .tool-call {
+    margin-bottom: spacer(2);
+    font-size: map.get($font-sizes, 'sm');
+    border-radius: map.get($radii, 'md');
+    @include glass;
+    // AFTER the glass include — its `border` shorthand would reset this rail.
+    border-left: 3px solid var(--fv-border-color);
+  }
+
+  .tool-call-header {
+    display: flex;
+    align-items: center;
+    gap: spacer(2);
+    padding: spacer(2) spacer(3);
+  }
+
+  // Collapsible flavour: <details class="tool-call"><summary class="tool-call-header">
+  summary.tool-call-header {
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: var(--fv-focus-ring);
+      border-radius: map.get($radii, 'md');
+    }
+  }
+
+  .tool-call-name {
+    font-family: var(--fv-font-mono);
+    font-weight: map.get($font-weights, 'medium');
+  }
+
+  .tool-call-status {
+    margin-left: auto;
+    font-size: map.get($font-sizes, 'xs');
+    color: var(--fv-muted);
+  }
+
+  .tool-call-args,
+  .tool-call-result {
+    padding: spacer(2) spacer(3);
+    font-family: var(--fv-font-mono);
+    font-size: map.get($font-sizes, 'xs');
+    color: var(--fv-muted);
+    border-top: $border-width solid var(--fv-border-color);
+    overflow-x: auto;
+  }
+
+  .tool-call-result {
+    color: var(--fv-body-color);
+
+    pre { margin-bottom: 0; }
+  }
+
+  // States tint the rail only — the status text stays muted (AA in both
+  // themes; the raw state colors fail 4.5:1 as 12px text on the light surface)
+  // and the TEXT carries the meaning.
+  .tool-call-running { border-left-color: var(--fv-info); }
+  .tool-call-done    { border-left-color: var(--fv-success); }
+  .tool-call-error   { border-left-color: var(--fv-danger); }
+}
