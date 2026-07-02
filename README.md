@@ -14,7 +14,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 - 🌗 **Dark & light themes** — dark "space" theme by default; flip `data-theme="light"` on `<html>` to retheme at runtime via `--fv-*` custom properties.
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
 - 🧩 **30+ glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
-- 🎨 **Assets included** — a 35-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 2.5 KB optional JS companion for the interactive bits.
+- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 2.5 KB optional JS companion for the interactive bits.
 - 🖼️ **Premade templates** — a glass dashboard and a copy-paste block gallery in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
 - 🪶 **~20 KB gzipped** (127 KB minified) — and shrinks further when you trim the token maps.
@@ -260,7 +260,7 @@ Theme colors: `primary · secondary · success · danger · warning · info · a
 
 ### Icons, assets & JavaScript
 
-A 35-icon SVG sprite ships in `assets/icons/`. Icons inherit `currentColor`, so they take the text color (and any `.text-glow`):
+A 55-icon SVG sprite ships in `assets/icons/`. Icons inherit `currentColor`, so they take the text color (and any `.text-glow`):
 
 ```html
 <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-bell"/></svg>
@@ -305,11 +305,12 @@ Everything else (accordion, dropdown, tooltip, switch, progress…) is pure CSS 
 
 Farvist ships machine-readable context so AI coding tools (Cursor, Claude, Copilot) generate correct markup:
 
+- [`llms-full.txt`](https://farvist.com/llms-full.txt) — every convention, component, **icon, and copy-paste recipe** (whole sections: login, pricing, chat UI, dashboard shell…). Paste it into Cursor / Claude / ChatGPT.
+- [`ai-context.json`](https://farvist.com/ai-context.json) — machine-readable catalog (components, utility families, 55 icons, recipes).
 - [`llms.txt`](https://farvist.com/llms.txt) — concise index (the [llms.txt](https://llmstxt.org) convention).
-- [`llms-full.txt`](https://farvist.com/llms-full.txt) — every convention + component class with a copy-paste example; paste it into your assistant.
-- [`ai-context.json`](https://farvist.com/ai-context.json) — JSON catalog of components, utility families and conventions.
+- [`farvist.cursorrules`](https://farvist.com/farvist.cursorrules) — drop into your project as `.cursorrules`.
 
-These are regenerated from the compiled CSS on every build (`npm run build:ai`) and shipped in the npm package.
+`robots.txt` welcomes the AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended…) and every page links `/llms.txt`. The catalog is regenerated from the compiled CSS + icon sprite on every build (`npm run build:ai`) and shipped in the npm package.
 
 ## Project structure
 
@@ -332,7 +333,7 @@ scss/
 assets/
 ├── farvist.js            # 2.5 KB optional companion (modal, tabs, toast, theme)
 ├── logo.svg                 # wordmark + gradient mark
-├── icons/farvist-icons.svg   # 35-icon sprite (currentColor)
+├── icons/farvist-icons.svg   # 55-icon sprite (currentColor)
 └── patterns/                # mesh, blob, grid, dots decorative SVGs
 examples/
 ├── dashboard.html           # full glass dashboard template

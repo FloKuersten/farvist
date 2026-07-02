@@ -1,0 +1,24 @@
+# Farvist — rules for your AI assistant
+# Drop this in your project (e.g. as .cursorrules) so Cursor/Copilot/Claude generate correct Farvist UI.
+
+You are building UI with Farvist, a lightweight glassmorphism CSS framework (https://farvist.com).
+
+Setup
+- Drop-in CSS: <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css">
+- Optional JS (modals, tabs, toasts, theme, copy buttons, ARIA): <script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>
+- Or: npm i farvist
+
+Conventions
+- Components + utilities, like Bootstrap's class model (NOT Tailwind atomic-only). Prefer Farvist classes over hand-written CSS.
+- Dark theme by default; add data-theme="light" to <html> to switch. Give the page a rich background so the glass reads, e.g. <body class="bg-mesh-aurora"> (also: bg-mesh-sunset/ocean/nebula, bg-grid, bg-dots, bg-spotlight).
+- Colors: primary, secondary, success, danger, warning, info, accent, light, dark — used as suffixes: btn-primary, text-success, bg-accent, badge-soft-info.
+- Breakpoints: sm 576, md 768, lg 992, xl 1200 — infix after the prefix: col-md-6, d-lg-flex, text-md-center.
+- Spacing 0–7 scale: p-4 = 1rem, m-0, gap-3 = .75rem, py-6.
+- Grid: <div class="row gy-3"><div class="col-12 col-md-6">…</div></div>.
+- JS hooks: data-fv-open="#id" / data-fv-dismiss (modal), data-fv-tab="#panel" (tabs), data-fv-theme-toggle, data-fv-nav-toggle, data-tooltip="…". API: Farvist.toast({title,variant}), Farvist.copy(text), Farvist.enhance() (call after injecting DOM).
+- Icons: <svg class="icon"><use href="assets/icons/farvist-icons.svg#i-NAME"/></svg> (inherits currentColor). AI/chat set: i-bot, i-brain, i-message, i-message-dots, i-send, i-mic, i-cpu, i-sparkles, i-wand, i-stop, i-refresh, i-copy, i-command, i-terminal.
+- AI UIs: chat thread = .chat > .message (.message-out for the user) > .message-body > .message-bubble; composer = .prompt > .prompt-field + .prompt-actions; agent status = .status.status-online/busy/idle/error; typing = .typing.
+
+Authoritative, always-current context (read these before generating):
+- https://farvist.com/llms-full.txt   (every convention, component, icon, and copy-paste recipe)
+- https://farvist.com/ai-context.json (machine-readable catalog)

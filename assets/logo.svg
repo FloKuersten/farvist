@@ -6,6 +6,10 @@
       <stop offset="1" stop-color="#22d3ee"/>
     </linearGradient>
   </defs>
+  <style>
+    .fv-word { fill: #e6ebf5; }
+    @media (prefers-color-scheme: light) { .fv-word { fill: #1a1d29; } }
+  </style>
   <rect x="11" y="11" width="26" height="26" rx="8" transform="rotate(45 24 24)" fill="url(#fv-logo)"/>
-  <text x="54" y="32" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="23" font-weight="800" letter-spacing="-0.5" fill="#e6ebf5">Farvist</text>
+  <text class="fv-word" x="54" y="32" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="23" font-weight="800" letter-spacing="-0.5">Farvist</text>
 </svg>

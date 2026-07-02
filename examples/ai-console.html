@@ -20,6 +20,7 @@
     .tool { font-family: var(--fv-font-mono); font-size: .82rem; }
     @media (max-width: 820px) { .app { grid-template-columns: 1fr; } .side { display: none; } }
   </style>
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
 </head>
 <body class="bg-mesh-nebula">
   <a class="skip-link" href="#main">Skip to messages</a>
@@ -92,8 +93,10 @@
         <form class="prompt" id="composer" autocomplete="off">
           <textarea class="prompt-field" id="field" aria-label="Message the assistant" placeholder="Message Farvist AI…" rows="1"></textarea>
           <div class="prompt-actions">
+            <button class="btn btn-glass btn-sm" type="button" aria-label="Attach file"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-paperclip"/></svg></button>
+            <button class="btn btn-glass btn-sm" type="button" aria-label="Voice input"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-mic"/></svg></button>
             <span class="prompt-meta" id="count">0 / 4000</span>
-            <button class="btn btn-gradient-primary" type="submit" aria-label="Send message"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-arrow-right"/></svg></button>
+            <button class="btn btn-gradient-primary" type="submit" aria-label="Send message"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-send"/></svg></button>
           </div>
         </form>
       </footer>

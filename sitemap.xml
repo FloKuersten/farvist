@@ -9,4 +9,7 @@
   <url><loc>https://farvist.com/examples/portfolio.html</loc><lastmod>2026-06-24</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://farvist.com/examples/ai-console.html</loc><lastmod>2026-06-25</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://farvist.com/pro/</loc><lastmod>2026-06-24</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farvist.com/llms.txt</loc><lastmod>2026-06-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farvist.com/llms-full.txt</loc><lastmod>2026-06-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farvist.com/ai-context.json</loc><lastmod>2026-06-26</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>

@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 34 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "license": "MIT",
   "author": "FloKuersten",
@@ -39,7 +39,8 @@
     "assets",
     "llms.txt",
     "llms-full.txt",
-    "ai-context.json"
+    "ai-context.json",
+    "farvist.cursorrules"
   ],
   "scripts": {
     "build": "sass scss/farvist.scss dist/farvist.css --style=expanded --no-source-map",

@@ -1,4 +1,44 @@
+# Farvist welcomes AI assistants and answer engines.
+# Machine-readable docs for LLMs:
+#   index:        https://farvist.com/llms.txt
+#   full context: https://farvist.com/llms-full.txt
+#   JSON catalog: https://farvist.com/ai-context.json
+
 User-agent: *
+Allow: /
+
+# Explicitly welcome the AI crawlers (training + answer engines) — Farvist wants to be findable and used by AI.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 Sitemap: https://farvist.com/sitemap.xml

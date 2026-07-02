@@ -23,6 +23,7 @@
     .lead { font-size: 1.15rem; }
     @media (max-width: 820px) { .docs { grid-template-columns: 1fr; } .docs-nav { position: static; max-height: none; padding: 0; } }
   </style>
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -61,6 +62,7 @@
       <a href="#misc">Icons &amp; accordion</a>
       <div class="grp">AI</div>
       <a href="#ai">Chat &amp; AI kit ✦</a>
+      <a href="#use-with-ai">Use with your AI ✦</a>
       <div class="grp">Scripting</div>
       <a href="#js">JS companion</a>
       <a href="#a11y">Accessibility ✦</a>
@@ -288,11 +290,63 @@ Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
       <section id="misc">
         <h2 class="mb-3">Icons &amp; accordion</h2>
         <div class="example glass rounded-lg">
-          <div class="d-flex align-items-center gap-3 mb-4">
-            <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-home"/></svg>
-            <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-zap"/></svg>
-            <svg class="icon text-accent" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg>
-            <span class="text-muted fs-sm">35-icon set · driven by <code>currentColor</code></span>
+          <p class="text-muted mb-3">55 line icons (24×24, sized via <code>font-size</code> or width/height, coloured by <code>currentColor</code>). The AI/chat set is highlighted.</p>
+          <div class="d-flex flex-wrap gap-2" style="row-gap:1.1rem;">
+            <div class="text-center" style="width:4.6rem" title="i-check"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-check"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">check</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-x"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-x"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">x</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-plus"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-plus"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">plus</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-minus"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-minus"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">minus</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-chevron-down"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-chevron-down"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">chevron-down</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-chevron-right"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-chevron-right"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">chevron-right</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-arrow-right"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-arrow-right"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">arrow-right</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-arrow-left"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-arrow-left"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">arrow-left</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-menu"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-menu"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">menu</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-search"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-search"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">search</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-user"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-user"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">user</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-users"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-users"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">users</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-bell"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-bell"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">bell</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-settings"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-settings"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">settings</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-heart"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-heart"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">heart</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-star"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-star"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">star</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-home"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-home"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">home</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-mail"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-mail"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">mail</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-lock"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-lock"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">lock</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-eye"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-eye"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">eye</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-download"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-download"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">download</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-upload"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-upload"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">upload</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-trash"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-trash"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">trash</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-edit"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-edit"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">edit</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-calendar"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-calendar"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">calendar</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-clock"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-clock"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">clock</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-info"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-info"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">info</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-alert"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-alert"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">alert</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-external"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-external"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">external</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-sun"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-sun"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">sun</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-moon"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-moon"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">moon</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-zap"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-zap"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">zap</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-sparkles"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-sparkles"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">sparkles</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-code"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-code"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">code</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-layers"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;"><use href="../assets/icons/farvist-icons.svg#i-layers"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">layers</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-bot"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-bot"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">bot</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-brain"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-brain"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">brain</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-message"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-message"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">message</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-message-dots"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-message-dots"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">message-dots</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-cpu"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-cpu"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">cpu</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-send"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-send"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">send</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-mic"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-mic"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">mic</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-stop"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-stop"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">stop</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-refresh"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-refresh"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">refresh</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-copy"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-copy"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">copy</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-thumbs-up"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-thumbs-up"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">thumbs-up</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-thumbs-down"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-thumbs-down"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">thumbs-down</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-wand"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-wand"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">wand</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-paperclip"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-paperclip"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">paperclip</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-image"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-image"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">image</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-command"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-command"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">command</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-terminal"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-terminal"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">terminal</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-globe"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-globe"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">globe</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-database"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-database"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">database</div></div>
+            <div class="text-center" style="width:4.6rem" title="i-link"><svg class="icon" aria-hidden="true" style="width:1.4rem;height:1.4rem;color:var(--fv-accent)"><use href="../assets/icons/farvist-icons.svg#i-link"/></svg><div class="text-muted" style="font-size:.62rem;margin-top:.2rem">link</div></div>
           </div>
           <details class="accordion-item" open><summary>Is it accessible?</summary><div class="accordion-body">Yes — ARIA is wired up automatically by farvist.js.</div></details>
           <details class="accordion-item"><summary>Does it need a build step?</summary><div class="accordion-body">No — one &lt;link&gt; and you're set.</div></details>
@@ -359,6 +413,25 @@ Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
         <p class="text-muted mb-2" style="max-width:46rem;">After injecting new messages into the DOM, call <code>Farvist.enhance()</code> so any new tooltips, tabs and ARIA get wired up.</p>
 <pre class="snippet"><code>chat.insertAdjacentHTML('beforeend', bubbleHTML);
 Farvist.enhance();   // re-run progressive enhancement</code></pre>
+      </section>
+
+      <section id="use-with-ai">
+        <h2 class="mb-3">Use Farvist with your AI ✦</h2>
+        <p class="text-muted mb-3" style="max-width:46rem;">Farvist is built to be <strong>generated correctly by AI assistants</strong>. Point your tool at the machine-readable context, or paste the primer below.</p>
+        <ul class="text-muted mb-4" style="max-width:46rem;">
+          <li><a href="https://farvist.com/llms-full.txt">llms-full.txt</a> — every convention, component, icon and copy-paste recipe. Paste this into Cursor / Claude / ChatGPT.</li>
+          <li><a href="https://farvist.com/ai-context.json">ai-context.json</a> — machine-readable catalog (components, utilities, icons, recipes).</li>
+          <li><a href="https://farvist.com/llms.txt">llms.txt</a> — the concise index (llms.txt convention).</li>
+          <li><a href="https://farvist.com/farvist.cursorrules">farvist.cursorrules</a> — drop into your project as <code>.cursorrules</code>.</li>
+        </ul>
+        <h3 class="h5 mb-2">Paste-in primer</h3>
+        <pre class="snippet"><code>You are an expert in Farvist, a glassmorphism CSS framework.
+Prefer Farvist classes (components + utilities) over hand-written CSS.
+Dark by default; add data-theme="light" to switch; give the page a
+bg-mesh-* background so the glass reads. Colors: primary, accent, success…
+(suffixes: btn-primary, text-accent). Spacing 0–7 (p-4 = 1rem).
+Icons: &lt;svg class="icon"&gt;&lt;use href="…#i-bot"/&gt;&lt;/svg&gt;.
+Full context: https://farvist.com/llms-full.txt</code></pre>
       </section>
 
       <section id="js">

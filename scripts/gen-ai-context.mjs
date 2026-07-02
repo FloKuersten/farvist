@@ -16,6 +16,21 @@ const css = readFileSync(join(root, 'dist/farvist.css'), 'utf8');
 // All distinct class selectors actually present in the compiled CSS.
 const classes = [...new Set([...css.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) => m[1]))].sort();
 
+// Icon names from the SVG sprite.
+const sprite = readFileSync(join(root, 'assets/icons/farvist-icons.svg'), 'utf8');
+const iconNames = [...new Set([...sprite.matchAll(/id="(i-[\w-]+)"/g)].map((m) => m[1]))].sort();
+
+// Copy-paste recipes — whole sections an assistant can assemble pages from.
+const recipes = [
+  { name: 'navbar', html: '<nav class="navbar sticky-top"><a class="navbar-brand" href="#">◆ Brand</a><button class="navbar-toggle" data-fv-nav-toggle aria-label="Menu"><span class="navbar-toggle-icon"></span></button><ul class="navbar-nav" id="nav" role="list"><li><a class="nav-link active" href="#">Home</a></li><li><a class="nav-link" href="#">Docs</a></li><li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Theme">\u{1F319}</button></li></ul></nav>' },
+  { name: 'hero', html: '<header class="container text-center" style="padding-block:6rem"><h1 class="fs-5xl fw-black mb-3">Build something <span class="text-gradient">glassy</span></h1><p class="fs-xl text-muted mx-auto mb-5" style="max-width:40rem">A one-line tagline that sells it.</p><div class="d-flex gap-3 justify-content-center flex-wrap"><a class="btn btn-gradient-primary btn-lg" href="#">Get started</a><a class="btn btn-glass btn-lg" href="#">Docs</a></div></header>' },
+  { name: 'login-card', html: '<div class="container" style="max-width:26rem;padding-block:4rem"><div class="card glass-strong"><div class="card-body"><h1 class="h3 mb-4 text-center">Sign in</h1><form><label class="form-label" for="email">Email</label><input class="form-control mb-3" id="email" type="email"><label class="form-label" for="pw">Password</label><input class="form-control mb-4" id="pw" type="password"><button class="btn btn-gradient-primary btn-block" type="submit">Sign in</button></form></div></div></div>' },
+  { name: 'pricing-3up', html: '<section class="container py-7"><div class="row gy-4 justify-content-center"><div class="col-12 col-md-4"><div class="card h-100"><div class="card-body text-center"><h3 class="fs-lg fw-bold">Free</h3><div class="fs-4xl fw-black my-2">$0</div><a class="btn btn-glass w-100" href="#">Start</a></div></div></div><div class="col-12 col-md-4"><div class="card card-glow glow-primary h-100"><div class="card-body text-center"><span class="badge badge-primary mb-1">Popular</span><h3 class="fs-lg fw-bold">Pro</h3><div class="fs-4xl fw-black my-2 text-gradient">$39</div><a class="btn btn-gradient-primary w-100" href="#">Buy</a></div></div></div><div class="col-12 col-md-4"><div class="card h-100"><div class="card-body text-center"><h3 class="fs-lg fw-bold">Team</h3><div class="fs-4xl fw-black my-2">$149</div><a class="btn btn-glass w-100" href="#">Buy</a></div></div></div></div></section>' },
+  { name: 'chat-ui', html: '<div class="chat"><div class="message"><span class="avatar avatar-sm avatar-accent">AI</span><div class="message-body"><div class="message-bubble">How can I help?</div><div class="message-meta">Assistant</div></div></div><div class="message message-out"><span class="avatar avatar-sm avatar-primary">You</span><div class="message-body"><div class="message-bubble">Scaffold a page.</div></div></div></div><form class="prompt mt-3"><textarea class="prompt-field" aria-label="Message" placeholder="Message"></textarea><div class="prompt-actions"><button class="btn btn-gradient-primary" aria-label="Send"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-send"/></svg></button></div></form>' },
+  { name: 'dashboard-shell', html: '<div style="display:grid;grid-template-columns:240px 1fr;min-height:100vh"><aside class="glass-strong p-3"><a class="navbar-brand mb-3 d-block" href="#">◆ App</a><a class="nav-link active" href="#">Overview</a><a class="nav-link" href="#">Projects</a><a class="nav-link" href="#">Settings</a></aside><main class="p-4" style="min-width:0"><h1 class="h3 mb-4">Overview</h1><div class="row gy-4"><div class="col-12 col-md-4"><div class="card"><div class="card-body"><div class="stat-value text-gradient">8.4k</div><div class="stat-label">Users</div></div></div></div></div></main></div>' },
+  { name: 'contact-form', html: '<section class="container py-7" style="max-width:34rem"><h2 class="fs-3xl fw-black mb-4 text-center">Get in touch</h2><form><div class="row gy-3"><div class="col-12 col-md-6"><label class="form-label" for="n">Name</label><input class="form-control" id="n"></div><div class="col-12 col-md-6"><label class="form-label" for="e">Email</label><input class="form-control" id="e" type="email"></div></div><label class="form-label mt-3" for="m">Message</label><textarea class="form-control" id="m" rows="4"></textarea><button class="btn btn-gradient-primary btn-block mt-4" type="submit">Send</button></form></section>' },
+];
+
 // Utility families — bucket the class surface by prefix so an AI sees the shape
 // without us enumerating ~700 classes by hand.
 const familyDefs = [
@@ -104,10 +119,15 @@ const out = {
     js: 'https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js',
     npm: 'npm i farvist',
   },
-  totals: { classes: classes.length, components: components.length },
+  totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length },
   conventions,
   utilities,
   components,
+  icons: {
+    usage: '<svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-NAME"/></svg> — inherits currentColor; size via font-size or width/height.',
+    names: iconNames,
+  },
+  recipes,
 };
 
 writeFileSync(join(root, 'ai-context.json'), JSON.stringify(out, null, 2) + '\n');
@@ -150,6 +170,17 @@ for (const c of components) {
   L.push(c.example);
   L.push('```');
 }
+L.push('## Icons');
+L.push(out.icons.usage);
+L.push(`Names (${iconNames.length}): ${iconNames.join(', ')}`);
+L.push('');
+L.push('## Recipes — copy-paste whole sections');
+for (const r of recipes) {
+  L.push(`### ${r.name}`);
+  L.push('```html');
+  L.push(r.html);
+  L.push('```');
+}
 writeFileSync(join(root, 'llms-full.txt'), L.join('\n') + '\n');
 
-console.log(`gen-ai-context: ${classes.length} classes, ${components.length} components -> ai-context.json + llms-full.txt`);
+console.log(`gen-ai-context: ${classes.length} classes, ${components.length} components, ${iconNames.length} icons, ${recipes.length} recipes -> ai-context.json + llms-full.txt`);

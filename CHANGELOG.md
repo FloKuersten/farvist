@@ -2,6 +2,16 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.1.0] — 2026-06-26
+### Added
+- **Built for AI discovery + use.** `robots.txt` now welcomes the AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot…); every page `<head>` links `/llms.txt`; the AI files are in the sitemap.
+- The machine-readable catalog (`ai-context.json` + `llms-full.txt`) now enumerates **every icon** and adds **copy-paste recipes** for whole sections (navbar, hero, login-card, pricing-3up, chat-ui, dashboard-shell, contact-form).
+- **`farvist.cursorrules`** + a paste-in "system prompt" (docs "Use Farvist with your AI" section + README) so any assistant generates correct Farvist with zero setup.
+- **20 AI/chat/dev icons** (`bot, brain, message, message-dots, cpu, send, mic, stop, refresh, copy, thumbs-up/down, wand, paperclip, image, command, terminal, globe, database, link`) — the set is now **55**, with a full icon gallery in the docs.
+### Changed
+- `assets/logo.svg` wordmark now adapts to the viewer's colour scheme (`prefers-color-scheme`) instead of a hard-coded light fill — readable when embedded on light *or* dark pages.
+- The AI console composer is wired to the new `send` / `paperclip` / `mic` icons.
+
 ## [1.0.0] — 2026-06-25
 **Farvist is stable.** Public class names and the component API follow [SemVer](https://semver.org) from here — breaking changes mean a major bump.
 ### Added
