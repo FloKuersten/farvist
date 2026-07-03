@@ -22,6 +22,10 @@
     pre { white-space: pre; overflow-x: auto; }
     .lead { font-size: 1.15rem; }
     @media (max-width: 820px) { .docs { grid-template-columns: 1fr; } .docs-nav { position: static; max-height: none; padding: 0; } }
+    .docs-search-wrap { margin-bottom: .5rem; }
+    #docs-search { padding: .4rem .7rem; font-size: .9rem; }
+    .docs-search-empty { font-size: .85rem; padding: .3rem .6rem; margin: 0; }
+    .docs-nav a[hidden], .docs-nav .grp[hidden] { display: none; }
   </style>
   <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
   <!-- Google AdSense (Auto ads — this page only) -->
@@ -51,6 +55,10 @@
   <div class="docs">
     <!-- Sidebar -->
     <aside class="docs-nav glass">
+      <div class="docs-search-wrap">
+        <input type="search" id="docs-search" class="form-control" placeholder="Search docs…  (press /)" aria-label="Search the docs" autocomplete="off" />
+        <p class="docs-search-empty text-muted" hidden>No matches.</p>
+      </div>
       <div class="grp">Start</div>
       <a href="#intro">Introduction</a>
       <a href="#install">Installation</a>
@@ -58,6 +66,7 @@
       <div class="grp">Core</div>
       <a href="#grid">Grid</a>
       <a href="#utilities">Utilities</a>
+      <a href="#bootstrap">Coming from Bootstrap</a>
       <a href="#backgrounds">Backgrounds ✦</a>
       <div class="grp">Components</div>
       <a href="#buttons">Buttons</a>
@@ -169,12 +178,67 @@ Farvist.theme('synthwave');            // …or JS (persists in localStorage)
       </section>
 
       <section id="utilities">
-        <h2 class="mb-3">Utilities</h2>
-        <p class="text-muted mb-3">Spacing, display, flex, text, color and sizing — all generated. Spacing follows <code>{m|p}{t e b s x y}-{0–8}</code> with optional <code>-{breakpoint}-</code>.</p>
-        <pre class="snippet"><code>.mt-3   .px-4   .p-0   .m-md-5   .mx-auto      &lt;!-- spacing --&gt;
-.d-flex .justify-content-between .align-items-center .gap-3
-.fs-2xl .fw-bold .text-center .text-muted        &lt;!-- type --&gt;
-.bg-primary .text-accent .rounded-lg .shadow-lg  &lt;!-- color/shape --&gt;</code></pre>
+        <h2 class="mb-2">Utilities</h2>
+        <p class="text-muted mb-4" style="max-width:46rem;">Single-purpose helper classes, all generated from the token maps. Most take an optional breakpoint infix — <code>{prop}-{sm|md|lg|xl}-{value}</code> — that applies from that width up (<code>d-md-flex</code>, <code>text-lg-center</code>, <code>col-md-6</code>).</p>
+
+        <h3 class="h5 mb-2">Spacing</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">Margin (<code>m</code>) and padding (<code>p</code>) on a 0–8 scale, per side: <code>{m|p}{t|e|b|s|x|y}-{0–8}</code>. <code>x</code>=left+right, <code>y</code>=top+bottom, blank=all sides; <code>s</code>/<code>e</code> are start/end (RTL-aware). <code>mx-auto</code> centers.</p>
+        <div class="table-responsive mb-2"><table class="table"><thead><tr><th>Step</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+          <tbody><tr><td class="text-muted">rem</td><td>0</td><td>.25</td><td>.5</td><td>.75</td><td>1</td><td>1.5</td><td>2</td><td>3</td><td>4</td></tr></tbody></table></div>
+        <p><code>.mt-3</code> <code>.px-4</code> <code>.p-0</code> <code>.my-6</code> <code>.ms-auto</code> <code>.gap-3</code> <code>.m-md-5</code></p>
+
+        <h3 class="h5 mb-2 mt-4">Sizing</h3>
+        <p><code>.w-25</code> <code>.w-50</code> <code>.w-75</code> <code>.w-100</code> <code>.w-auto</code> · <code>.h-25</code>…<code>.h-100</code> · <code>.mw-100</code> (max-width) · <code>.mh-100</code> (max-height)</p>
+
+        <h3 class="h5 mb-2 mt-4">Display</h3>
+        <p><code>.d-none</code> <code>.d-block</code> <code>.d-inline</code> <code>.d-inline-block</code> <code>.d-flex</code> <code>.d-inline-flex</code> <code>.d-grid</code> <code>.d-table</code> — each with breakpoints, so <code>.d-none.d-md-block</code> hides on phones, shows from <code>md</code> up.</p>
+
+        <h3 class="h5 mb-2 mt-4">Flexbox &amp; alignment</h3>
+        <p class="mb-2"><code>.flex-row</code> <code>.flex-column</code> <code>.flex-wrap</code> <code>.flex-nowrap</code> <code>.flex-fill</code> · <code>.justify-content-{start|center|end|between|around|evenly}</code> · <code>.align-items-{start|center|end|baseline|stretch}</code> · <code>.align-self-*</code> · <code>.order-{0–5}</code> · <code>.gap-{0–8}</code></p>
+        <div class="glass p-3 rounded-lg d-flex justify-content-between align-items-center gap-2 mb-2">
+          <span class="badge badge-primary">A</span><span class="badge badge-accent">B</span><span class="badge badge-info">C</span>
+        </div>
+        <pre class="snippet"><code>&lt;div class="d-flex justify-content-between align-items-center gap-2"&gt;…&lt;/div&gt;</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">Typography</h3>
+        <p><strong>Size</strong> <code>.fs-xs</code> <code>.fs-sm</code> <code>.fs-base</code> <code>.fs-lg</code> <code>.fs-xl</code> <code>.fs-2xl</code> <code>.fs-3xl</code> <code>.fs-4xl</code> <code>.fs-5xl</code> · <strong>Weight</strong> <code>.fw-light</code> <code>.fw-normal</code> <code>.fw-medium</code> <code>.fw-semibold</code> <code>.fw-bold</code> <code>.fw-black</code> · <strong>Line height</strong> <code>.lh-1</code> <code>.lh-base</code> <code>.lh-lg</code></p>
+        <p><strong>Align</strong> <code>.text-start</code> <code>.text-center</code> <code>.text-end</code> (+ breakpoints) · <strong>Transform</strong> <code>.text-uppercase</code> <code>.text-lowercase</code> <code>.text-capitalize</code> · <strong>Wrap</strong> <code>.text-truncate</code> <code>.text-nowrap</code> <code>.text-break</code></p>
+
+        <h3 class="h5 mb-2 mt-4">Colors</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;"><code>.text-{color}</code>, <code>.bg-{color}</code> and <code>.border-{color}</code> for every theme color. All resolve from the runtime <code>--fv-*</code> variables, so they follow a re-brand.</p>
+        <div class="d-flex gap-2 flex-wrap mb-2">
+          <span class="badge bg-primary">primary</span><span class="badge bg-secondary">secondary</span><span class="badge bg-success">success</span><span class="badge bg-danger">danger</span><span class="badge bg-warning">warning</span><span class="badge bg-info">info</span><span class="badge bg-accent">accent</span>
+        </div>
+        <p><strong>Gradient text</strong> <code>.text-gradient</code> <code>.text-gradient-accent</code> <code>.text-gradient-sunset</code> <code>.text-gradient-aurora</code></p>
+
+        <h3 class="h5 mb-2 mt-4">Borders &amp; radius</h3>
+        <p><code>.border</code> <code>.border-0</code> <code>.border-{top|end|bottom|start}</code> <code>.border-{color}</code> · <code>.rounded</code> <code>.rounded-{sm|md|lg|xl|2xl}</code> <code>.rounded-pill</code> <code>.rounded-circle</code> <code>.rounded-0</code></p>
+
+        <h3 class="h5 mb-2 mt-4">Position &amp; layering</h3>
+        <p><code>.position-{static|relative|absolute|fixed|sticky}</code> · z-index tokens <code>.z-dropdown</code> <code>.z-sticky</code> <code>.z-fixed</code> <code>.z-modal</code> <code>.z-tooltip</code> · <code>.overflow-{auto|hidden|scroll|visible}</code></p>
+
+        <h3 class="h5 mb-2 mt-4">Effects</h3>
+        <p><code>.shadow-{sm|md|lg|xl}</code> <code>.shadow-none</code> · neon <code>.glow</code> <code>.glow-{color}</code> · <code>.opacity-{0…100}</code> (steps of 10) · <code>.hover-lift</code> (raise on hover) · <code>.animate-float</code> (gentle bob, reduced-motion safe)</p>
+      </section>
+
+      <section id="bootstrap">
+        <h2 class="mb-2">Coming from Bootstrap</h2>
+        <p class="text-muted mb-4" style="max-width:46rem;">If you know Bootstrap, you already know most of Farvist. The grid, spacing, display, flex and colour utilities use the <strong>same class names on purpose</strong> — a lot of Bootstrap markup is drop-in. Here's what carries over and what differs.</p>
+        <div class="table-responsive"><table class="table table-hover">
+          <thead><tr><th>Area</th><th>Bootstrap</th><th>Farvist</th><th><span class="visually-hidden">Compatibility</span></th></tr></thead>
+          <tbody>
+            <tr><td>Grid</td><td><code>.row .col-md-6</code></td><td><code>.row .col-md-6</code></td><td><span class="badge badge-soft-success">identical</span></td></tr>
+            <tr><td>Spacing</td><td><code>.mt-3 .px-4</code></td><td><code>.mt-3 .px-4</code></td><td><span class="badge badge-soft-info">same, scale goes to 8</span></td></tr>
+            <tr><td>Display / flex</td><td><code>.d-flex .justify-content-between</code></td><td><code>.d-flex .justify-content-between</code></td><td><span class="badge badge-soft-success">identical</span></td></tr>
+            <tr><td>Buttons</td><td><code>.btn .btn-primary .btn-lg</code></td><td><code>.btn .btn-primary .btn-lg</code></td><td><span class="badge badge-soft-success">identical</span></td></tr>
+            <tr><td>Cards, alerts</td><td><code>.card .card-body</code> · <code>.alert-info</code></td><td><code>.card .card-body</code> · <code>.alert-info</code></td><td><span class="badge badge-soft-success">identical</span></td></tr>
+            <tr><td>Text &amp; colour</td><td><code>.text-center .text-muted .bg-primary</code></td><td><code>.text-center .text-muted .bg-primary</code></td><td><span class="badge badge-soft-success">identical</span></td></tr>
+            <tr><td>Badges</td><td><code>.badge .bg-primary</code></td><td><code>.badge .badge-primary</code></td><td><span class="badge badge-soft-warning">renamed</span></td></tr>
+            <tr><td>Modal</td><td>JS plugin + <code>data-bs-*</code></td><td>native <code>&lt;dialog&gt;</code> + <code>data-fv-open</code></td><td><span class="badge badge-soft-warning">simpler</span></td></tr>
+            <tr><td>Theming</td><td>Sass rebuild</td><td>override <code>--fv-*</code> at runtime</td><td><span class="badge badge-soft-accent">no build step</span></td></tr>
+          </tbody>
+        </table></div>
+        <p class="text-muted mt-2" style="max-width:46rem;">The big wins on top: a glass aesthetic, a free <a href="#backgrounds">backgrounds library</a>, an <a href="#ai">AI component kit</a>, and runtime <a href="#theming">re-branding</a> — none of which need a build step.</p>
       </section>
 
       <section id="backgrounds">
@@ -643,5 +707,81 @@ Farvist.enhance();       // re-wire after injecting DOM dynamically</code></pre>
   </dialog>
 
   <script src="../assets/farvist.js" defer></script>
+  <script>
+    // Docs sidebar search — filters the nav by link text + a keyword index, so
+    // "flexbox", "dialog" or "dark mode" find the right section. No dependencies.
+    (function () {
+      var KEYWORDS = {
+        '#intro': 'getting started overview about intro',
+        '#install': 'cdn npm install setup script link stylesheet quickstart get started',
+        '#theming': 'theme dark light color colour variables custom properties brand skins runtime color-mix data-theme bring your brand',
+        '#grid': 'layout columns column row responsive breakpoints flex twelve 12',
+        '#utilities': 'spacing margin padding display flex flexbox gap sizing width height text font size weight color colour background border radius shadow position opacity overflow z-index alignment justify align',
+        '#bootstrap': 'migration migrate bootstrap alternative compare comparison switch from',
+        '#backgrounds': 'mesh gradient pattern spotlight dots grid noise backdrop aurora nebula',
+        '#buttons': 'btn button gradient outline glass link cta',
+        '#cards': 'card badge glow panel',
+        '#forms': 'input form control select checkbox radio validation label textarea field',
+        '#overlays': 'modal dialog tabs toast popup notification',
+        '#feedback': 'alert callout progress spinner skeleton loading',
+        '#navigation': 'navbar breadcrumb pagination tabs menu dropdown nav',
+        '#data': 'table timeline list group stat data',
+        '#indicators': 'chip avatar status badge tag pill',
+        '#inputs': 'range switch segmented rating slider toggle',
+        '#misc': 'icons svg sprite accordion details',
+        '#ai': 'chat message prompt agent status prose tool call reasoning streaming citations llm ai model output',
+        '#use-with-ai': 'ai assistant llms.txt cursor prompt context ai-context copilot chatgpt claude',
+        '#js': 'javascript farvist.js enhance api toast copy',
+        '#a11y': 'accessibility aria wcag keyboard screen reader focus skip link contrast',
+        '#contribute': 'contribute github open source'
+      };
+      var input = document.getElementById('docs-search');
+      if (!input) return;
+      var nav = document.querySelector('.docs-nav');
+      var links = [].slice.call(nav.querySelectorAll('a[href^="#"]'));
+      var groups = [].slice.call(nav.querySelectorAll('.grp'));
+      var empty = nav.querySelector('.docs-search-empty');
+
+      function filter() {
+        var q = input.value.trim().toLowerCase();
+        var anyVisible = false;
+        links.forEach(function (a) {
+          if (!q) { a.hidden = false; anyVisible = true; return; }
+          var hay = (a.textContent + ' ' + (KEYWORDS[a.getAttribute('href')] || '')).toLowerCase();
+          a.hidden = hay.indexOf(q) === -1;
+          if (!a.hidden) anyVisible = true;
+        });
+        // Hide a group label when every link until the next label is hidden.
+        groups.forEach(function (g) {
+          var el = g.nextElementSibling, show = false;
+          while (el && !el.classList.contains('grp')) {
+            if (el.tagName === 'A' && el.getAttribute('href') && el.getAttribute('href').charAt(0) === '#' && !el.hidden) { show = true; break; }
+            el = el.nextElementSibling;
+          }
+          g.hidden = q ? !show : false;
+        });
+        if (empty) empty.hidden = !(q && !anyVisible);
+      }
+
+      input.addEventListener('input', filter);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+          var first = links.filter(function (a) { return !a.hidden; })[0];
+          if (first) { e.preventDefault(); first.click(); }
+        } else if (e.key === 'Escape') {
+          input.value = ''; filter(); input.blur();
+        }
+      });
+
+      // Press "/" anywhere to jump to search (like GitHub / Bootstrap docs).
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+        var t = e.target, tag = t && t.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || (t && t.isContentEditable)) return;
+        e.preventDefault();
+        input.focus();
+      });
+    })();
+  </script>
 </body>
 </html>
