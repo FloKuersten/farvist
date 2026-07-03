@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auth — Farvist template</title>
+  <meta name="description" content="A split-screen sign-in / sign-up page built with the Farvist CSS framework — glass form card, social buttons, tabbed login/register." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <style>
+    .auth { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+    .auth-form { display: flex; flex-direction: column; justify-content: center; padding: clamp(1.5rem, 5vw, 4rem); max-width: 30rem; margin-inline: auto; width: 100%; }
+    .auth-aside { position: relative; display: flex; flex-direction: column; justify-content: center; gap: 1.25rem; padding: clamp(1.5rem, 5vw, 4rem); overflow: hidden; }
+    .auth-aside .feat { display: flex; gap: .75rem; align-items: flex-start; }
+    .auth-aside .feat .icon { flex: none; margin-top: .15rem; }
+    .divider { display: flex; align-items: center; gap: 1rem; color: var(--fv-muted); font-size: .85rem; margin: 1.25rem 0; }
+    .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--fv-border-color); }
+    @media (max-width: 820px) { .auth { grid-template-columns: 1fr; } .auth-aside { display: none; } }
+  </style>
+</head>
+<body class="bg-mesh-aurora">
+  <a class="skip-link" href="#main">Skip to sign in</a>
+
+  <div class="auth">
+    <!-- Form side -->
+    <main id="main" tabindex="-1" class="auth-form">
+      <a class="navbar-brand mb-5" href="../index.html"><span class="text-gradient">◆ Farvist</span></a>
+
+      <div class="tabs mb-4" role="tablist" aria-label="Sign in or register">
+        <button class="tab active" data-fv-tab="#panel-in" role="tab">Sign in</button>
+        <button class="tab" data-fv-tab="#panel-up" role="tab">Create account</button>
+      </div>
+
+      <!-- Sign in -->
+      <div class="tab-panel active" id="panel-in">
+        <h1 class="fs-2xl fw-black mb-1">Welcome back</h1>
+        <p class="text-muted mb-4">Sign in to your workspace.</p>
+        <form onsubmit="return false;">
+          <label class="form-label" for="in-email">Email</label>
+          <input class="form-control mb-3" id="in-email" type="email" placeholder="ada@example.com" autocomplete="email" />
+          <div class="d-flex justify-content-between align-items-center">
+            <label class="form-label" for="in-pw">Password</label>
+            <a class="btn-link" href="#" style="font-size:.85rem;">Forgot?</a>
+          </div>
+          <input class="form-control mb-3" id="in-pw" type="password" placeholder="••••••••" autocomplete="current-password" />
+          <label class="form-check mb-4"><input class="form-check-input" type="checkbox" checked /> <span class="form-check-label">Keep me signed in</span></label>
+          <button class="btn btn-gradient-primary btn-block mb-3" type="submit">Sign in</button>
+        </form>
+        <div class="divider">or continue with</div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-glass btn-block" type="button"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-code"/></svg> GitHub</button>
+          <button class="btn btn-glass btn-block" type="button"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-mail"/></svg> Google</button>
+        </div>
+      </div>
+
+      <!-- Sign up -->
+      <div class="tab-panel" id="panel-up">
+        <h1 class="fs-2xl fw-black mb-1">Create your account</h1>
+        <p class="text-muted mb-4">Free forever. No card required.</p>
+        <form onsubmit="return false;">
+          <label class="form-label" for="up-name">Name</label>
+          <input class="form-control mb-3" id="up-name" type="text" placeholder="Ada Lovelace" autocomplete="name" />
+          <label class="form-label" for="up-email">Email</label>
+          <input class="form-control mb-3" id="up-email" type="email" placeholder="ada@example.com" autocomplete="email" />
+          <label class="form-label" for="up-pw">Password</label>
+          <input class="form-control mb-1" id="up-pw" type="password" placeholder="8+ characters" autocomplete="new-password" />
+          <div class="form-text mb-4">Use 8 or more characters with a mix of letters and numbers.</div>
+          <button class="btn btn-gradient-primary btn-block mb-3" type="submit">Create account</button>
+        </form>
+        <p class="text-muted" style="font-size:.85rem;">By signing up you agree to our <a href="#">Terms</a> and <a href="/privacy/">Privacy Policy</a>.</p>
+      </div>
+    </main>
+
+    <!-- Brand side -->
+    <aside class="auth-aside glass-strong" aria-hidden="true">
+      <div class="bg-spotlight" style="position:absolute; inset:0; opacity:.6;"></div>
+      <div style="position:relative;">
+        <h2 class="fs-3xl fw-black mb-3">Ship UI that looks <span class="text-gradient">years ahead</span>.</h2>
+        <p class="text-muted mb-5" style="max-width:26rem;">Frosted glass, neon glow and gradients — one stylesheet, no build step. This whole page is Farvist components.</p>
+        <div class="d-grid gap-3" style="max-width:24rem;">
+          <div class="feat"><svg class="icon icon-lg text-info" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-zap"/></svg><div><strong>Runtime theming</strong><div class="text-muted" style="font-size:.9rem;">Re-brand everything with five CSS variables.</div></div></div>
+          <div class="feat"><svg class="icon icon-lg text-info" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-sparkles"/></svg><div><strong>Built for the AI era</strong><div class="text-muted" style="font-size:.9rem;">Your assistant already knows how to write it.</div></div></div>
+          <div class="feat"><svg class="icon icon-lg text-info" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-heart"/></svg><div><strong>~20 KB, MIT</strong><div class="text-muted" style="font-size:.9rem;">Tiny, free, zero dependencies.</div></div></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="../assets/farvist.js" defer></script>
+</body>
+</html>

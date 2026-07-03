@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Templates — Farvist</title>
+  <meta name="description" content="Copy-paste page templates built with Farvist — an AI console, SaaS landing, dashboard, portfolio, auth flow and a block gallery. All free and MIT-licensed." />
+  <link rel="canonical" href="https://farvist.com/templates/" />
+  <meta name="keywords" content="glassmorphism templates, CSS framework templates, dashboard template, SaaS landing template, free UI templates" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Farvist templates" />
+  <meta property="og:description" content="Copy-paste page templates — AI console, SaaS landing, dashboard, portfolio, auth and a block gallery. Free & MIT." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/templates/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Farvist templates",
+    "url": "https://farvist.com/templates/",
+    "description": "Copy-paste page templates built with the Farvist CSS framework."
+  }
+  </script>
+  <style>
+    .wrap { max-width: 1120px; margin-inline: auto; padding: 1.5rem 1.25rem 5rem; }
+    .tpl-card { display: flex; flex-direction: column; overflow: hidden; transition: transform var(--fv-transition), box-shadow var(--fv-transition); text-decoration: none; }
+    .tpl-card:hover { transform: translateY(-4px); box-shadow: var(--fv-shadow-xl); }
+    .tpl-thumb { aspect-ratio: 16 / 10; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--fv-border-color); }
+    .tpl-thumb .icon { width: 2.75rem; height: 2.75rem; color: #fff; opacity: .95; }
+    .tpl-chrome { position: absolute; top: .6rem; left: .7rem; display: flex; gap: .3rem; }
+    .tpl-chrome span { width: .5rem; height: .5rem; border-radius: 50%; background: rgba(255,255,255,.5); }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+  <a class="skip-link" href="#main">Skip to templates</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link active" href="/templates/" aria-current="page">Templates</a></li>
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="wrap">
+    <header class="text-center mb-6" style="padding-block:2rem;">
+      <h1 class="fs-4xl fw-black mb-3">Copy-paste <span class="text-gradient">templates</span></h1>
+      <p class="fs-lg text-muted mx-auto mb-0" style="max-width:36rem;">Full pages built with Farvist — open one, view source, make it yours. All free and MIT-licensed.</p>
+    </header>
+
+    <div class="row gy-4">
+      <!-- AI Console -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card tpl-card h-100" href="/examples/ai-console.html">
+          <div class="tpl-thumb bg-mesh-nebula">
+            <div class="tpl-chrome"><span></span><span></span><span></span></div>
+            <svg class="icon" aria-hidden="true"><use href="/assets/icons/farvist-icons.svg#i-bot"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-accent">AI</span><span class="chip">Chat</span></div>
+            <h2 class="fs-lg fw-bold mb-1">AI console</h2>
+            <p class="text-muted mb-0" style="font-size:.9rem;">A full chat app — thread, streaming, tool calls, reasoning and citations.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- SaaS landing -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card tpl-card h-100" href="/examples/saas.html">
+          <div class="tpl-thumb bg-mesh-aurora">
+            <div class="tpl-chrome"><span></span><span></span><span></span></div>
+            <svg class="icon" aria-hidden="true"><use href="/assets/icons/farvist-icons.svg#i-zap"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-primary">Marketing</span><span class="chip">Landing</span></div>
+            <h2 class="fs-lg fw-bold mb-1">SaaS landing</h2>
+            <p class="text-muted mb-0" style="font-size:.9rem;">Hero, feature grid, pricing and testimonials for a product launch.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card tpl-card h-100" href="/examples/dashboard.html">
+          <div class="tpl-thumb bg-mesh-ocean">
+            <div class="tpl-chrome"><span></span><span></span><span></span></div>
+            <svg class="icon" aria-hidden="true"><use href="/assets/icons/farvist-icons.svg#i-layers"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-info">App</span><span class="chip">Dashboard</span></div>
+            <h2 class="fs-lg fw-bold mb-1">Dashboard</h2>
+            <p class="text-muted mb-0" style="font-size:.9rem;">Sidebar, stat cards, tables and charts — an admin shell to build on.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Auth -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card tpl-card h-100" href="/examples/auth.html">
+          <div class="tpl-thumb bg-mesh-sunset">
+            <div class="tpl-chrome"><span></span><span></span><span></span></div>
+            <svg class="icon" aria-hidden="true"><use href="/assets/icons/farvist-icons.svg#i-lock"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-primary">Auth</span><span class="chip">Form</span></div>
+            <h2 class="fs-lg fw-bold mb-1">Sign in / sign up</h2>
+            <p class="text-muted mb-0" style="font-size:.9rem;">A split-screen auth flow with tabbed login/register and social buttons.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Portfolio -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card tpl-card h-100" href="/examples/portfolio.html">
+          <div class="tpl-thumb bg-mesh-nebula">
+            <div class="tpl-chrome"><span></span><span></span><span></span></div>
+            <svg class="icon" aria-hidden="true"><use href="/assets/icons/farvist-icons.svg#i-user"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-accent">Personal</span><span class="chip">Portfolio</span></div>
+            <h2 class="fs-lg fw-bold mb-1">Portfolio</h2>
+            <p class="text-muted mb-0" style="font-size:.9rem;">A personal / freelancer site — intro, work grid, about and contact.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Blocks -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card tpl-card h-100" href="/examples/blocks.html">
+          <div class="tpl-thumb bg-mesh-aurora">
+            <div class="tpl-chrome"><span></span><span></span><span></span></div>
+            <svg class="icon" aria-hidden="true"><use href="/assets/icons/farvist-icons.svg#i-code"/></svg>
+          </div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2"><span class="chip chip-info">Reference</span><span class="chip">Blocks</span></div>
+            <h2 class="fs-lg fw-bold mb-1">Block gallery</h2>
+            <p class="text-muted mb-0" style="font-size:.9rem;">Standalone sections — navbars, heroes, CTAs — to copy piece by piece.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="text-center mt-6">
+      <p class="text-muted mb-3">Want to start from the raw components instead?</p>
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs</a>
+      <a class="btn btn-glass" href="/themer/">Open the Theme Builder</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/docs/">Docs</a> · <a href="/privacy/">Privacy</a> · MIT licensed</p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+</body>
+</html>
