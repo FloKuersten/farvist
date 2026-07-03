@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building a CSS framework for the AI era — Farvist</title>
+  <meta name="description" content="AI assistants write UI code every day — but they hallucinate class names and can't run your build step. Here's how Farvist is designed to be found, written, and re-branded correctly by an AI." />
+  <link rel="canonical" href="https://farvist.com/blog/ai-era/" />
+  <meta name="keywords" content="CSS framework AI, AI-friendly CSS, llms.txt, glassmorphism framework, Bootstrap alternative AI" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Building a CSS framework for the AI era" />
+  <meta property="og:description" content="How Farvist is designed to be found, written, and re-branded correctly by an AI assistant — discoverability, a class model AI already knows, and no build step to run." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/ai-era/" />
+  <meta property="article:published_time" content="2026-07-03" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Building a CSS framework for the AI era" />
+  <meta name="twitter:description" content="Discoverable, writable, and re-brandable by an AI — the three things a framework needs when a model is holding the keyboard." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Building a CSS framework for the AI era",
+    "description": "How Farvist is designed to be found, written, and re-branded correctly by an AI assistant.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-07-03",
+    "dateModified": "2026-07-03",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/ai-era/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-accent">AI</span><span class="chip">Design</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Building a CSS framework <span class="text-gradient">for the AI era</span></h1>
+      <p class="text-muted mb-0">July 3, 2026 · 6 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">A funny thing happened to front-end work in the last two years: a lot of the time, the person typing the class names isn't a person. It's an assistant. You describe a pricing page, and something writes the markup. That changes what a good CSS framework has to be.</p>
+
+      <p>Most frameworks were designed for a human who reads docs, runs a build, and remembers conventions. An AI holds the keyboard differently. It half-remembers class names from training data and confidently invents ones that never existed. It can't run your Sass pipeline. And it has no way to know your framework got a new component last month. If you want AI-written UI to actually work, you have to design for those three failure modes directly.</p>
+
+      <p>That's the whole idea behind <strong>Farvist</strong>. Here's the reasoning, honestly — including where it doesn't solve everything.</p>
+
+      <h2>1. Be findable</h2>
+      <p>An assistant can only use what it can retrieve. So Farvist ships the machine-readable surface that's becoming a convention for AI-first sites:</p>
+      <ul>
+        <li><a href="/llms.txt"><code>llms.txt</code></a> — a concise index at the root, the <a href="https://llmstxt.org">llmstxt.org</a> convention.</li>
+        <li><a href="/llms-full.txt"><code>llms-full.txt</code></a> — every convention, component, icon and copy-paste recipe in one paste-able file.</li>
+        <li><a href="/ai-context.json"><code>ai-context.json</code></a> — the same catalog as structured JSON, generated from the compiled CSS so it can't drift from reality.</li>
+      </ul>
+      <p><code>robots.txt</code> explicitly welcomes the AI crawlers (GPTBot, ClaudeBot, PerplexityBot and friends), and every page links its <code>llms.txt</code>. None of this is exotic — it's just making sure the answer to "what classes does Farvist have?" is one fetch away, and always current.</p>
+
+      <h2>2. Speak a dialect models already know</h2>
+      <p>There's a real design fork here. Utility-only frameworks are powerful, but they push all the composition into the markup, and an AI reconstructing a component from memory has more chances to get a detail wrong. Farvist uses the <strong>component-plus-utility</strong> model — closer to Bootstrap's — because "a card is <code>.card</code>" is a smaller, more stable thing for a model to remember than a specific stack of a dozen utilities.</p>
+      <p>On top of that, the catalog ships <em>recipes</em>: whole sections — a navbar, a login card, a pricing grid, a chat UI — as copy-paste blocks. An assistant assembling a page from named recipes makes fewer mistakes than one free-handing every element. The names are the interface.</p>
+
+      <h2>3. Don't require a build step</h2>
+      <p>This is the one people underestimate. An AI can write CSS, but it can't run your Dart Sass compile. So anything that <em>requires</em> a build to customize is off-limits to a model working in a chat window or a live sandbox.</p>
+      <p>Farvist's answer is that everything themeable is a CSS custom property, and every derived shade — gradients, glows, the frosted backdrops, hover states, focus rings — resolves from those variables at runtime. To re-brand the entire framework, an assistant writes five lines:</p>
+<pre class="snippet"><code>:root {
+  --fv-primary: #10b981;
+  --fv-accent:  #a3e635;
+  --fv-info:    #2dd4bf;
+  --fv-primary-text: #6ee7b7;
+}</code></pre>
+      <p>No compile, no config file, no tooling the model can't reach. Prebuilt <em>skins</em> (<code>data-theme="synthwave"</code> and four others) are just the same idea packaged. A framework that can only be customized through a build step has quietly excluded the fastest-growing category of its users.</p>
+
+      <h2>What this doesn't fix</h2>
+      <p>Being honest: none of this makes an AI infallible. A model can still choose an ugly layout, misuse a component, or write inaccessible markup. What these three things do is shrink the <em>error surface</em> — they remove the failures that come from stale knowledge, invented class names, and un-runnable tooling. The taste is still on you (or on how well you prompt).</p>
+      <p>It also isn't a moat in the "nobody can copy this" sense. Any framework could ship an <code>llms.txt</code> tomorrow. The point isn't secrecy; it's that these are the right defaults for the moment we're in, and most frameworks were built for a different one.</p>
+
+      <h2>The bet</h2>
+      <p>Bootstrap won an era by being the thing every developer already knew, so reaching for it was the path of least resistance. The interesting question now is what becomes the path of least resistance when an <em>assistant</em> is reaching. Our bet is that it's the framework that's easiest to find, written in a dialect the model already speaks, and customizable without a toolchain. That's what we're building toward — in the open, at a steady clip.</p>
+
+      <p>Farvist is free and MIT-licensed. <a href="/docs/">Read the docs</a>, or just point your assistant at <a href="/llms-full.txt"><code>farvist.com/llms-full.txt</code></a> and ask it to build something.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/docs/">Docs</a> · <a href="/privacy/">Privacy</a> · MIT licensed</p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>

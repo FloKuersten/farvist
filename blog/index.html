@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — Farvist</title>
+  <meta name="description" content="Notes on building Farvist — a glassmorphism CSS framework designed for the AI era. Runtime theming, AI-writability, and the engineering behind the glass." />
+  <link rel="canonical" href="https://farvist.com/blog/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Farvist blog" />
+  <meta property="og:description" content="Notes on building a CSS framework for the AI era — theming, discoverability, and the engineering behind the glass." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Farvist blog",
+    "url": "https://farvist.com/blog/",
+    "description": "Notes on building a glassmorphism CSS framework for the AI era.",
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" }
+  }
+  </script>
+  <style>
+    .wrap { max-width: 52rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .post-card { transition: transform var(--fv-transition), box-shadow var(--fv-transition); }
+    .post-card:hover { transform: translateY(-3px); }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+  <a class="skip-link" href="#main">Skip to posts</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link active" href="/blog/" aria-current="page">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="wrap">
+    <header class="text-center mb-6" style="padding-block:2rem;">
+      <h1 class="fs-4xl fw-black mb-3">The Farvist <span class="text-gradient">blog</span></h1>
+      <p class="fs-lg text-muted mx-auto mb-0" style="max-width:34rem;">Notes on building a CSS framework for the AI era — theming, discoverability, and the engineering behind the glass.</p>
+    </header>
+
+    <div class="d-grid gap-4">
+      <a class="card post-card" href="/blog/ai-era/" style="text-decoration:none;">
+        <div class="card-body">
+          <div class="d-flex gap-2 mb-2"><span class="chip chip-accent">AI</span><span class="chip">Design</span></div>
+          <h2 class="fs-2xl fw-bold mb-2">Building a CSS framework for the AI era</h2>
+          <p class="text-muted mb-3">AI assistants write UI code every day — but they hallucinate class names and can't run your build step. Three design choices that make Farvist findable, writable, and re-brandable by a model.</p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">July 3, 2026 · 6 min read · <span class="text-primary">Read →</span></p>
+        </div>
+      </a>
+
+      <a class="card post-card" href="/blog/bring-your-brand/" style="text-decoration:none;">
+        <div class="card-body">
+          <div class="d-flex gap-2 mb-2"><span class="chip chip-primary">Engineering</span><span class="chip">Theming</span></div>
+          <h2 class="fs-2xl fw-bold mb-2">Runtime theming with zero build step</h2>
+          <p class="text-muted mb-3">Mirror every token to a custom property, derive every shade with <code>color-mix()</code>, and one variable re-brands the whole framework — gradients, glows, glass and all. No Sass rebuild.</p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">July 3, 2026 · 7 min read · <span class="text-primary">Read →</span></p>
+        </div>
+      </a>
+    </div>
+
+    <div class="text-center mt-6">
+      <p class="text-muted mb-3">More to come. In the meantime:</p>
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs</a>
+      <a class="btn btn-glass" href="https://github.com/FloKuersten/farvist">★ Star on GitHub</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/privacy/">Privacy</a> · MIT licensed</p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+</body>
+</html>

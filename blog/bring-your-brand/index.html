@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runtime theming with zero build step — Farvist</title>
+  <meta name="description" content="How Farvist re-brands the whole framework at runtime — mirror every token to a custom property, derive every shade with color-mix(), and let one variable cascade. No Sass rebuild." />
+  <link rel="canonical" href="https://farvist.com/blog/bring-your-brand/" />
+  <meta name="keywords" content="CSS custom properties theming, color-mix, runtime theming, CSS variables framework, no build step CSS" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Runtime theming with zero build step" />
+  <meta property="og:description" content="Mirror every token to a custom property, derive every shade with color-mix(), and one variable re-brands everything — gradients, glows, glass and all." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/bring-your-brand/" />
+  <meta property="article:published_time" content="2026-07-03" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Runtime theming with zero build step" />
+  <meta name="twitter:description" content="The color-mix() + custom-property architecture that lets a Farvist page re-brand from the CDN, no compile." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Runtime theming with zero build step",
+    "description": "The color-mix() + custom-property architecture behind Farvist's runtime re-branding.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-07-03",
+    "dateModified": "2026-07-03",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/bring-your-brand/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+  </style>
+</head>
+<body class="bg-mesh-aurora">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-primary">Engineering</span><span class="chip">Theming</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Runtime theming with <span class="text-gradient">zero build step</span></h1>
+      <p class="text-muted mb-0">July 3, 2026 · 7 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">Here's a limitation most CSS frameworks share and rarely say out loud: if you load them from a CDN, you can't really change the colors. The palette was baked in at build time. To make it match your brand you have to install the toolchain, edit a config, and recompile. Farvist's v1.3 release was about removing that constraint entirely. This is how it works.</p>
+
+      <h2>The problem with baked colors</h2>
+      <p>A framework built in Sass typically computes derived shades at compile time. A button's hover state is <code>darken($primary, 8%)</code>; a soft badge is <code>rgba($primary, 0.16)</code>; a neon glow is a shadow tuned to the brand. All of that math runs once, during the build, and freezes into hex values in the shipped CSS. Change <code>$primary</code> and you have to run the build again to propagate it.</p>
+      <p>That's fine if you have a build. But a CDN user — or an AI assistant writing CSS in a sandbox — doesn't. For them, the palette is effectively read-only.</p>
+
+      <h2>Step one: mirror every token to a custom property</h2>
+      <p>The first move is to stop consuming Sass variables directly in component rules and instead consume CSS custom properties that are <em>emitted</em> from those Sass variables. The Sass tokens become configuration; the custom properties become the live wiring.</p>
+<pre class="snippet"><code>/* one place emits the tokens */
+:root { --fv-primary: #6d4af5; --fv-info: #22d3ee; /* … */ }
+
+/* components read the variable, never the Sass value */
+.text-primary { color: var(--fv-primary); }</code></pre>
+      <p>Now overriding <code>--fv-primary</code> on <code>:root</code> recolors anything that references it — instantly, at runtime, with no rebuild. That alone handles flat colors. The hard part is the <em>derived</em> ones.</p>
+
+      <h2>Step two: derive shades with color-mix() instead of Sass</h2>
+      <p>This is the key that makes the whole thing work. <code>color-mix()</code> does at runtime what Sass color functions do at build time — and it accepts custom properties as inputs. The translations are close to one-to-one:</p>
+<pre class="snippet"><code>/* build-time Sass          →  runtime CSS                                   */
+rgba($primary, 0.16)        →  color-mix(in srgb, var(--fv-primary) 16%, transparent)
+color.mix($white, $c, 45%)  →  color-mix(in srgb, white 45%, var(--fv-primary))
+color.scale($c, -10%)       →  color-mix(in srgb, var(--fv-primary) 90%, black)</code></pre>
+      <p>Because <code>rgba(C, 0.16)</code> is mathematically the same as mixing 16% of <code>C</code> with transparent, the default output is <em>pixel-identical</em> to the old baked version — we verified that by diffing computed styles across every component against the previous build. But now the inputs are variables, so the same declarations follow a re-brand. Gradients, the frosted-glass mesh backdrops, the body's ambient orbs, hover and active states, focus rings — all of it recolors from one override.</p>
+
+      <h2>The escape hatch: contrast</h2>
+      <p>One thing genuinely doesn't survive the move to runtime: WCAG contrast math. Whether white or black text is readable on a fill depends on the fill, and there's no pure-CSS way to compute "the accessible text color for this variable." So each color exposes an optional companion:</p>
+<pre class="snippet"><code>:root {
+  --fv-primary: #f59e0b;            /* a light amber brand    */
+  --fv-primary-contrast: #1c1917;   /* dark text on the fill  */
+}</code></pre>
+      <p>The default is computed at build time for the default palette; you only override the contrast token when your brand flips between a light and dark fill. It's the one place the human (or the AI) has to make a judgment call, so it's explicit rather than magic.</p>
+
+      <h2>Guarding it in CI</h2>
+      <p>A refactor like this has a sneaky failure mode: someone later writes <code>color: #6d4af5</code> directly in a component, and it silently stops following the theme. So there's a CI gate that greps the compiled CSS and fails the build if any brand color appears outside a <code>--fv-*</code> definition. Runtime theming can't quietly regress, because "quietly" is exactly what the gate is watching for.</p>
+
+      <h2>What it buys</h2>
+      <p>Re-branding the entire framework is now five lines of CSS you can paste anywhere — including into a CDN-only page, or into a prompt. Prebuilt <em>skins</em> like <code>data-theme="synthwave"</code> are nothing more than small blocks of these same token overrides, each checked for contrast in CI. And the thing that made all of it possible — <code>color-mix()</code> — is already in every browser Farvist supports, so there was no baseline cost to pay.</p>
+      <p>The broader lesson: the line between "configuration" and "runtime state" is worth moving as far toward runtime as the platform allows. Every token you can resolve in the browser is a token your users can change without your toolchain. That turns out to matter more than ever, now that some of those users are models.</p>
+
+      <p>You can try it live on the <a href="/#brand">homepage</a> — click a brand and watch the page recolor — or read the <a href="/docs/#theming">theming docs</a>.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/#theming">Theming docs →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/docs/">Docs</a> · <a href="/privacy/">Privacy</a> · MIT licensed</p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>
