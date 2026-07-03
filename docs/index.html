@@ -122,6 +122,21 @@ npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
 }</code></pre>
         <p class="text-muted mt-2" style="max-width:46rem;">Same for <code>--fv-success</code>, <code>--fv-danger</code>, <code>--fv-warning</code>, <code>--fv-secondary</code> — each accepts an optional <code>--fv-{color}-contrast</code>. Derivations use <code>color-mix()</code>, which is already in Farvist's browser baseline. This also means your AI assistant can re-brand a page by writing five lines of CSS.</p>
 
+        <h3 class="h5 mb-2 mt-4">Skins — prebuilt theme packs <span class="badge badge-soft-accent">v1.4</span></h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">Five named skins ship built-in, each a small token block on the same <code>data-theme</code> attribute (and each contrast-gated to WCAG AA in CI). Try them on this page:</p>
+        <div class="d-flex gap-2 flex-wrap mb-3" role="group" aria-label="Try a skin">
+          <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('dark')">◆ Default</button>
+          <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('synthwave')"><span aria-hidden="true" style="color:#ec4899">●</span> Synthwave</button>
+          <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('cyber')"><span aria-hidden="true" style="color:#22c55e">●</span> Cyber</button>
+          <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('noir')"><span aria-hidden="true" style="color:#e5e7eb">●</span> Noir</button>
+          <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('forest')"><span aria-hidden="true" style="color:#10b981">●</span> Forest</button>
+          <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('dawn')"><span aria-hidden="true" style="color:#ea580c">●</span> Dawn</button>
+        </div>
+<pre class="snippet"><code>&lt;html data-theme="synthwave"&gt;          &lt;!-- markup… --&gt;
+Farvist.theme('synthwave');            // …or JS (persists in localStorage)
+&lt;button data-fv-theme-cycle="synthwave,cyber,noir,forest,dawn"&gt;Skin&lt;/button&gt;</code></pre>
+        <p class="text-muted mt-2" style="max-width:46rem;">Semantic colors (success / danger / warning) stay constant across skins on purpose — a red error stays red everywhere. Add your own skin by extending the <code>$skins</code> map in Sass, or ship a <code>[data-theme="yourbrand"]</code> block of <code>--fv-*</code> overrides in plain CSS.</p>
+
         <p class="text-muted mt-3 mb-2">Re-theme at build time by configuring the module:</p>
         <pre class="snippet"><code>@use 'farvist/scss/farvist' with (
   $primary: #00e0ff,

@@ -2,6 +2,16 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.4.0] — 2026-07-03
+**Skins.** Five prebuilt theme packs on the `data-theme` attribute — `synthwave`, `cyber`, `noir`, `forest` and `dawn` (a warm light skin). One attribute, whole new product: thanks to v1.3's runtime wiring each skin is a ~10-token override block, so gradients, glows, meshes, orbs and hover states all follow.
+### Added
+- **`Farvist.theme('synthwave')`** — applies a skin and persists it (localStorage); `theme('dark')` restores the default. **`data-fv-theme-cycle="a,b,c"`** turns any button into a skin cycler.
+- **Per-skin WCAG gate in CI** (`npm run check:skins`): every skin's readable-text tokens must be ≥4.5:1 on that skin's surfaces, parsed from the *compiled* CSS — it already caught (and fixed) a 4.40:1 miss in `dawn` before release.
+- Skin switchers in the docs Theming section and the homepage "Make it yours" strip; `skins` catalog in `ai-context.json` / `llms-full.txt` / `farvist.cursorrules`.
+- Add your own: extend the `$skins` Sass map, or ship a plain-CSS `[data-theme="yourbrand"]` block of `--fv-*` overrides.
+### Notes
+- Semantic colors (success/danger/warning) stay constant across skins by design — a red error stays red everywhere.
+
 ## [1.3.0] — 2026-07-03
 **Bring your brand — runtime theming with zero build step.** Override `--fv-primary` / `--fv-accent` / `--fv-info` on `:root` and the *entire* framework re-brands live off the CDN: gradients, neon glows, mesh backdrops, the body orbs, button hover/active states, soft badge/chip/alert tints, spotlights and focus rings all derive from the custom properties via `color-mix()` now (already in the browser baseline). An AI assistant can re-brand a Farvist page by writing five lines of CSS.
 ### Added

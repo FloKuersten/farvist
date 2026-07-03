@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 37 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
@@ -13,10 +13,21 @@
     "classes": 1994,
     "components": 37,
     "icons": 55,
-    "recipes": 11
+    "recipes": 11,
+    "skins": 5
+  },
+  "skins": {
+    "usage": "<html data-theme=\"NAME\"> or Farvist.theme(\"NAME\") — prebuilt AA-gated theme packs; \"dawn\" is a light skin. Default (no attribute) is the dark glass theme.",
+    "names": [
+      "cyber",
+      "dawn",
+      "forest",
+      "noir",
+      "synthwave"
+    ]
   },
   "conventions": {
-    "theming": "Dark by default. Add data-theme=\"light\" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS.",
+    "theming": "Dark by default. Add data-theme=\"light\" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS. SKINS (v1.4): prebuilt AA-gated theme packs on the same attribute — data-theme=\"synthwave|cyber|noir|forest|dawn\" (dawn is light). JS: Farvist.theme(\"synthwave\") applies + persists; <button data-fv-theme-cycle=\"synthwave,cyber\"> cycles.",
     "colors": [
       "primary",
       "secondary",
@@ -49,7 +60,7 @@
         "class=\"snippet\" on <pre>": "farvist.js wraps the code block and adds a hover copy button (requires the JS include)",
         "data-tooltip=\"text\"": "CSS tooltip; text is exposed to assistive tech"
       },
-      "api": "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired."
+      "api": "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired."
     }
   },
   "utilities": {

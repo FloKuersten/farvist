@@ -20,6 +20,11 @@ const classes = [...new Set([...css.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) =>
 const sprite = readFileSync(join(root, 'assets/icons/farvist-icons.svg'), 'utf8');
 const iconNames = [...new Set([...sprite.matchAll(/id="(i-[\w-]+)"/g)].map((m) => m[1]))].sort();
 
+// Skin names from the compiled [data-theme] blocks ('light' is the built-in
+// light theme, not a skin).
+const skinNames = [...new Set([...css.matchAll(/\[data-theme=['"]?([\w-]+)['"]?\]/g)].map((m) => m[1]))]
+  .filter((n) => n !== 'light').sort();
+
 // Copy-paste recipes — whole sections an assistant can assemble pages from.
 const recipes = [
   { name: 'navbar', html: '<nav class="navbar sticky-top"><a class="navbar-brand" href="#">◆ Brand</a><button class="navbar-toggle" data-fv-nav-toggle aria-label="Menu"><span class="navbar-toggle-icon"></span></button><ul class="navbar-nav" id="nav" role="list"><li><a class="nav-link active" href="#">Home</a></li><li><a class="nav-link" href="#">Docs</a></li><li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Theme">\u{1F319}</button></li></ul></nav>' },
@@ -54,7 +59,7 @@ for (const [prefix, desc] of familyDefs) {
 }
 
 const conventions = {
-  theming: 'Dark by default. Add data-theme="light" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS.',
+  theming: 'Dark by default. Add data-theme="light" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS. SKINS (v1.4): prebuilt AA-gated theme packs on the same attribute — data-theme="synthwave|cyber|noir|forest|dawn" (dawn is light). JS: Farvist.theme("synthwave") applies + persists; <button data-fv-theme-cycle="synthwave,cyber"> cycles.',
   colors: ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'accent', 'light', 'dark'],
   breakpoints: { sm: '576px', md: '768px', lg: '992px', xl: '1200px' },
   responsive: 'Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.',
@@ -72,7 +77,7 @@ const conventions = {
       'class="snippet" on <pre>': 'farvist.js wraps the code block and adds a hover copy button (requires the JS include)',
       'data-tooltip="text"': 'CSS tooltip; text is exposed to assistive tech',
     },
-    api: "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.",
+    api: "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.",
   },
 };
 
@@ -128,7 +133,8 @@ const out = {
     js: 'https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js',
     npm: 'npm i farvist',
   },
-  totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length },
+  totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length, skins: skinNames.length },
+  skins: { usage: '<html data-theme="NAME"> or Farvist.theme("NAME") — prebuilt AA-gated theme packs; "dawn" is a light skin. Default (no attribute) is the dark glass theme.', names: skinNames },
   conventions,
   utilities,
   components,
@@ -179,6 +185,10 @@ for (const c of components) {
   L.push(c.example);
   L.push('```');
 }
+L.push('## Skins');
+L.push(out.skins.usage);
+L.push(`Names (${skinNames.length}): ${skinNames.join(', ')}`);
+L.push('');
 L.push('## Icons');
 L.push(out.icons.usage);
 L.push(`Names (${iconNames.length}): ${iconNames.join(', ')}`);

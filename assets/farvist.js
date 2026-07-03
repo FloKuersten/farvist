@@ -105,6 +105,18 @@
       else root.setAttribute('data-theme', 'light');
     }
 
+    // Skin cycler: <button data-fv-theme-cycle="synthwave,cyber,noir"> steps
+    // through its list (plus the default) on each click.
+    var cycler = t.closest('[data-fv-theme-cycle]');
+    if (cycler) {
+      var names = (cycler.getAttribute('data-fv-theme-cycle') || '').split(',')
+        .map(function (s) { return s.trim(); }).filter(Boolean);
+      names.unshift('dark'); // the default is part of the cycle
+      var current = document.documentElement.getAttribute('data-theme') || 'dark';
+      var next = names[(names.indexOf(current) + 1) % names.length];
+      theme(next);
+    }
+
     // Copy-to-clipboard: .copy-btn (auto-added to pre.snippet) or any [data-fv-copy].
     // A bare data-fv-copy copies the nearest snippet — or, in a chat
     // .message-actions row, the sibling .message-bubble's text.
@@ -375,6 +387,23 @@
     return el;
   }
 
+  // ---- Skins / theme API ----
+  // Farvist.theme('synthwave') applies a skin (any [data-theme] value) and
+  // persists it; theme('dark') / theme() restores the default.
+  function theme(name) {
+    var root = document.documentElement;
+    if (!name || name === 'dark' || name === 'default') root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', name);
+    try { localStorage.setItem('fv-theme', name || 'dark'); } catch (e) { /* private mode */ }
+  }
+
+  // Restore a persisted skin as early as this script runs. (For zero flash on
+  // slow pages, inline the same two lines in <head> — see the docs.)
+  try {
+    var savedTheme = localStorage.getItem('fv-theme');
+    if (savedTheme && savedTheme !== 'dark') document.documentElement.setAttribute('data-theme', savedTheme);
+  } catch (e) { /* private mode */ }
+
   // Public API. `Farvist` is the current name; `Farvistrap` kept as an alias.
-  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance, copy: copy };
+  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance, copy: copy, theme: theme };
 })();

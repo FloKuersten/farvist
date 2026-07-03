@@ -2,7 +2,7 @@
 
 > A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 37 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 1.3.0 · MIT · https://farvist.com · 1994 utility/component classes.
+Version 1.4.0 · MIT · https://farvist.com · 1994 utility/component classes.
 
 ## Install
 ```html
@@ -13,7 +13,7 @@ Or: `npm i farvist`. Dark theme by default — give the page a rich background s
 
 ## Conventions
 - **Colors:** primary, secondary, success, danger, warning, info, accent, light, dark (use as suffixes: btn-primary, text-success, bg-accent).
-- **Theming:** Dark by default. Add data-theme="light" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS.
+- **Theming:** Dark by default. Add data-theme="light" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS. SKINS (v1.4): prebuilt AA-gated theme packs on the same attribute — data-theme="synthwave|cyber|noir|forest|dawn" (dawn is light). JS: Farvist.theme("synthwave") applies + persists; <button data-fv-theme-cycle="synthwave,cyber"> cycles.
 - **Breakpoints:** sm=576px, md=768px, lg=992px, xl=1200px. Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.
 - **Spacing scale:** 0,1,2,3,4,5,6,7 → 0, .25, .5, .75, 1, 1.5, 2, 3rem (e.g. p-4 = 1rem, gap-3 = .75rem).
 - **Notes:** For glass to read, give the page a rich background (e.g. body class="bg-mesh-aurora"). Utilities win the cascade (no !important needed by you).
@@ -28,7 +28,7 @@ Or: `npm i farvist`. Dark theme by default — give the page a rich background s
 - `data-fv-copy` — copy to clipboard on click — bare form copies the nearest pre.snippet, or the .message-bubble text when inside a chat .message-actions row; or pass "#sel" / literal text. The button flashes success.
 - `class="snippet" on <pre>` — farvist.js wraps the code block and adds a hover copy button (requires the JS include)
 - `data-tooltip="text"` — CSS tooltip; text is exposed to assistive tech
-- API: Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.
+- API: Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.
 
 ## Utility families
 - `col-*` — grid columns (74): col, col-1, col-10, col-11, col-12, col-2, col-3, col-4, col-5, col-6, col-7, col-8, col-9, col-auto, …
@@ -262,6 +262,10 @@ Classes: `reasoning (<details>)`, `reasoning-summary (<summary>)`, `reasoning-bo
 ```html
 <details class="reasoning"><summary class="reasoning-summary">Thought for 12 seconds</summary><div class="reasoning-body">…model thinking…</div></details>
 ```
+## Skins
+<html data-theme="NAME"> or Farvist.theme("NAME") — prebuilt AA-gated theme packs; "dawn" is a light skin. Default (no attribute) is the dark glass theme.
+Names (5): cyber, dawn, forest, noir, synthwave
+
 ## Icons
 <svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-NAME"/></svg> — inherits currentColor; size via font-size or width/height.
 Names (55): i-alert, i-arrow-left, i-arrow-right, i-bell, i-bot, i-brain, i-calendar, i-check, i-chevron-down, i-chevron-right, i-clock, i-code, i-command, i-copy, i-cpu, i-database, i-download, i-edit, i-external, i-eye, i-globe, i-heart, i-home, i-image, i-info, i-layers, i-link, i-lock, i-mail, i-menu, i-message, i-message-dots, i-mic, i-minus, i-moon, i-paperclip, i-plus, i-refresh, i-search, i-send, i-settings, i-sparkles, i-star, i-stop, i-sun, i-terminal, i-thumbs-down, i-thumbs-up, i-trash, i-upload, i-user, i-users, i-wand, i-x, i-zap

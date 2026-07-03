@@ -38,6 +38,9 @@ jobs:
       - name: Runtime-theming gate (no baked brand colors)
         run: npm run check:theming
 
+      - name: Skin contrast gate (per-skin WCAG AA)
+        run: npm run check:skins
+
       - name: Accessibility (axe via pa11y-ci)
         run: |
           npx serve -l 4000 . > /dev/null 2>&1 &

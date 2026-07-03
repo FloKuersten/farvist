@@ -75,6 +75,73 @@
     --fv-surface-solid: #ffffff;
   }
 }
+@layer base {
+  :root[data-theme=synthwave],
+  [data-theme=synthwave] {
+    color-scheme: dark;
+    --fv-primary: #ec4899;
+    --fv-accent: #8b5cf6;
+    --fv-info: #22d3ee;
+    --fv-primary-text: #f9a8d4;
+    --fv-primary-contrast: #2b0517;
+    --fv-body-bg: #12041f;
+    --fv-surface-solid: #1d0b30;
+  }
+  :root[data-theme=cyber],
+  [data-theme=cyber] {
+    color-scheme: dark;
+    --fv-primary: #22c55e;
+    --fv-accent: #a3e635;
+    --fv-info: #2dd4bf;
+    --fv-primary-text: #86efac;
+    --fv-primary-contrast: #03180b;
+    --fv-body-bg: #02120a;
+    --fv-surface-solid: #08201a;
+  }
+  :root[data-theme=noir],
+  [data-theme=noir] {
+    color-scheme: dark;
+    --fv-primary: #e5e7eb;
+    --fv-accent: #9ca3af;
+    --fv-info: #d1d5db;
+    --fv-primary-text: #e5e7eb;
+    --fv-primary-contrast: #111114;
+    --fv-body-bg: #0a0a0b;
+    --fv-muted: #9ca3af;
+    --fv-surface-solid: #16161a;
+  }
+  :root[data-theme=forest],
+  [data-theme=forest] {
+    color-scheme: dark;
+    --fv-primary: #10b981;
+    --fv-accent: #a3e635;
+    --fv-info: #2dd4bf;
+    --fv-primary-text: #6ee7b7;
+    --fv-primary-contrast: #052e22;
+    --fv-body-bg: #041410;
+    --fv-surface-solid: #0a241c;
+  }
+  :root[data-theme=dawn],
+  [data-theme=dawn] {
+    color-scheme: light;
+    --fv-primary: #ea580c;
+    --fv-accent: #f43f5e;
+    --fv-info: #0284c7;
+    --fv-primary-text: #c2410c;
+    --fv-primary-contrast: #2a0c03;
+    --fv-body-bg: #faf6f1;
+    --fv-bg-gradient: radial-gradient(48rem 48rem at 82% -12%, color-mix(in srgb, var(--fv-primary) 18%, transparent), transparent 60%), radial-gradient(36rem 36rem at -8% 18%, color-mix(in srgb, var(--fv-info) 16%, transparent), transparent 58%), radial-gradient(40rem 40rem at 50% 118%, color-mix(in srgb, var(--fv-accent) 14%, transparent), transparent 58%);
+    --fv-body-color: #292524;
+    --fv-muted: #6d635b;
+    --fv-border-color: rgba(41, 37, 36, 0.12);
+    --fv-code-bg: rgba(41, 37, 36, 0.06);
+    --fv-bg-pattern: rgba(41, 37, 36, 0.1);
+    --fv-glass-bg: rgba(255, 255, 255, 0.55);
+    --fv-glass-bg-strong: rgba(255, 255, 255, 0.7);
+    --fv-glass-border: rgba(255, 255, 255, 0.8);
+    --fv-surface-solid: #fffaf5;
+  }
+}
 @layer reset {
   *,
   *::before,

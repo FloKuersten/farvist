@@ -142,6 +142,78 @@ $bg-meshes: (
   ),
 ) !default;
 
+// -- Skins ---------------------------------------------------------------------
+// Named theme packs on the data-theme attribute — each is a small token-override
+// block generated in base/_skins.scss. Thanks to the runtime wiring, overriding
+// primary/accent/info recolors every gradient, glow, mesh and hover state.
+// Semantic colors (success/danger/warning) stay constant across skins on
+// purpose: a red error should stay red in every skin.
+// Keys map to --fv-{key}; 'color-scheme' is emitted as the CSS property.
+// Every skin's primary-text is AA (≥4.5:1) on its body-bg — gated in CI by
+// scripts/check-skins.mjs.
+$skins: (
+  'synthwave': (
+    'color-scheme': dark,
+    'primary': #ec4899,
+    'accent': #8b5cf6,
+    'info': #22d3ee,
+    'primary-text': #f9a8d4,
+    'primary-contrast': #2b0517,
+    'body-bg': #12041f,
+    'surface-solid': #1d0b30,
+  ),
+  'cyber': (
+    'color-scheme': dark,
+    'primary': #22c55e,
+    'accent': #a3e635,
+    'info': #2dd4bf,
+    'primary-text': #86efac,
+    'primary-contrast': #03180b,
+    'body-bg': #02120a,
+    'surface-solid': #08201a,
+  ),
+  'noir': (
+    'color-scheme': dark,
+    'primary': #e5e7eb,
+    'accent': #9ca3af,
+    'info': #d1d5db,
+    'primary-text': #e5e7eb,
+    'primary-contrast': #111114,
+    'body-bg': #0a0a0b,
+    'muted': #9ca3af,
+    'surface-solid': #16161a,
+  ),
+  'forest': (
+    'color-scheme': dark,
+    'primary': #10b981,
+    'accent': #a3e635,
+    'info': #2dd4bf,
+    'primary-text': #6ee7b7,
+    'primary-contrast': #052e22,
+    'body-bg': #041410,
+    'surface-solid': #0a241c,
+  ),
+  'dawn': (
+    'color-scheme': light,
+    'primary': #ea580c,
+    'accent': #f43f5e,
+    'info': #0284c7,
+    'primary-text': #c2410c,
+    'primary-contrast': #2a0c03,
+    'body-bg': #faf6f1,
+    'bg-gradient': $bg-gradient-light, // tuned-down orbs, like the built-in light theme
+    'body-color': #292524,
+    'muted': #6d635b,
+    'border-color': rgba(41, 37, 36, 0.12),
+    'code-bg': rgba(41, 37, 36, 0.06),
+    'bg-pattern': rgba(41, 37, 36, 0.10),
+    'glass-bg': rgba(255, 255, 255, 0.55),
+    'glass-bg-strong': rgba(255, 255, 255, 0.70),
+    'glass-border': rgba(255, 255, 255, 0.80),
+    'surface-solid': #fffaf5,
+  ),
+) !default;
+
 // -- Spacing scale ------------------------------------------------------------
 $spacer: 1rem !default;
 $spacers: (

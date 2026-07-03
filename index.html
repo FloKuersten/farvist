@@ -31,7 +31,7 @@
     "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, a free backgrounds library, 37 components and dark/light themes. An alternative to Bootstrap and Tailwind.",
     "url": "https://farvist.com",
     "license": "https://opensource.org/licenses/MIT",
-    "softwareVersion": "1.2.0",
+    "softwareVersion": "1.4.0",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -77,7 +77,7 @@
   <!-- Hero -->
   <header class="hero">
     <div class="container text-center">
-      <a href="https://github.com/FloKuersten/farvist/releases" style="text-decoration:none;" aria-label="Changelog"><span class="badge badge-soft-accent mb-4 eyebrow">v1.2 · AI-ready</span></a>
+      <a href="https://github.com/FloKuersten/farvist/releases" style="text-decoration:none;" aria-label="Changelog"><span class="badge badge-soft-accent mb-4 eyebrow">v1.4 · AI-ready</span></a>
       <h1 class="fs-5xl fw-black mb-4" style="line-height:1.05;">
         The CSS framework with a<br />
         <span class="text-gradient">futuristic glass</span> soul
@@ -140,6 +140,16 @@
       </div>
       <pre class="snippet"><code id="brand-css">/* click a brand above — the CSS it takes appears here */
 :root { }</code></pre>
+
+      <p class="text-muted mt-4 mb-2" style="max-width:46rem;">…or ship one of the five prebuilt, AA-gated <strong>skins</strong> — one attribute, whole new product:</p>
+      <div class="d-flex gap-2 flex-wrap" role="group" aria-label="Try a skin">
+        <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('dark')">◆ Default</button>
+        <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('synthwave')"><span aria-hidden="true" style="color:#ec4899">●</span> Synthwave</button>
+        <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('cyber')"><span aria-hidden="true" style="color:#22c55e">●</span> Cyber</button>
+        <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('noir')"><span aria-hidden="true" style="color:#e5e7eb">●</span> Noir</button>
+        <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('forest')"><span aria-hidden="true" style="color:#10b981">●</span> Forest</button>
+        <button class="btn btn-glass btn-sm" type="button" onclick="Farvist.theme('dawn')"><span aria-hidden="true" style="color:#ea580c">●</span> Dawn</button>
+      </div>
     </section>
 
     <!-- Grid -->

@@ -110,6 +110,22 @@ Every *derived* color — gradients, neon glows, mesh backdrops, body orbs, butt
 
 Same for `--fv-success` / `--fv-danger` / `--fv-warning` / `--fv-secondary`, each with an optional `--fv-{color}-contrast`. CI enforces this with a theming gate — no component rule may bake a brand color.
 
+### Skins — prebuilt theme packs (v1.4)
+
+Five named skins ship built-in, each contrast-gated to WCAG AA in CI: `synthwave` · `cyber` · `noir` · `forest` · `dawn` (light).
+
+```html
+<html data-theme="synthwave">
+```
+```js
+Farvist.theme('synthwave');   // applies + persists (localStorage); theme('dark') resets
+```
+```html
+<button data-fv-theme-cycle="synthwave,cyber,noir,forest,dawn">Skin</button>
+```
+
+Add your own by extending the `$skins` Sass map — or ship a plain-CSS `[data-theme="yourbrand"]` block of `--fv-*` overrides.
+
 ### Re-theme at build time
 
 Because everything is a token, you can recolor the whole framework by configuring the module:

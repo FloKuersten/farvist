@@ -1,0 +1,26 @@
+// =============================================================================
+// Farvist · Base · Skins
+// Named theme packs generated from the $skins map — each emits a small
+// [data-theme='name'] token-override block. Because every derived color
+// (gradients, glows, meshes, orbs, hover states) resolves from --fv-* at
+// runtime, a skin is nothing more than these tokens:
+//   <html data-theme="synthwave">   …or…   Farvist.theme('synthwave')
+// Adding a skin = adding a $skins map entry.
+// =============================================================================
+
+@use '../abstracts' as *;
+
+@layer base {
+  @each $skin, $tokens in $skins {
+    :root[data-theme='#{$skin}'],
+    [data-theme='#{$skin}'] {
+      @each $key, $value in $tokens {
+        @if $key == 'color-scheme' {
+          color-scheme: $value;
+        } @else {
+          --fv-#{$key}: #{$value};
+        }
+      }
+    }
+  }
+}
