@@ -73,11 +73,13 @@ const conventions = {
       'data-fv-tab="#panelId"': 'switch tabs (arrow-key nav added automatically)',
       'data-fv-theme-toggle': 'flip light/dark theme',
       'data-fv-nav-toggle': 'toggle the collapsed mobile navbar',
+      'data-fv-open="#cmd"': 'also opens a <dialog class="command"> palette; ⌘K/Ctrl+K opens the first one on the page',
+      'data-fv-command="url|#anchor|action"': 'on a .command-item — a URL/anchor navigates; any other value fires an fv:command event on the palette',
       'data-fv-copy': 'copy to clipboard on click — bare form copies the nearest pre.snippet, or the .message-bubble text when inside a chat .message-actions row; or pass "#sel" / literal text. The button flashes success.',
       'class="snippet" on <pre>': 'farvist.js wraps the code block and adds a hover copy button (requires the JS include)',
       'data-tooltip="text"': 'CSS tooltip; text is exposed to assistive tech',
     },
-    api: "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.",
+    api: "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.command('#cmd') — open a command palette; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.",
   },
 };
 
@@ -120,6 +122,7 @@ const components = [
   { name: 'prose (AI)', classes: ['prose', 'prose-sm'], example: '<div class="message-bubble"><div class="prose prose-sm">…rendered markdown…</div></div> — ALWAYS wrap rendered-markdown HTML in .prose (bubbles preserve raw newlines otherwise); also styles bare tables/images from model output.' },
   { name: 'tool-call (AI)', classes: ['tool-call', 'tool-call-header', 'tool-call-name', 'tool-call-status', 'tool-call-args', 'tool-call-result', 'tool-call-{running|done|error}'], example: '<div class="tool-call tool-call-running"><div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">fetch_data</span><span class="tool-call-status">Running…</span></div><div class="tool-call-args">{"id": 42}</div></div> — state classes tint the rail; keep the status TEXT so meaning never relies on color.' },
   { name: 'reasoning (AI)', classes: ['reasoning (<details>)', 'reasoning-summary (<summary>)', 'reasoning-body'], example: '<details class="reasoning"><summary class="reasoning-summary">Thought for 12 seconds</summary><div class="reasoning-body">…model thinking…</div></details>' },
+  { name: 'command palette (⌘K)', classes: ['command (<dialog>)', 'command-search', 'command-input', 'command-list', 'command-group', 'command-item (data-fv-command="url|#anchor|action", optional data-fv-keywords)', 'command-kbd', 'command-empty', 'command-hint'], example: '<button data-fv-open="#cmd">Search</button><dialog class="command" id="cmd" aria-label="Command menu"><div class="command-search"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-search"/></svg><input class="command-input" placeholder="Type a command…"></div><ul class="command-list"><li class="command-group">Jump to</li><li class="command-item" data-fv-command="/docs/"><span class="command-label">Docs</span></li></ul><div class="command-empty" hidden>No matches.</div></dialog> — opens on data-fv-open / ⌘K / Ctrl+K / Farvist.command("#cmd"); type-to-filter + arrow keys + Enter; a URL/#anchor navigates, any other value fires an fv:command event.' },
 ];
 
 const out = {

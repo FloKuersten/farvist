@@ -298,6 +298,8 @@ Mesh stops come from the `$bg-meshes` map and reference your theme colors, so th
 
 **Tool call (AI)** — `.tool-call` (`.tool-call-{running|done|error}`) `.tool-call-header/-name/-status/-args/-result` · **Reasoning** — `.reasoning` on native `<details>` (`.reasoning-summary` `.reasoning-body`)
 
+**Command palette (⌘K)** — `.command` (native `<dialog>`) `.command-search/-input/-list/-group/-item/-empty/-hint`; open via `data-fv-open` / ⌘K / `Farvist.command()`, `data-fv-command` on each item navigates or fires an `fv:command` event
+
 Theme colors: `primary · secondary · success · danger · warning · info · accent · light · dark`.
 
 ### Icons, assets & JavaScript

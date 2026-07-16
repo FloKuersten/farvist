@@ -63,6 +63,7 @@
 @use 'components/prose';
 @use 'components/tool-call';
 @use 'components/reasoning';
+@use 'components/command';
 
 // Utilities (last — highest cascade priority)
 @use 'utilities/spacing';

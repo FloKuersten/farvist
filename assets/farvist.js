@@ -91,10 +91,14 @@
       return;
     }
 
-    if (t.matches('dialog.modal')) {
+    if (t.matches('dialog.modal, dialog.command')) {
       var r = t.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) t.close();
     }
+
+    // Command-palette item clicked → activate it.
+    var cmdItem = t.closest('.command-item');
+    if (cmdItem) { runCommand(cmdItem); return; }
 
     var tab = t.closest('[data-fv-tab]');
     if (tab) activateTab(tab);
@@ -154,6 +158,28 @@
       });
     }
 
+    // ⌘K / Ctrl+K opens the command palette (if one exists on the page).
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K') && document.querySelector('dialog.command')) {
+      e.preventDefault();
+      openCommand();
+      return;
+    }
+
+    // Arrow / Enter navigation while a command palette is open.
+    var openCmd = document.querySelector('dialog.command[open]');
+    if (openCmd) {
+      var items = cmdItems(openCmd);
+      if (!items.length) return;
+      var cur = openCmd.querySelector('.command-item.is-active'), ci = items.indexOf(cur), nj = -1;
+      if (e.key === 'ArrowDown') nj = (ci + 1) % items.length;
+      else if (e.key === 'ArrowUp') nj = (ci - 1 + items.length) % items.length;
+      else if (e.key === 'Home') nj = 0;
+      else if (e.key === 'End') nj = items.length - 1;
+      else if (e.key === 'Enter') { if (cur) { e.preventDefault(); runCommand(cur); } return; }
+      if (nj > -1) { e.preventDefault(); cmdSetActive(openCmd, items[nj]); }
+      return;
+    }
+
     var t = e.target;
     if (t instanceof Element && t.matches('.tab') && t.closest('.tabs')) {
       var tabs = qsa('.tab', t.closest('.tabs'));
@@ -166,8 +192,97 @@
     }
   });
 
+  // ---- Command palette (⌘K) ----
+  var cmdId = 0;
+  function cmdItems(dialog) { return qsa('.command-item', dialog).filter(function (el) { return !el.hidden; }); }
+
+  function cmdSetActive(dialog, item) {
+    qsa('.command-item.is-active', dialog).forEach(function (el) {
+      el.classList.remove('is-active'); el.setAttribute('aria-selected', 'false');
+    });
+    var input = dialog.querySelector('.command-input');
+    if (item) {
+      item.classList.add('is-active');
+      item.setAttribute('aria-selected', 'true');
+      if (!item.id) item.id = 'fvcmd-' + (++cmdId);
+      if (input) input.setAttribute('aria-activedescendant', item.id);
+      item.scrollIntoView({ block: 'nearest' });
+    } else if (input) {
+      input.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  function cmdFilter(dialog) {
+    var q = (dialog.querySelector('.command-input').value || '').trim().toLowerCase();
+    var anyVisible = false;
+    qsa('.command-item', dialog).forEach(function (item) {
+      var hay = (item.textContent + ' ' + (item.getAttribute('data-fv-keywords') || '')).toLowerCase();
+      item.hidden = !!(q && hay.indexOf(q) === -1);
+      if (!item.hidden) anyVisible = true;
+    });
+    qsa('.command-group', dialog).forEach(function (g) {
+      var el = g.nextElementSibling, show = false;
+      while (el && !el.classList.contains('command-group')) {
+        if (el.classList && el.classList.contains('command-item') && !el.hidden) { show = true; break; }
+        el = el.nextElementSibling;
+      }
+      g.hidden = q ? !show : false;
+    });
+    var empty = dialog.querySelector('.command-empty');
+    if (empty) empty.hidden = anyVisible;
+    cmdSetActive(dialog, cmdItems(dialog)[0] || null);
+  }
+
+  function runCommand(item) {
+    var dialog = item.closest('dialog.command');
+    var val = item.getAttribute('data-fv-command');
+    if (dialog) dialog.close();
+    if (val && (val.charAt(0) === '/' || val.charAt(0) === '#' || /^https?:/.test(val))) {
+      window.location.href = val;
+    } else if (dialog) {
+      dialog.dispatchEvent(new CustomEvent('fv:command', { bubbles: true, detail: { value: val, item: item } }));
+    }
+  }
+
+  function openCommand(sel) {
+    var dialog = sel ? document.querySelector(sel) : document.querySelector('dialog.command');
+    if (!dialog || !dialog.showModal) return;
+    dialog.showModal();
+    var input = dialog.querySelector('.command-input');
+    if (input) { input.value = ''; input.focus(); }
+    cmdFilter(dialog);
+  }
+
+  // Type-to-filter (delegated so injected palettes work without re-binding).
+  document.addEventListener('input', function (e) {
+    if (e.target instanceof Element && e.target.matches('.command-input')) {
+      var d = e.target.closest('dialog.command');
+      if (d) cmdFilter(d);
+    }
+  });
+
   // ---- Progressive ARIA enhancement (tabs + progress) ----
   function enhance() {
+    // Command palettes: wire the combobox + listbox roles for screen readers.
+    qsa('dialog.command').forEach(function (dialog, di) {
+      var input = dialog.querySelector('.command-input');
+      var list = dialog.querySelector('.command-list');
+      if (list && !list.id) list.id = 'fvcmdlist-' + di;
+      if (input) {
+        input.setAttribute('role', 'combobox');
+        input.setAttribute('aria-expanded', 'true');
+        input.setAttribute('aria-autocomplete', 'list');
+        input.setAttribute('autocomplete', 'off');
+        if (list) input.setAttribute('aria-controls', list.id);
+      }
+      if (list) list.setAttribute('role', 'listbox');
+      qsa('.command-item', dialog).forEach(function (item) {
+        item.setAttribute('role', 'option');
+        if (!item.hasAttribute('aria-selected')) item.setAttribute('aria-selected', 'false');
+      });
+      qsa('.command-group', dialog).forEach(function (g) { g.setAttribute('role', 'presentation'); });
+    });
+
     qsa('.tabs').forEach(function (list) {
       list.setAttribute('role', 'tablist');
       qsa('.tab', list).forEach(function (tab, i) {
@@ -405,5 +520,5 @@
   } catch (e) { /* private mode */ }
 
   // Public API. `Farvist` is the current name; `Farvistrap` kept as an alias.
-  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance, copy: copy, theme: theme };
+  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance, copy: copy, theme: theme, command: openCommand };
 })();

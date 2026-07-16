@@ -2,6 +2,13 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.5.0] — 2026-07-03
+**Command palette (⌘K).** The launcher every modern dev tool and AI app has — now a first-class Farvist component (38 components total).
+### Added
+- **`.command`** — a ⌘K command menu on the native `<dialog>`: `.command-search` + `.command-input`, a `.command-list` of `.command-item`s (grouped with `.command-group`), `.command-empty` and a `.command-hint` footer. Type-to-filter, arrow-key navigation and a proper **combobox/listbox ARIA** pattern (`aria-activedescendant`) are wired by `farvist.js`.
+- Opens via `data-fv-open="#cmd"`, the global **⌘K / Ctrl+K** shortcut, or **`Farvist.command('#cmd')`**. Each `.command-item` carries `data-fv-command` — a URL/anchor navigates; any other value fires an **`fv:command`** event for custom actions. `data-fv-keywords` adds search synonyms.
+- Live demo in the docs (press ⌘K), a docs section, and the palette in `ai-context.json` / `llms-full.txt` / `farvist.cursorrules`.
+
 ## [1.4.0] — 2026-07-03
 **Skins.** Five prebuilt theme packs on the `data-theme` attribute — `synthwave`, `cyber`, `noir`, `forest` and `dawn` (a warm light skin). One attribute, whole new product: thanks to v1.3's runtime wiring each skin is a ~10-token override block, so gradients, glows, meshes, orbs and hover states all follow.
 ### Added

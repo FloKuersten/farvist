@@ -1,8 +1,8 @@
 # farvist — full context for AI assistants
 
-> A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 37 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
+> A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 38 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 1.4.0 · MIT · https://farvist.com · 1994 utility/component classes.
+Version 1.5.0 · MIT · https://farvist.com · 2004 utility/component classes.
 
 ## Install
 ```html
@@ -25,10 +25,12 @@ Or: `npm i farvist`. Dark theme by default — give the page a rich background s
 - `data-fv-tab="#panelId"` — switch tabs (arrow-key nav added automatically)
 - `data-fv-theme-toggle` — flip light/dark theme
 - `data-fv-nav-toggle` — toggle the collapsed mobile navbar
+- `data-fv-open="#cmd"` — also opens a <dialog class="command"> palette; ⌘K/Ctrl+K opens the first one on the page
+- `data-fv-command="url|#anchor|action"` — on a .command-item — a URL/anchor navigates; any other value fires an fv:command event on the palette
 - `data-fv-copy` — copy to clipboard on click — bare form copies the nearest pre.snippet, or the .message-bubble text when inside a chat .message-actions row; or pass "#sel" / literal text. The button flashes success.
 - `class="snippet" on <pre>` — farvist.js wraps the code block and adds a hover copy button (requires the JS include)
 - `data-tooltip="text"` — CSS tooltip; text is exposed to assistive tech
-- API: Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.
+- API: Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.command('#cmd') — open a command palette; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.
 
 ## Utility families
 - `col-*` — grid columns (74): col, col-1, col-10, col-11, col-12, col-2, col-3, col-4, col-5, col-6, col-7, col-8, col-9, col-auto, …
@@ -261,6 +263,11 @@ Classes: `tool-call`, `tool-call-header`, `tool-call-name`, `tool-call-status`, 
 Classes: `reasoning (<details>)`, `reasoning-summary (<summary>)`, `reasoning-body`
 ```html
 <details class="reasoning"><summary class="reasoning-summary">Thought for 12 seconds</summary><div class="reasoning-body">…model thinking…</div></details>
+```
+### command palette (⌘K)
+Classes: `command (<dialog>)`, `command-search`, `command-input`, `command-list`, `command-group`, `command-item (data-fv-command="url|#anchor|action", optional data-fv-keywords)`, `command-kbd`, `command-empty`, `command-hint`
+```html
+<button data-fv-open="#cmd">Search</button><dialog class="command" id="cmd" aria-label="Command menu"><div class="command-search"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-search"/></svg><input class="command-input" placeholder="Type a command…"></div><ul class="command-list"><li class="command-group">Jump to</li><li class="command-item" data-fv-command="/docs/"><span class="command-label">Docs</span></li></ul><div class="command-empty" hidden>No matches.</div></dialog> — opens on data-fv-open / ⌘K / Ctrl+K / Farvist.command("#cmd"); type-to-filter + arrow keys + Enter; a URL/#anchor navigates, any other value fires an fv:command event.
 ```
 ## Skins
 <html data-theme="NAME"> or Farvist.theme("NAME") — prebuilt AA-gated theme packs; "dawn" is a light skin. Default (no attribute) is the dark glass theme.

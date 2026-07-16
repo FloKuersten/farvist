@@ -1,0 +1,147 @@
+// =============================================================================
+// Farvist · Components · Command palette (⌘K)
+// A native <dialog>-based command menu with type-to-filter + keyboard nav.
+//   <dialog class="command" id="cmd" aria-label="Command menu">
+//     <div class="command-search">
+//       <svg class="icon">…#i-search</svg>
+//       <input class="command-input" placeholder="Type a command…" />
+//     </div>
+//     <ul class="command-list" role="listbox">
+//       <li class="command-group" role="presentation">Navigation</li>
+//       <li class="command-item" role="option" data-fv-command="/docs/">
+//         <svg class="icon">…</svg><span class="command-label">Docs</span>
+//         <kbd class="command-kbd">G D</kbd>
+//       </li>
+//     </ul>
+//     <div class="command-empty" hidden>No results.</div>
+//     <div class="command-hint">…</div>
+//   </dialog>
+// farvist.js opens it (data-fv-open="#cmd", ⌘K/Ctrl+K, or Farvist.command()),
+// wires filtering, arrow-key nav (aria-activedescendant) and Enter to activate.
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+@layer components {
+
+  .command {
+    width: calc(100% - #{spacer(5)});
+    max-width: 40rem;
+    // Sit near the top rather than dead-centre (the command-menu convention).
+    margin-top: 12vh;
+    margin-bottom: auto;
+    padding: 0;
+    overflow: hidden;
+    color: var(--fv-body-color);
+    border-radius: map.get($radii, 'xl');
+    @include glass($strong: true);
+    box-shadow: var(--fv-shadow-xl);
+
+    &::backdrop {
+      background-color: rgba(6, 9, 18, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    &[open] { animation: fv-command-in 0.16s ease; }
+  }
+
+  .command-search {
+    display: flex;
+    align-items: center;
+    gap: spacer(3);
+    padding: spacer(3) spacer(4);
+    border-bottom: $border-width solid var(--fv-glass-border);
+
+    .icon { color: var(--fv-muted); flex: none; }
+  }
+
+  .command-input {
+    flex: 1;
+    min-width: 0;
+    padding: spacer(1) 0;
+    font-size: map.get($font-sizes, 'lg');
+    color: var(--fv-body-color);
+    background: transparent;
+    border: 0;
+    outline: 0;
+
+    &::placeholder { color: var(--fv-muted); }
+  }
+
+  .command-list {
+    max-height: min(24rem, 50vh);
+    margin: 0;
+    padding: spacer(2);
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  .command-group {
+    padding: spacer(2) spacer(3) spacer(1);
+    font-size: map.get($font-sizes, 'xs');
+    font-weight: map.get($font-weights, 'semibold');
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fv-muted);
+  }
+
+  .command-item {
+    display: flex;
+    align-items: center;
+    gap: spacer(3);
+    padding: spacer(2) spacer(3);
+    border-radius: map.get($radii, 'md');
+    cursor: pointer;
+    scroll-margin: spacer(2);
+
+    .icon { color: var(--fv-muted); flex: none; }
+    .command-label { flex: 1; min-width: 0; }
+
+    // Keyboard highlight (driven by aria-activedescendant, not :hover) — and a
+    // matching hover state for the mouse.
+    &.is-active,
+    &:hover {
+      background-color: var(--fv-glass-bg-strong);
+
+      .icon { color: var(--fv-primary-text); }
+    }
+  }
+
+  .command-item[hidden],
+  .command-group[hidden] { display: none; }
+
+  .command-kbd {
+    margin-left: auto;
+    flex: none;
+    color: var(--fv-muted);
+  }
+
+  .command-empty {
+    padding: spacer(6) spacer(4);
+    text-align: center;
+    color: var(--fv-muted);
+  }
+
+  .command-hint {
+    display: flex;
+    flex-wrap: wrap;
+    gap: spacer(4);
+    padding: spacer(2) spacer(4);
+    font-size: map.get($font-sizes, 'xs');
+    color: var(--fv-muted);
+    border-top: $border-width solid var(--fv-glass-border);
+
+    kbd { font-size: 0.7rem; padding: 0.1em 0.4em; }
+  }
+
+  @keyframes fv-command-in {
+    from { opacity: 0; transform: translateY(-0.5rem) scale(0.99); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .command[open] { animation: none; }
+  }
+}

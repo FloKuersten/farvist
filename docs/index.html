@@ -34,7 +34,7 @@
   <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
   <meta property="og:title" content="Farvist docs — the glass UI framework built for the AI era" />
-  <meta property="og:description" content="Install, theming, grid, utilities, 37 components, the AI kit and the model-output layer — all in one stylesheet." />
+  <meta property="og:description" content="Install, theming, grid, utilities, 38 components, the AI kit and the model-output layer — all in one stylesheet." />
   <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -73,6 +73,7 @@
       <a href="#cards">Cards &amp; badges</a>
       <a href="#forms">Forms</a>
       <a href="#overlays">Modal · Tabs · Toast</a>
+      <a href="#command">Command palette ✦</a>
       <a href="#feedback">Feedback</a>
       <a href="#navigation">Navigation</a>
       <a href="#data">Data display</a>
@@ -309,6 +310,59 @@ Farvist.theme('synthwave');            // …or JS (persists in localStorage)
 &lt;dialog class="modal" id="m"&gt; … &lt;/dialog&gt;
 
 Farvist.toast({ title: 'Saved', variant: 'success' });</code></pre>
+      </section>
+
+      <section id="command">
+        <h2 class="mb-2">Command palette <span class="badge badge-soft-accent">v1.5</span></h2>
+        <p class="text-muted mb-3" style="max-width:46rem;">The ⌘K menu every modern dev tool and AI app has — type-to-filter, full keyboard nav, and a combobox/listbox ARIA pattern, built on the native <code>&lt;dialog&gt;</code>. Press <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> anywhere on this page, or:</p>
+        <div class="example glass rounded-lg">
+          <button class="btn btn-glass" data-fv-open="#docs-cmd">Search <kbd>⌘K</kbd></button>
+        </div>
+
+        <dialog class="command" id="docs-cmd" aria-label="Command menu">
+          <div class="command-search">
+            <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-search"/></svg>
+            <input class="command-input" type="text" placeholder="Type a command or search…" aria-label="Command menu" />
+          </div>
+          <ul class="command-list">
+            <li class="command-group">Jump to</li>
+            <li class="command-item" data-fv-command="#buttons" data-fv-keywords="components"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-layers"/></svg><span class="command-label">Buttons</span></li>
+            <li class="command-item" data-fv-command="#theming" data-fv-keywords="colors dark skins brand"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-sparkles"/></svg><span class="command-label">Theming</span></li>
+            <li class="command-item" data-fv-command="#ai" data-fv-keywords="chat prose tool call model"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-bot"/></svg><span class="command-label">Chat &amp; AI kit</span></li>
+            <li class="command-item" data-fv-command="#utilities" data-fv-keywords="spacing flex grid"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-code"/></svg><span class="command-label">Utilities</span></li>
+            <li class="command-group">Links</li>
+            <li class="command-item" data-fv-command="/themer/" data-fv-keywords="colors brand builder"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-edit"/></svg><span class="command-label">Theme Builder</span><kbd class="command-kbd">↗</kbd></li>
+            <li class="command-item" data-fv-command="https://github.com/FloKuersten/farvist" data-fv-keywords="source repo star"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-external"/></svg><span class="command-label">GitHub</span><kbd class="command-kbd">↗</kbd></li>
+          </ul>
+          <div class="command-empty" hidden>No matches.</div>
+          <div class="command-hint">
+            <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+            <span><kbd>↵</kbd> select</span>
+            <span><kbd>esc</kbd> close</span>
+          </div>
+        </dialog>
+
+        <p class="text-muted mt-3 mb-2" style="max-width:46rem;">Each <code>.command-item</code> carries <code>data-fv-command</code> — a URL/anchor to navigate to, or any string, which fires an <code>fv:command</code> event you can handle for custom actions. Add <code>data-fv-keywords</code> to match on synonyms.</p>
+<pre class="snippet"><code>&lt;button data-fv-open="#cmd"&gt;Search &lt;kbd&gt;⌘K&lt;/kbd&gt;&lt;/button&gt;
+
+&lt;dialog class="command" id="cmd" aria-label="Command menu"&gt;
+  &lt;div class="command-search"&gt;
+    &lt;svg class="icon"&gt;&lt;use href="…#i-search"/&gt;&lt;/svg&gt;
+    &lt;input class="command-input" placeholder="Type a command…"&gt;
+  &lt;/div&gt;
+  &lt;ul class="command-list"&gt;
+    &lt;li class="command-group"&gt;Jump to&lt;/li&gt;
+    &lt;li class="command-item" data-fv-command="/docs/"&gt;
+      &lt;svg class="icon"&gt;…&lt;/svg&gt;&lt;span class="command-label"&gt;Docs&lt;/span&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="command-empty" hidden&gt;No matches.&lt;/div&gt;
+&lt;/dialog&gt;
+
+// custom actions:
+document.querySelector('#cmd')
+  .addEventListener('fv:command', e =&gt; run(e.detail.value));
+// or open it yourself: Farvist.command('#cmd')</code></pre>
       </section>
 
       <section id="feedback">
@@ -723,6 +777,7 @@ Farvist.enhance();       // re-wire after injecting DOM dynamically</code></pre>
         '#cards': 'card badge glow panel',
         '#forms': 'input form control select checkbox radio validation label textarea field',
         '#overlays': 'modal dialog tabs toast popup notification',
+        '#command': 'command palette cmdk ⌘k ctrl k search menu spotlight quick actions keyboard shortcut launcher',
         '#feedback': 'alert callout progress spinner skeleton loading',
         '#navigation': 'navbar breadcrumb pagination tabs menu dropdown nav',
         '#data': 'table timeline list group stat data',
