@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Farvist Pro — premium glass blocks & templates</title>
-  <meta name="description" content="Farvist Pro is an optional, commercially-licensed pack of premium blocks, templates and design files built on the free Farvist CSS framework. In early access." />
+  <title>Free blocks — Farvist</title>
+  <meta name="description" content="Ten free, copy-paste page sections built with the Farvist CSS framework — heroes, pricing, feature grids, FAQ, stats, footers and more. All free, MIT, no build step." />
   <link rel="canonical" href="https://farvist.com/pro/" />
-  <meta property="og:title" content="Farvist Pro — premium glass blocks & templates" />
-  <meta property="og:description" content="The framework is free. Pro is the shortcut — premium blocks, templates and a Figma kit. In early access." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Farvist — free copy-paste blocks" />
+  <meta property="og:description" content="Ten free glass sections you can paste into any page that loads farvist.css. Farvist is MIT and always will be." />
   <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../dist/farvist.css" />
@@ -31,8 +34,8 @@
     <button class="navbar-toggle" type="button" data-fv-nav-toggle aria-controls="nav-primary" aria-expanded="false" aria-label="Toggle menu"><span class="navbar-toggle-icon"></span></button>
     <ul class="navbar-nav" id="nav-primary" role="list">
       <li><a class="nav-link" href="../index.html">Framework</a></li>
+      <li><a class="nav-link" href="../templates/">Templates</a></li>
       <li><a class="nav-link" href="../docs/index.html">Docs</a></li>
-      <li><a class="nav-link active" href="#pricing">Pro</a></li>
       <li><a class="nav-link" href="https://github.com/FloKuersten/farvist">GitHub</a></li>
     </ul>
   </nav>
@@ -40,153 +43,54 @@
   <!-- Hero -->
   <header id="main" tabindex="-1" class="hero">
     <div class="container text-center">
-      <span class="badge badge-soft-warning mb-3 eyebrow">● Early access</span>
-      <h1 class="fs-5xl fw-black mb-3" style="line-height:1.05;">Farvist <span class="text-gradient-aurora">Pro</span></h1>
-      <p class="fs-xl text-muted mx-auto mb-2" style="max-width:38rem;">The framework is free. <strong>Pro is the shortcut.</strong></p>
-      <p class="text-muted mx-auto mb-5" style="max-width:40rem;">An optional, commercially-licensed pack of premium blocks, full templates and design files built on top of the open-source core — the same open-core model as Tailwind Plus. It's being built in the open; a couple of samples are free below.</p>
+      <span class="badge badge-soft-success mb-3 eyebrow">Free · MIT</span>
+      <h1 class="fs-5xl fw-black mb-3" style="line-height:1.05;">Free <span class="text-gradient-aurora">blocks</span></h1>
+      <p class="fs-xl text-muted mx-auto mb-2" style="max-width:38rem;">Ten copy-paste page sections, all free.</p>
+      <p class="text-muted mx-auto mb-5" style="max-width:40rem;">Each block is self-contained — paste it into any page that loads <code>dist/farvist.css</code>. No build step, no attribution required. Farvist is MIT and always will be.</p>
       <div class="d-flex gap-3 justify-content-center flex-wrap">
-        <a href="#pricing" class="btn btn-gradient-primary btn-lg">See pricing</a>
-        <a href="#blocks" class="btn btn-glass btn-lg">Browse blocks</a>
+        <a href="#blocks" class="btn btn-gradient-primary btn-lg">Browse blocks</a>
+        <a href="../templates/" class="btn btn-glass btn-lg">Full templates</a>
       </div>
     </div>
   </header>
 
-  <!-- What's in Pro -->
-  <section class="container py-6">
-    <div class="row gy-4">
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100"><div class="card-body">
-          <span class="badge badge-soft-success mb-2">Shipping</span>
-          <h3 class="card-title fs-lg">Premium blocks</h3>
-          <p class="card-text text-muted">Heroes, pricing, feature grids, FAQ, stats, CTAs, footers and more. 2 free samples today, added to regularly.</p>
-        </div></div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100"><div class="card-body">
-          <span class="badge badge-soft-success mb-2">Shipping</span>
-          <h3 class="card-title fs-lg">Page templates</h3>
-          <p class="card-text text-muted">Dashboard, SaaS landing, portfolio, pricing, auth. The dashboard + blocks gallery are free.</p>
-        </div></div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100"><div class="card-body">
-          <span class="badge badge-soft-success mb-2">Included</span>
-          <h3 class="card-title fs-lg">Lifetime updates</h3>
-          <p class="card-text text-muted">Buy once, get every future release. Founder pricing while in early access.</p>
-        </div></div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100"><div class="card-body">
-          <span class="badge badge-soft-warning mb-2">Roadmap</span>
-          <h3 class="card-title fs-lg">Figma kit</h3>
-          <p class="card-text text-muted">Every component plus the exact design tokens. On the roadmap — not yet shipping.</p>
-        </div></div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100"><div class="card-body">
-          <span class="badge badge-soft-warning mb-2">Roadmap</span>
-          <h3 class="card-title fs-lg">Theme packs</h3>
-          <p class="card-text text-muted">Cyberpunk, vaporwave, neon-noir, minimal-light. On the roadmap.</p>
-        </div></div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card glass-strong h-100"><div class="card-body">
-          <h3 class="card-title fs-lg">Honest by design</h3>
-          <p class="card-text text-muted">We only list what buyers actually receive today. Roadmap items are labelled as such — no fake stock or countdowns.</p>
-        </div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing -->
-  <section id="pricing" class="container py-6">
-    <div class="text-center mb-5">
-      <p class="eyebrow text-gradient-accent fw-bold mb-1">Pricing</p>
-      <h2 class="fs-3xl fw-black mb-2">Founder pricing, while in early access</h2>
-      <p class="text-muted">One-time. No subscription. Lifetime updates.</p>
-    </div>
-    <div class="row gy-4 justify-content-center">
-      <div class="col-12 col-md-4">
-        <div class="card h-100"><div class="card-body text-center">
-          <h3 class="fs-lg fw-bold">Free</h3>
-          <div class="fs-4xl fw-black my-2">$0</div>
-          <p class="text-muted mb-4">The open-source core, MIT licensed.</p>
-          <ul class="list-unstyled text-muted d-grid gap-2 mb-4 text-start mx-auto" style="max-width:14rem;">
-            <li>✓ 30+ components</li>
-            <li>✓ Free backgrounds library</li>
-            <li>✓ Dark/light themes</li>
-            <li>✓ 4 page templates</li>
-          </ul>
-          <a href="../index.html" class="btn btn-glass w-100">Get the framework</a>
-        </div></div>
-      </div>
-      <div class="col-12 col-md-4">
-        <div class="card card-glow glow-primary h-100" style="border-color:rgba(109,74,245,.45);"><div class="card-body text-center">
-          <span class="badge badge-primary mb-1">Most flexible</span>
-          <h3 class="fs-lg fw-bold">Pro</h3>
-          <div class="fs-4xl fw-black my-2 text-gradient">$39</div>
-          <p class="text-muted mb-4">One-time · 1 developer · lifetime updates.</p>
-          <ul class="list-unstyled text-muted d-grid gap-2 mb-4 text-start mx-auto" style="max-width:14rem;">
-            <li>✓ Everything in Free</li>
-            <li>✓ Premium blocks pack</li>
-            <li>✓ Pro templates</li>
-            <li>✓ Lifetime updates</li>
-          </ul>
-          <a href="#waitlist" class="btn btn-gradient-primary w-100">Join early access</a>
-        </div></div>
-      </div>
-      <div class="col-12 col-md-4">
-        <div class="card h-100"><div class="card-body text-center">
-          <h3 class="fs-lg fw-bold">Team</h3>
-          <div class="fs-4xl fw-black my-2">$149</div>
-          <p class="text-muted mb-4">One-time · up to 25 developers.</p>
-          <ul class="list-unstyled text-muted d-grid gap-2 mb-4 text-start mx-auto" style="max-width:14rem;">
-            <li>✓ Everything in Pro</li>
-            <li>✓ 25-developer license</li>
-            <li>✓ Priority on requests</li>
-            <li>✓ Lifetime updates</li>
-          </ul>
-          <a href="#waitlist" class="btn btn-glass w-100">Join early access</a>
-        </div></div>
-      </div>
-    </div>
-  </section>
-
   <!-- Blocks -->
   <section id="blocks" class="container py-6">
     <div class="text-center mb-5">
-      <p class="eyebrow text-gradient fw-bold mb-1">The pack</p>
-      <h2 class="fs-3xl fw-black mb-2">10 premium blocks</h2>
-      <p class="text-muted">Self-contained — paste into any page that loads <code>dist/farvist.css</code>. Two are free to preview now.</p>
+      <p class="eyebrow text-gradient fw-bold mb-1">The set</p>
+      <h2 class="fs-3xl fw-black mb-2">10 blocks, ready to paste</h2>
+      <p class="text-muted">Open one, view source, drop it in. That's the whole workflow.</p>
     </div>
     <div class="row gy-3">
-      <div class="col-12 col-md-6"><a class="card hover-lift d-block" href="blocks/hero-aurora.html" style="text-decoration:none;"><div class="card-body d-flex justify-content-between align-items-center"><div><span class="badge badge-soft-success mb-1">Free preview</span><h3 class="fs-base fw-bold mb-0">hero-aurora</h3><small class="text-muted">Animated-gradient hero with a floating glass preview</small></div><span class="text-muted">→</span></div></a></div>
-      <div class="col-12 col-md-6"><a class="card hover-lift d-block" href="blocks/pricing-spotlight.html" style="text-decoration:none;"><div class="card-body d-flex justify-content-between align-items-center"><div><span class="badge badge-soft-success mb-1">Free preview</span><h3 class="fs-base fw-bold mb-0">pricing-spotlight</h3><small class="text-muted">3-tier pricing with a highlighted plan</small></div><span class="text-muted">→</span></div></a></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">stats-band</h3><small class="text-muted">Gradient metrics in glass tiles</small></div></div></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">feature-split</h3><small class="text-muted">Text + checklist beside a preview</small></div></div></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">bento-grid</h3><small class="text-muted">Modern bento feature layout</small></div></div></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">faq-accordion</h3><small class="text-muted">Native &lt;details&gt; FAQ</small></div></div></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">team-grid</h3><small class="text-muted">Team cards with avatars</small></div></div></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">newsletter-cta</h3><small class="text-muted">Centered glass signup</small></div></div></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">contact-form</h3><small class="text-muted">Two-column contact + form</small></div></div></div>
-      <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><h3 class="fs-base fw-bold mb-0">footer-mega</h3><small class="text-muted">Multi-column mega footer</small></div></div></div>
+      <div class="col-12 col-md-6"><a class="card hover-lift d-block" href="blocks/hero-aurora.html" style="text-decoration:none;"><div class="card-body d-flex justify-content-between align-items-center"><div><h3 class="fs-base fw-bold mb-0">hero-aurora</h3><small class="text-muted">Animated-gradient hero with a floating glass preview</small></div><span class="text-muted">→</span></div></a></div>
+      <div class="col-12 col-md-6"><a class="card hover-lift d-block" href="blocks/pricing-spotlight.html" style="text-decoration:none;"><div class="card-body d-flex justify-content-between align-items-center"><div><h3 class="fs-base fw-bold mb-0">pricing-spotlight</h3><small class="text-muted">3-tier pricing with a highlighted plan</small></div><span class="text-muted">→</span></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/stats-band.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">stats-band</h3><small class="text-muted">Gradient metrics in glass tiles</small></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/feature-split.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">feature-split</h3><small class="text-muted">Text + checklist beside a preview</small></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/bento-grid.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">bento-grid</h3><small class="text-muted">Modern bento feature layout</small></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/faq-accordion.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">faq-accordion</h3><small class="text-muted">Native &lt;details&gt; FAQ</small></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/team-grid.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">team-grid</h3><small class="text-muted">Team cards with avatars</small></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/newsletter-cta.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">newsletter-cta</h3><small class="text-muted">Centered glass signup</small></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/contact-form.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">contact-form</h3><small class="text-muted">Two-column contact + form</small></div></a></div>
+      <div class="col-6 col-md-3"><a class="card hover-lift h-100 d-block" href="blocks/footer-mega.html" style="text-decoration:none;"><div class="card-body"><h3 class="fs-base fw-bold mb-0">footer-mega</h3><small class="text-muted">Multi-column mega footer</small></div></a></div>
     </div>
   </section>
 
-  <!-- Waitlist -->
-  <section id="waitlist" class="container py-7">
-    <div class="card card-glow glow-primary text-center mx-auto" style="max-width:42rem;border-color:rgba(109,74,245,.4);"><div class="card-body p-7">
-      <h2 class="fs-2xl fw-black mb-2"><span class="text-gradient">Get early access</span></h2>
-      <p class="text-muted mb-4">Pro is in early access at founder pricing. Email to get the pack as it ships — and lock in the founder price.</p>
-      <a href="mailto:hello@farvist.com?subject=Farvist%20Pro%20early%20access" class="btn btn-gradient-primary btn-lg">Email for early access</a>
-      <p class="text-muted mt-3 mb-0"><small>No charge until Pro ships to you. The framework stays free forever.</small></p>
+  <!-- Support -->
+  <section id="support" class="container py-7">
+    <div class="card card-glow glow-primary text-center mx-auto" style="max-width:42rem;"><div class="card-body p-7">
+      <h2 class="fs-2xl fw-black mb-2">Farvist is <span class="text-gradient">free forever</span></h2>
+      <p class="text-muted mb-4" style="max-width:34rem;margin-inline:auto;">No paid tier, no upsell — the framework, the templates and these blocks are all MIT-licensed. It's built in the open and kept running by unobtrusive ads on the docs. If it saves you time, the best thanks is a star.</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="https://github.com/FloKuersten/farvist" class="btn btn-gradient-primary btn-lg">★ Star on GitHub</a>
+        <a href="https://github.com/FloKuersten/farvist/issues" class="btn btn-glass btn-lg">Contribute</a>
+      </div>
     </div></div>
   </section>
 
   <footer class="container py-6">
     <hr />
     <div class="d-flex justify-content-between flex-wrap gap-2">
-      <small class="text-muted">© 2026 Farvist · Pro assets under a commercial license · framework is MIT</small>
+      <small class="text-muted">© 2026 Farvist · MIT licensed · free forever</small>
       <small class="text-muted"><a href="../index.html">← Back to Farvist</a></small>
     </div>
   </footer>
