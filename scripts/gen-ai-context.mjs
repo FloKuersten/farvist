@@ -25,6 +25,13 @@ const iconNames = [...new Set([...sprite.matchAll(/id="(i-[\w-]+)"/g)].map((m) =
 const skinNames = [...new Set([...css.matchAll(/\[data-theme=['"]?([\w-]+)['"]?\]/g)].map((m) => m[1]))]
   .filter((n) => n !== 'light').sort();
 
+// Design tokens: every --fv-* custom property in the base :root block, with its
+// default value — extracted from the compiled CSS so it can't drift. This is
+// the exact override surface for runtime re-branding.
+const rootBlock = (css.match(/:root\s*\{([^}]+)\}/) || [, ''])[1];
+const tokens = {};
+for (const t of rootBlock.matchAll(/--fv-([\w-]+):\s*([^;]+);/g)) tokens[`--fv-${t[1]}`] = t[2].trim();
+
 // Copy-paste recipes — whole sections an assistant can assemble pages from.
 const recipes = [
   { name: 'navbar', html: '<nav class="navbar sticky-top"><a class="navbar-brand" href="#">◆ Brand</a><button class="navbar-toggle" data-fv-nav-toggle aria-label="Menu"><span class="navbar-toggle-icon"></span></button><ul class="navbar-nav" id="nav" role="list"><li><a class="nav-link active" href="#">Home</a></li><li><a class="nav-link" href="#">Docs</a></li><li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Theme">\u{1F319}</button></li></ul></nav>' },
@@ -38,6 +45,9 @@ const recipes = [
   { name: 'agent-tool-call-turn', html: '<div class="message"><span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span><div class="message-body"><details class="reasoning"><summary class="reasoning-summary">Thought for 4 seconds</summary><div class="reasoning-body">The user wants current data, so search first.</div></details><div class="tool-call tool-call-done"><div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">search_docs</span><span class="tool-call-status">Done</span></div><div class="tool-call-args">query: "backgrounds library"</div></div><div class="message-bubble streaming"><div class="prose prose-sm"><p>The backgrounds library ships mesh gradients and patterns…</p></div></div></div></div>' },
   { name: 'rag-answer-with-citations', html: '<div class="message"><span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span><div class="message-body"><div class="message-bubble"><div class="prose prose-sm"><p>Glass surfaces need a rich backdrop to blur<a class="cite" href="#src-1">1</a>, so give the page a mesh background<a class="cite" href="#src-2">2</a>.</p><ol class="sources"><li id="src-1"><a href="#">docs/backgrounds — why glass needs a backdrop</a></li><li id="src-2"><a href="#">llms-full.txt — conventions</a></li></ol></div></div></div></div>' },
   { name: 'brand-theme', html: '<style>\n:root {\n  --fv-primary: #10b981;   /* brand color — gradients, glows, meshes, buttons all follow */\n  --fv-accent:  #a3e635;\n  --fv-info:    #2dd4bf;\n  --fv-primary-text: #6ee7b7;      /* readable tint for text/links on the dark surface */\n  /* --fv-primary-contrast: #06281d;  uncomment when the fill needs dark text */\n}\n</style>' },
+  { name: 'command-palette', html: '<button class="btn btn-glass" data-fv-open="#cmd">Search <kbd>⌘K</kbd></button><dialog class="command" id="cmd" aria-label="Command menu"><div class="command-search"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-search"/></svg><input class="command-input" type="text" placeholder="Type a command…" aria-label="Command menu"></div><ul class="command-list"><li class="command-group">Jump to</li><li class="command-item" data-fv-command="/docs/"><span class="command-label">Docs</span></li><li class="command-item" data-fv-command="/templates/"><span class="command-label">Templates</span></li></ul><div class="command-empty" hidden>No matches.</div><div class="command-hint"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> select</span><span><kbd>esc</kbd> close</span></div></dialog>' },
+  { name: 'code-diff', html: '<div class="diff"><div class="diff-header">src/theme.css <span class="diff-stat"><span class="diff-stat-add">+1</span> <span class="diff-stat-del">−1</span></span></div><pre class="diff-body"><code><span class="diff-line diff-hunk">@@ -1,2 +1,2 @@</span>\n<span class="diff-line">  :root {</span>\n<span class="diff-line diff-del">-   --fv-primary: #6d4af5;</span>\n<span class="diff-line diff-add">+   --fv-primary: #10b981;</span></code></pre></div>' },
+  { name: 'prompt-suggestions', html: '<div class="suggestions"><button class="suggestion" type="button"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-sparkles"/></svg> Summarize this page</button><button class="suggestion" type="button">Draft a reply</button><button class="suggestion" type="button">Explain this code</button></div><form class="prompt"><textarea class="prompt-field" aria-label="Message" placeholder="Message…"></textarea><div class="prompt-actions"><span class="attachment"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-paperclip"/></svg><span class="attachment-name">report.pdf</span><span class="attachment-meta">2.4 MB</span><button class="attachment-remove" type="button" aria-label="Remove report.pdf">&times;</button></span><button class="btn btn-gradient-primary" aria-label="Send"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-send"/></svg></button></div></form>' },
 ];
 
 // Utility families — bucket the class surface by prefix so an AI sees the shape
@@ -79,7 +89,7 @@ const conventions = {
       'class="snippet" on <pre>': 'farvist.js wraps the code block and adds a hover copy button (requires the JS include)',
       'data-tooltip="text"': 'CSS tooltip; text is exposed to assistive tech',
     },
-    api: "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.command('#cmd') — open a command palette; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.",
+    api: "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.command('#cmd') — open a command palette; Farvist.stream(el, text, {delay?, instant?}) — types text into el with the .streaming caret, honors prefers-reduced-motion, returns a Promise; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.",
   },
 };
 
@@ -123,6 +133,10 @@ const components = [
   { name: 'tool-call (AI)', classes: ['tool-call', 'tool-call-header', 'tool-call-name', 'tool-call-status', 'tool-call-args', 'tool-call-result', 'tool-call-{running|done|error}'], example: '<div class="tool-call tool-call-running"><div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-terminal"/></svg><span class="tool-call-name">fetch_data</span><span class="tool-call-status">Running…</span></div><div class="tool-call-args">{"id": 42}</div></div> — state classes tint the rail; keep the status TEXT so meaning never relies on color.' },
   { name: 'reasoning (AI)', classes: ['reasoning (<details>)', 'reasoning-summary (<summary>)', 'reasoning-body'], example: '<details class="reasoning"><summary class="reasoning-summary">Thought for 12 seconds</summary><div class="reasoning-body">…model thinking…</div></details>' },
   { name: 'command palette (⌘K)', classes: ['command (<dialog>)', 'command-search', 'command-input', 'command-list', 'command-group', 'command-item (data-fv-command="url|#anchor|action", optional data-fv-keywords)', 'command-kbd', 'command-empty', 'command-hint'], example: '<button data-fv-open="#cmd">Search</button><dialog class="command" id="cmd" aria-label="Command menu"><div class="command-search"><svg class="icon"><use href="assets/icons/farvist-icons.svg#i-search"/></svg><input class="command-input" placeholder="Type a command…"></div><ul class="command-list"><li class="command-group">Jump to</li><li class="command-item" data-fv-command="/docs/"><span class="command-label">Docs</span></li></ul><div class="command-empty" hidden>No matches.</div></dialog> — opens on data-fv-open / ⌘K / Ctrl+K / Farvist.command("#cmd"); type-to-filter + arrow keys + Enter; a URL/#anchor navigates, any other value fires an fv:command event.' },
+  { name: 'diff (AI)', classes: ['diff', 'diff-header', 'diff-stat', 'diff-stat-add', 'diff-stat-del', 'diff-body (<pre>)', 'diff-line', 'diff-add', 'diff-del', 'diff-hunk'], example: '<div class="diff"><div class="diff-header">src/app.js <span class="diff-stat"><span class="diff-stat-add">+2</span> <span class="diff-stat-del">−1</span></span></div><pre class="diff-body"><code><span class="diff-line diff-hunk">@@ -1,3 +1,4 @@</span>\n<span class="diff-line">  const a = 1;</span>\n<span class="diff-line diff-del">- const b = 2;</span>\n<span class="diff-line diff-add">+ const b = 3;</span></code></pre></div> — keep the +/− characters IN the line content (meaning never rides on color alone).' },
+  { name: 'suggestions (AI)', classes: ['suggestions', 'suggestion (on <button> or <a>)'], example: '<div class="suggestions"><button class="suggestion" type="button">Summarize this page</button><button class="suggestion" type="button">Draft a reply</button></div> — the prompt-starter chip row above a .prompt composer.' },
+  { name: 'attachment (AI)', classes: ['attachment', 'attachment-name', 'attachment-meta', 'attachment-remove'], example: '<span class="attachment"><svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-paperclip"/></svg><span class="attachment-name">report.pdf</span><span class="attachment-meta">2.4 MB</span><button class="attachment-remove" aria-label="Remove report.pdf">&times;</button></span>' },
+  { name: 'named code blocks', classes: ['snippet-wrap (hand-authored)', 'snippet-header', 'snippet-title', 'snippet-lang', 'snippet (<pre>)'], example: '<div class="snippet-wrap"><div class="snippet-header"><span class="snippet-title">app.js</span><span class="snippet-lang">javascript</span></div><pre class="snippet"><code>…</code></pre></div> — the filename bar AI assistants use for generated files; farvist.js still adds the copy button.' },
 ];
 
 const out = {
@@ -136,8 +150,9 @@ const out = {
     js: 'https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js',
     npm: 'npm i farvist',
   },
-  totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length, skins: skinNames.length },
+  totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length, skins: skinNames.length, tokens: Object.keys(tokens).length },
   skins: { usage: '<html data-theme="NAME"> or Farvist.theme("NAME") — prebuilt AA-gated theme packs; "dawn" is a light skin. Default (no attribute) is the dark glass theme.', names: skinNames },
+  tokens: { usage: 'Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step.', values: tokens },
   conventions,
   utilities,
   components,
@@ -191,6 +206,14 @@ for (const c of components) {
 L.push('## Skins');
 L.push(out.skins.usage);
 L.push(`Names (${skinNames.length}): ${skinNames.join(', ')}`);
+L.push('');
+L.push('## Design tokens');
+L.push(out.tokens.usage);
+L.push('```css');
+L.push(':root {');
+for (const [name, value] of Object.entries(tokens)) L.push(`  ${name}: ${value};`);
+L.push('}');
+L.push('```');
 L.push('');
 L.push('## Icons');
 L.push(out.icons.usage);

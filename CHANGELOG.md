@@ -2,6 +2,16 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.6.0] — 2026-07-22
+**More for AI.** Three new AI-product components, a filename bar for code blocks, a streaming API, and the machine catalog now publishes the complete design-token list. 38 → **42 components**.
+### Added
+- **`.diff`** — the code-change view AI coding assistants live in: `.diff-header` (+ `.diff-stat-add/-del`), `pre.diff-body`, and `.diff-line` rows with `.diff-add` / `.diff-del` / `.diff-hunk`. The `+`/`−` characters stay in the content — meaning never rides on colour alone.
+- **`.suggestions`** — the prompt-starter chip row (`.suggestion` on `<button>` or `<a>`), and **`.attachment`** — file pills for the composer (`-name`, `-meta`, `-remove`).
+- **Named code blocks** — hand-author `.snippet-wrap` with a `.snippet-header` (`.snippet-title` + `.snippet-lang`) above `pre.snippet`; `farvist.js` now adds the copy button to hand-authored wraps too.
+- **`Farvist.stream(el, text, {delay?, instant?})`** — types text word-by-word with the `.streaming` caret, re-runs `enhance()` at the end, returns a Promise, and renders instantly under `prefers-reduced-motion`.
+- **Machine catalog:** `ai-context.json` gains a **`tokens`** section — every `--fv-*` design token with its default, extracted from the compiled CSS (the exact runtime-theming override surface); `llms-full.txt` gets the same as a "Design tokens" block. 3 new recipes (`command-palette`, `code-diff`, `prompt-suggestions`); new components + `Farvist.stream` in `farvist.cursorrules`.
+- Docs: Diff view, Suggestions & attachments, Named code blocks sections + a live `Farvist.stream()` demo button.
+
 ## [1.5.0] — 2026-07-03
 **Command palette (⌘K).** The launcher every modern dev tool and AI app has — now a first-class Farvist component (38 components total).
 ### Added

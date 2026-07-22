@@ -64,6 +64,9 @@
 @use 'components/tool-call';
 @use 'components/reasoning';
 @use 'components/command';
+@use 'components/diff';
+@use 'components/suggestions';
+@use 'components/attachment';
 
 // Utilities (last — highest cascade priority)
 @use 'utilities/spacing';

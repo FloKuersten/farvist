@@ -1,7 +1,7 @@
 {
   "name": "farvist",
-  "version": "1.5.0",
-  "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 38 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
+  "version": "1.6.0",
+  "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
   "install": {
@@ -10,11 +10,12 @@
     "npm": "npm i farvist"
   },
   "totals": {
-    "classes": 2004,
-    "components": 38,
+    "classes": 2024,
+    "components": 42,
     "icons": 55,
-    "recipes": 11,
-    "skins": 5
+    "recipes": 14,
+    "skins": 5,
+    "tokens": 55
   },
   "skins": {
     "usage": "<html data-theme=\"NAME\"> or Farvist.theme(\"NAME\") — prebuilt AA-gated theme packs; \"dawn\" is a light skin. Default (no attribute) is the dark glass theme.",
@@ -25,6 +26,66 @@
       "noir",
       "synthwave"
     ]
+  },
+  "tokens": {
+    "usage": "Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step.",
+    "values": {
+      "--fv-primary": "#6d4af5",
+      "--fv-secondary": "#7c8aa5",
+      "--fv-success": "#34d399",
+      "--fv-danger": "#fb5b78",
+      "--fv-warning": "#fbbf24",
+      "--fv-info": "#22d3ee",
+      "--fv-accent": "#e879f9",
+      "--fv-light": "#e7ecf5",
+      "--fv-dark": "#0b0f1d",
+      "--fv-gray-100": "#f1f5f9",
+      "--fv-gray-200": "#e2e8f0",
+      "--fv-gray-300": "#cbd5e1",
+      "--fv-gray-400": "#94a3b8",
+      "--fv-gray-500": "#64748b",
+      "--fv-gray-600": "#475569",
+      "--fv-gray-700": "#334155",
+      "--fv-gray-800": "#1e293b",
+      "--fv-gray-900": "#0f172a",
+      "--fv-white": "#ffffff",
+      "--fv-black": "#000000",
+      "--fv-body-bg": "#060912",
+      "--fv-bg-gradient": "radial-gradient(48rem 48rem at 82% -12%, color-mix(in srgb, var(--fv-primary) 28%, transparent), transparent 60%), radial-gradient(36rem 36rem at -8% 18%, color-mix(in srgb, var(--fv-info) 20%, transparent), transparent 58%), radial-gradient(40rem 40rem at 50% 118%, color-mix(in srgb, var(--fv-accent) 18%, transparent), transparent 58%)",
+      "--fv-body-color": "#e6ebf5",
+      "--fv-muted": "#95a3c4",
+      "--fv-primary-text": "rgb(149.88, 124.68, 247.8)",
+      "--fv-border-color": "rgba(255, 255, 255, 0.1)",
+      "--fv-code-bg": "rgba(255, 255, 255, 0.07)",
+      "--fv-bg-pattern": "rgba(255, 255, 255, 0.10)",
+      "--fv-glass-bg": "rgba(255, 255, 255, 0.06)",
+      "--fv-glass-bg-strong": "rgba(255, 255, 255, 0.1)",
+      "--fv-glass-border": "rgba(255, 255, 255, 0.14)",
+      "--fv-glass-blur": "16px",
+      "--fv-glass-saturate": "140%",
+      "--fv-surface-solid": "#121a2e",
+      "--fv-font-base": "Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji",
+      "--fv-font-mono": "ui-monospace, SFMono-Regular, SF Mono, JetBrains Mono, Menlo, Consolas, Liberation Mono, monospace",
+      "--fv-line-height": "1.6",
+      "--fv-border-radius": "0.75rem",
+      "--fv-border-width": "1px",
+      "--fv-transition": "0.2s ease",
+      "--fv-focus-ring": "0 0 0 3px color-mix(in srgb, var(--fv-primary) 45%, transparent)",
+      "--fv-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.3)",
+      "--fv-shadow-md": "0 8px 20px rgba(0, 0, 0, 0.35)",
+      "--fv-shadow-lg": "0 18px 44px rgba(0, 0, 0, 0.45)",
+      "--fv-shadow-xl": "0 30px 70px rgba(0, 0, 0, 0.55)",
+      "--fv-glow-primary": "0 0 26px color-mix(in srgb, var(--fv-primary) 55%, transparent)",
+      "--fv-glow-accent": "0 0 26px color-mix(in srgb, var(--fv-accent) 55%, transparent)",
+      "--fv-glow-info": "0 0 26px color-mix(in srgb, var(--fv-info) 55%, transparent)",
+      "--fv-glow-success": "0 0 26px color-mix(in srgb, var(--fv-success) 50%, transparent)",
+      "--fv-glow-danger": "0 0 26px color-mix(in srgb, var(--fv-danger) 50%, transparent)",
+      "--fv-glow-warning": "0 0 26px color-mix(in srgb, var(--fv-warning) 50%, transparent)",
+      "--fv-gradient-primary": "linear-gradient(135deg, var(--fv-primary) 0%, var(--fv-info) 100%)",
+      "--fv-gradient-accent": "linear-gradient(135deg, var(--fv-accent) 0%, var(--fv-primary) 100%)",
+      "--fv-gradient-sunset": "linear-gradient(135deg, var(--fv-danger) 0%, var(--fv-warning) 100%)",
+      "--fv-gradient-aurora": "linear-gradient(135deg, var(--fv-success) 0%, var(--fv-info) 100%)"
+    }
   },
   "conventions": {
     "theming": "Dark by default. Add data-theme=\"light\" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS. SKINS (v1.4): prebuilt AA-gated theme packs on the same attribute — data-theme=\"synthwave|cyber|noir|forest|dawn\" (dawn is light). JS: Farvist.theme(\"synthwave\") applies + persists; <button data-fv-theme-cycle=\"synthwave,cyber\"> cycles.",
@@ -62,7 +123,7 @@
         "class=\"snippet\" on <pre>": "farvist.js wraps the code block and adds a hover copy button (requires the JS include)",
         "data-tooltip=\"text\"": "CSS tooltip; text is exposed to assistive tech"
       },
-      "api": "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.command('#cmd') — open a command palette; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired."
+      "api": "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.command('#cmd') — open a command palette; Farvist.stream(el, text, {delay?, instant?}) — types text into el with the .streaming caret, honors prefers-reduced-motion, returns a Promise; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired."
     }
   },
   "utilities": {
@@ -1161,6 +1222,51 @@
         "command-hint"
       ],
       "example": "<button data-fv-open=\"#cmd\">Search</button><dialog class=\"command\" id=\"cmd\" aria-label=\"Command menu\"><div class=\"command-search\"><svg class=\"icon\"><use href=\"assets/icons/farvist-icons.svg#i-search\"/></svg><input class=\"command-input\" placeholder=\"Type a command…\"></div><ul class=\"command-list\"><li class=\"command-group\">Jump to</li><li class=\"command-item\" data-fv-command=\"/docs/\"><span class=\"command-label\">Docs</span></li></ul><div class=\"command-empty\" hidden>No matches.</div></dialog> — opens on data-fv-open / ⌘K / Ctrl+K / Farvist.command(\"#cmd\"); type-to-filter + arrow keys + Enter; a URL/#anchor navigates, any other value fires an fv:command event."
+    },
+    {
+      "name": "diff (AI)",
+      "classes": [
+        "diff",
+        "diff-header",
+        "diff-stat",
+        "diff-stat-add",
+        "diff-stat-del",
+        "diff-body (<pre>)",
+        "diff-line",
+        "diff-add",
+        "diff-del",
+        "diff-hunk"
+      ],
+      "example": "<div class=\"diff\"><div class=\"diff-header\">src/app.js <span class=\"diff-stat\"><span class=\"diff-stat-add\">+2</span> <span class=\"diff-stat-del\">−1</span></span></div><pre class=\"diff-body\"><code><span class=\"diff-line diff-hunk\">@@ -1,3 +1,4 @@</span>\n<span class=\"diff-line\">  const a = 1;</span>\n<span class=\"diff-line diff-del\">- const b = 2;</span>\n<span class=\"diff-line diff-add\">+ const b = 3;</span></code></pre></div> — keep the +/− characters IN the line content (meaning never rides on color alone)."
+    },
+    {
+      "name": "suggestions (AI)",
+      "classes": [
+        "suggestions",
+        "suggestion (on <button> or <a>)"
+      ],
+      "example": "<div class=\"suggestions\"><button class=\"suggestion\" type=\"button\">Summarize this page</button><button class=\"suggestion\" type=\"button\">Draft a reply</button></div> — the prompt-starter chip row above a .prompt composer."
+    },
+    {
+      "name": "attachment (AI)",
+      "classes": [
+        "attachment",
+        "attachment-name",
+        "attachment-meta",
+        "attachment-remove"
+      ],
+      "example": "<span class=\"attachment\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-paperclip\"/></svg><span class=\"attachment-name\">report.pdf</span><span class=\"attachment-meta\">2.4 MB</span><button class=\"attachment-remove\" aria-label=\"Remove report.pdf\">&times;</button></span>"
+    },
+    {
+      "name": "named code blocks",
+      "classes": [
+        "snippet-wrap (hand-authored)",
+        "snippet-header",
+        "snippet-title",
+        "snippet-lang",
+        "snippet (<pre>)"
+      ],
+      "example": "<div class=\"snippet-wrap\"><div class=\"snippet-header\"><span class=\"snippet-title\">app.js</span><span class=\"snippet-lang\">javascript</span></div><pre class=\"snippet\"><code>…</code></pre></div> — the filename bar AI assistants use for generated files; farvist.js still adds the copy button."
     }
   ],
   "icons": {
@@ -1267,6 +1373,18 @@
     {
       "name": "brand-theme",
       "html": "<style>\n:root {\n  --fv-primary: #10b981;   /* brand color — gradients, glows, meshes, buttons all follow */\n  --fv-accent:  #a3e635;\n  --fv-info:    #2dd4bf;\n  --fv-primary-text: #6ee7b7;      /* readable tint for text/links on the dark surface */\n  /* --fv-primary-contrast: #06281d;  uncomment when the fill needs dark text */\n}\n</style>"
+    },
+    {
+      "name": "command-palette",
+      "html": "<button class=\"btn btn-glass\" data-fv-open=\"#cmd\">Search <kbd>⌘K</kbd></button><dialog class=\"command\" id=\"cmd\" aria-label=\"Command menu\"><div class=\"command-search\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-search\"/></svg><input class=\"command-input\" type=\"text\" placeholder=\"Type a command…\" aria-label=\"Command menu\"></div><ul class=\"command-list\"><li class=\"command-group\">Jump to</li><li class=\"command-item\" data-fv-command=\"/docs/\"><span class=\"command-label\">Docs</span></li><li class=\"command-item\" data-fv-command=\"/templates/\"><span class=\"command-label\">Templates</span></li></ul><div class=\"command-empty\" hidden>No matches.</div><div class=\"command-hint\"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> select</span><span><kbd>esc</kbd> close</span></div></dialog>"
+    },
+    {
+      "name": "code-diff",
+      "html": "<div class=\"diff\"><div class=\"diff-header\">src/theme.css <span class=\"diff-stat\"><span class=\"diff-stat-add\">+1</span> <span class=\"diff-stat-del\">−1</span></span></div><pre class=\"diff-body\"><code><span class=\"diff-line diff-hunk\">@@ -1,2 +1,2 @@</span>\n<span class=\"diff-line\">  :root {</span>\n<span class=\"diff-line diff-del\">-   --fv-primary: #6d4af5;</span>\n<span class=\"diff-line diff-add\">+   --fv-primary: #10b981;</span></code></pre></div>"
+    },
+    {
+      "name": "prompt-suggestions",
+      "html": "<div class=\"suggestions\"><button class=\"suggestion\" type=\"button\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-sparkles\"/></svg> Summarize this page</button><button class=\"suggestion\" type=\"button\">Draft a reply</button><button class=\"suggestion\" type=\"button\">Explain this code</button></div><form class=\"prompt\"><textarea class=\"prompt-field\" aria-label=\"Message\" placeholder=\"Message…\"></textarea><div class=\"prompt-actions\"><span class=\"attachment\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-paperclip\"/></svg><span class=\"attachment-name\">report.pdf</span><span class=\"attachment-meta\">2.4 MB</span><button class=\"attachment-remove\" type=\"button\" aria-label=\"Remove report.pdf\">&times;</button></span><button class=\"btn btn-gradient-primary\" aria-label=\"Send\"><svg class=\"icon\" aria-hidden=\"true\"><use href=\"assets/icons/farvist-icons.svg#i-send\"/></svg></button></div></form>"
     }
   ]
 }

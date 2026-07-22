@@ -377,20 +377,26 @@
     });
 
     // Copy buttons: wrap each `pre.snippet` and add a copy button (idempotent).
+    // A hand-authored .snippet-wrap (e.g. with a .snippet-header filename bar)
+    // is kept as-is — it still gets the button.
     qsa('pre.snippet').forEach(function (pre) {
-      if (pre.parentNode && pre.parentNode.classList.contains('snippet-wrap')) return;
       if (!pre.parentNode) return;
-      var wrap = document.createElement('div');
-      wrap.className = 'snippet-wrap';
-      pre.parentNode.insertBefore(wrap, pre);
-      wrap.appendChild(pre);
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'copy-btn';
-      btn.setAttribute('aria-label', 'Copy code to clipboard');
-      btn.setAttribute('aria-live', 'polite');
-      btn.textContent = 'Copy';
-      wrap.appendChild(btn);
+      var wrap = pre.parentNode.classList.contains('snippet-wrap') ? pre.parentNode : null;
+      if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.className = 'snippet-wrap';
+        pre.parentNode.insertBefore(wrap, pre);
+        wrap.appendChild(pre);
+      }
+      if (!wrap.querySelector('.copy-btn')) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'copy-btn';
+        btn.setAttribute('aria-label', 'Copy code to clipboard');
+        btn.setAttribute('aria-live', 'polite');
+        btn.textContent = 'Copy';
+        wrap.appendChild(btn);
+      }
     });
 
     // Docs scrollspy: highlight the sidebar link for the section in view (once).
@@ -502,6 +508,36 @@
     return el;
   }
 
+  // ---- Streaming helper ----
+  // Farvist.stream(el, text) types `text` into `el` word by word with the
+  // .streaming caret, then re-runs enhance() and resolves. Honors
+  // prefers-reduced-motion by rendering instantly.
+  function stream(el, text, opts) {
+    opts = opts || {};
+    var words = String(text).split(' ');
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return new Promise(function (resolve) {
+      function finish() {
+        el.classList.remove('streaming');
+        enhance();
+        resolve(el);
+      }
+      if (reduced || opts.instant) {
+        el.textContent = String(text);
+        finish();
+        return;
+      }
+      el.classList.add('streaming');
+      var i = 0;
+      (function tick() {
+        el.textContent += (i ? ' ' : '') + words[i];
+        i++;
+        if (i < words.length) setTimeout(tick, opts.delay || 45);
+        else finish();
+      })();
+    });
+  }
+
   // ---- Skins / theme API ----
   // Farvist.theme('synthwave') applies a skin (any [data-theme] value) and
   // persists it; theme('dark') / theme() restores the default.
@@ -520,5 +556,5 @@
   } catch (e) { /* private mode */ }
 
   // Public API. `Farvist` is the current name; `Farvistrap` kept as an alias.
-  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance, copy: copy, theme: theme, command: openCommand };
+  window.Farvist = window.Farvistrap = { toast: toast, enhance: enhance, copy: copy, theme: theme, command: openCommand, stream: stream };
 })();

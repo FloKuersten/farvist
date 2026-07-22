@@ -300,6 +300,12 @@ Mesh stops come from the `$bg-meshes` map and reference your theme colors, so th
 
 **Command palette (⌘K)** — `.command` (native `<dialog>`) `.command-search/-input/-list/-group/-item/-empty/-hint`; open via `data-fv-open` / ⌘K / `Farvist.command()`, `data-fv-command` on each item navigates or fires an `fv:command` event
 
+**Diff (AI)** — `.diff` `.diff-header` (`.diff-stat/-add/-del`) `.diff-body` `.diff-line` (`.diff-add` `.diff-del` `.diff-hunk`) — the +/− characters stay in the content, never colour alone
+
+**Suggestions (AI)** — `.suggestions` > `.suggestion` prompt-starter chips · **Attachment (AI)** — `.attachment` `.attachment-name/-meta/-remove` file pills for the composer
+
+**Named code blocks** — hand-authored `.snippet-wrap` > `.snippet-header` (`.snippet-title` + `.snippet-lang`) + `pre.snippet` — the filename bar for AI-generated files (copy button still auto-added)
+
 Theme colors: `primary · secondary · success · danger · warning · info · accent · light · dark`.
 
 ### Icons, assets & JavaScript
@@ -323,6 +329,11 @@ It wires modals (`data-fv-open="#id"` / `data-fv-dismiss`), tabs (`data-fv-tab`)
 
 ```js
 Farvist.toast({ title: 'Saved', message: 'All good.', variant: 'success', timeout: 4000 });
+Farvist.copy('text');                    // clipboard with success feedback
+Farvist.theme('synthwave');              // apply + persist a skin
+Farvist.command('#cmd');                 // open a command palette
+await Farvist.stream(el, 'streamed…');   // type text with the caret (reduced-motion safe)
+Farvist.enhance();                       // re-wire ARIA after injecting DOM
 ```
 
 Everything else (accordion, dropdown, tooltip, switch, progress…) is pure CSS and needs no JS.

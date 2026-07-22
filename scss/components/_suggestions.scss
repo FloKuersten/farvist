@@ -1,0 +1,49 @@
+// =============================================================================
+// Farvist · Components · Suggestions (prompt starters)
+// The "try asking…" chip row every AI product opens with. Works on <button>
+// or <a>; pairs with the .prompt composer.
+//   <div class="suggestions">
+//     <button class="suggestion" type="button">Summarize this page</button>
+//     <button class="suggestion" type="button">Draft a reply</button>
+//   </div>
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+@layer components {
+
+  .suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: spacer(2);
+    margin-bottom: spacer(3);
+  }
+
+  .suggestion {
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
+    padding: spacer(1) spacer(4);
+    font-size: map.get($font-sizes, 'sm');
+    color: var(--fv-body-color);
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: map.get($radii, 'pill');
+    @include glass;
+    transition: background-color $transition-base, border-color $transition-base, transform $transition-base;
+
+    .icon { color: var(--fv-muted); }
+
+    &:hover {
+      background-color: var(--fv-glass-bg-strong);
+      border-color: color-mix(in srgb, var(--fv-primary) 45%, transparent);
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: var(--fv-focus-ring);
+    }
+  }
+}

@@ -55,4 +55,40 @@
     color: var(--fv-success);
     border-color: var(--fv-success);
   }
+
+  // Named code blocks — a filename/language bar above the snippet, the way AI
+  // assistants present generated files. Author the wrap yourself:
+  //   <div class="snippet-wrap">
+  //     <div class="snippet-header"><span class="snippet-title">app.js</span>
+  //       <span class="snippet-lang">javascript</span></div>
+  //     <pre class="snippet"><code>…</code></pre>
+  //   </div>
+  // farvist.js still adds the copy button to hand-authored wraps.
+  .snippet-header {
+    display: flex;
+    align-items: center;
+    gap: spacer(3);
+    padding: spacer(2) spacer(4);
+    padding-right: 5rem; // clear the absolute copy button
+    font-family: var(--fv-font-mono);
+    font-size: map.get($font-sizes, 'xs');
+    color: var(--fv-muted);
+    background-color: var(--fv-code-bg);
+    border: $border-width solid var(--fv-border-color);
+    border-bottom: 0;
+    border-radius: map.get($radii, 'md') map.get($radii, 'md') 0 0;
+  }
+
+  .snippet-title { color: var(--fv-body-color); }
+
+  .snippet-lang {
+    margin-left: auto;
+    text-transform: lowercase;
+  }
+
+  .snippet-header + pre.snippet {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 }

@@ -1,0 +1,71 @@
+// =============================================================================
+// Farvist · Components · Attachment
+// A file pill for AI composers and messages — icon, name, size, remove.
+//   <span class="attachment">
+//     <svg class="icon">…#i-paperclip</svg>
+//     <span class="attachment-name">report.pdf</span>
+//     <span class="attachment-meta">2.4 MB</span>
+//     <button class="attachment-remove" aria-label="Remove report.pdf">&times;</button>
+//   </span>
+// =============================================================================
+
+@use 'sass:map';
+@use '../abstracts' as *;
+
+@layer components {
+
+  .attachment {
+    display: inline-flex;
+    align-items: center;
+    gap: spacer(2);
+    max-width: 100%;
+    padding: spacer(1) spacer(3);
+    font-size: map.get($font-sizes, 'sm');
+    border-radius: map.get($radii, 'md');
+    @include glass;
+
+    > .icon { color: var(--fv-muted); flex: none; }
+  }
+
+  .attachment-name {
+    overflow: hidden;
+    font-family: var(--fv-font-mono);
+    font-size: map.get($font-sizes, 'xs');
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .attachment-meta {
+    flex: none;
+    font-size: map.get($font-sizes, 'xs');
+    color: var(--fv-muted);
+  }
+
+  .attachment-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-right: -0.25rem;
+    flex: none;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--fv-muted);
+    background: transparent;
+    border: 0;
+    border-radius: map.get($radii, 'full');
+    cursor: pointer;
+    transition: color $transition-base, background-color $transition-base;
+
+    &:hover {
+      color: var(--fv-danger);
+      background-color: color-mix(in srgb, var(--fv-danger) 15%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 0;
+      box-shadow: var(--fv-focus-ring);
+    }
+  }
+}
