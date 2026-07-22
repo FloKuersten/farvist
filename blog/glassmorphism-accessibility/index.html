@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glassmorphism, done accessibly — Farvist</title>
+  <meta name="description" content="Frosted-glass UI looks stunning and fails accessibility more often than any other trend. Here's how to keep it readable — contrast, focus, fallbacks and motion — the way Farvist does it." />
+  <link rel="canonical" href="https://farvist.com/blog/glassmorphism-accessibility/" />
+  <meta name="keywords" content="glassmorphism accessibility, frosted glass CSS contrast, backdrop-filter fallback, accessible glass UI, WCAG glassmorphism" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Glassmorphism, done accessibly" />
+  <meta property="og:description" content="The frosted-glass look is beautiful and risky. Four accessibility pitfalls it creates — and the concrete fixes for each." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/glassmorphism-accessibility/" />
+  <meta property="article:published_time" content="2026-07-16" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Glassmorphism, done accessibly" />
+  <meta name="twitter:description" content="Four accessibility pitfalls of frosted-glass UI, and the concrete fix for each." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Glassmorphism, done accessibly",
+    "description": "Four accessibility pitfalls of frosted-glass UI, and the concrete fix for each.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-07-16",
+    "dateModified": "2026-07-16",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/glassmorphism-accessibility/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+  </style>
+</head>
+<body class="bg-mesh-ocean">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-info">Accessibility</span><span class="chip">CSS</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Glassmorphism, <span class="text-gradient">done accessibly</span></h1>
+      <p class="text-muted mb-0">July 16, 2026 · 7 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">Frosted glass is the most seductive UI trend in years — and the one most likely to quietly fail a real user. Translucent panels, blurred backdrops and soft gradients photograph beautifully in a portfolio and then, in production, put pale text on a busy background where a third of your visitors can't read it. The look isn't the problem. Shipping it without a few guardrails is.</p>
+
+      <p>Here are the four places glassmorphism breaks accessibility, and the concrete fix for each — the same decisions baked into Farvist so you get them for free.</p>
+
+      <h2>1. Contrast on a moving target</h2>
+      <p>The core tension of glass is that the surface is <em>translucent</em>: whatever is behind it bleeds through. That's the whole effect, and it's also why text contrast is unpredictable — the "background" of your text isn't a fixed color, it's a blurred average of whatever scrolled underneath it.</p>
+      <p>The fix is two-part. First, the glass fill needs enough opacity that text sits on a reasonably stable base — a fill that's 6–10% white on a dark theme is enough to anchor readability without killing the effect. Second, and more important, <strong>brand colors that look fine as a button fill are usually too dark to use as text.</strong> Farvist's electric-violet primary (<code>#6d4af5</code>) scores only about 3.7:1 as text on the dark surface — below the WCAG AA threshold of 4.5:1. So the framework exposes a separate, lighter token, <code>--fv-primary-text</code>, tuned to clear AA (~6:1), and uses <em>that</em> for links and text while the raw primary stays for fills. One color for painting, a readable sibling for reading.</p>
+      <pre class="snippet"><code>/* fills use the brand color… */
+.btn-primary { background: var(--fv-primary); }
+/* …but text uses the readable sibling */
+a { color: var(--fv-primary-text); }</code></pre>
+
+      <h2>2. When the blur isn't there</h2>
+      <p>The property that makes glass, <code>backdrop-filter</code>, isn't universally supported, and some users disable it. When it fails, a translucent panel doesn't gracefully become opaque — it stays see-through, and now your text really is floating on raw background. That's the worst-case readability failure, and it happens silently.</p>
+      <p>The answer is a progressive-enhancement fallback: assume the surface must be readable <em>without</em> blur, and only add the frost when the browser can honor it.</p>
+      <pre class="snippet"><code>.glass {
+  background: var(--fv-surface-solid);   /* opaque, always readable */
+}
+@supports (backdrop-filter: blur(1px)) {
+  .glass {
+    background: var(--fv-glass-bg);       /* translucent frost */
+    backdrop-filter: blur(16px) saturate(140%);
+  }
+}</code></pre>
+      <p>Every glass surface in Farvist ships this way, so a browser that can't blur gets a solid panel instead of unreadable text. The effect degrades; the content never does.</p>
+
+      <h2>3. Losing the user's place</h2>
+      <p>Soft, low-contrast surfaces make it easy for keyboard focus to disappear. If your focus ring is a subtle glow that blends into a blurred panel, keyboard and switch users can't tell where they are. Glass UI needs focus states that are <em>more</em> assertive than usual, not less — a solid, high-contrast ring via <code>:focus-visible</code>, never removed, never reduced to a color shift. And because the whole aesthetic leans on color, nothing meaningful should be communicated by color alone: a form error is a red border <em>and</em> a message and an <code>aria-invalid</code> flag, a status dot is a color <em>and</em> a text label.</p>
+
+      <h2>4. Motion that doesn't ask permission</h2>
+      <p>Glass tends to travel with motion — drifting gradient backdrops, floating cards, pulsing glows. For someone with vestibular sensitivity, that ambient movement ranges from distracting to nauseating. The rule is simple and non-negotiable: every animation sits behind <code>@media (prefers-reduced-motion: reduce)</code> and switches off (or drops to a single static frame) when the user has asked for less. It's one media query, and it's the difference between a delightful site and one a real person has to close.</p>
+
+      <h2>The checklist</h2>
+      <p>If you're building frosted UI by hand, this is the whole list:</p>
+      <ul>
+        <li>Text color hits <strong>4.5:1</strong> — use a readable token, not the raw brand color, on translucent surfaces.</li>
+        <li>Glass has an <strong>opaque <code>@supports</code> fallback</strong> so it's readable without <code>backdrop-filter</code>.</li>
+        <li>Focus rings are <strong>solid and high-contrast</strong>, never removed.</li>
+        <li>Meaning never rides on <strong>color alone</strong>.</li>
+        <li>All motion is <strong><code>prefers-reduced-motion</code>-aware</strong>.</li>
+      </ul>
+      <p>Farvist verifies the automatable parts of this with axe-core on every build (0 violations across the docs and templates, in both themes). Automated tools can't catch everything — they famously can't evaluate the contrast of gradient text, which we check by hand — but they catch the regressions that slip in between careful reviews.</p>
+      <p>The point isn't that glassmorphism is dangerous. It's that "looks great in a screenshot" and "works for everyone" are two different bars, and the gap between them is a handful of decisions you can make once. Make them once, and the beautiful version is also the accessible one.</p>
+
+      <p>Farvist bakes all of the above in — <a href="/docs/#a11y">see the accessibility notes</a>, or read how the <a href="/blog/bring-your-brand/">theming architecture</a> makes the readable-text token possible.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>

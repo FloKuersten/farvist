@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Farvist</title>
+  <meta name="description" content="About Farvist — a free, MIT-licensed glassmorphism CSS framework built for the AI era. Who makes it, why it exists, and how it's funded." />
+  <link rel="canonical" href="https://farvist.com/about/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="About Farvist" />
+  <meta property="og:description" content="A free, MIT-licensed glassmorphism CSS framework built for the AI era — who makes it, why, and how it's funded." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+</head>
+<body class="bg-mesh-aurora">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link active" href="/about/" aria-current="page">About</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="container py-7" style="max-width:46rem;">
+    <h1 class="fs-4xl fw-black mb-2">About <span class="text-gradient">Farvist</span></h1>
+    <p class="fs-lg text-muted mb-5">A free, MIT-licensed CSS framework for building glassmorphism interfaces — and the first one designed to be written by AI assistants.</p>
+
+    <h2 class="h4 mb-2">What it is</h2>
+    <p>Farvist is a lightweight (~20&nbsp;KB) CSS framework in the tradition of Bootstrap: a set of ready-made components and utility classes you drop into a page with a single stylesheet, no build step required. What makes it different is the aesthetic — frosted-glass surfaces, soft neon glow and gradients, dark by default — and the fact that everything is generated from a small set of design tokens, so the whole system re-themes from a handful of CSS variables.</p>
+    <p>As of this writing it ships 38 components (including a full kit for AI chat interfaces), a free backgrounds library, five prebuilt theme "skins", a command palette, page templates and copy-paste blocks — all documented at <a href="/docs/">farvist.com/docs</a>.</p>
+
+    <h2 class="h4 mb-2 mt-5">Why it exists</h2>
+    <p>Two reasons. First, most "glass" UI on the web is hand-rolled and inconsistent, and the frameworks that dominate — Bootstrap, Tailwind — weren't built with that look in mind. Farvist makes a polished, accessible glass aesthetic the default instead of something you assemble from scratch.</p>
+    <p>Second, and more forward-looking: a growing share of front-end code is now written by AI assistants. Tools that were designed for a human reading docs and running a build don't serve a model well — it half-remembers class names and can't run your toolchain. Farvist is designed around that reality: it publishes a machine-readable catalog (<a href="/llms-full.txt">llms-full.txt</a>, <a href="/ai-context.json">ai-context.json</a>), uses a component-and-utility model that's stable for a model to recall, and can be fully re-branded at runtime with no build step. We wrote about the thinking <a href="/blog/ai-era/">here</a>.</p>
+
+    <h2 class="h4 mb-2 mt-5">Who makes it</h2>
+    <p>Farvist is an independent open-source project, built and maintained in the open on GitHub by its creator (FloKuersten). It's not backed by a company or venture funding — it's a solo project shared freely because it's useful. Issues, ideas and pull requests are welcome at <a href="https://github.com/FloKuersten/farvist">github.com/FloKuersten/farvist</a>.</p>
+
+    <h2 class="h4 mb-2 mt-5">How it's funded</h2>
+    <p>Farvist is free and always will be — the framework, the templates and the blocks are all MIT-licensed, with no paid tier. The site is kept running by a small number of unobtrusive display ads on the documentation and article pages. That's the whole business model: free tools, supported by ads, developed in the open. If it saves you time, the most valuable thanks is a star on GitHub. How ads and data work here is spelled out in our <a href="/privacy/">privacy policy</a>.</p>
+
+    <h2 class="h4 mb-2 mt-5">Principles</h2>
+    <ul>
+      <li><strong>Honest by default.</strong> We describe what the framework actually does, list real trade-offs, and don't overstate. Accessibility is verified (axe-core in CI), not assumed.</li>
+      <li><strong>Free and open.</strong> MIT license, public source, no lock-in. Use it in personal or commercial projects without attribution.</li>
+      <li><strong>Small and fast.</strong> One ~20&nbsp;KB stylesheet, zero dependencies, no required build step.</li>
+      <li><strong>Built in the open.</strong> Every release is documented in the <a href="https://github.com/FloKuersten/farvist/blob/main/CHANGELOG.md">changelog</a> and shipped to npm and jsDelivr.</li>
+    </ul>
+
+    <div class="d-flex gap-3 flex-wrap mt-5">
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs</a>
+      <a class="btn btn-glass" href="/contact/">Get in touch</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+</body>
+</html>

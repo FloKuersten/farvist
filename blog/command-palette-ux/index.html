@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The anatomy of a command palette (⌘K) — Farvist</title>
+  <meta name="description" content="Every dev tool has a ⌘K menu now. Here's what actually makes one good — the parts, the keyboard model, and the ARIA that everyone gets wrong." />
+  <link rel="canonical" href="https://farvist.com/blog/command-palette-ux/" />
+  <meta name="keywords" content="command palette, cmdk, ⌘K menu, combobox listbox ARIA, keyboard navigation, dev tool UX" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The anatomy of a command palette (⌘K)" />
+  <meta property="og:description" content="What actually makes a ⌘K menu good — the parts, the keyboard model, and the accessibility pattern people get wrong." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/command-palette-ux/" />
+  <meta property="article:published_time" content="2026-07-16" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The anatomy of a command palette (⌘K)" />
+  <meta name="twitter:description" content="The parts, the keyboard model, and the ARIA that makes a command palette actually accessible." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The anatomy of a command palette (⌘K)",
+    "description": "What makes a command palette good — the parts, the keyboard model, and the ARIA pattern.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-07-16",
+    "dateModified": "2026-07-16",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/command-palette-ux/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-primary">UX</span><span class="chip">Accessibility</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">The anatomy of a <span class="text-gradient">command palette</span></h1>
+      <p class="text-muted mb-0">July 16, 2026 · 7 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">Somewhere around 2020 the ⌘K menu went from a Superhuman party trick to table stakes. Linear, GitHub, VS Code, Raycast, Notion, Vercel — every serious tool now answers ⌘K with a searchable list of everything you might want to do. It's become the keyboard user's front door. Which means it's worth understanding what actually makes one good, because most hand-rolled versions get one crucial part wrong.</p>
+
+      <p>A command palette is really five small things wired together. Here's each, and where the sharp edges are.</p>
+
+      <h2>The trigger and the shortcut</h2>
+      <p>Two ways in, always: a visible button (so people who don't know the shortcut can discover it) and the global <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> binding. The shortcut has one gotcha — browsers bind ⌘K/Ctrl+K to the address bar, so you must <code>preventDefault()</code> when you handle it, and you should only grab it when a palette actually exists on the page. Bind it on the document, not an element, so it works no matter where focus is.</p>
+      <pre class="snippet"><code>document.addEventListener('keydown', (e) =&gt; {
+  if ((e.metaKey || e.ctrlKey) &amp;&amp; e.key === 'k') {
+    e.preventDefault();
+    openPalette();
+  }
+});</code></pre>
+
+      <h2>The overlay</h2>
+      <p>Resist the urge to hand-build a modal. The native <code>&lt;dialog&gt;</code> element gives you three things a command palette needs, for free: it traps focus, it closes on <kbd>Esc</kbd>, and its <code>::backdrop</code> dims the page. Open it with <code>dialog.showModal()</code> and you've skipped the most bug-prone part of the whole component. Farvist's palette is exactly this — a <code>&lt;dialog class="command"&gt;</code> — so the overlay behavior is the platform's, not yours to maintain.</p>
+
+      <h2>The input and the filter</h2>
+      <p>When the palette opens, focus goes straight to the input and the list resets. As the user types, you filter the items. The subtlety worth adding: match on more than the visible label. People search for "colors" and expect the "Theming" item; a good palette lets each item carry hidden keywords so synonyms hit. Filter, then make the first surviving item active so <kbd>Enter</kbd> always does something sensible, and show an empty state when nothing matches.</p>
+
+      <h2>The keyboard model — and the part everyone gets wrong</h2>
+      <p>Here's the mistake in nine out of ten hand-built palettes: as you press ↓, they move real DOM focus onto each list item. It feels right and it's wrong. The moment focus leaves the input, the user can no longer type to keep filtering — they have to tab back. The whole appeal of ⌘K (type <em>and</em> arrow at the same time) is broken.</p>
+      <p>The correct pattern is a <strong>combobox controlling a listbox</strong>, and it's the same one native autocomplete uses. Focus never leaves the input. Instead, you track a "virtual" cursor with <code>aria-activedescendant</code>, which points the input at the id of the currently highlighted option. Arrow keys move that pointer and a CSS class; focus stays put; typing keeps working.</p>
+      <pre class="snippet"><code>&lt;input role="combobox" aria-expanded="true"
+       aria-controls="cmd-list"
+       aria-activedescendant="cmd-item-3"&gt;
+&lt;ul id="cmd-list" role="listbox"&gt;
+  &lt;li id="cmd-item-3" role="option" aria-selected="true"&gt;…&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+      <p>Two rules that follow from this. The options are <code>&lt;li role="option"&gt;</code> — <em>not</em> links or buttons. An <code>option</code> is not supposed to contain interactive elements, and it shouldn't be focusable itself; activation is your JS reading the active item. And <code>aria-selected</code> tracks the highlight so a screen reader announces "Theming, 2 of 6" as the user arrows through, without ever stealing focus from where they're typing.</p>
+
+      <h2>Activation</h2>
+      <p>Enter (or a click) activates the highlighted item. The flexible design is to give each item a value and interpret it: a URL or <code>#anchor</code> navigates; anything else is a named action your app handles. Farvist does this with a <code>data-fv-command</code> attribute — a link value navigates, and any other value fires an <code>fv:command</code> event you listen for:</p>
+      <pre class="snippet"><code>palette.addEventListener('fv:command', (e) =&gt; {
+  if (e.detail.value === 'toggle-theme') Farvist.theme('dark');
+});</code></pre>
+      <p>That split — navigation for free, custom actions via an event — keeps the component generic without forcing a framework on you.</p>
+
+      <h2>Putting it together</h2>
+      <p>Good command palettes feel instant and never trap you. That comes down to: open on ⌘K without hijacking the browser, lean on <code>&lt;dialog&gt;</code> for the overlay, keep focus in the input and steer with <code>aria-activedescendant</code>, and treat items as data you act on rather than links you focus. Get the keyboard model right and the rest is styling.</p>
+      <p>If you'd rather not build it, Farvist ships the whole thing as a <code>.command</code> component — <a href="/docs/#command">try it in the docs</a> (press ⌘K), or read the <a href="/blog/ai-era/">bigger idea</a> behind a framework designed for the keyboard-and-AI era.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/#command">See the component →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>
