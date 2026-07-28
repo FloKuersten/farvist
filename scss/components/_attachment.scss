@@ -18,7 +18,10 @@
     display: inline-flex;
     align-items: center;
     gap: spacer(2);
-    max-width: 100%;
+    // A concrete cap (not just 100%) so the name's ellipsis still triggers
+    // inside content-sized flex parents like .prompt-actions, where 100%
+    // resolves circularly and never constrains.
+    max-width: min(100%, 16rem);
     padding: spacer(1) spacer(3);
     font-size: map.get($font-sizes, 'sm');
     border-radius: map.get($radii, 'md');

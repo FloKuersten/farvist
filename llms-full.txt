@@ -2,7 +2,7 @@
 
 > A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 1.6.0 · MIT · https://farvist.com · 2024 utility/component classes.
+Version 1.6.1 · MIT · https://farvist.com · 2024 utility/component classes.
 
 ## Install
 ```html
@@ -297,7 +297,7 @@ Classes: `snippet-wrap (hand-authored)`, `snippet-header`, `snippet-title`, `sni
 Names (5): cyber, dawn, forest, noir, synthwave
 
 ## Design tokens
-Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step.
+Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step. The optional tokens have no :root default — they exist purely as override hooks (each falls back to a sensible compiled value).
 ```css
 :root {
   --fv-primary: #6d4af5;
@@ -357,6 +357,7 @@ Every design token, with its default. Override any of them on :root (or a [data-
   --fv-gradient-aurora: linear-gradient(135deg, var(--fv-success) 0%, var(--fv-info) 100%);
 }
 ```
+Optional override hooks (no default — set only when needed): --fv-btn-color, --fv-btn-bg, --fv-btn-border, --fv-btn-hover-bg, --fv-btn-hover-border, --fv-btn-glow, --fv-btn-active-bg, --fv-btn-focus-ring, --fv-primary-contrast, --fv-secondary-contrast, --fv-success-contrast, --fv-danger-contrast, --fv-warning-contrast, --fv-info-contrast, --fv-accent-contrast, --fv-light-contrast, --fv-dark-contrast, --fv-secondary-text, --fv-success-text, --fv-danger-text, --fv-warning-text, --fv-info-text, --fv-accent-text, --fv-light-text, --fv-dark-text, --fv-status
 
 ## Icons
 <svg class="icon" aria-hidden="true"><use href="assets/icons/farvist-icons.svg#i-NAME"/></svg> — inherits currentColor; size via font-size or width/height.

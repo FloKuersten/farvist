@@ -26,15 +26,18 @@
 
   .diff-header {
     display: flex;
+    flex-wrap: wrap;              // long unbreakable paths wrap the stat below
     align-items: center;
-    gap: spacer(3);
+    gap: spacer(2) spacer(3);
     padding: spacer(2) spacer(3);
+    overflow-wrap: anywhere;      // …instead of pushing it out of the clipped box
     font-family: var(--fv-font-mono);
     font-size: map.get($font-sizes, 'xs');
     border-bottom: $border-width solid var(--fv-border-color);
   }
 
   .diff-stat {
+    flex: none;
     margin-left: auto;
     color: var(--fv-muted);
   }
@@ -42,7 +45,14 @@
   .diff-stat-add { color: var(--fv-success); }
   .diff-stat-del { color: var(--fv-danger); }
 
-  .diff-body {
+  // Light surfaces need darkened semantic text at this 12px size (same
+  // convention as alerts/badges/chips) — raw success/danger fail AA there.
+  [data-theme='light'] .diff-stat-add { color: color-mix(in srgb, #{$body-text-light} 55%, var(--fv-success)); }
+  [data-theme='light'] .diff-stat-del { color: color-mix(in srgb, #{$body-text-light} 55%, var(--fv-danger)); }
+
+  // Scoped to .diff so the margin survives .prose pre margins (0,2,0 beats
+  // .prose pre's 0,1,1 when a diff sits inside rendered markdown).
+  .diff .diff-body {
     padding: spacer(2) 0;
     margin: 0;
     overflow-x: auto;
@@ -72,6 +82,10 @@
   .diff-hunk {
     padding-block: spacer(1);
     color: var(--fv-info);
-    opacity: 0.85;
+  }
+
+  // Same AA rescue for the hunk line on light surfaces.
+  [data-theme='light'] .diff-hunk {
+    color: color-mix(in srgb, #{$body-text-light} 55%, var(--fv-info));
   }
 }

@@ -1,25 +1,31 @@
 # Farvist
 
-> A lightweight glassmorphism CSS framework — frosted-glass surfaces, neon glow, gradients, a free backgrounds library, 30+ components and dark/light themes. Drop in one `<link>`, no build step.
+> A lightweight (~21 KB) glassmorphism CSS framework — frosted-glass surfaces, neon glow, gradients, a free backgrounds library, 42 components, five theme skins and dark/light modes. Drop in one `<link>`, no build step, MIT.
 
-Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses a class model like Bootstrap's (components + utilities), but token-driven. The optional 3 KB `farvist.js` wires modals, tabs, toasts, the mobile navbar, and accessibility ARIA. Built for AI products too: chat, prompt-composer and agent-status components.
+Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses a class model like Bootstrap's (components + utilities), but token-driven: every color derives from `--fv-*` custom properties at runtime, so overriding ~5 variables re-brands the entire framework — gradients, glows, meshes and hover states included. Built for AI products: chat thread, prompt composer, rendered-markdown `.prose`, tool-call cards, reasoning disclosures, citations, code diffs, prompt suggestions, attachments, a ⌘K command palette, and agent status.
 
 ## Start here (for AI assistants)
-- [Full context](https://farvist.com/llms-full.txt): every convention + component class with a copy-paste example. Paste this into your assistant before generating Farvist markup.
-- [Machine-readable catalog](https://farvist.com/ai-context.json): JSON of components, utility families and conventions.
+- [Full context](https://farvist.com/llms-full.txt): every convention, component, icon, design token and copy-paste recipe. Paste this into your assistant before generating Farvist markup.
+- [Machine-readable catalog](https://farvist.com/ai-context.json): the same as JSON — components, utility families, 55 design tokens with defaults, skins, icons, 14 recipes.
+- [.cursorrules file](https://farvist.com/farvist.cursorrules): drop into your project so Cursor/Copilot/Claude generate correct Farvist with zero setup.
 
-## Docs
-- [Documentation](https://farvist.com/docs/): components, utilities, theming, backgrounds, accessibility, the AI kit.
+## Docs & tools
+- [Documentation](https://farvist.com/docs/): components, utilities, theming + skins, backgrounds, accessibility, the AI kit, the command palette.
+- [Theme Builder](https://farvist.com/themer/): drag pickers, watch everything retheme live, copy the CSS.
+- [Templates](https://farvist.com/templates/): AI console, SaaS landing, dashboard, auth, portfolio, block gallery — full pages to copy.
 - [Live demo](https://farvist.com): every component on one page.
-- [AI console template](https://farvist.com/examples/ai-console.html): a full chat UI built with Farvist.
+- [Blog](https://farvist.com/blog/): the engineering behind the framework (runtime theming, AI-era design, accessible glassmorphism).
 
 ## Install
 - CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css">`
+- Optional JS: `<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>`
 - npm: `npm i farvist`
 
 ## Conventions (quick reference)
 - Colors: primary, secondary, success, danger, warning, info, accent, light, dark (suffixes: `btn-primary`, `text-success`, `bg-accent`).
 - Breakpoints: sm 576, md 768, lg 992, xl 1200 — infix after the prefix: `col-md-6`, `d-lg-flex`.
-- Spacing: 0–7 scale → `p-4` = 1rem, `gap-3` = .75rem.
-- JS hooks: `data-fv-open`, `data-fv-dismiss`, `data-fv-tab`, `data-fv-theme-toggle`, `data-fv-nav-toggle`, `data-tooltip`; JS API `Farvist.toast()`, `Farvist.enhance()`.
+- Spacing: 0–8 scale → `p-4` = 1rem, `gap-3` = .75rem, `m-8` = 4rem.
+- Re-branding: override `--fv-primary` / `--fv-accent` / `--fv-info` on `:root` — everything follows at runtime. Skins: `data-theme="synthwave|cyber|noir|forest|dawn"`.
+- Rendered LLM markdown goes inside `.prose` (use `.prose-sm` in chat bubbles).
+- JS hooks: `data-fv-open`, `data-fv-dismiss`, `data-fv-tab`, `data-fv-theme-toggle`, `data-fv-theme-cycle`, `data-fv-nav-toggle`, `data-fv-copy`, `data-fv-command`, `data-tooltip`. JS API: `Farvist.toast()`, `Farvist.copy()`, `Farvist.theme()`, `Farvist.command()`, `Farvist.stream()`, `Farvist.enhance()`.
 - Give the page a rich background (e.g. `<body class="bg-mesh-aurora">`) so the glass reads.

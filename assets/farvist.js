@@ -509,12 +509,17 @@
   }
 
   // ---- Streaming helper ----
-  // Farvist.stream(el, text) types `text` into `el` word by word with the
+  // Farvist.stream(el, text) REPLACES el's text, typed word by word with the
   // .streaming caret, then re-runs enhance() and resolves. Honors
-  // prefers-reduced-motion by rendering instantly.
+  // prefers-reduced-motion by rendering instantly (same final content either
+  // way). A new stream() on the same element cancels the previous run.
+  var streamRuns = new WeakMap();
   function stream(el, text, opts) {
     opts = opts || {};
+    var token = {};
+    streamRuns.set(el, token);
     var words = String(text).split(' ');
+    var delay = opts.delay == null ? 45 : opts.delay;
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     return new Promise(function (resolve) {
       function finish() {
@@ -527,12 +532,15 @@
         finish();
         return;
       }
+      el.textContent = '';
       el.classList.add('streaming');
       var i = 0;
       (function tick() {
+        // Superseded by a newer stream() on this element — stop silently.
+        if (streamRuns.get(el) !== token) { resolve(el); return; }
         el.textContent += (i ? ' ' : '') + words[i];
         i++;
-        if (i < words.length) setTimeout(tick, opts.delay || 45);
+        if (i < words.length) setTimeout(tick, delay);
         else finish();
       })();
     });

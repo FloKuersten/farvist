@@ -2,6 +2,20 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.6.1] — 2026-07-28
+Quality patch — every fix below was found by an adversarial review of v1.6 and verified with a concrete repro before fixing.
+### Fixed
+- **Light-theme legibility in `.diff`**: the +N/−N stats and @@ hunk lines used raw semantic colors that measured 1.6–2.9:1 on light glass — now darkened on light surfaces (5.7–8.1:1, AA) following the alerts/badges convention; the hunk line also lost an `opacity` that degraded re-brands.
+- **`.diff-header` mobile overflow**: long unbreakable file paths pushed the stats out of the clipped header — the header now wraps.
+- **`.attachment` truncation was inert** inside `.prompt-actions` (100% max-width resolves circularly in content-sized flex parents) — now capped at 16rem so the ellipsis actually triggers; `.prompt-actions` may also shrink/wrap instead of overflowing the composer.
+- **`Farvist.stream()` race**: a second call on the same element now cancels the first (WeakMap run token) instead of interleaving garbled text; the animated path now REPLACES content like the reduced-motion path (same final DOM either way); `{delay: 0}` is honored (nullish check).
+- **`.snippet-header` overlap** with the copy button's wider "Copied ✓" state; **`.diff-body` margin** survives `.prose pre` margins.
+- **Machine catalog**: token extraction now fails loudly if the `:root` shape changes, and lists the 26 optional override hooks (`--fv-{color}-contrast`, `--fv-{color}-text`, …) it previously denied existed — including `--fv-primary-contrast`, which the same file's own recipes tell assistants to set.
+### Changed
+- `browserslist` now matches the documented support matrix (Chrome/Edge 111+, Safari 16.4+, Firefox 113+) — drops legacy `-moz-` prefixes for browsers below the baseline.
+- Root `llms.txt` rewritten — it still described the v1.0-era framework ("30+ components", no skins/theming/palette/stream).
+
+
 ## [1.6.0] — 2026-07-22
 **More for AI.** Three new AI-product components, a filename bar for code blocks, a streaming API, and the machine catalog now publishes the complete design-token list. 38 → **42 components**.
 ### Added

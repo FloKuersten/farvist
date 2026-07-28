@@ -52,9 +52,11 @@
 
   .prompt-actions {
     display: flex;
-    flex: 0 0 auto;
+    flex: 0 1 auto;     // may shrink so pills/buttons never overflow the glass
+    flex-wrap: wrap;    // …and wrap instead of clipping at narrow widths
     align-items: center;
     gap: spacer(2);
+    min-width: 0;
   }
 
   .prompt-meta {

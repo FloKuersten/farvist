@@ -69,7 +69,7 @@
     align-items: center;
     gap: spacer(3);
     padding: spacer(2) spacer(4);
-    padding-right: 5rem; // clear the absolute copy button
+    padding-right: 6.5rem; // clear the copy button even in its wider "Copied ✓" state
     font-family: var(--fv-font-mono);
     font-size: map.get($font-sizes, 'xs');
     color: var(--fv-muted);

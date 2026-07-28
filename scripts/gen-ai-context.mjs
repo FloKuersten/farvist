@@ -31,6 +31,25 @@ const skinNames = [...new Set([...css.matchAll(/\[data-theme=['"]?([\w-]+)['"]?\
 const rootBlock = (css.match(/:root\s*\{([^}]+)\}/) || [, ''])[1];
 const tokens = {};
 for (const t of rootBlock.matchAll(/--fv-([\w-]+):\s*([^;]+);/g)) tokens[`--fv-${t[1]}`] = t[2].trim();
+if (!Object.keys(tokens).length) {
+  throw new Error('gen-ai-context: token extraction found no --fv-* tokens in the first :root block — the selector shape probably changed; fix the regex.');
+}
+
+// Optional tokens: consumed via var(--fv-X, fallback) but never defined in
+// :root — e.g. --fv-primary-contrast (text on primary fills) and the
+// --fv-{color}-text family. Without listing these, the catalog would deny
+// tokens the docs tell assistants to set.
+const optionalTokens = {};
+for (const m of css.matchAll(/var\(--fv-([\w-]+)\s*[,)]/g)) {
+  const name = `--fv-${m[1]}`;
+  if (!(name in tokens) && !(name in optionalTokens)) {
+    optionalTokens[name] = /-contrast$/.test(name)
+      ? 'unset (optional — readable text color on that color\'s fills; set it when your brand flips between light and dark)'
+      : /-text$/.test(name)
+        ? 'unset (optional — readable text tint of that color on the page surface)'
+        : 'unset (optional — per-skin/per-context override; falls back to a compiled default)';
+  }
+}
 
 // Copy-paste recipes — whole sections an assistant can assemble pages from.
 const recipes = [
@@ -150,9 +169,9 @@ const out = {
     js: 'https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js',
     npm: 'npm i farvist',
   },
-  totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length, skins: skinNames.length, tokens: Object.keys(tokens).length },
+  totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length, skins: skinNames.length, tokens: Object.keys(tokens).length, optionalTokens: Object.keys(optionalTokens).length },
   skins: { usage: '<html data-theme="NAME"> or Farvist.theme("NAME") — prebuilt AA-gated theme packs; "dawn" is a light skin. Default (no attribute) is the dark glass theme.', names: skinNames },
-  tokens: { usage: 'Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step.', values: tokens },
+  tokens: { usage: 'Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step. The optional tokens have no :root default — they exist purely as override hooks (each falls back to a sensible compiled value).', values: tokens, optional: optionalTokens },
   conventions,
   utilities,
   components,
@@ -214,6 +233,7 @@ L.push(':root {');
 for (const [name, value] of Object.entries(tokens)) L.push(`  ${name}: ${value};`);
 L.push('}');
 L.push('```');
+L.push(`Optional override hooks (no default — set only when needed): ${Object.keys(optionalTokens).join(', ')}`);
 L.push('');
 L.push('## Icons');
 L.push(out.icons.usage);

@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
@@ -15,7 +15,8 @@
     "icons": 55,
     "recipes": 14,
     "skins": 5,
-    "tokens": 55
+    "tokens": 55,
+    "optionalTokens": 26
   },
   "skins": {
     "usage": "<html data-theme=\"NAME\"> or Farvist.theme(\"NAME\") — prebuilt AA-gated theme packs; \"dawn\" is a light skin. Default (no attribute) is the dark glass theme.",
@@ -28,7 +29,7 @@
     ]
   },
   "tokens": {
-    "usage": "Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step.",
+    "usage": "Every design token, with its default. Override any of them on :root (or a [data-theme] block) and the whole framework follows at runtime — gradients, glows, meshes, hover states included. No build step. The optional tokens have no :root default — they exist purely as override hooks (each falls back to a sensible compiled value).",
     "values": {
       "--fv-primary": "#6d4af5",
       "--fv-secondary": "#7c8aa5",
@@ -85,6 +86,34 @@
       "--fv-gradient-accent": "linear-gradient(135deg, var(--fv-accent) 0%, var(--fv-primary) 100%)",
       "--fv-gradient-sunset": "linear-gradient(135deg, var(--fv-danger) 0%, var(--fv-warning) 100%)",
       "--fv-gradient-aurora": "linear-gradient(135deg, var(--fv-success) 0%, var(--fv-info) 100%)"
+    },
+    "optional": {
+      "--fv-btn-color": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-btn-bg": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-btn-border": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-btn-hover-bg": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-btn-hover-border": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-btn-glow": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-btn-active-bg": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-btn-focus-ring": "unset (optional — per-skin/per-context override; falls back to a compiled default)",
+      "--fv-primary-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-secondary-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-success-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-danger-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-warning-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-info-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-accent-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-light-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-dark-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
+      "--fv-secondary-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-success-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-danger-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-warning-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-info-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-accent-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-light-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-dark-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-status": "unset (optional — per-skin/per-context override; falls back to a compiled default)"
     }
   },
   "conventions": {
