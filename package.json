@@ -57,6 +57,9 @@
     "check:theming": "node scripts/check-theming.mjs",
     "check:skins": "node scripts/check-skins.mjs"
   },
+  "overrides": {
+    "brace-expansion": "^5.0.8"
+  },
   "browserslist": [
     "chrome >= 111",
     "edge >= 111",

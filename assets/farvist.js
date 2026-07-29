@@ -399,6 +399,13 @@
       }
     });
 
+    // Scrollable code regions must be keyboard-reachable (axe:
+    // scrollable-region-focusable). Whether a block overflows depends on
+    // viewport and font metrics, so make every code scroller focusable.
+    qsa('pre.snippet, pre.diff-body').forEach(function (pre) {
+      if (!pre.hasAttribute('tabindex')) pre.setAttribute('tabindex', '0');
+    });
+
     // Docs scrollspy: highlight the sidebar link for the section in view (once).
     var dnav = document.querySelector('.docs-nav');
     if (dnav && 'IntersectionObserver' in window && !window.__fvSpy) {
