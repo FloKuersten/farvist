@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glassmorphism in CSS: a practical guide — Farvist</title>
+  <meta name="description" content="How to build frosted-glass UI in plain CSS — backdrop-filter, the translucent fill, borders and shadows that sell the effect, fallbacks, and the mistakes to avoid. With copy-paste code." />
+  <link rel="canonical" href="https://farvist.com/blog/glassmorphism-css-guide/" />
+  <meta name="keywords" content="glassmorphism css, frosted glass css, backdrop-filter blur, glass effect css, glassmorphism tutorial" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Glassmorphism in CSS: a practical guide" />
+  <meta property="og:description" content="The complete frosted-glass recipe — backdrop-filter, fills, borders, shadows, fallbacks — with copy-paste code and the pitfalls that ruin it." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/glassmorphism-css-guide/" />
+  <meta property="article:published_time" content="2026-07-29" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Glassmorphism in CSS: a practical guide" />
+  <meta name="twitter:description" content="The complete frosted-glass recipe in plain CSS, with copy-paste code." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Glassmorphism in CSS: a practical guide",
+    "description": "How to build frosted-glass UI in plain CSS — the full recipe, fallbacks, and the pitfalls.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-07-29",
+    "dateModified": "2026-07-29",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/glassmorphism-css-guide/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+    .demo-glass { padding: 1.25rem; border-radius: 0.875rem; }
+  </style>
+</head>
+<body class="bg-mesh-aurora">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-info">CSS</span><span class="chip">Tutorial</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Glassmorphism in CSS: <span class="text-gradient">a practical guide</span></h1>
+      <p class="text-muted mb-0">July 29, 2026 · 8 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">Frosted glass is one of those effects that looks like magic and turns out to be four CSS properties in a trench coat. This is the complete recipe — the properties that matter, why each one is there, the fallback you must ship, and the mistakes that make glass look cheap. Everything here is plain CSS you can paste into any project.</p>
+
+      <h2>The core recipe</h2>
+      <p>A glass surface is a translucent fill, a backdrop blur, a light border, and a soft shadow. All four, or it doesn't read as glass:</p>
+<pre class="snippet"><code>.glass {
+  background: rgba(255, 255, 255, 0.06);        /* 1 — translucent fill    */
+  backdrop-filter: blur(16px) saturate(140%);   /* 2 — the frost           */
+  -webkit-backdrop-filter: blur(16px) saturate(140%); /* Safari ≤ 17       */
+  border: 1px solid rgba(255, 255, 255, 0.14);  /* 3 — the catch-light     */
+  border-radius: 0.875rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);   /* 4 — lift off the page   */
+}</code></pre>
+      <p>What each part does:</p>
+      <ul>
+        <li><strong>The fill</strong> is barely there — 4–10% white on a dark page (or ~50–70% white on a light one). Too opaque and it's just a gray card; too transparent and text becomes unreadable.</li>
+        <li><strong><code>backdrop-filter</code></strong> blurs whatever is <em>behind</em> the element — that's the entire trick. The <code>saturate(140%)</code> is the underrated half: it makes the colors bleeding through richer instead of milky.</li>
+        <li><strong>The border</strong> fakes the bright edge where light hits a pane's rim. A 1px semi-white border does more for the illusion than any shadow.</li>
+        <li><strong>The shadow</strong> separates the pane from the page. Keep it large, soft and low-opacity.</li>
+      </ul>
+
+      <div class="demo-glass glass mb-3">This box is the recipe above, live — the page's gradient backdrop is blurring through it right now.</div>
+
+      <h2>Glass needs something to blur</h2>
+      <p>The #1 reason glass "doesn't work" in someone's project: the page behind it is a flat color. Blurring a solid gives you… the same solid. Glass only reads over a <em>rich backdrop</em> — a gradient, an image, or color "orbs" painted behind the page:</p>
+<pre class="snippet"><code>body {
+  background-color: #060912;
+  background-image:
+    radial-gradient(48rem 48rem at 82% -12%, rgba(109, 74, 245, 0.28), transparent 60%),
+    radial-gradient(36rem 36rem at -8% 18%, rgba(34, 211, 238, 0.20), transparent 58%);
+  background-attachment: fixed;   /* orbs stay in the viewport on long pages */
+}</code></pre>
+      <p><code>background-attachment: fixed</code> matters on long pages — without it the color lives only at the very top and your glass turns gray as the user scrolls.</p>
+
+      <h2>The fallback you must ship</h2>
+      <p><code>backdrop-filter</code> is well-supported now, but "well-supported" is not "universal" — and when it's missing, a translucent panel silently becomes unreadable text floating on the raw background. Invert the logic: make the surface opaque by default and add the frost only where it works:</p>
+<pre class="snippet"><code>.glass {
+  background: #121a2e;                     /* opaque — always readable */
+}
+@supports (backdrop-filter: blur(1px)) {
+  .glass {
+    background: rgba(255, 255, 255, 0.06); /* the real glass */
+    backdrop-filter: blur(16px) saturate(140%);
+  }
+}</code></pre>
+
+      <h2>Text on glass</h2>
+      <p>Because the surface is translucent, the effective background of your text shifts with whatever scrolls underneath. Two rules keep it readable: keep body text near-white (or near-black on light glass) rather than a brand color, and check contrast against the <em>composited</em> surface, not the fill's rgba value. Brand colors that pass as button fills usually fail as text — use a lightened variant for text and links. (The full accessibility treatment is its <a href="/blog/glassmorphism-accessibility/">own article</a>.)</p>
+
+      <h2>The mistakes that make glass look cheap</h2>
+      <ul>
+        <li><strong>Too much blur.</strong> 30–40px turns frost into fog. 12–20px keeps the backdrop legible as <em>shapes</em>, which is what sells the effect.</li>
+        <li><strong>No saturation boost.</strong> Plain <code>blur()</code> looks washed out; add <code>saturate(130–150%)</code>.</li>
+        <li><strong>Skipping the border.</strong> Without the catch-light edge, the panel reads as a smudge.</li>
+        <li><strong>Glass on glass on glass.</strong> Stacked blurs are expensive to render and visually murky. One glass layer per region; make nested elements solid or nearly so.</li>
+        <li><strong>Blurring huge areas.</strong> <code>backdrop-filter</code> costs GPU time proportional to area. A full-screen glass overlay on a low-end phone will janky-scroll. Prefer cards, bars and menus — not entire viewports.</li>
+      </ul>
+
+      <h2>Or take the shortcut</h2>
+      <p>Everything above — plus the contrast math, the reduced-motion handling, dark/light themes and 42 ready components using the same glass system — is what <a href="/">Farvist</a> packages into one ~21 KB stylesheet. The recipe is genuinely four properties; the polish is the other 95%. If you'd rather not maintain that yourself:</p>
+<pre class="snippet"><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css"&gt;
+&lt;body class="bg-mesh-aurora"&gt;
+  &lt;div class="card glass"&gt;…&lt;/div&gt;</code></pre>
+      <p>Either way — hand-rolled or framework — the difference between cheap glass and good glass is the backdrop, the border, the fallback, and restraint with the blur radius. Get those four right and everything you build looks a little bit from the future.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/">Explore the framework →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>
