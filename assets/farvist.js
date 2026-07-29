@@ -22,6 +22,23 @@
 
   var fvUid = 0; // unique-id source for generated a11y associations
 
+  // Whether the snippet component's CSS is loaded (full + AI builds have it,
+  // the slim build doesn't). Probed once via .snippet-wrap's position rule.
+  var snippetCss = null;
+  function snippetCssPresent() {
+    if (snippetCss === null) {
+      var host = document.createElement('div');
+      host.style.display = 'none';
+      var probe = document.createElement('div');
+      probe.className = 'snippet-wrap';
+      host.appendChild(probe);
+      document.body.appendChild(host);
+      snippetCss = getComputedStyle(probe).position === 'relative';
+      host.parentNode.removeChild(host);
+    }
+    return snippetCss;
+  }
+
   // Append an id to aria-describedby without dropping author-set tokens.
   function addDescribedBy(el, id) {
     var d = el.getAttribute('aria-describedby') || '';
@@ -327,12 +344,35 @@
 
     // Scrollable regions (wide tables, long code blocks, tool-call payloads)
     // must be keyboard-focusable so they can be scrolled without a mouse —
-    // but only when they actually overflow.
-    qsa('.table-responsive, pre, .tool-call-args, .tool-call-result').forEach(function (region) {
-      if (!region.hasAttribute('tabindex') && region.scrollWidth > region.clientWidth + 1) {
-        region.setAttribute('tabindex', '0');
-      }
-    });
+    // but only when they actually overflow. A focusable non-interactive block
+    // also needs a role and a name for assistive tech. Overflow depends on
+    // font metrics, so re-check once webfonts settle and after resizes.
+    var focusScrollRegions = function () {
+      qsa('.table-responsive, pre, .tool-call-args, .tool-call-result').forEach(function (region) {
+        if (!region.hasAttribute('tabindex') && region.scrollWidth > region.clientWidth + 1) {
+          region.setAttribute('tabindex', '0');
+          if (!region.hasAttribute('role')) region.setAttribute('role', 'region');
+          if (!region.hasAttribute('aria-label')) {
+            var wrap = region.closest && region.closest('.snippet-wrap');
+            var title = wrap && wrap.querySelector('.snippet-title');
+            region.setAttribute('aria-label', title && title.textContent
+              ? title.textContent
+              : (region.tagName === 'PRE' ? 'Code sample' : 'Scrollable content'));
+          }
+        }
+      });
+    };
+    focusScrollRegions();
+    if (!window.__fvScrollRecheck) {
+      window.__fvScrollRecheck = true;
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(focusScrollRegions);
+      window.addEventListener('load', focusScrollRegions);
+      var fvResizeT;
+      window.addEventListener('resize', function () {
+        clearTimeout(fvResizeT);
+        fvResizeT = setTimeout(focusScrollRegions, 150);
+      });
+    }
 
     // Current-state semantics (idempotent: only set when absent).
     qsa('.breadcrumb-item.active').forEach(function (el) {
@@ -378,33 +418,30 @@
 
     // Copy buttons: wrap each `pre.snippet` and add a copy button (idempotent).
     // A hand-authored .snippet-wrap (e.g. with a .snippet-header filename bar)
-    // is kept as-is — it still gets the button.
-    qsa('pre.snippet').forEach(function (pre) {
-      if (!pre.parentNode) return;
-      var wrap = pre.parentNode.classList.contains('snippet-wrap') ? pre.parentNode : null;
-      if (!wrap) {
-        wrap = document.createElement('div');
-        wrap.className = 'snippet-wrap';
-        pre.parentNode.insertBefore(wrap, pre);
-        wrap.appendChild(pre);
-      }
-      if (!wrap.querySelector('.copy-btn')) {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'copy-btn';
-        btn.setAttribute('aria-label', 'Copy code to clipboard');
-        btn.setAttribute('aria-live', 'polite');
-        btn.textContent = 'Copy';
-        wrap.appendChild(btn);
-      }
-    });
-
-    // Scrollable code regions must be keyboard-reachable (axe:
-    // scrollable-region-focusable). Whether a block overflows depends on
-    // viewport and font metrics, so make every code scroller focusable.
-    qsa('pre.snippet, pre.diff-body').forEach(function (pre) {
-      if (!pre.hasAttribute('tabindex')) pre.setAttribute('tabindex', '0');
-    });
+    // is kept as-is — it still gets the button. Skipped when the snippet
+    // component's CSS isn't loaded (the slim build): an unstyled UA button
+    // would otherwise sit permanently visible under every code block.
+    if (snippetCssPresent()) {
+      qsa('pre.snippet').forEach(function (pre) {
+        if (!pre.parentNode) return;
+        var wrap = pre.parentNode.classList.contains('snippet-wrap') ? pre.parentNode : null;
+        if (!wrap) {
+          wrap = document.createElement('div');
+          wrap.className = 'snippet-wrap';
+          pre.parentNode.insertBefore(wrap, pre);
+          wrap.appendChild(pre);
+        }
+        if (!wrap.querySelector('.copy-btn')) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'copy-btn';
+          btn.setAttribute('aria-label', 'Copy code to clipboard');
+          btn.setAttribute('aria-live', 'polite');
+          btn.textContent = 'Copy';
+          wrap.appendChild(btn);
+        }
+      });
+    }
 
     // Docs scrollspy: highlight the sidebar link for the section in view (once).
     var dnav = document.querySelector('.docs-nav');

@@ -52,7 +52,7 @@
     <main class="doc">
       <h1>Q3 planning notes</h1>
       <p>This column is the “existing product” — plain corporate CSS, system font, light theme. Nothing here uses Farvist.</p>
-      <p>The assistant panel on the right is the entire Farvist AI-interface kit, added to this page with a single ~6&nbsp;KB stylesheet (<code style="background:#eef0f4;padding:.1em .35em;border-radius:.25em;">dist/farvist-ai.min.css</code>) and the optional JS. It inherits this page's font, sits inside the host layout, and — because Farvist emits everything in <code style="background:#eef0f4;padding:.1em .35em;border-radius:.25em;">@layer</code> — its styles can never override the host's.</p>
+      <p>The assistant panel on the right is the entire Farvist AI-interface kit, added to this page with a single ~6&nbsp;KB stylesheet (<code style="background:#eef0f4;padding:.1em .35em;border-radius:.25em;">dist/farvist-ai.css</code>) and the optional JS. It inherits this page's font, sits inside the host layout, and — because Farvist emits everything in <code style="background:#eef0f4;padding:.1em .35em;border-radius:.25em;">@layer</code> — for any property your own un-layered CSS also declares, your CSS wins.</p>
       <p>Press <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> for the command palette — also part of the kit.</p>
     </main>
 
@@ -60,20 +60,20 @@
     <aside class="assistant" data-theme="light" aria-label="AI assistant">
       <div class="assistant-head">
         <span class="status status-online">Assistant online</span>
-        <button class="btn btn-glass btn-sm" data-fv-open="#cmd" style="margin-left:auto;">⌘K</button>
+        <button class="btn btn-glass btn-sm" data-fv-open="#cmd" aria-label="Open command menu (Command K)" style="margin-left:auto;">⌘K</button>
       </div>
 
       <div class="assistant-body">
         <div class="chat">
           <div class="message message-out">
-            <span class="avatar avatar-sm avatar-primary" aria-hidden="true">You</span>
+            <span class="avatar avatar-sm avatar-primary">You</span>
             <div class="message-body">
               <div class="message-bubble">Make the primary button green to match our brand.</div>
             </div>
           </div>
 
           <div class="message">
-            <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+            <span class="avatar avatar-sm avatar-accent">AI</span>
             <div class="message-body">
               <details class="reasoning">
                 <summary class="reasoning-summary">Thought for 3 seconds</summary>
@@ -89,7 +89,11 @@
               </div>
               <div class="message-bubble">
                 <div class="prose prose-sm">
-                  <p>Done — one token change:</p>
+                  <p>Done — one token change. To apply it site-wide, load the override <em>after</em> your theme:</p>
+                  <div class="snippet-wrap">
+                    <div class="snippet-header"><span class="snippet-title">index.html</span><span class="snippet-lang">html</span></div>
+                    <pre class="snippet"><code>&lt;link rel="stylesheet" href="/src/theme.css" /&gt;</code></pre>
+                  </div>
                 </div>
                 <div class="diff">
                   <div class="diff-header">src/theme.css <span class="diff-stat"><span class="diff-stat-add">+1</span> <span class="diff-stat-del">−1</span></span></div>
@@ -145,7 +149,7 @@
     <div class="command-hint"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> select</span><span><kbd>esc</kbd> close</span></div>
   </dialog>
 
-  <p class="page-note">This page loads <strong>only</strong> <code>dist/farvist-ai.css</code> (~6 KB gzip) + <code>assets/farvist.js</code> — no reset, no grid, no utilities. The kit assumes <code>box-sizing: border-box</code> (Tailwind and Bootstrap set this; here the host CSS does). On a light host, wrap the UI in <code>data-theme="light"</code>. View source — the split between “host CSS” and the kit is commented. <a href="../docs/#ai">Full AI-kit docs →</a></p>
+  <p class="page-note">This page loads <strong>only</strong> <code>dist/farvist-ai.css</code> (~6 KB gzip) + <code>assets/farvist.js</code> — no reset, no grid, no utilities. The kit assumes <code>box-sizing: border-box</code> (Tailwind and Bootstrap set this; here the host CSS does) and rem sizing against the browser-default 16px root. On a light host, wrap the UI in <code>data-theme="light"</code>. On a <strong>Tailwind v3</strong> host, also load <code>dist/farvist-ai-compat.css</code> after your Tailwind build — v3's un-layered preflight otherwise strips the kit's borders and button styling (v4 and Bootstrap don't need it). View source — the split between “host CSS” and the kit is commented. <a href="../docs/#ai">Full AI-kit docs →</a></p>
 
   <script src="../assets/farvist.js" defer></script>
 </body>

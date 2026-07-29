@@ -7,7 +7,8 @@ import { dirname, join } from 'node:path';
 const BUDGETS = [
   { file: 'dist/farvist.min.css', kb: 22 },
   { file: 'dist/farvist-slim.min.css', kb: 20 },
-  { file: 'dist/farvist-ai.min.css', kb: 6.5 },
+  { file: 'dist/farvist-ai.min.css', kb: 7 },
+  { file: 'dist/farvist-ai-compat.css', kb: 2 },
 ];
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 

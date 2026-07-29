@@ -1236,8 +1236,11 @@
   .command {
     width: calc(100% - 1.5rem);
     max-width: 40rem;
-    margin-top: 12vh;
-    margin-bottom: auto;
+    position: fixed;
+    top: 12vh;
+    left: 50%;
+    margin: 0;
+    translate: -50% 0;
     padding: 0;
     overflow: hidden;
     color: var(--fv-body-color);
@@ -1528,5 +1531,100 @@
   .attachment-remove:focus-visible {
     outline: 0;
     box-shadow: var(--fv-focus-ring);
+  }
+}
+@layer base {
+  :root {
+    color-scheme: normal;
+  }
+  .btn,
+  .suggestion,
+  .copy-btn,
+  .toast-close,
+  .attachment-remove,
+  .command-input {
+    font: inherit;
+  }
+}
+@layer components {
+  pre.snippet,
+  .prose pre,
+  .tool-call-result pre {
+    padding: 1rem;
+    overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.875rem;
+    background-color: var(--fv-code-bg);
+    border: 1px solid var(--fv-border-color);
+    border-radius: 0.625rem;
+  }
+  pre.snippet code,
+  .prose pre code,
+  .tool-call-result pre code {
+    padding: 0;
+    color: inherit;
+    background: none;
+    border: 0;
+  }
+  .prose code,
+  .prose kbd,
+  .command kbd {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  .prose code {
+    padding: 0.2em 0.45em;
+    font-size: 0.875em;
+    color: var(--fv-info);
+    background-color: var(--fv-code-bg);
+    border: 1px solid var(--fv-border-color);
+    border-radius: 0.375rem;
+  }
+  .prose kbd,
+  .command kbd {
+    padding: 0.15em 0.45em;
+    font-size: 0.85em;
+    color: var(--fv-body-color);
+    background-color: var(--fv-code-bg);
+    border: 1px solid var(--fv-border-color);
+    border-radius: 0.375rem;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.5rem;
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    font-weight: 700;
+  }
+  .prose blockquote {
+    padding-left: 1rem;
+    color: var(--fv-muted);
+    border-left: 3px solid var(--fv-primary);
+  }
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    white-space: nowrap;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    border: 0;
   }
 }

@@ -1,0 +1,118 @@
+// =============================================================================
+// Farvist AI — standalone shims (compiled ONLY into farvist-ai.css)
+// -----------------------------------------------------------------------------
+// The full framework gives the AI kit these rules via base/reset,
+// base/typography, components/table and utilities — all deliberately excluded
+// from the add-on build. Everything here is scoped to kit classes so the host
+// page's own elements are never touched, and values mirror the full build so
+// the same markup renders identically in both.
+// =============================================================================
+
+@use 'sass:map';
+@use 'abstracts' as *;
+
+@layer base {
+  // Undo base/root's page-global `color-scheme: dark` (later rule in the same
+  // layer wins): an add-on must not flip the HOST page's scrollbars, native
+  // controls, or canvas to dark. The [data-theme] blocks still set a scoped
+  // color-scheme, so the documented wrapper keeps working.
+  :root { color-scheme: normal; }
+
+  // Stand-in for the excluded reset's `button, input, textarea { font: inherit }`
+  // — without it the kit's controls fall back to the UA form font (Arial on
+  // Windows/Chromium) instead of the host page's font.
+  .btn,
+  .suggestion,
+  .copy-btn,
+  .toast-close,
+  .attachment-remove,
+  .command-input {
+    font: inherit;
+  }
+}
+
+@layer components {
+  // ---- Code blocks -----------------------------------------------------------
+  // In the full build a code block's chrome comes from the base `pre` rule.
+  // Scope it to kit contexts — an add-on must not restyle host <pre>s.
+  pre.snippet,
+  .prose pre,
+  .tool-call-result pre {
+    padding: spacer(4);
+    overflow: auto;
+    font-family: $font-family-mono;
+    font-size: map.get($font-sizes, 'sm');
+    background-color: var(--fv-code-bg);
+    border: $border-width solid var(--fv-border-color);
+    border-radius: map.get($radii, 'md');
+
+    code {
+      padding: 0;
+      color: inherit;
+      background: none;
+      border: 0;
+    }
+  }
+
+  // ---- Inline code / kbd chips ----------------------------------------------
+  .prose code,
+  .prose kbd,
+  .command kbd {
+    font-family: $font-family-mono;
+  }
+
+  .prose code {
+    padding: 0.2em 0.45em;
+    font-size: 0.875em;
+    color: var(--fv-info);
+    background-color: var(--fv-code-bg);
+    border: $border-width solid var(--fv-border-color);
+    border-radius: map.get($radii, 'sm');
+  }
+
+  .prose kbd,
+  .command kbd {
+    padding: 0.15em 0.45em;
+    font-size: 0.85em;
+    color: var(--fv-body-color);
+    background-color: var(--fv-code-bg);
+    border: $border-width solid var(--fv-border-color);
+    border-radius: map.get($radii, 'sm');
+  }
+
+  // ---- Markdown structure ----------------------------------------------------
+  // The excluded typography base provided these; Tailwind preflight actively
+  // removes the UA fallbacks (list markers = information loss in model output).
+  .prose ul,
+  .prose ol {
+    padding-left: spacer(5);
+  }
+
+  .prose ul { list-style: disc; }
+  .prose ol { list-style: decimal; }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    font-weight: map.get($font-weights, 'bold');
+  }
+
+  .prose blockquote {
+    padding-left: spacer(4);
+    color: var(--fv-muted);
+    border-left: 3px solid var(--fv-primary);
+  }
+
+  // ---- Classes farvist.js injects at runtime ---------------------------------
+  // Wide prose tables get wrapped in .table-responsive; tooltips add a
+  // .visually-hidden text node. Both live in excluded partials.
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .visually-hidden { @include visually-hidden; }
+}

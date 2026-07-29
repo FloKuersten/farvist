@@ -22,12 +22,21 @@ jobs:
         run: npm ci
 
       - name: Build (sass + autoprefixer + ai-context)
-        run: npm run build:all
+        # Delete generated files first so an orphaned dist file (entry renamed
+        # but stale output still committed) surfaces as a deletion.
+        run: |
+          rm -f dist/*.css
+          npm run build:all
 
       - name: Committed build artifacts are fresh
+        # Porcelain catches modified, deleted (orphaned) AND untracked outputs —
+        # `git diff` alone misses the latter two.
         run: |
-          git diff --exit-code -- dist ai-context.json llms-full.txt \
-            || (echo "::error::dist/ or generated files are stale — run 'npm run build:all' and commit." && exit 1)
+          if [ -n "$(git status --porcelain -- dist ai-context.json llms-full.txt)" ]; then
+            git status --porcelain -- dist ai-context.json llms-full.txt
+            echo "::error::dist/ or generated files are stale, orphaned, or uncommitted — run 'npm run build:all' and commit."
+            exit 1
+          fi
 
       - name: Lint (stylelint)
         run: npm run lint

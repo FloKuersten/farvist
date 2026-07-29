@@ -19,8 +19,9 @@ const css = readFileSync(join(root, 'dist/farvist.css'), 'utf8');
 const gzKb = (f) => (gzipSync(readFileSync(join(root, f))).length / 1024).toFixed(1);
 const builds = [
   { file: 'dist/farvist.min.css', gzipKb: +gzKb('dist/farvist.min.css'), contents: 'everything — all components, utilities, backgrounds, skins, AI kit' },
-  { file: 'dist/farvist-slim.min.css', gzipKb: +gzKb('dist/farvist-slim.min.css'), contents: 'the framework without the 11 AI-interface components — for sites that never render AI conversations' },
-  { file: 'dist/farvist-ai.min.css', gzipKb: +gzKb('dist/farvist-ai.min.css'), contents: 'ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box; on a light host page wrap the UI in <div data-theme="light">' },
+  { file: 'dist/farvist-slim.min.css', gzipKb: +gzKb('dist/farvist-slim.min.css'), contents: 'the framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) — for sites that never render AI conversations' },
+  { file: 'dist/farvist-ai.min.css', gzipKb: +gzKb('dist/farvist-ai.min.css'), contents: 'ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3\'s un-layered preflight otherwise strips the kit\'s borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)' },
+  { file: 'dist/farvist-ai-compat.css', gzipKb: +gzKb('dist/farvist-ai-compat.css'), contents: 'companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3\'s preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift' },
 ];
 
 // All distinct class selectors actually present in the compiled CSS.
@@ -115,7 +116,7 @@ const conventions = {
       'data-fv-open="#cmd"': 'also opens a <dialog class="command"> palette; ⌘K/Ctrl+K opens the first one on the page',
       'data-fv-command="url|#anchor|action"': 'on a .command-item — a URL/anchor navigates; any other value fires an fv:command event on the palette',
       'data-fv-copy': 'copy to clipboard on click — bare form copies the nearest pre.snippet, or the .message-bubble text when inside a chat .message-actions row; or pass "#sel" / literal text. The button flashes success.',
-      'class="snippet" on <pre>': 'farvist.js wraps the code block and adds a hover copy button (requires the JS include)',
+      'class="snippet" on <pre>': 'farvist.js wraps the code block and adds a hover copy button (requires the JS include; full and -ai builds only — the slim build ships no snippet CSS, and farvist.js detects that and skips the button)',
       'data-tooltip="text"': 'CSS tooltip; text is exposed to assistive tech',
     },
     api: "Farvist.toast({title, message, variant:'success'|'danger'|…, timeout}); Farvist.copy(text); Farvist.theme('synthwave'|'dark'|…) — applies a skin and persists it; Farvist.command('#cmd') — open a command palette; Farvist.stream(el, text, {delay?, instant?}) — types text into el with the .streaming caret, honors prefers-reduced-motion, returns a Promise; Farvist.enhance() — call after injecting new DOM so ARIA is re-wired.",

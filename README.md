@@ -59,8 +59,8 @@ Three builds share the same class names — swap the filename:
 | File                   | Gzip   | Contents                                                                                                                                                              |
 | ---------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `farvist.min.css`      | ~21 KB | Everything — all 42 components, utilities, backgrounds, skins.                                                                                                         |
-| `farvist-slim.min.css` | ~19 KB | The framework without the 11 AI-interface components.                                                                                                                  |
-| `farvist-ai.min.css`   | ~6 KB  | Only the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on another framework. No reset/grid/utilities; assumes `box-sizing: border-box`; wrap the UI in `data-theme="light"` on light pages. [Live demo](https://farvist.com/examples/ai-addon.html). |
+| `farvist-slim.min.css` | ~19 KB | The framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command palette, diff, suggestions, attachment, snippet).      |
+| `farvist-ai.min.css`   | ~6 KB  | Only the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on another framework. No reset/grid/utilities; assumes `box-sizing: border-box` and a 16px root (rem-sized); wrap the UI in `data-theme="light"` on light pages. **Tailwind v3 hosts:** also load `farvist-ai-compat.css` after your Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; v4 and Bootstrap need nothing). [Live demo](https://farvist.com/examples/ai-addon.html). |
 
 Or use the local build:
 

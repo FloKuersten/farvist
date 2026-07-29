@@ -1,0 +1,8 @@
+{
+  "name": "brace-expansion-compat",
+  "version": "1.0.0",
+  "private": true,
+  "description": "npm-override target: brace-expansion@5.0.8 (the only line the 2026 unbounded-expansion advisory considers patched) re-exported as a callable CommonJS module for minimatch@3 consumers (serve, pa11y-ci). Fully self-contained: upstream.js and balanced-match.js are vendored verbatim from the MIT-licensed upstream CJS builds (licenses alongside).",
+  "main": "index.js",
+  "license": "MIT"
+}

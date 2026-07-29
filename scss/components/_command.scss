@@ -29,8 +29,15 @@
     width: calc(100% - #{spacer(5)});
     max-width: 40rem;
     // Sit near the top rather than dead-centre (the command-menu convention).
-    margin-top: 12vh;
-    margin-bottom: auto;
+    // Positioned explicitly — not via the UA's `dialog { margin: auto }` —
+    // so universal margin resets (host pages, or our own) can't pin the
+    // palette to the corner. `translate` composes with the transform-based
+    // open animation.
+    position: fixed;
+    top: 12vh;
+    left: 50%;
+    margin: 0;
+    translate: -50% 0;
     padding: 0;
     overflow: hidden;
     color: var(--fv-body-color);

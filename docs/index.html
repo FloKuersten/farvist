@@ -121,8 +121,8 @@
             <thead><tr><th>File</th><th>Gzip</th><th>What's inside</th></tr></thead>
             <tbody>
               <tr><td><code>farvist.min.css</code></td><td>~21&nbsp;KB</td><td>Everything — all 42 components, utilities, backgrounds, skins.</td></tr>
-              <tr><td><code>farvist-slim.min.css</code></td><td>~19&nbsp;KB</td><td>The framework without the 11 AI-interface components — for sites that never render AI conversations.</td></tr>
-              <tr><td><code>farvist-ai.min.css</code></td><td>~6&nbsp;KB</td><td>Only the <a href="#ai" style="text-decoration:underline;">AI-interface kit</a> (plus tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind, Bootstrap or custom CSS. No reset, no grid, no utilities; assumes <code>box-sizing:&nbsp;border-box</code>; on a light host page wrap the UI in <code>data-theme="light"</code>. <a href="../examples/ai-addon.html" style="text-decoration:underline;">Live demo →</a></td></tr>
+              <tr><td><code>farvist-slim.min.css</code></td><td>~19&nbsp;KB</td><td>The framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command palette, diff, suggestions, attachment, snippet) — for sites that never render AI conversations.</td></tr>
+              <tr><td><code>farvist-ai.min.css</code></td><td>~6&nbsp;KB</td><td>Only the <a href="#ai" style="text-decoration:underline;">AI-interface kit</a> (plus tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind, Bootstrap or custom CSS. No reset, no grid, no utilities; assumes <code>box-sizing:&nbsp;border-box</code> and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <code>data-theme="light"</code>. <strong>Tailwind v3 hosts:</strong> also load <code>farvist-ai-compat.css</code> after your Tailwind build — v3's un-layered preflight otherwise strips the kit's borders and button styling (v4 and Bootstrap need nothing). <a href="../examples/ai-addon.html" style="text-decoration:underline;">Live demo →</a></td></tr>
             </tbody>
           </table>
         </div>

@@ -9,12 +9,18 @@
 // toasts those components and farvist.js need.
 //
 // Deliberately NOT included: reset, typography, grid, spacing/utility classes,
-// backgrounds. The host page keeps its own. Two integration notes:
+// backgrounds. The host page keeps its own. Integration notes:
 //   - Components assume `box-sizing: border-box` (Tailwind and Bootstrap both
 //     set it globally; on a bare page, set it yourself).
-//   - Everything is emitted in @layer, so the host's un-layered CSS wins any
-//     shared class name (e.g. Bootstrap's .btn restyles the send button —
-//     usually what you want inside an existing design).
+//   - Sizes are in rem and assume the browser-default 1rem = 16px root. Hosts
+//     using the `html { font-size: 62.5% }` pattern will render the kit at
+//     ~62% scale — restore a 16px root or rebuild from Sass.
+//   - Everything is emitted in @layer, so for any property the host's
+//     UN-layered CSS also declares, the host wins (e.g. Bootstrap's .btn
+//     restyles the send button — usually what you want). Tailwind v3's
+//     preflight is un-layered too and ZEROES borders/button styling globally:
+//     on v3 hosts also load dist/farvist-ai-compat.css after your Tailwind
+//     build. Tailwind v4 (layered preflight) and Bootstrap need no compat.
 // Glass surfaces are dark-first; on a light host page, wrap the UI in
 // <div data-theme="light"> (or "dawn").
 //
@@ -46,3 +52,8 @@
 @use 'components/diff';
 @use 'components/suggestions';
 @use 'components/attachment';
+
+// Standalone shims: scoped stand-ins for rules the full framework gets from
+// the excluded reset/typography/table/utilities partials, plus a color-scheme
+// neutralizer so the add-on never themes the host page's native controls.
+@use 'ai-shims';
