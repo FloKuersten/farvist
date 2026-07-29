@@ -13,11 +13,11 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 - 🌌 **Background library** — mesh gradients, patterns, spotlights and fade-masks in one class (`.bg-mesh-aurora`, `.bg-grid`, `.bg-spotlight`, `.bg-fade`). A free feature Tailwind and Bootstrap make you hand-roll.
 - 🌗 **Dark & light themes** — dark "space" theme by default; flip `data-theme="light"` on `<html>` to retheme at runtime via `--fv-*` custom properties.
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
-- 🧩 **30+ glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
+- 🧩 **42 glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
 - 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 2.5 KB optional JS companion for the interactive bits.
-- 🖼️ **Premade templates** — a glass dashboard and a copy-paste block gallery in `examples/`.
+- 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio and a copy-paste block gallery in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
-- 🪶 **~20 KB gzipped** (127 KB minified) — and shrinks further when you trim the token maps.
+- 🪶 **~21 KB gzipped** (139 KB minified) — one file, all 42 components; Sass users can build just the partials they need.
 - 🦾 **Modern & accessible** — `@use`/`@forward` modules (no deprecated `@import`), `:focus-visible` rings, `prefers-reduced-motion` support, and a `@supports` fallback for browsers without `backdrop-filter`.
 
 ---

@@ -1,6 +1,6 @@
 # farvist — full context for AI assistants
 
-> A lightweight (~20 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
+> A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
 Version 1.6.1 · MIT · https://farvist.com · 2024 utility/component classes.
 

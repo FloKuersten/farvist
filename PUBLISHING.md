@@ -18,7 +18,7 @@ git commit -m "Farvist v0.5.0 — glassmorphism CSS framework"
 
 # creates github.com/FloKuersten/farvist, sets 'origin', and pushes 'main'
 gh repo create farvist --public --source=. --remote=origin --push `
-  --description "A lightweight glassmorphism CSS framework — frosted surfaces, neon glow, a free backgrounds library, 30+ components and dark/light themes."
+  --description "A lightweight glassmorphism CSS framework — frosted surfaces, neon glow, a free backgrounds library, 42 components, five skins and dark/light themes."
 
 # discoverability
 gh repo edit FloKuersten/farvist --homepage "https://farvist.com" `
