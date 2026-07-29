@@ -20,6 +20,7 @@ Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses 
 - CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css">`
 - Optional JS: `<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>`
 - npm: `npm i farvist`
+- Three builds (swap the filename): `farvist.min.css` (~21 KB gzip, everything) · `farvist-slim.min.css` (~19 KB, no AI kit) · `farvist-ai.min.css` (~6 KB, ONLY the AI-interface kit — add it to a site already on Tailwind/Bootstrap; no reset/grid/utilities, wrap the UI in `data-theme="light"` on light pages).
 
 ## Conventions (quick reference)
 - Colors: primary, secondary, success, danger, warning, info, accent, light, dark (suffixes: `btn-primary`, `text-success`, `bg-accent`).

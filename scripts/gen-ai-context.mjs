@@ -6,12 +6,22 @@
 // No dependencies. Run: node scripts/gen-ai-context.mjs  (wired into build:all)
 // =============================================================================
 import { readFileSync, writeFileSync } from 'node:fs';
+import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 const css = readFileSync(join(root, 'dist/farvist.css'), 'utf8');
+
+// The three dist builds, with gzip sizes measured from the real files so the
+// numbers in the catalog can't drift from the build.
+const gzKb = (f) => (gzipSync(readFileSync(join(root, f))).length / 1024).toFixed(1);
+const builds = [
+  { file: 'dist/farvist.min.css', gzipKb: +gzKb('dist/farvist.min.css'), contents: 'everything — all components, utilities, backgrounds, skins, AI kit' },
+  { file: 'dist/farvist-slim.min.css', gzipKb: +gzKb('dist/farvist-slim.min.css'), contents: 'the framework without the 11 AI-interface components — for sites that never render AI conversations' },
+  { file: 'dist/farvist-ai.min.css', gzipKb: +gzKb('dist/farvist-ai.min.css'), contents: 'ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box; on a light host page wrap the UI in <div data-theme="light">' },
+];
 
 // All distinct class selectors actually present in the compiled CSS.
 const classes = [...new Set([...css.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) => m[1]))].sort();
@@ -168,6 +178,7 @@ const out = {
     cdn: 'https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css',
     js: 'https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js',
     npm: 'npm i farvist',
+    builds,
   },
   totals: { classes: classes.length, components: components.length, icons: iconNames.length, recipes: recipes.length, skins: skinNames.length, tokens: Object.keys(tokens).length, optionalTokens: Object.keys(optionalTokens).length },
   skins: { usage: '<html data-theme="NAME"> or Farvist.theme("NAME") — prebuilt AA-gated theme packs; "dawn" is a light skin. Default (no attribute) is the dark glass theme.', names: skinNames },
@@ -198,6 +209,9 @@ L.push(`<link rel="stylesheet" href="${out.install.cdn}">`);
 L.push(`<script src="${out.install.js}" defer></script> <!-- optional, for modal/tabs/toast/theme -->`);
 L.push('```');
 L.push(`Or: \`${out.install.npm}\`. Dark theme by default — give the page a rich background so the glass reads.`);
+L.push('');
+L.push('Three builds (swap the filename in the CDN URL):');
+for (const b of builds) L.push(`- \`${b.file}\` (~${b.gzipKb} KB gzip) — ${b.contents}`);
 L.push('');
 L.push('## Conventions');
 L.push(`- **Colors:** ${conventions.colors.join(', ')} (use as suffixes: btn-primary, text-success, bg-accent).`);

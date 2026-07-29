@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI kit add-on — Farvist on an existing site</title>
+  <meta name="description" content="Demo of dist/farvist-ai.css — the standalone AI-interface kit (~6 KB gzip) dropped into a page that already has its own styles. Chat, tool calls, diffs, prompt composer, no full framework." />
+  <link rel="stylesheet" href="../dist/farvist-ai.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#f5f6f8" />
+  <style>
+    /* ============================================================
+       Everything below simulates the HOST app's own stylesheet —
+       a light product page that is NOT built with Farvist. The only
+       Farvist file on this page is ../dist/farvist-ai.css (the AI
+       kit). Note the kit inherits the host's font automatically.
+       ============================================================ */
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, "Segoe UI", sans-serif; background: #f5f6f8; color: #1c2330; line-height: 1.55; }
+    .app-header { display: flex; align-items: center; gap: .75rem; padding: .75rem 1.25rem; background: #fff; border-bottom: 1px solid #e3e6ec; position: sticky; top: 0; z-index: 10; }
+    .app-logo { font-weight: 700; color: #0f5132; text-decoration: none; }
+    .app-nav { display: flex; gap: 1rem; margin-left: auto; font-size: .9rem; }
+    .app-nav a { color: #4a5568; text-decoration: none; }
+    .app-shell { display: grid; grid-template-columns: minmax(0, 1fr) 26rem; gap: 1.5rem; max-width: 72rem; margin-inline: auto; padding: 1.5rem 1.25rem 4rem; }
+    .doc { background: #fff; border: 1px solid #e3e6ec; border-radius: .5rem; padding: 2rem; }
+    .doc h1 { margin-top: 0; font-size: 1.5rem; }
+    .doc p { color: #4a5568; }
+    .assistant { border: 1px solid #e3e6ec; border-radius: .75rem; background: #fbfcfe; display: flex; flex-direction: column; max-height: calc(100vh - 8rem); position: sticky; top: 4.5rem; }
+    .assistant-head { display: flex; align-items: center; gap: .5rem; padding: .75rem 1rem; border-bottom: 1px solid #e3e6ec; font-weight: 600; font-size: .95rem; }
+    .assistant-body { padding: 1rem; overflow-y: auto; }
+    .assistant-foot { padding: .75rem 1rem 1rem; border-top: 1px solid #e3e6ec; }
+    .page-note { max-width: 72rem; margin-inline: auto; padding: 0 1.25rem 3rem; font-size: .9rem; color: #4a5568; }
+    .page-note code { background: #eef0f4; padding: .1em .35em; border-radius: .25em; }
+    @media (max-width: 900px) { .app-shell { grid-template-columns: 1fr; } .assistant { position: static; max-height: none; } }
+  </style>
+  <!-- Google AdSense (Auto ads — this page only) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="app-logo" href="#">🌿 Acme Notes</a>
+    <nav class="app-nav" aria-label="App">
+      <a href="#">Documents</a><a href="#">Shared</a><a href="#">Settings</a>
+    </nav>
+  </header>
+
+  <div class="app-shell">
+    <!-- The host app's own content, styled by the host's own CSS -->
+    <main class="doc">
+      <h1>Q3 planning notes</h1>
+      <p>This column is the “existing product” — plain corporate CSS, system font, light theme. Nothing here uses Farvist.</p>
+      <p>The assistant panel on the right is the entire Farvist AI-interface kit, added to this page with a single ~6&nbsp;KB stylesheet (<code style="background:#eef0f4;padding:.1em .35em;border-radius:.25em;">dist/farvist-ai.min.css</code>) and the optional JS. It inherits this page's font, sits inside the host layout, and — because Farvist emits everything in <code style="background:#eef0f4;padding:.1em .35em;border-radius:.25em;">@layer</code> — its styles can never override the host's.</p>
+      <p>Press <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> for the command palette — also part of the kit.</p>
+    </main>
+
+    <!-- The Farvist AI kit — wrapped in data-theme="light" to match the host -->
+    <aside class="assistant" data-theme="light" aria-label="AI assistant">
+      <div class="assistant-head">
+        <span class="status status-online">Assistant online</span>
+        <button class="btn btn-glass btn-sm" data-fv-open="#cmd" style="margin-left:auto;">⌘K</button>
+      </div>
+
+      <div class="assistant-body">
+        <div class="chat">
+          <div class="message message-out">
+            <span class="avatar avatar-sm avatar-primary" aria-hidden="true">You</span>
+            <div class="message-body">
+              <div class="message-bubble">Make the primary button green to match our brand.</div>
+            </div>
+          </div>
+
+          <div class="message">
+            <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+            <div class="message-body">
+              <details class="reasoning">
+                <summary class="reasoning-summary">Thought for 3 seconds</summary>
+                <div class="reasoning-body">The brand green is #0f5132 — update the token, not the component CSS.</div>
+              </details>
+              <div class="tool-call tool-call-done">
+                <div class="tool-call-header">
+                  <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-terminal"/></svg>
+                  <span class="tool-call-name">edit_file</span>
+                  <span class="tool-call-status">Done</span>
+                </div>
+                <div class="tool-call-args">src/theme.css</div>
+              </div>
+              <div class="message-bubble">
+                <div class="prose prose-sm">
+                  <p>Done — one token change:</p>
+                </div>
+                <div class="diff">
+                  <div class="diff-header">src/theme.css <span class="diff-stat"><span class="diff-stat-add">+1</span> <span class="diff-stat-del">−1</span></span></div>
+                  <pre class="diff-body"><code><span class="diff-line diff-hunk">@@ -1,3 +1,3 @@</span>
+<span class="diff-line">  :root {</span>
+<span class="diff-line diff-del">-   --brand: #6d4af5;</span>
+<span class="diff-line diff-add">+   --brand: #0f5132;</span></code></pre>
+                </div>
+              </div>
+              <div class="message-actions">
+                <button class="btn btn-glass btn-sm" data-fv-copy aria-label="Copy reply"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-copy"/></svg></button>
+                <button class="btn btn-glass btn-sm" aria-label="Good response"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-thumbs-up"/></svg></button>
+              </div>
+              <div class="message-meta">Assistant · just now</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="assistant-foot">
+        <div class="suggestions">
+          <button class="suggestion" type="button"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-sparkles"/></svg> Summarize this doc</button>
+          <button class="suggestion" type="button">Draft a reply</button>
+        </div>
+        <form class="prompt" onsubmit="return false;">
+          <textarea class="prompt-field" aria-label="Message" placeholder="Ask about this document…"></textarea>
+          <div class="prompt-actions">
+            <span class="attachment">
+              <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-paperclip"/></svg>
+              <span class="attachment-name">q3-notes.md</span><span class="attachment-meta">4 KB</span>
+              <button class="attachment-remove" type="button" aria-label="Remove q3-notes.md">&times;</button>
+            </span>
+            <button class="btn btn-gradient-primary" aria-label="Send"><svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-send"/></svg></button>
+          </div>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Command palette (also from the kit) -->
+  <dialog class="command" id="cmd" aria-label="Command menu" data-theme="light">
+    <div class="command-search">
+      <svg class="icon" aria-hidden="true"><use href="../assets/icons/farvist-icons.svg#i-search"/></svg>
+      <input class="command-input" type="text" placeholder="Type a command…" aria-label="Command menu" />
+    </div>
+    <ul class="command-list">
+      <li class="command-group">Jump to</li>
+      <li class="command-item" data-fv-command="/docs/"><span class="command-label">Farvist docs</span></li>
+      <li class="command-item" data-fv-command="/llms-full.txt"><span class="command-label">llms-full.txt</span></li>
+      <li class="command-item" data-fv-command="../index.html"><span class="command-label">Farvist home</span></li>
+    </ul>
+    <div class="command-empty" hidden>No matches.</div>
+    <div class="command-hint"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> select</span><span><kbd>esc</kbd> close</span></div>
+  </dialog>
+
+  <p class="page-note">This page loads <strong>only</strong> <code>dist/farvist-ai.css</code> (~6 KB gzip) + <code>assets/farvist.js</code> — no reset, no grid, no utilities. The kit assumes <code>box-sizing: border-box</code> (Tailwind and Bootstrap set this; here the host CSS does). On a light host, wrap the UI in <code>data-theme="light"</code>. View source — the split between “host CSS” and the kit is commented. <a href="../docs/#ai">Full AI-kit docs →</a></p>
+
+  <script src="../assets/farvist.js" defer></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ Setup
 - Drop-in CSS: <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css">
 - Optional JS (modals, tabs, toasts, theme, copy buttons, ARIA): <script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>
 - Or: npm i farvist
+- Three builds, same class names: farvist.min.css (~21 KB gzip, everything) / farvist-slim.min.css (~19 KB, no AI kit) / farvist-ai.min.css (~6 KB, ONLY the AI-interface kit — use it to ADD a chat/agent UI to a project already styled with Tailwind/Bootstrap/custom CSS; it ships no reset/grid/utilities, assumes box-sizing: border-box, and on a light host page the UI should be wrapped in data-theme="light").
 
 Conventions
 - Components + utilities, like Bootstrap's class model (NOT Tailwind atomic-only). Prefer Farvist classes over hand-written CSS.

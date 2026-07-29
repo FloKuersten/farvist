@@ -15,9 +15,10 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
 - 🧩 **42 glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
 - 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 2.5 KB optional JS companion for the interactive bits.
-- 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio and a copy-paste block gallery in `examples/`.
+- 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio, a copy-paste block gallery and an AI-kit add-on demo in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
 - 🪶 **~21 KB gzipped** (139 KB minified) — one file, all 42 components; Sass users can build just the partials they need.
+- 📦 **Three builds** — `farvist.min.css` (everything, ~21 KB gzip), `farvist-slim.min.css` (no AI kit, ~19 KB), and `farvist-ai.min.css` (~6 KB — **only the AI-interface kit**, made to add a chat/agent UI to a site already styled with Tailwind, Bootstrap or custom CSS).
 - 🦾 **Modern & accessible** — `@use`/`@forward` modules (no deprecated `@import`), `:focus-visible` rings, `prefers-reduced-motion` support, and a `@supports` fallback for browsers without `backdrop-filter`.
 
 ---
@@ -53,6 +54,14 @@ Via CDN (no build step — live on jsDelivr and unpkg):
 <script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>
 ```
 
+Three builds share the same class names — swap the filename:
+
+| File                   | Gzip   | Contents                                                                                                                                                              |
+| ---------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `farvist.min.css`      | ~21 KB | Everything — all 42 components, utilities, backgrounds, skins.                                                                                                         |
+| `farvist-slim.min.css` | ~19 KB | The framework without the 11 AI-interface components.                                                                                                                  |
+| `farvist-ai.min.css`   | ~6 KB  | Only the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on another framework. No reset/grid/utilities; assumes `box-sizing: border-box`; wrap the UI in `data-theme="light"` on light pages. [Live demo](https://farvist.com/examples/ai-addon.html). |
+
 Or use the local build:
 
 ```html
@@ -67,16 +76,16 @@ You need [Node.js](https://nodejs.org). Dart Sass is pulled in as a dev dependen
 
 ```bash
 npm install        # install Dart Sass
-npm run dev        # build dist/farvist.css (expanded) + dist/farvist.min.css (minified)
+npm run dev        # build all three builds, expanded + minified, + the AI catalog
 npm run watch      # rebuild on save
 ```
 
-| Script              | What it does                            |
-| ------------------- | --------------------------------------- |
-| `npm run build`     | Compile expanded `dist/farvist.css`       |
-| `npm run build:min` | Compile minified `dist/farvist.min.css`   |
-| `npm run dev`       | Both of the above                       |
-| `npm run watch`     | Recompile on every change               |
+| Script              | What it does                                                       |
+| ------------------- | ------------------------------------------------------------------ |
+| `npm run build`     | Compile expanded `farvist.css`, `farvist-slim.css`, `farvist-ai.css` |
+| `npm run build:min` | The same three, minified                                           |
+| `npm run dev`       | All of the above + autoprefixer + `ai-context.json`/`llms-full.txt` |
+| `npm run watch`     | Recompile on every change                                          |
 
 ---
 

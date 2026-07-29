@@ -1,0 +1,48 @@
+// =============================================================================
+// Farvist AI — the AI-interface kit as a standalone add-on stylesheet
+// -----------------------------------------------------------------------------
+// For sites that already have a CSS framework (Tailwind, Bootstrap, custom)
+// and want a finished AI conversation UI without adopting all of Farvist:
+// chat thread, prompt composer, rendered-markdown prose, tool-call cards,
+// reasoning disclosures, code diffs + snippets, suggestions, attachments,
+// status dots and the ⌘K command palette — plus the buttons/avatars/icons/
+// toasts those components and farvist.js need.
+//
+// Deliberately NOT included: reset, typography, grid, spacing/utility classes,
+// backgrounds. The host page keeps its own. Two integration notes:
+//   - Components assume `box-sizing: border-box` (Tailwind and Bootstrap both
+//     set it globally; on a bare page, set it yourself).
+//   - Everything is emitted in @layer, so the host's un-layered CSS wins any
+//     shared class name (e.g. Bootstrap's .btn restyles the send button —
+//     usually what you want inside an existing design).
+// Glass surfaces are dark-first; on a light host page, wrap the UI in
+// <div data-theme="light"> (or "dawn").
+//
+// Build:  npm run dev   (writes dist/farvist-ai.css and dist/farvist-ai.min.css)
+// =============================================================================
+
+// Cascade-layer order (must come first)
+@use 'base/layers';
+
+// Tokens + skins (all --fv-* namespaced; safe on any host page)
+@use 'base/root';
+@use 'base/skins';
+
+// Supporting components the AI kit's markup and farvist.js rely on
+@use 'components/buttons';
+@use 'components/avatar';
+@use 'components/icon';
+@use 'components/toast';
+
+// The AI-interface kit
+@use 'components/chat';
+@use 'components/prompt';
+@use 'components/status';
+@use 'components/snippet';
+@use 'components/prose';
+@use 'components/tool-call';
+@use 'components/reasoning';
+@use 'components/command';
+@use 'components/diff';
+@use 'components/suggestions';
+@use 'components/attachment';

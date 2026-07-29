@@ -2,6 +2,17 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.7.0] — 2026-07-29
+**Builds.** One framework, three stylesheets — including a standalone AI-interface kit you can drop into a site that already uses Tailwind, Bootstrap or custom CSS. All three share the same class names, tokens and skins; the full build is byte-identical to v1.6.1.
+### Added
+- **`dist/farvist-ai.css`** (~6 KB gzip) — ONLY the AI-interface kit (chat, prompt composer, prose, tool calls, reasoning, diffs, snippets, suggestions, attachments, status, ⌘K palette) plus the tokens, skins, buttons, avatars, icons and toasts it needs. Deliberately no reset, typography, grid or utilities — the host page keeps its own; everything is emitted in `@layer` so the host's un-layered CSS always wins shared class names. Assumes `box-sizing: border-box` (Tailwind/Bootstrap set it); on a light host page wrap the UI in `data-theme="light"`.
+- **`dist/farvist-slim.css`** (~19 KB gzip) — the framework without the 11 AI-interface components, for sites that never render AI conversations.
+- **`examples/ai-addon.html`** — the AI kit dropped into a simulated non-Farvist product page (light theme, system font, its own CSS), also linked from the templates gallery.
+- Per-build **size budgets in CI** (`check:size` now gates all three: 22 / 20 / 6.5 KB gzip), and the machine catalog (`ai-context.json` · `llms-full.txt` · `llms.txt` · `farvist.cursorrules`) now documents the builds — with gzip sizes measured from the real files at generation time so they can't drift.
+### Notes
+- The slim saving is honest but modest (~2 KB): the AI kit is efficient — most of Farvist's weight is the utility system. For a truly minimal sheet, `@use` only the Sass partials you need.
+
+
 ## [1.6.1] — 2026-07-28
 Quality patch — every fix below was found by an adversarial review of v1.6 and verified with a concrete repro before fixing.
 ### Fixed

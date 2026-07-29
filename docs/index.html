@@ -113,9 +113,23 @@
         <p class="text-muted mb-3">Drop in one stylesheet — no build step. Add the optional 2.5 KB script for modals, tabs, toasts and the theme toggle.</p>
         <pre class="snippet"><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css"&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer&gt;&lt;/script&gt;</code></pre>
-        <p class="text-muted mt-3 mb-2">Or build from the Sass source to customize the tokens:</p>
+
+        <h3 class="h5 mb-2 mt-4">Three builds <span class="badge badge-soft-accent">v1.7</span></h3>
+        <p class="text-muted mb-3" style="max-width:46rem;">Swap the filename in the CDN URL. All three share the same tokens, skins and class names — the docs apply unchanged.</p>
+        <div class="table-responsive mb-3">
+          <table class="table">
+            <thead><tr><th>File</th><th>Gzip</th><th>What's inside</th></tr></thead>
+            <tbody>
+              <tr><td><code>farvist.min.css</code></td><td>~21&nbsp;KB</td><td>Everything — all 42 components, utilities, backgrounds, skins.</td></tr>
+              <tr><td><code>farvist-slim.min.css</code></td><td>~19&nbsp;KB</td><td>The framework without the 11 AI-interface components — for sites that never render AI conversations.</td></tr>
+              <tr><td><code>farvist-ai.min.css</code></td><td>~6&nbsp;KB</td><td>Only the <a href="#ai">AI-interface kit</a> (plus tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind, Bootstrap or custom CSS. No reset, no grid, no utilities; assumes <code>box-sizing:&nbsp;border-box</code>; on a light host page wrap the UI in <code>data-theme="light"</code>. <a href="../examples/ai-addon.html">Live demo →</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="text-muted mt-3 mb-2">Or build from the Sass source to customize the tokens — <code>@use</code> only the partials you need for a truly minimal sheet:</p>
         <pre class="snippet"><code>npm install
-npm run dev   # → dist/farvist.css + dist/farvist.min.css</code></pre>
+npm run dev   # → dist/farvist(.min).css, farvist-slim, farvist-ai</code></pre>
       </section>
 
       <section id="theming">

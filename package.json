@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "license": "MIT",
   "author": "FloKuersten",
@@ -43,10 +43,10 @@
     "farvist.cursorrules"
   ],
   "scripts": {
-    "build": "sass scss/farvist.scss dist/farvist.css --style=expanded --no-source-map",
-    "build:min": "sass scss/farvist.scss dist/farvist.min.css --style=compressed --no-source-map",
+    "build": "sass scss/farvist.scss:dist/farvist.css scss/farvist-slim.scss:dist/farvist-slim.css scss/farvist-ai.scss:dist/farvist-ai.css --style=expanded --no-source-map",
+    "build:min": "sass scss/farvist.scss:dist/farvist.min.css scss/farvist-slim.scss:dist/farvist-slim.min.css scss/farvist-ai.scss:dist/farvist-ai.min.css --style=compressed --no-source-map",
     "build:all": "npm run build && npm run build:min && npm run build:prefix && npm run build:ai",
-    "build:prefix": "postcss dist/farvist.css dist/farvist.min.css -r --no-map",
+    "build:prefix": "postcss dist/farvist.css dist/farvist.min.css dist/farvist-slim.css dist/farvist-slim.min.css dist/farvist-ai.css dist/farvist-ai.min.css -r --no-map",
     "build:ai": "node scripts/gen-ai-context.mjs",
     "watch": "sass --watch scss/farvist.scss dist/farvist.css --style=expanded",
     "lint": "stylelint \"scss/**/*.scss\"",
