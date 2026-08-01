@@ -26,7 +26,7 @@
     --fv-bg-gradient: radial-gradient(48rem 48rem at 82% -12%, color-mix(in srgb, var(--fv-primary) 28%, transparent), transparent 60%), radial-gradient(36rem 36rem at -8% 18%, color-mix(in srgb, var(--fv-info) 20%, transparent), transparent 58%), radial-gradient(40rem 40rem at 50% 118%, color-mix(in srgb, var(--fv-accent) 18%, transparent), transparent 58%);
     --fv-body-color: #e6ebf5;
     --fv-muted: #95a3c4;
-    --fv-primary-text: rgb(149.88, 124.68, 247.8);
+    --fv-primary-text: rgb(58.7764705882%, 48.8941176471%, 97.1764705882%);
     --fv-border-color: rgba(255, 255, 255, 0.1);
     --fv-code-bg: rgba(255, 255, 255, 0.07);
     --fv-bg-pattern: rgba(255, 255, 255, 0.10);
