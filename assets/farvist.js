@@ -97,7 +97,11 @@
     var opener = t.closest('[data-fv-open]');
     if (opener) {
       var dlg = document.querySelector(opener.getAttribute('data-fv-open'));
-      if (dlg && dlg.showModal) dlg.showModal();
+      // A palette must start empty on every open, so route it through
+      // openCommand() — a bare showModal() would restore the previous query
+      // and its filtered list. Plain dialogs keep the generic path.
+      if (dlg && dlg.matches('dialog.command')) openCommand(dlg);
+      else if (dlg && dlg.showModal) dlg.showModal();
       return;
     }
 
@@ -261,8 +265,10 @@
     }
   }
 
+  // sel: a selector (the public Farvist.command('#cmd') form), the dialog
+  // element itself, or nothing for the first palette on the page.
   function openCommand(sel) {
-    var dialog = sel ? document.querySelector(sel) : document.querySelector('dialog.command');
+    var dialog = sel instanceof Element ? sel : document.querySelector(sel || 'dialog.command');
     if (!dialog || !dialog.showModal) return;
     dialog.showModal();
     var input = dialog.querySelector('.command-input');

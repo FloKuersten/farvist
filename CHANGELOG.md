@@ -2,6 +2,12 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [Unreleased]
+### Fixed
+- **The command palette reopened with the previous search still in it** when opened by a `data-fv-open` button instead of ⌘K. The generic `[data-fv-open]` branch called `showModal()` directly, bypassing the reset that only lived in `openCommand()` — so the input kept its old text and the list its old filter, with no `close` listener to clear either. Repro on the docs page: open the palette, type `theme`, press Esc, then click **Search ⌘K** — it reopened showing `theme` and 1 of 6 rows. The branch now routes `dialog.command` targets through the same `openCommand()` that ⌘K and `Farvist.command()` use; `dialog.modal` and every other dialog keep the generic path. Also affected `examples/ai-addon.html`.
+### Changed
+- `Farvist.command()` accepts the dialog element itself in addition to the documented `Farvist.command('#cmd')` selector string and the no-argument form.
+
 ## [1.7.1] — 2026-07-29
 Quality patch — an adversarial review of v1.7.0 (27 agents, findings independently reproduced before fixing) confirmed 21 defects, almost all in how the new `farvist-ai.css` add-on behaves on real host pages. All fixed and re-verified in-browser against real Tailwind v3 preflight, a bare light host, and the slim build.
 ### Fixed — farvist-ai.css standalone correctness
