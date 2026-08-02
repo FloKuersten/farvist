@@ -34,7 +34,7 @@
     "description": "How Farvist is designed to be found, written, and re-branded correctly by an AI assistant.",
     "image": "https://farvist.com/assets/og-image.png",
     "datePublished": "2026-07-03",
-    "dateModified": "2026-07-03",
+    "dateModified": "2026-08-02",
     "author": { "@type": "Person", "name": "FloKuersten" },
     "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
     "mainEntityOfPage": "https://farvist.com/blog/ai-era/"
@@ -65,7 +65,7 @@
     <header class="article-head">
       <div class="d-flex gap-2 mb-3"><span class="chip chip-accent">AI</span><span class="chip">Design</span></div>
       <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Building a CSS framework <span class="text-gradient">for the AI era</span></h1>
-      <p class="text-muted mb-0">July 3, 2026 · 6 min read</p>
+      <p class="text-muted mb-0">July 3, 2026 · 11 min read</p>
     </header>
 
     <article class="prose">
@@ -73,38 +73,128 @@
 
       <p>Most frameworks were designed for a human who reads docs, runs a build, and remembers conventions. An AI holds the keyboard differently. It half-remembers class names from training data and confidently invents ones that never existed. It can't run your Sass pipeline. And it has no way to know your framework got a new component last month. If you want AI-written UI to actually work, you have to design for those three failure modes directly.</p>
 
-      <p>That's the whole idea behind <strong>Farvist</strong>. Here's the reasoning, honestly — including where it doesn't solve everything.</p>
+      <p>That's what <strong>Farvist</strong> is designed around, including where it falls short.</p>
 
       <h2>1. Be findable</h2>
       <p>An assistant can only use what it can retrieve. So Farvist ships the machine-readable surface that's becoming a convention for AI-first sites:</p>
       <ul>
         <li><a href="/llms.txt"><code>llms.txt</code></a> — a concise index at the root, the <a href="https://llmstxt.org">llmstxt.org</a> convention.</li>
-        <li><a href="/llms-full.txt"><code>llms-full.txt</code></a> — every convention, component, icon and copy-paste recipe in one paste-able file.</li>
+        <li><a href="/llms-full.txt"><code>llms-full.txt</code></a> — every convention, component, icon and copy-paste recipe in one paste-able file (about 35 KB).</li>
         <li><a href="/ai-context.json"><code>ai-context.json</code></a> — the same catalog as structured JSON, generated from the compiled CSS so it can't drift from reality.</li>
+        <li><a href="/farvist.cursorrules"><code>farvist.cursorrules</code></a> — the condensed house rules, to drop straight into a project so Cursor, Copilot or Claude generate correct markup with no setup.</li>
       </ul>
-      <p><code>robots.txt</code> explicitly welcomes the AI crawlers (GPTBot, ClaudeBot, PerplexityBot and friends), and every page links its <code>llms.txt</code>. None of this is exotic — it's just making sure the answer to "what classes does Farvist have?" is one fetch away, and always current.</p>
+      <p><code>robots.txt</code> explicitly welcomes the AI crawlers — GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, anthropic-ai, Claude-Web, PerplexityBot, Perplexity-User, Google-Extended, Applebot-Extended and CCBot each get their own <code>Allow: /</code> — and every content page's <code>&lt;head&gt;</code> carries <code>&lt;link rel="alternate" type="text/plain" href="/llms.txt"&gt;</code>. None of this is exotic. It's just making sure the answer to "what classes does Farvist have?" is one fetch away.</p>
+      <p>The interesting part isn't the file list. It's that two of those four files are <em>generated</em> and two are hand-written, and that split has turned out to matter more than any of them.</p>
+
+      <h2>The catalog is compiled, not written</h2>
+      <p>The obvious way to ship an AI catalog is to write one: a big markdown file listing your components. It works for about a week. Then you ship a component, forget the file, and the most authoritative-looking document about your framework starts lying to every model that fetches it. Doc rot is a nuisance for a human, who can go read the source. For a model with no other information, a stale catalog is indistinguishable from a correct one — it will confidently emit a class you deleted, or refuse to use one you shipped.</p>
+      <p>So <code>scripts/gen-ai-context.mjs</code> derives the catalog from <code>dist/farvist.css</code> — the exact bytes we publish. The class list is one pass over the compiled output:</p>
+<pre class="snippet"><code>const classes = [...new Set([...css.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) =&gt; m[1]))].sort();</code></pre>
+      <p>Skins come from the compiled <code>[data-theme]</code> blocks, minus the built-in light theme, which predates skins and isn't one:</p>
+<pre class="snippet"><code>const skinNames = [...new Set([...css.matchAll(/\[data-theme=['"]?([\w-]+)['"]?\]/g)].map((m) =&gt; m[1]))]
+  .filter((n) =&gt; n !== 'light').sort();</code></pre>
+      <p>Icon names come out of the sprite's <code>id="i-*"</code> attributes. Build sizes are gzipped at generation time from the real files, so no one ever hand-updates a KB figure:</p>
+<pre class="snippet"><code>const gzKb = (f) =&gt; (gzipSync(readFileSync(join(root, f))).length / 1024).toFixed(1);</code></pre>
+      <p>Nothing in any of those lists is a number a human typed. Right now they report 2,024 class tokens, 55 icons, 5 skins, 55 design tokens, and 21.3 / 19.1 / 6.4 KB gzip across the three builds. Delete a skin and the catalog loses it in the same commit that deletes it.</p>
+      <p>Generation alone isn't enough, though — generated files still have to be regenerated. CI does that part:</p>
+<pre class="snippet"><code>- name: Build (sass + autoprefixer + ai-context)
+  run: |
+    rm -f dist/*.css
+    npm run build:all
+
+- name: Committed build artifacts are fresh
+  run: |
+    if [ -n "$(git status --porcelain -- dist ai-context.json llms-full.txt)" ]; then
+      git status --porcelain -- dist ai-context.json llms-full.txt
+      echo "::error::dist/ or generated files are stale, orphaned, or uncommitted — run 'npm run build:all' and commit."
+      exit 1
+    fi</code></pre>
+      <p>Two details there were bought with pain. Deleting <code>dist/*.css</code> before rebuilding means an <em>orphaned</em> output — a Sass entry renamed while the old compiled file stayed committed — shows up as a deletion instead of silently passing. And <code>git status --porcelain</code> rather than <code>git diff</code>, because <code>git diff</code> reports modified files but not deleted or untracked ones, so a generated file that was never committed at all sailed straight through the old gate.</p>
+
+      <h2>The tokens were the hard part</h2>
+      <p>Runtime theming is the entire customization story, which makes the token list the highest-value thing in the catalog and the easiest to get subtly wrong. The first version was three lines:</p>
+<pre class="snippet"><code>const rootBlock = (css.match(/:root\s*\{([^}]+)\}/) || [, ''])[1];
+const tokens = {};
+for (const t of rootBlock.matchAll(/--fv-([\w-]+):\s*([^;]+);/g)) tokens[`--fv-${t[1]}`] = t[2].trim();</code></pre>
+      <p>An adversarial review of v1.6 found two problems with it.</p>
+      <p>First, that <code>|| [, '']</code> fallback. If the <code>:root</code> shape ever changed — a selector rename, a wrapping at-rule the regex doesn't survive — the match fails, <code>rootBlock</code> becomes an empty string, and the generator cheerfully writes a catalog with <em>zero</em> tokens and exits 0. Silent, and about the worst possible failure, since the token list is the whole override surface. It now refuses:</p>
+<pre class="snippet"><code>if (!Object.keys(tokens).length) {
+  throw new Error('gen-ai-context: token extraction found no --fv-* tokens in the first :root block — the selector shape probably changed; fix the regex.');
+}</code></pre>
+      <p>The second one is more interesting, because the file was wrong in a way that a human reading it would never notice. Not every token has a <code>:root</code> default. Some exist <em>only</em> as override hooks, consumed with a fallback baked into the call site:</p>
+<pre class="snippet"><code>.btn-primary   { --fv-btn-color: var(--fv-primary-contrast, #ffffff); }
+.badge-primary { color: var(--fv-primary-contrast, #ffffff); }</code></pre>
+      <p><code>--fv-primary-contrast</code> has no default in the base <code>:root</code> block — only the five skins declare it, so on a default-theme page nothing does. It's there so a brand whose primary is light can set readable text on filled surfaces. Because the extractor only reads that first <code>:root</code> block, the derived token list didn't contain it — while the catalog's own <code>brand-theme</code> recipe, a few hundred lines further down the same generated file, told assistants to set exactly that property. The document contradicted itself, and the machine-readable half was the wrong half.</p>
+      <p>The fix enumerates optional tokens from the <code>var()</code> call sites instead of from declarations:</p>
+<pre class="snippet"><code>for (const m of css.matchAll(/var\(--fv-([\w-]+)\s*[,)]/g)) {
+  const name = `--fv-${m[1]}`;
+  if (!(name in tokens) &amp;&amp; !(name in optionalTokens)) {
+    optionalTokens[name] = /-contrast$/.test(name)
+      ? 'unset (optional — readable text color on that color\'s fills; …)'
+      : /-text$/.test(name)
+        ? 'unset (optional — readable text tint of that color on the page surface)'
+        : 'unset (optional — per-skin/per-context override; falls back to a compiled default)';
+  }
+}</code></pre>
+      <p>That surfaces 26 optional hooks alongside the 55 defaults: nine <code>--fv-{color}-contrast</code>, eight <code>--fv-{color}-text</code>, the eight <code>--fv-btn-*</code> properties components use to retint themselves, and <code>--fv-status</code>. Each ships with an explicit <em>"unset (optional — …)"</em> value rather than being absent, so a model reading the catalog can tell the difference between "this token does not exist" and "this token exists and has no default." That distinction is invisible to a person skimming and decisive for a machine.</p>
+
+      <h2>Where generation stops helping</h2>
+      <p>Three limits, none of which we've solved.</p>
+      <p><strong>It's a regex, not a parser.</strong> The class list matches dot-prefixed tokens in text, so <code>www.w3.org</code> inside an inline SVG data URI yields two "classes", <code>w3</code> and <code>org</code>. There are two such URIs in the build and exactly two bogus names in 2,024. We've left them rather than pretend a regex is a CSS parser — but read that number as the shape of the surface, not a certified inventory. The same count also folds in every responsive variant, so <code>m-*</code> alone is 108 entries.</p>
+      <p><strong>The guard catches total failure, not partial.</strong> <code>[^}]+</code> stops at the first closing brace. If a <code>}</code> ever appeared inside a token value, the block would truncate and we'd publish a shorter, wrong token list that passes the emptiness check without complaint. Nothing currently does. That's luck, not design.</p>
+      <p><strong>Half the catalog is still hand-written.</strong> The 42 component entries with their examples, the 14 recipes, the conventions prose — a machine can see that <code>.tool-call-status</code> exists; it cannot see that you must keep the status <em>text</em> so state never rides on colour alone. That's judgment, and judgment rots on the normal schedule. Case in point, found while writing this piece: the compiled CSS has shipped a 0–8 spacing scale since v0.5.0, and the generated class list carries <code>.m-8</code> (4rem) — while the hand-written conventions string sitting a few lines away in that same script still describes a 0–7 scale. Root <code>llms.txt</code> and <code>farvist.cursorrules</code> are hand-authored end to end, and <code>llms.txt</code> drifted far enough that it was still advertising "30+ components" with no mention of skins, runtime theming, the command palette or <code>Farvist.stream()</code> until we rewrote it in v1.6.1. The generated files could not have done that. That's the argument in one bug.</p>
 
       <h2>2. Speak a dialect models already know</h2>
       <p>There's a real design fork here. Utility-only frameworks are powerful, but they push all the composition into the markup, and an AI reconstructing a component from memory has more chances to get a detail wrong. Farvist uses the <strong>component-plus-utility</strong> model — closer to Bootstrap's — because "a card is <code>.card</code>" is a smaller, more stable thing for a model to remember than a specific stack of a dozen utilities.</p>
-      <p>On top of that, the catalog ships <em>recipes</em>: whole sections — a navbar, a login card, a pricing grid, a chat UI — as copy-paste blocks. An assistant assembling a page from named recipes makes fewer mistakes than one free-handing every element. The names are the interface.</p>
+      <p>Concretely, here is what <code>.card</code> compiles to:</p>
+<pre class="snippet"><code>.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: 1.125rem;
+  overflow: hidden;
+  background-color: var(--fv-glass-bg);
+  backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  border: 1px solid var(--fv-glass-border);
+  box-shadow: var(--fv-shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}</code></pre>
+      <p>An assistant rebuilding that from utilities has to remember that saturation rides along with the blur, that the <code>-webkit-</code> duplicate is still required across our Safari baseline, that <code>min-width: 0</code> is what stops the card from blowing out its grid track, and that the <code>inset 0 1px 0</code> highlight is the line that makes glass read as glass rather than as a grey box. Eleven declarations, four of them non-obvious. One token to recall versus eleven chances to be almost right.</p>
+      <p>The honest counterweight: component classes only pay off if the model knows the component exists. That's the real cost of this fork. A model that has never heard of <code>.timeline</code> can still assemble something timeline-shaped out of utilities, whereas with us it either knows the name or falls back to hand-written CSS that won't retheme. Named components beat reconstruction <em>only</em> when the name list is one fetch away and correct — which is why the generated catalog isn't a nice extra sitting next to the class model. It's the thing that makes the class model the right choice at all. Component-plus-utility with a stale catalog is strictly worse than utilities.</p>
+      <p>On top of the components, the catalog ships 14 <em>recipes</em>: whole sections — navbar, hero, login card, pricing grid, chat UI, dashboard shell, ⌘K palette, code diff — as copy-paste blocks. They aren't tutorials; they're the exact markup, including the parts that are easy to drop under time pressure: <code>aria-label</code> on the icon-only send button, <code>role="list"</code> on the navbar's <code>&lt;ul&gt;</code>, matched <code>&lt;label for&gt;</code> pairs in the login card. A model assembling a page from named recipes inherits all of that.</p>
+      <p>Recipes are also where the traps get encoded. <code>assistant-markdown-reply</code> exists because message bubbles preserve raw newlines, so rendered markdown has to be wrapped in <code>.prose</code> or it comes out as one run-on block. <code>code-diff</code> keeps the <code>+</code> and <code>−</code> characters inside the line content rather than as a CSS pseudo-element, so the meaning of a diff never rides on colour alone. Those are the sort of rules that a model will violate every single time unless the example it's copying already gets them right. The names are the interface; the examples are the spec.</p>
 
       <h2>3. Don't require a build step</h2>
       <p>This is the one people underestimate. An AI can write CSS, but it can't run your Dart Sass compile. So anything that <em>requires</em> a build to customize is off-limits to a model working in a chat window or a live sandbox.</p>
-      <p>Farvist's answer is that everything themeable is a CSS custom property, and every derived shade — gradients, glows, the frosted backdrops, hover states, focus rings — resolves from those variables at runtime. To re-brand the entire framework, an assistant writes five lines:</p>
+      <p>Farvist's answer is that everything themeable is a CSS custom property, and every derived shade resolves from those variables at runtime. Not "the buttons follow" — the whole derived layer follows, because each derived token is itself declared in terms of the brand tokens:</p>
+<pre class="snippet"><code>--fv-glow-primary:     0 0 26px color-mix(in srgb, var(--fv-primary) 55%, transparent);
+--fv-focus-ring:       0 0 0 3px color-mix(in srgb, var(--fv-primary) 45%, transparent);
+--fv-gradient-primary: linear-gradient(135deg, var(--fv-primary) 0%, var(--fv-info) 100%);
+--fv-bg-gradient:      radial-gradient(48rem 48rem at 82% -12%,
+                         color-mix(in srgb, var(--fv-primary) 28%, transparent), transparent 60%), …;</code></pre>
+      <p>So to re-brand the entire framework — gradients, glows, the frosted backdrops, hover states, focus rings, the body's mesh orbs — an assistant overrides four custom properties:</p>
 <pre class="snippet"><code>:root {
   --fv-primary: #10b981;
   --fv-accent:  #a3e635;
   --fv-info:    #2dd4bf;
   --fv-primary-text: #6ee7b7;
 }</code></pre>
-      <p>No compile, no config file, no tooling the model can't reach. Prebuilt <em>skins</em> (<code>data-theme="synthwave"</code> and four others) are just the same idea packaged. A framework that can only be customized through a build step has quietly excluded the fastest-growing category of its users.</p>
+      <p>That property is only true if no component rule anywhere hard-codes a brand colour, and "no component rule anywhere" is not something you enforce by intention. <code>scripts/check-theming.mjs</code> runs in CI and walks the compiled CSS line by line: the seven brand hexes, and their compiled <code>rgb()</code> forms, may appear only on a line that <em>defines</em> a custom property.</p>
+<pre class="snippet"><code>const isVarDef = /^\s*--fv-[\w-]+:/.test(line);
+if (lower.includes(hex) &amp;&amp; !isVarDef) offenders.push(`${i + 1}: [${name} hex] …`);</code></pre>
+      <p>One stray <code>#6d4af5</code> in a <code>:hover</code> rule fails the build. Without a gate like that, runtime re-branding degrades one commit at a time, and nobody finds out until a user's green build renders a purple focus ring.</p>
+      <p>Prebuilt <em>skins</em> are the same idea packaged: <code>data-theme="synthwave"</code> and four others (<code>cyber</code>, <code>noir</code>, <code>forest</code>, and <code>dawn</code>, which is light). Because the derivation is already runtime, each skin is a small block of token overrides — seven for <code>synthwave</code>, sixteen for <code>dawn</code>, which has more surfaces to flip because it's light — and a second CI gate, <code>check-skins.mjs</code>, parses those blocks out of the compiled CSS and fails if any skin's readable-text tokens drop below 4.5:1 on that skin's own surfaces. It caught a 4.40:1 miss in <code>dawn</code> before release. A framework that can only be customized through a build step has quietly excluded the fastest-growing category of its users.</p>
 
       <h2>What this doesn't fix</h2>
-      <p>Being honest: none of this makes an AI infallible. A model can still choose an ugly layout, misuse a component, or write inaccessible markup. What these three things do is shrink the <em>error surface</em> — they remove the failures that come from stale knowledge, invented class names, and un-runnable tooling. The taste is still on you (or on how well you prompt).</p>
-      <p>It also isn't a moat in the "nobody can copy this" sense. Any framework could ship an <code>llms.txt</code> tomorrow. The point isn't secrecy; it's that these are the right defaults for the moment we're in, and most frameworks were built for a different one.</p>
+      <p>None of this makes an AI infallible. A model can still choose an ugly layout, misuse a component, or write inaccessible markup. What these three things do is shrink the <em>error surface</em> — they remove the failures that come from stale knowledge, invented class names, and un-runnable tooling. The taste is still on you (or on how well you prompt).</p>
+      <p>Accessibility is the sharpest example. The recipes carry correct labels and roles, and our main pages are gated on axe via <code>pa11y-ci</code> — but that gate covers <em>our</em> HTML, not the HTML a model writes on your machine. The moment an assistant free-hands a component instead of copying a recipe, every <code>aria-label</code> is a coin flip. Shipping good examples raises the floor; it doesn't install a ceiling.</p>
+      <p>Retrieval isn't guaranteed either. <code>llms.txt</code> is a convention with no enforcement behind it: publishing one does not mean any given model reads it, and we have no telemetry claiming otherwise. The paths we're actually confident in are the ones with a human in them — a developer pasting <code>llms-full.txt</code> into a context window, or dropping <code>farvist.cursorrules</code> into a repo. The crawler-facing files are a bet on where the tooling is going, not a measured win.</p>
+      <p>And generation only guarantees that the catalog agrees with the build. If the build is wrong, the catalog is confidently, machine-readably wrong in exactly the same way. Consistency is not correctness; it just means you have one thing to fix instead of two.</p>
+      <p>It also isn't a moat in the "nobody can copy this" sense. Any framework could ship an <code>llms.txt</code> tomorrow, and generating a catalog from your own compiled output is maybe 120 lines of Node with no dependencies. The point isn't secrecy; it's that these are the right defaults for the moment we're in, and most frameworks were built for a different one.</p>
 
       <h2>The bet</h2>
-      <p>Bootstrap won an era by being the thing every developer already knew, so reaching for it was the path of least resistance. The interesting question now is what becomes the path of least resistance when an <em>assistant</em> is reaching. Our bet is that it's the framework that's easiest to find, written in a dialect the model already speaks, and customizable without a toolchain. That's what we're building toward — in the open, at a steady clip.</p>
+      <p>Bootstrap won an era by being the thing every developer already knew, so reaching for it was the path of least resistance. The interesting question now is what becomes the path of least resistance when an <em>assistant</em> is reaching. Our bet is that it's the framework that's easiest to find, written in a dialect the model already speaks, and customizable without a toolchain. That's what we're building toward, in the open.</p>
 
       <p>Farvist is free and MIT-licensed. <a href="/docs/">Read the docs</a>, or just point your assistant at <a href="/llms-full.txt"><code>farvist.com/llms-full.txt</code></a> and ask it to build something.</p>
     </article>

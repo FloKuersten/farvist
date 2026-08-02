@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What actually costs bytes in a CSS framework — Farvist</title>
+  <meta name="description" content="We planned a slim build by cutting the AI components, then measured every layer of Farvist. The generated spacing utilities cost 4.99 KB gzip; all 11 AI components cost 2.11 KB. Then brotli flipped the answer." />
+  <link rel="canonical" href="https://farvist.com/blog/three-builds/" />
+  <meta name="keywords" content="CSS framework size, gzip vs brotli CSS, utility class bloat, CSS bundle budget, Sass spacing utilities" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="What actually costs bytes in a CSS framework" />
+  <meta property="og:description" content="We set out to cut the AI components to save weight, measured every layer, and found we'd guessed wrong — twice. The numbers, and what they changed." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/three-builds/" />
+  <meta property="article:published_time" content="2026-08-02" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="What actually costs bytes in a CSS framework" />
+  <meta name="twitter:description" content="1080 generated spacing rules vs 11 rules in a card. Then brotli changed which one we should have cut." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "What actually costs bytes in a CSS framework",
+    "description": "We measured every layer of Farvist to justify a slim build, and found the generated utilities — not the components — dominate the gzip budget. Then brotli reversed the conclusion.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-08-02",
+    "dateModified": "2026-08-02",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/three-builds/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-primary">Engineering</span><span class="chip">Performance</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">What actually <span class="text-gradient">costs bytes</span> in a CSS framework</h1>
+      <p class="text-muted mb-0">August 2, 2026 · 7 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">For v1.7 we planned a "slim" build: Farvist minus the 11 AI-interface components. The AI kit was the newest and most elaborate code in the framework, so cutting it clearly had to be where the weight was. We measured before shipping the claim. We were wrong — and then, after switching compressors, wrong a second time in the opposite direction.</p>
+
+      <h2>How to measure a layer, not a file</h2>
+      <p>Farvist's Sass is one partial per component or utility group, and every partial compiles on its own. That makes per-partial cost a three-line experiment rather than an estimate:</p>
+<pre class="snippet"><code>printf "@use 'utilities/spacing';\n" &gt; tmp.scss
+npx sass tmp.scss:tmp.css --load-path=scss --style=compressed --no-source-map
+node -p "require('zlib').gzipSync(require('fs').readFileSync('tmp.css')).length"
+# → 4198</code></pre>
+      <p>Run that over the 51 rule-emitting partials in the full build and sort by gzip. The top of the list:</p>
+<pre class="snippet"><code>partial                  min raw      gzip    ratio
+utilities/spacing         34,153 B   4,198 B   8.1:1
+utilities/utilities       15,370 B   2,996 B   5.1:1
+components/buttons        12,485 B   1,601 B   7.8:1
+base/root                  3,573 B   1,069 B   3.3:1
+utilities/backgrounds      5,669 B   1,007 B   5.6:1
+layout/grid                6,797 B     996 B   6.8:1
+components/chat            2,490 B     957 B   2.6:1
+…
+components/rating            201 B     163 B   1.2:1</code></pre>
+      <p>One partial of spacing utilities outweighs every single component, by a wide margin. All 11 AI components compiled together come to 14.4&nbsp;KB minified, 2.98&nbsp;KB gzip — less than three quarters of what <code>utilities/spacing</code> costs on its own.</p>
+
+      <h2>The arithmetic nobody does in their head</h2>
+      <p>This isn't mysterious once you write out the loop nest. <code>scss/utilities/_spacing.scss</code> is four <code>@each</code> loops deep:</p>
+<pre class="snippet"><code>@each $bp in map.keys($grid-breakpoints) {        // 6 breakpoints
+  @include media-up($bp) {
+    @each $prop, $abbrev in (margin: 'm', padding: 'p') {   // 2
+      @each $size, $length in $spacers {                    // 9
+        @each $side, $targets in $spacing-sides {           // 7
+          .#{$abbrev}#{$side}#{$infix}-#{$size} { … }</code></pre>
+      <p>6 × 2 × 9 × 7 = <strong>756</strong> rules. The same file then adds negative margins (8 non-zero steps × 6 selectors × 6 breakpoints = 288) and auto margins (6 × 6 = 36). Total: 1,080. Counting the class selectors in the compiled output gives exactly 1,080, which is a good sanity check that no <code>@each</code> is quietly doing more than you think.</p>
+      <p>Now compile <code>components/_cards.scss</code>. It emits 11 rules: <code>.card</code>, <code>.card-solid</code>, <code>.card-glow:hover</code>, <code>.card-body</code>, <code>.card-title</code>, <code>.card-subtitle</code>, <code>.card-text</code>, <code>.card-text:last-child</code>, <code>.card-header</code>, <code>.card-footer</code>, <code>.card-img-top</code>. That's the whole component.</p>
+      <p>Across the shipped build, the four utility partials produce 1,538 of the 2,339 style rules in <code>dist/farvist.css</code> — 66% of the framework's rules. All 11 AI components produce 142, about 6%. A component is written once and costs once. A utility is written once and costs <em>breakpoints × properties × scale × sides</em>. In a token-driven framework the loop nests, not the components, are where the gzip budget goes.</p>
+
+      <h2>Standalone numbers lie</h2>
+      <p>Here's the trap in the table above. Sum all 51 standalone gzip measurements and you get 33.59&nbsp;KB. The real build is 21.26&nbsp;KB. The parts add up to 58% more than the whole, because gzip finds redundancy <em>across</em> partials, not just inside them. One identical glass declaration — <code>backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate))</code> — appears 20 times in <code>dist/farvist.css</code>; measured one partial at a time, every partial pays for its own copy.</p>
+      <p>So standalone cost answers "how big is this on its own", not "what would removing it save". For the second question you need the marginal number: rebuild the framework with one <code>@use</code> line deleted and diff. Every entry below is a real compile of <code>scss/farvist.scss</code> with lines removed:</p>
+<pre class="snippet"><code>full build                     21.26 KB gzip     —
+minus utilities/spacing        16.27 KB      −4.99 KB
+minus all 4 utility partials   12.40 KB      −8.86 KB
+minus 11 AI components         19.15 KB      −2.11 KB
+minus components/buttons       20.03 KB      −1.23 KB
+minus layout/grid              20.26 KB      −1.00 KB
+minus base/skins               20.95 KB      −0.31 KB</code></pre>
+      <p>One spacing partial is 23% of the framework's compressed weight. The utility layer as a whole is 42%. The entire AI kit — the thing we were about to cut — is 10%. Five prebuilt skins, which look like the most extravagant feature on the page, cost 0.31&nbsp;KB between them, because each skin is just a block of 7–16 <code>--fv-*</code> token overrides.</p>
+
+      <h2>Then we ran it again with brotli</h2>
+      <p>Everything above is gzip, which is what our CI gate measures. Whether that's the number that matters depends on what your CDN and browser negotiate, so we repeated the leave-one-out at brotli quality 11. The conclusion inverted:</p>
+<pre class="snippet"><code>                            gzip      brotli
+full build                 21.26 KB   14.32 KB
+minus utilities/spacing    16.27 KB   12.99 KB   (−1.34 brotli)
+minus 11 AI components     19.15 KB   12.73 KB   (−1.59 brotli)</code></pre>
+      <p>Under gzip, the spacing generator costs 2.4× what the whole AI kit costs. Under brotli, cutting the entire responsive spacing system saves <em>less</em> than cutting the 11 AI components. Brotli's larger window and static dictionary compress 1,080 near-identical rules far harder than they compress 142 hand-written ones that share much less text.</p>
+      <p>Which means the tidy headline — "generated utilities dominate the byte budget" — is a gzip-era statement. It's true of the artifact our CI measures and can be false of the bytes that reach the browser. The shipped <code>dist/farvist.min.css</code> compresses 6.6:1 under gzip (139.5&nbsp;KB raw → 21.3&nbsp;KB) and 9.6:1 under brotli (→ 14.5&nbsp;KB). If you're auditing your own framework and your CDN negotiates brotli, your utility layer is cheaper than the gzip number suggests and your components are a bigger share than you think.</p>
+
+      <h2>What we shipped, and what we didn't claim</h2>
+      <p>We shipped the slim build anyway: <code>dist/farvist-slim.min.css</code>, 19.1&nbsp;KB gzip against the full build's 21.3 — the same 2.11&nbsp;KB the leave-one-out predicted, and 1.8&nbsp;KB under brotli. It's small, and the docs and CHANGELOG say so in plain words — v1.7.0's release notes read "the slim saving is honest but modest (~2 KB): the AI kit is efficient — most of Farvist's weight is the utility system."</p>
+      <p>It stayed in because it's cheap to maintain (one extra Sass entry, one extra CI budget line) and because bytes aren't the only reason to drop code — a site that never renders a conversation also drops 142 rules it will never match, and <code>farvist.js</code> probes for the missing snippet CSS on load and skips injecting copy buttons entirely. But we are not going to sell 2&nbsp;KB as a performance story.</p>
+      <p>The cut worth making turned out to be the mirror image. If the AI kit is only 2.11&nbsp;KB of marginal weight inside the framework, it's small enough to stand <em>alone</em>: <code>dist/farvist-ai.min.css</code>, 6.4&nbsp;KB gzip (5.5&nbsp;KB brotli), for a site already running Tailwind or Bootstrap that wants a finished chat UI without adopting a second framework. It carries the 11 components plus the tokens, skins, buttons, avatars, icons and toasts they depend on, and deliberately no reset, grid or utilities — the host page keeps its own.</p>
+      <p>Note the asymmetry, because it's the same lesson: 6.4&nbsp;KB standalone against 2.11&nbsp;KB marginal. The add-on is three times its own marginal cost because it re-ships supporting layers the full framework already had. If you're already on Farvist, loading it would be strictly worse than using the full build.</p>
+
+      <h2>Why the budget is committed to the repo</h2>
+      <p>None of this survives contact with future commits unless something enforces it. <code>scripts/check-size.mjs</code> is 27 lines, and the important part is a literal:</p>
+<pre class="snippet"><code>const BUDGETS = [
+  { file: 'dist/farvist.min.css', kb: 22 },
+  { file: 'dist/farvist-slim.min.css', kb: 20 },
+  { file: 'dist/farvist-ai.min.css', kb: 7 },
+  { file: 'dist/farvist-ai-compat.css', kb: 2 },
+];</code></pre>
+      <p>It gzips each file, prints the number, and exits 1 if any build is over. CI runs it on every push to <code>main</code> and every pull request, as the "Bundle-size budget" step. Today it prints:</p>
+<pre class="snippet"><code>dist/farvist.min.css — 139.5 KB raw · 21.3 KB gzip (budget 22 KB gzip)
+dist/farvist-slim.min.css — 125.1 KB raw · 19.1 KB gzip (budget 20 KB gzip)
+dist/farvist-ai.min.css — 37.5 KB raw · 6.4 KB gzip (budget 7 KB gzip)
+dist/farvist-ai-compat.css — 3.7 KB raw · 0.9 KB gzip (budget 2 KB gzip)
+✔ all builds within budget</code></pre>
+      <p>The budgets sit 0.6–1.1&nbsp;KB above current size on purpose. That's enough headroom for a normal component but not for a new loop nest. The point of writing the number down is that you choose it while calm; when a PR blows past it, raising the ceiling becomes a visible one-line diff someone has to approve, rather than a slow drift nobody notices until a rewrite. A budget nobody committed is a preference, and preferences lose to deadlines.</p>
+      <p>Two honest limits. The gate measures gzip of a file on disk — not brotli, not what your CDN negotiates, and not what the browser does with it. And byte count says nothing about the cost of 2,339 style rules in the style engine; we haven't measured that, so we don't claim anything about it.</p>
+
+      <h2>If you're measuring your own</h2>
+      <p>Three things we'd pass on. Measure compressed, never raw — raw size ranks a generated block far above a hand-written one, and compression is exactly what closes that gap. Measure marginal, not standalone: our standalone costs summed to 58% more than the real build, which makes every layer look worse than it is. And measure with the algorithm your CDN actually serves, because ours changed the answer from "cut the utilities" to "the AI kit costs slightly more".</p>
+      <p>Mostly, though: be suspicious of your assumption about which part is heavy. Ours was wrong twice, and the experiment that caught it was a few dozen lines of Node. We were one commit away from justifying a build with a guess.</p>
+
+      <p>Farvist is free and MIT-licensed. The size gate is <a href="https://github.com/FloKuersten/farvist/blob/main/scripts/check-size.mjs"><code>scripts/check-size.mjs</code></a>; the three builds are documented in the <a href="/docs/#install">installation section of the docs</a>.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · MIT licensed</p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>

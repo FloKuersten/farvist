@@ -7,6 +7,11 @@
 User-agent: *
 Allow: /
 
+# /pro/blocks/*.html are copy-paste HTML FRAGMENTS (no <head>, no <body>) —
+# they exist to be viewed as source, not browsed as pages. Keep them out of
+# search indexes so they aren't mistaken for empty pages.
+Disallow: /pro/blocks/
+
 # Explicitly welcome the AI crawlers (training + answer engines) — Farvist wants to be findable and used by AI.
 User-agent: GPTBot
 Allow: /

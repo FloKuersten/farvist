@@ -34,7 +34,7 @@
     "description": "Four accessibility pitfalls of frosted-glass UI, and the concrete fix for each.",
     "image": "https://farvist.com/assets/og-image.png",
     "datePublished": "2026-07-16",
-    "dateModified": "2026-07-16",
+    "dateModified": "2026-08-02",
     "author": { "@type": "Person", "name": "FloKuersten" },
     "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
     "mainEntityOfPage": "https://farvist.com/blog/glassmorphism-accessibility/"
@@ -65,53 +65,170 @@
     <header class="article-head">
       <div class="d-flex gap-2 mb-3"><span class="chip chip-info">Accessibility</span><span class="chip">CSS</span></div>
       <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Glassmorphism, <span class="text-gradient">done accessibly</span></h1>
-      <p class="text-muted mb-0">July 16, 2026 · 7 min read</p>
+      <p class="text-muted mb-0">July 16, 2026 · 14 min read</p>
     </header>
 
     <article class="prose">
-      <p class="fs-lg">Frosted glass is the most seductive UI trend in years — and the one most likely to quietly fail a real user. Translucent panels, blurred backdrops and soft gradients photograph beautifully in a portfolio and then, in production, put pale text on a busy background where a third of your visitors can't read it. The look isn't the problem. Shipping it without a few guardrails is.</p>
+      <p class="fs-lg">Frosted glass is the most seductive UI trend in years — and the one most likely to quietly fail a real user. Translucent panels, blurred backdrops and soft gradients photograph beautifully in a portfolio and then, in production, put pale text on a background whose brightness nobody controls. The look isn't the problem. Shipping it without a few guardrails is.</p>
 
-      <p>Here are the four places glassmorphism breaks accessibility, and the concrete fix for each — the same decisions baked into Farvist so you get them for free.</p>
+      <p>Here are the four places glassmorphism breaks accessibility, and the concrete fix for each — the same decisions baked into Farvist so you get them for free. Along the way: the numbers we measured, the automated check we had to switch off, and the gaps we haven't closed.</p>
 
       <h2>1. Contrast on a moving target</h2>
-      <p>The core tension of glass is that the surface is <em>translucent</em>: whatever is behind it bleeds through. That's the whole effect, and it's also why text contrast is unpredictable — the "background" of your text isn't a fixed color, it's a blurred average of whatever scrolled underneath it.</p>
-      <p>The fix is two-part. First, the glass fill needs enough opacity that text sits on a reasonably stable base — a fill that's 6–10% white on a dark theme is enough to anchor readability without killing the effect. Second, and more important, <strong>brand colors that look fine as a button fill are usually too dark to use as text.</strong> Farvist's electric-violet primary (<code>#6d4af5</code>) scores only about 3.7:1 as text on the dark surface — below the WCAG AA threshold of 4.5:1. So the framework exposes a separate, lighter token, <code>--fv-primary-text</code>, tuned to clear AA (~6:1), and uses <em>that</em> for links and text while the raw primary stays for fills. One color for painting, a readable sibling for reading.</p>
+      <p>The core tension of glass is that the surface is <em>translucent</em>: whatever is behind it bleeds through. That's the whole effect, and it is also why contrast stops being a property of the component. A contrast ratio is a function of exactly two colors, and on a glass panel the second color <strong>does not exist as a single value</strong> — it is whatever the backdrop happens to be at that point on screen, blurred and saturated by <code>backdrop-filter</code>, then composited underneath the panel's own semi-transparent fill. Scroll the page, move the panel, switch the mesh, and the number moves with it. There is no such thing as "the contrast ratio of this card" — there's a range.</p>
+      <p>Here is the surface, verbatim from <code>scss/abstracts/_mixins.scss</code>:</p>
+      <pre class="snippet"><code>@mixin glass($strong: false) {
+  background-color: var(--fv-glass-bg);
+  @if $strong {
+    background-color: var(--fv-glass-bg-strong);
+  }
+  backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
+  border: $border-width solid var(--fv-glass-border);
+  // Outer depth + a 1px inner top highlight that sells the "pane of glass" look.
+  box-shadow:
+    var(--fv-shadow-lg),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}</code></pre>
+      <p>On the dark theme those tokens resolve to <code>rgba(255,255,255,0.06)</code> for the fill, <code>0.10</code> for the elevated variant, <code>16px</code> of blur and <code>140%</code> saturation. Six percent white is not much of an anchor, and that's the trade: enough to lift text off the backdrop, not enough to kill the effect.</p>
+      <p>You can put a number on the range. This page's own <code>&lt;body&gt;</code> uses <code>.bg-mesh-ocean</code> — three radial gradients over <code>--fv-body-bg</code> (<code>#060912</code>), the brightest of them a cyan orb at 32% <code>--fv-info</code>. Alpha-composite the glass fill over each and you get two very different surfaces:</p>
+      <ul>
+        <li>Over the flat page background, a <code>.glass</code> panel resolves to roughly <code>#151820</code>.</li>
+        <li>Over the peak of that cyan orb, the same panel resolves to roughly <code>#1d5562</code>.</li>
+      </ul>
+      <p>Now measure the same text token against both. <code>--fv-muted</code> (<code>#95a3c4</code>) reads <strong>7.04:1</strong> on the dark patch and <strong>3.30:1</strong> on the bright one. <code>--fv-primary-text</code> goes from 5.56:1 to 2.61:1. Identical markup, identical class, identical token — one comfortably passes AA, one fails it outright, and the only difference is where on the page the panel landed.</p>
+      <p>Be careful with those figures: they're computed by compositing the token values, at the exact center of the orb, ignoring the blur's local averaging and the inset highlight. Real layouts land between the two extremes. The point isn't the precise digits — it's that a spread that wide exists at all.</p>
+      <p>So the fix is two-part. First, the glass fill needs enough opacity that text sits on a reasonably stable base — the 6–10% white above is that floor, and dropping it further is where most hand-rolled glass goes wrong. Second, and more important, <strong>brand colors that look fine as a button fill are usually too dark to use as text.</strong> Farvist's electric-violet primary (<code>#6d4af5</code>) measures <strong>3.74:1</strong> as text on the dark surface — below the WCAG AA threshold of 4.5:1. So the framework exposes a separate, lighter token, <code>--fv-primary-text</code>, derived in <code>scss/base/_root.scss</code> as <code>color.scale($primary, $lightness: 28%)</code> and compiling to about <code>#967df8</code>, which measures <strong>6.22:1</strong>. That one is used for links and text while the raw primary stays for fills. One color for painting, a readable sibling for reading.</p>
       <pre class="snippet"><code>/* fills use the brand color… */
-.btn-primary { background: var(--fv-primary); }
+.btn-primary { --fv-btn-bg: var(--fv-primary); }
 /* …but text uses the readable sibling */
 a { color: var(--fv-primary-text); }</code></pre>
+      <p>On the light theme the same token is simply aliased back — <code>--fv-primary-text: var(--fv-primary)</code> — because the brand violet clears AA on the light theme's <code>#eef1f8</code> surface at <strong>4.70:1</strong>. Not by much, but the indirection costs one variable and buys a theme-aware answer.</p>
+
+      <h2>Why axe can't check any of this</h2>
+      <p>Automated checkers compute contrast from resolved styles. axe reads an element's <code>color</code>, walks up the tree for the nearest non-transparent <code>background-color</code>, and does the arithmetic. Two things about glass break that model, and neither is a bug in axe:</p>
+      <ul>
+        <li><strong>The nearest background isn't the real one.</strong> What the checker finds is <code>rgba(255,255,255,0.06)</code>. Nothing in the CSSOM tells it what <code>backdrop-filter</code> pulled through from the layer behind, because that only exists after compositing, in pixels.</li>
+        <li><strong>Gradient text has no color at all.</strong> <code>.text-gradient</code> compiles to <code>color: transparent</code> plus <code>-webkit-text-fill-color: transparent</code>, painting the glyphs with a background image clipped to the text. A checker reading computed styles sees transparent on transparent and reports a violation for text that is, visually, perfectly legible.</li>
+      </ul>
+      <p>Both produce false positives in headless Chrome, and a check that cries wolf gets ignored. So we turned the rule off — and, because switching off an accessibility rule is exactly the kind of decision that rots into a lie, wrote the reasoning into the config next to the switch. From <code>.pa11yci.json</code>:</p>
+      <pre class="snippet"><code>"comment_ignore": "color-contrast is excluded: axe cannot evaluate it
+  through gradient text (.text-gradient uses transparent fill) or
+  translucent glass over gradient backgrounds in headless, producing
+  false positives. …",
+"ignore": ["color-contrast"],</code></pre>
+      <p>Everything else axe checks at <code>WCAG2AA</code> still runs in CI, over six pages: the home page, the docs, three examples (<code>ai-console</code>, <code>ai-addon</code>, <code>dashboard</code>) and the marketing template. Those catch the regressions that slip in between careful reviews — a missing label, a broken heading order, an unlabelled control.</p>
+      <p>The honest cost: contrast is now our problem, not the robot's. Any framework that claims to be "axe clean" <em>including</em> contrast while shipping translucent surfaces is either not running the rule or not really shipping glass. Read the config before you believe the badge — ours included.</p>
+
+      <h2>What we gate instead</h2>
+      <p>If the composited number can't be pinned down, gate the thing that can: the tokens. <code>scripts/check-skins.mjs</code> reads <code>dist/farvist.css</code> — the <em>compiled</em> stylesheet, not the Sass source — pulls out every <code>[data-theme='…']</code> block, and enforces a 4.5:1 floor on four pairs per skin:</p>
+      <pre class="snippet"><code>const checks = [
+  ['primary-text on body-bg',     tokens['primary-text'], bg],
+  ['muted on body-bg',            tokens['muted']      || DEFAULTS['muted'], bg],
+  ['body-color on body-bg',       tokens['body-color'] || DEFAULTS['body-color'], bg],
+  ['primary-contrast on primary', tokens['primary-contrast'], tokens['primary']],
+];
+for (const [label, fgc, bgc] of checks) {
+  if (!fgc || !bgc) continue;
+  const r = ratio(fgc, bgc);
+  if (r &lt; 4.5) failures.push(`${name}: ${label} = ${r.toFixed(2)}:1 …`);
+}</code></pre>
+      <p>Parsing the compiled CSS rather than the Sass map is deliberate. The source is a map of maps with inheritance and defaults; the compiled block is what a browser actually resolves. If a refactor stops <em>emitting</em> a token, a source-level check happily passes and the compiled check fails — which is the direction you want the failure to point. The script also errors out if it finds zero skin blocks, so a broken build can't quietly pass the gate by producing nothing to check.</p>
+      <p>Most skins clear the floor with room to spare: <code>noir</code>'s readable-text token measures 15.98:1 on its own background, <code>cyber</code>'s 13.68:1, <code>forest</code>'s 12.38:1. The interesting one is <code>dawn</code>, the warm light skin. One of its readable-text tokens measured <strong>4.40:1</strong> and failed the build before release — the catch is written into the v1.4.0 changelog entry. The shipped <code>--fv-primary-text</code>, <code>#c2410c</code> on a <code>#faf6f1</code> background, measures <strong>4.81:1</strong>. That's still the tightest margin of any skin, and it's why nobody gets to nudge <code>dawn</code>'s background a shade darker without re-running the check.</p>
+      <p>Three things this gate does <em>not</em> do, stated plainly:</p>
+      <ul>
+        <li>It measures tokens against the flat <code>--fv-body-bg</code>, not against glass composited over a mesh. It establishes a floor, not a guarantee — see the 7.04:1-to-3.30:1 spread above.</li>
+        <li>It skips <code>:root</code> (the default dark theme) and explicitly <code>continue</code>s past <code>[data-theme='light']</code>, because the built-in light theme predates skins. Those two are checked by hand.</li>
+        <li>The token regex only matches hex literals (<code>#[0-9a-fA-F]{3,6}</code>). A skin that expressed a color as <code>oklch()</code> or <code>color-mix()</code> would be silently skipped rather than flagged — a gap that would bite the moment someone adds a skin in a modern color space.</li>
+      </ul>
 
       <h2>2. When the blur isn't there</h2>
       <p>The property that makes glass, <code>backdrop-filter</code>, isn't universally supported, and some users disable it. When it fails, a translucent panel doesn't gracefully become opaque — it stays see-through, and now your text really is floating on raw background. That's the worst-case readability failure, and it happens silently.</p>
-      <p>The answer is a progressive-enhancement fallback: assume the surface must be readable <em>without</em> blur, and only add the frost when the browser can honor it.</p>
-      <pre class="snippet"><code>.glass {
-  background: var(--fv-surface-solid);   /* opaque, always readable */
-}
-@supports (backdrop-filter: blur(1px)) {
-  .glass {
-    background: var(--fv-glass-bg);       /* translucent frost */
-    backdrop-filter: blur(16px) saturate(140%);
+      <p>The answer is progressive enhancement in the negative: assume the surface must be readable <em>without</em> blur, and swap in an opaque fill when the browser says it can't blur. The real rule, from <code>scss/utilities/_effects.scss</code>:</p>
+      <pre class="snippet"><code>@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-strong,
+  .navbar,
+  .card,
+  .form-control,
+  .form-select {
+    background-color: var(--fv-surface-solid);
   }
 }</code></pre>
-      <p>Every glass surface in Farvist ships this way, so a browser that can't blur gets a solid panel instead of unreadable text. The effect degrades; the content never does.</p>
+      <p><code>--fv-surface-solid</code> is the token that exists for exactly this: <code>#121a2e</code> on the dark theme, <code>#ffffff</code> on light, <code>#fffaf5</code> on <code>dawn</code>. It's opaque, and every skin has to define it.</p>
+      <p>Now the correction, because the tidy version of this story isn't true. That block names <strong>six selectors</strong>. <strong>22 rules</strong> in the compiled stylesheet apply a blur. Modals, dropdowns, toasts, accordions, diffs, the command palette and most of the AI-kit surfaces are not on the fallback list — on an engine without <code>backdrop-filter</code> they stay translucent. In practice the worst of those sit above a scrim (<code>.modal::backdrop</code> and <code>.command::backdrop</code> are <code>rgba(6, 9, 18, 0.6)</code>) or inside a card that has already gone opaque, so the outcome is usually fine. But "every glass surface in Farvist has a solid fallback" would be an overclaim. Six do; the rest inherit their luck.</p>
+      <p>One exclusion is on purpose, and the reasoning is in the source: alerts are left out because their translucent colored tint is legible without a blur, and forcing them all to <code>--fv-surface-solid</code> would flatten every variant to one surface and erase the semantic color. A danger alert that stops looking like a danger alert is a worse accessibility outcome than a slightly washed-out one.</p>
+      <p>What users actually get: Chromium, Safari and Firefox have all shipped <code>backdrop-filter</code> for years, so this branch fires for older engines, for some embedded webviews, and for users who have turned the feature off. They get a flat, opaque panel with the same border, shadow, radius and layout. The effect degrades; the content doesn't.</p>
 
       <h2>3. Losing the user's place</h2>
-      <p>Soft, low-contrast surfaces make it easy for keyboard focus to disappear. If your focus ring is a subtle glow that blends into a blurred panel, keyboard and switch users can't tell where they are. Glass UI needs focus states that are <em>more</em> assertive than usual, not less — a solid, high-contrast ring via <code>:focus-visible</code>, never removed, never reduced to a color shift. And because the whole aesthetic leans on color, nothing meaningful should be communicated by color alone: a form error is a red border <em>and</em> a message and an <code>aria-invalid</code> flag, a status dot is a color <em>and</em> a text label.</p>
+      <p>Soft, low-contrast surfaces make it easy for keyboard focus to disappear. If your focus ring is a subtle glow that blends into a blurred panel, keyboard and switch users can't tell where they are. Glass UI needs focus states that are <em>more</em> assertive than usual, not less. The base rule, from <code>scss/base/_reset.scss</code>:</p>
+      <pre class="snippet"><code>:focus-visible {
+  outline: 2px solid var(--fv-primary);
+  outline-offset: 2px;
+}</code></pre>
+      <p>Two details in there are doing the work. It's an <code>outline</code>, not a <code>box-shadow</code>, so it doesn't have to compete for the one <code>box-shadow</code> property every glass surface is already spending on <code>var(--fv-shadow-lg)</code> plus its inset highlight; and the <code>2px</code> offset pushes the ring clear of the glass edge, so it lands on the page background instead of fighting the fill. It's also <code>--fv-primary</code>, the saturated brand color — not the frosted border. That distinction matters: <code>--fv-glass-border</code> is <code>rgba(255,255,255,0.14)</code>, roughly <strong>1.52:1</strong> against the panel it outlines. It is a decorative edge. It is not an indicator, and it must never be the only sign that something has focus.</p>
+      <p>The numbers on the ring itself: 2px of <code>#6d4af5</code> measures <strong>3.74:1</strong> against the dark page background and <strong>3.34:1</strong> against a glass surface — both clear the 3:1 that WCAG 2.2 asks of a non-text indicator under SC 1.4.11.</p>
+      <p>Where it gets weaker, honestly. Components that want a ring following their own border radius opt out of the outline and swap in a box-shadow — form fields, nav links, tabs, chips, switches, segmented controls, list-group items, pagination, dropdown items, the range thumb, the accordion summary and most of the AI-kit surfaces all do <code>outline: 0</code> followed by <code>box-shadow: var(--fv-focus-ring)</code>. Buttons take the same shape through their own <code>--fv-btn-focus-ring</code>, which holds only the color half of the same 45% mix. The shared token:</p>
+      <pre class="snippet"><code>--fv-focus-ring: 0 0 0 3px color-mix(in srgb, var(--fv-primary) 45%, transparent);</code></pre>
+      <p>That's a 3px ring at 45% alpha. Composited over the dark page background it lands around <strong>1.6:1</strong> — it reads as a glow, and it is measurably softer than the solid outline it replaces. It's visible, and in a quiet layout it does the job, but it does not clear the 3:1 bar the base rule clears, and on a bright patch of mesh it's the weakest item in this whole article. If you want it stronger today, <code>--fv-focus-ring</code> is a single custom property and you can redefine it to a solid color in one line — and that's the fix we'd reach for first.</p>
+      <p>And because the whole aesthetic leans on color, nothing meaningful should be communicated by color alone: a form error is a red border <em>and</em> a message <em>and</em> an <code>aria-invalid</code> flag (the companion <code>farvist.js</code> wires the last two from <code>.is-invalid</code>), a status dot is a color <em>and</em> a text label.</p>
 
       <h2>4. Motion that doesn't ask permission</h2>
-      <p>Glass tends to travel with motion — drifting gradient backdrops, floating cards, pulsing glows. For someone with vestibular sensitivity, that ambient movement ranges from distracting to nauseating. The rule is simple and non-negotiable: every animation sits behind <code>@media (prefers-reduced-motion: reduce)</code> and switches off (or drops to a single static frame) when the user has asked for less. It's one media query, and it's the difference between a delightful site and one a real person has to close.</p>
+      <p>Glass tends to travel with motion — drifting gradient backdrops, floating cards, pulsing glows. For someone with vestibular sensitivity, that ambient movement ranges from distracting to nauseating. The global rule is non-negotiable and lives in the reset:</p>
+      <pre class="snippet"><code>@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}</code></pre>
+      <p>The <code>0.01ms</code> rather than <code>none</code> is the detail worth stealing. An animation removed outright never fires <code>animationend</code>, so any JavaScript waiting on that event to clean up or advance a state machine hangs forever. A 0.01ms animation is imperceptible and still fires. Same for <code>transitionend</code>.</p>
+      <p>The blanket rule is the floor, not the whole answer, because "stop everything" is wrong for some components. The per-component overrides in the compiled sheet split into two groups:</p>
+      <ul>
+        <li><strong>Decoration stops dead.</strong> <code>.bg-animated</code> and <code>.animate-float</code> get <code>animation: none</code>. So do <code>.skeleton</code>'s shimmer, the dropdown, modal, toast, tab-panel and command-palette entrance animations, and the <code>.progress-animated</code> stripe. A loading placeholder that doesn't shimmer is still obviously a placeholder.</li>
+        <li><strong>Status keeps moving, slowly.</strong> <code>.spinner</code> is the exception that proves the rule: instead of stopping, it slows from <code>0.7s</code> to <code>1.6s</code> per revolution, with <code>!important</code> to beat the blanket override. A frozen spinner reads as a hung app; a slow one still says "working". <code>.typing</code> drops to a single frame at <code>opacity: 0.7</code> so the indicator stays present without pulsing, and <code>.streaming</code>'s caret stops blinking.</li>
+      </ul>
+      <p>That's the heuristic: kill decoration, preserve status. Reduced motion means less movement, not less information.</p>
+
+      <h2>What glass still can't guarantee</h2>
+      <p>Three gaps we haven't closed, one you own, and one we don't intend to close.</p>
+      <p><strong>Forced colors / Windows High Contrast Mode.</strong> There is no <code>forced-colors</code> block anywhere in the framework — not in the Sass, not in the compiled CSS. In forced-colors mode the browser substitutes the user's system palette and ignores <code>backdrop-filter</code> and <code>box-shadow</code>, which mostly lands somewhere reasonable (flat, high-contrast panels). But "mostly lands somewhere reasonable" is not the same as designed, tested and gated. If you ship into a context where HCM matters, test it yourself.</p>
+      <p><strong><code>prefers-contrast</code>.</strong> Not honored. A user who has asked their OS for more contrast gets the same 6% glass as everyone else.</p>
+      <p><strong><code>prefers-reduced-transparency</code>.</strong> Also not honored — which stings a little, because this is the media query that exists precisely for this aesthetic. Both of these are a few lines you can add today, and the tokens are already in place to make them trivial:</p>
+      <pre class="snippet"><code>@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root {
+    --fv-glass-bg:        var(--fv-surface-solid);
+    --fv-glass-bg-strong: var(--fv-surface-solid);
+  }
+}</code></pre>
+      <p>Every glass <em>panel</em> in the framework paints itself from one of those two tokens — card, navbar, modal, dropdown, toast, list-group, diff, command palette, the AI-kit surfaces, the <code>.glass</code> utilities — so redefining them to the opaque token de-glasses all of them at once while keeping the layout, borders and spacing identical. (An opaque fill also makes <code>backdrop-filter</code> a no-op visually, so there's nothing else to unwind.) Alerts are the exception again: they blur over a <code>color-mix</code> tint of their own semantic color rather than <code>--fv-glass-bg</code>, so they stay translucent — deliberately, for the reason above. That none of this is shipped in the framework is a gap, not a design position.</p>
+      <p><strong>Your backdrop is your problem.</strong> Every number in this article assumes the framework's own mesh backgrounds — bounded, token-derived, predictable. Put a photograph behind a glass panel and all of it is void: a photo has no token, no bounded luminance and no gate. The <code>.glass-flat</code> utility deserves a specific warning here — it sets <code>backdrop-filter: none</code> without adding any opacity, so it gives you a plain translucent panel and hands readability entirely to you. If what you wanted was "no glass", <code>.card-solid</code> is the utility that also swaps in the opaque fill.</p>
+      <p><strong>And the one we don't plan to fix:</strong> there is no automated composited-contrast check, because we don't know how to write a good one. Sampling rendered pixels per viewport width, per scroll position, per skin, per theme is a different project with a large false-negative surface of its own. Manual review of real screens is the current answer, and we'd rather say that than ship a green check that means less than it looks like.</p>
+
+      <h2>When not to reach for glass</h2>
+      <p>The most useful accessibility decision is sometimes not to use the effect. Three cases where we'd tell you to skip it:</p>
+      <ul>
+        <li><strong>Dense data.</strong> Tables, spreadsheets, log viewers, anything with hundreds of small glyphs. Translucency puts a low-contrast, spatially varying wash behind all of them at once, and a large panel spans more of the backdrop's luminance range than a small one — so the spread from the first section is at its widest exactly where the text is smallest. There's a built-in opt-out for this: <code>.card-solid</code> swaps the fill for <code>--fv-surface-solid</code> and sets <code>backdrop-filter: none</code>. Keep the frost for the chrome around the data.</li>
+        <li><strong>Long-form reading.</strong> Anything past a screen or two of body text. The gain is aesthetic and the cost compounds over every paragraph. This article is a worked example: it sits in a plain <code>.prose</code> block on the page background, not on a glass panel, on purpose.</li>
+        <li><strong>Low-vision and accessibility-critical contexts.</strong> Government services, healthcare, anything with a VPAT attached. The right move there isn't "glass, done carefully" — it's an opaque surface. The same two custom properties as above, redefined unconditionally rather than inside a media query, get you the whole component library minus the effect. That's a much better starting point than re-litigating each panel.</li>
+      </ul>
+      <p>Small text takes the worst of the variance, too. Chips, badges and captions at <code>0.875rem</code> and below don't get AA's large-text exemption, so they need the full 4.5:1 in the worst spot on the page, not the average one.</p>
 
       <h2>The checklist</h2>
       <p>If you're building frosted UI by hand, this is the whole list:</p>
       <ul>
-        <li>Text color hits <strong>4.5:1</strong> — use a readable token, not the raw brand color, on translucent surfaces.</li>
-        <li>Glass has an <strong>opaque <code>@supports</code> fallback</strong> so it's readable without <code>backdrop-filter</code>.</li>
-        <li>Focus rings are <strong>solid and high-contrast</strong>, never removed.</li>
+        <li>Text color hits <strong>4.5:1</strong> against the opaque surface token — use a readable sibling, not the raw brand color, on translucent surfaces.</li>
+        <li>Glass has an <strong>opaque <code>@supports</code> fallback</strong> so it's readable without <code>backdrop-filter</code> — and you know which surfaces are on that list and which aren't.</li>
+        <li>Focus rings are <strong>solid, offset and high-contrast</strong>, never removed, and never the panel border.</li>
         <li>Meaning never rides on <strong>color alone</strong>.</li>
-        <li>All motion is <strong><code>prefers-reduced-motion</code>-aware</strong>.</li>
+        <li>All motion is <strong><code>prefers-reduced-motion</code>-aware</strong>, with decoration stopped and status slowed.</li>
+        <li>Every theme or skin is <strong>gated in CI</strong>, from the compiled output, not eyeballed.</li>
+        <li>You've decided, deliberately, <strong>where glass doesn't go</strong>.</li>
       </ul>
-      <p>Farvist verifies the automatable parts of this with axe-core on every build (0 violations across the docs and templates, in both themes). Automated tools can't catch everything — they famously can't evaluate the contrast of gradient text, which we check by hand — but they catch the regressions that slip in between careful reviews.</p>
-      <p>The point isn't that glassmorphism is dangerous. It's that "looks great in a screenshot" and "works for everyone" are two different bars, and the gap between them is a handful of decisions you can make once. Make them once, and the beautiful version is also the accessible one.</p>
+      <p>The point isn't that glassmorphism is dangerous. It's that "looks great in a screenshot" and "works for everyone" are two different bars, and the gap between them is a handful of decisions you can make once. Make them once — in tokens, in a mixin, in a CI script — and the beautiful version is also the accessible one. Make them never, and every new panel is a fresh coin flip.</p>
 
       <p>Farvist bakes all of the above in — <a href="/docs/#a11y">see the accessibility notes</a>, or read how the <a href="/blog/bring-your-brand/">theming architecture</a> makes the readable-text token possible.</p>
     </article>
@@ -129,7 +246,7 @@ a { color: var(--fv-primary-text); }</code></pre>
 
   <footer class="glass-strong text-center p-6" style="border-radius:0;">
     <div class="container">
-      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · MIT licensed</p>
     </div>
   </footer>
 

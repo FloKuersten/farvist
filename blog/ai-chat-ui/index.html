@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The AI chat UI components nobody documents — Farvist</title>
+  <meta name="description" content="Everyone ships a message bubble. Almost nobody writes down how to style rendered markdown, tool calls, reasoning disclosures, diffs and a streaming caret — the design decisions behind Farvist's 11-component AI kit." />
+  <link rel="canonical" href="https://farvist.com/blog/ai-chat-ui/" />
+  <meta name="keywords" content="AI chat UI, chat interface CSS, tool call component, streaming caret, LLM markdown CSS, AI UI components, prefers-reduced-motion" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="The AI chat UI components nobody documents" />
+  <meta property="og:description" content="Rendered markdown, tool calls, reasoning disclosures, code diffs and streaming — the parts of an assistant UI that come after the message bubble, and the real decisions behind each one." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/ai-chat-ui/" />
+  <meta property="article:published_time" content="2026-08-02" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The AI chat UI components nobody documents" />
+  <meta name="twitter:description" content="The bubble is the easy part. Here's how we styled the rest of a modern assistant UI — and the bugs we shipped first." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "The AI chat UI components nobody documents",
+    "description": "The design decisions behind rendered markdown, tool calls, reasoning disclosures, code diffs and streaming in an assistant UI.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-08-02",
+    "dateModified": "2026-08-02",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/ai-chat-ui/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-accent">AI</span><span class="chip">Design</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">The AI chat UI components <span class="text-gradient">nobody documents</span></h1>
+      <p class="text-muted mb-0">August 2, 2026 · 10 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">Most tutorials on building a chat interface stop at the message bubble. Two divs, a border-radius, mirror one of them to the right — done. But a bubble is a small fraction of an assistant UI. The rest is rendered markdown, tool-call cards, reasoning disclosures, code diffs, citations and a streaming caret, and almost nobody writes down how to style those or why.</p>
+
+      <p>Farvist ships eleven AI-interface components — the exact set the slim build leaves out: chat, prompt composer, status, prose, tool-call, reasoning, command palette, diff, suggestions, attachment and named code blocks. This is the reasoning behind them, including the bugs we shipped in v1.6.0 and had to fix six days later in v1.6.1.</p>
+
+      <h2>Rendered markdown breaks the bubble</h2>
+      <p>A message bubble should preserve the model's newlines, so it gets <code>white-space: pre-wrap</code>:</p>
+<pre class="snippet"><code>.message-bubble {
+  padding: .75rem 1rem;
+  border-radius: .875rem;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;   /* preserve newlines from model output */
+}</code></pre>
+      <p>That is correct for plain text, which is what you have while tokens are arriving. It stops being correct the moment you pipe the finished message through a markdown renderer. Rendered HTML brings its own structure — <code>&lt;p&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;h2&gt;</code> already carry spacing — and <code>pre-wrap</code> now also renders the whitespace <em>between</em> those tags, on top of margins the blocks already have.</p>
+      <p>The second half of the problem is headings. Models write <code>#&nbsp;Heading</code> constantly. The renderer emits a real <code>&lt;h1&gt;</code>, and your framework's <code>h1</code> is display size — in Farvist, <code>clamp(1.75rem, 6vw, 2.25rem)</code>. A hero headline inside a chat bubble, for what was a section label in a three-paragraph answer.</p>
+      <p>Both problems have the same fix: an opt-in scope you apply at the render boundary.</p>
+<pre class="snippet"><code>.prose {
+  white-space: normal;         /* undo the bubble's pre-wrap */
+  overflow-wrap: anywhere;
+
+  h1 { font-size: 1.25rem; }   /* was clamp(1.75rem, 6vw, 2.25rem) */
+  h2 { font-size: 1.125rem; }
+  h3, h4, h5, h6 { font-size: 1rem; }
+}</code></pre>
+      <p>Opt-in matters. The bubble cannot tell whether its children are a plain-text stream or rendered HTML — only the code that did the rendering knows. Making the reset automatic would break every plain-text message, so it costs one class:</p>
+<pre class="snippet"><code>&lt;div class="message-bubble"&gt;
+  &lt;div class="prose prose-sm"&gt; …rendered markdown HTML… &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+      <p><code>.prose-sm</code> is the compact variant for bubbles — smaller type, tighter block margins. The same scope also handles the other thing markdown emits that framework CSS usually ignores: a bare <code>&lt;table&gt;</code> with no wrapper and no classes. We give it collapsed borders and readable cell padding, but deliberately keep <code>display: table</code> — changing the display type strips row and column semantics from the accessibility tree. Wide tables instead get wrapped at runtime by <code>farvist.js</code>, which measures each <code>.prose table</code> and only adds a <code>.table-responsive</code> scroll shell when it actually overflows.</p>
+
+      <h2>Tool calls: the state is text, the colour is decoration</h2>
+      <p>An agent's tool invocation renders as a compact card with three states: running, done, error. The obvious design is to flood the card green when it succeeds and red when it fails. Two things go wrong.</p>
+      <p>First, colour alone is not a state indicator — it disappears for a colour-blind user, in greyscale, and in high-contrast modes. Second, at the size this text actually renders (12px, the <code>xs</code> step) the raw semantic colours do not clear 4.5:1 on the light glass surface. So the tint rides a 3px left rail and the meaning stays in the status text:</p>
+<pre class="snippet"><code>.tool-call-status {
+  margin-left: auto;
+  font-size: .75rem;
+  color: var(--fv-muted);       /* AA in both themes */
+}
+
+.tool-call-running { border-left-color: var(--fv-info); }
+.tool-call-done    { border-left-color: var(--fv-success); }
+.tool-call-error   { border-left-color: var(--fv-danger); }</code></pre>
+      <p>The markup keeps a visible <code>&lt;span class="tool-call-status"&gt;Failed&lt;/span&gt;</code> in every state. Remove that span and the component is broken, which is why the source file says so in a comment above the rules.</p>
+      <p>One implementation detail worth stealing: the rail declaration has to come <em>after</em> the glass mixin, because the mixin sets the <code>border</code> shorthand and would silently reset a <code>border-left</code> declared above it. Nothing warns you: the Sass compiles, the source reads correctly, and the rail just renders in the wrong colour.</p>
+      <p>The argument and result panes are monospace with <code>overflow-x: auto</code>, which creates a scroll container a keyboard user cannot reach. <code>farvist.js</code> handles that: it gives <code>.tool-call-args</code> and <code>.tool-call-result</code> a <code>tabindex="0"</code> plus <code>role="region"</code> and a label — but only when they genuinely overflow, and it re-checks after webfonts settle and on resize, because overflow depends on font metrics that are not final at first paint.</p>
+
+      <h2>Reasoning: use the native disclosure</h2>
+      <p>A "thought for 12 seconds" panel is a disclosure widget. Building it from a <code>&lt;div&gt;</code> and a click handler means reimplementing button semantics, <code>aria-expanded</code>, keyboard activation and open state. <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code> gives all of it with no JavaScript, so that is what the component is:</p>
+<pre class="snippet"><code>&lt;details class="reasoning"&gt;
+  &lt;summary class="reasoning-summary"&gt;Thought for 12 seconds&lt;/summary&gt;
+  &lt;div class="reasoning-body"&gt;…model reasoning…&lt;/div&gt;
+&lt;/details&gt;</code></pre>
+      <p>The styling is mostly about hiding the default marker and drawing our own. The chevron is a pseudo-element with two borders rotated 45 degrees — no icon font, no sprite, and it inherits <code>currentColor</code> so it follows the summary's hover state for free:</p>
+<pre class="snippet"><code>.reasoning-summary {
+  list-style: none;
+}
+.reasoning-summary::-webkit-details-marker { display: none; }
+
+.reasoning-summary::before {
+  content: '';
+  width: .55em; height: .55em;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform .2s ease;
+}
+
+.reasoning[open] &gt; .reasoning-summary::before { transform: rotate(45deg); }</code></pre>
+      <p>Honest limits: you still need both marker-removal declarations, and we do not animate the panel opening. Height transitions on <code>&lt;details&gt;</code> are not reliable enough to ship as a default, and a disclosure that expands instantly is not a worse disclosure. The same pattern powers the collapsible tool-call card — <code>summary.tool-call-header</code> gets a focus ring and the marker treatment, so a tool call can be a <code>&lt;details&gt;</code> without any new classes.</p>
+
+      <h2>Diffs: keep the plus and minus in the content</h2>
+      <p>The diff view is where AI coding assistants live, and it is the clearest case of the colour-alone rule. Our added and removed rows carry background tints, but the <code>+</code> and <code>−</code> are characters inside the line, not decoration generated by CSS:</p>
+<pre class="snippet"><code>&lt;pre class="diff-body"&gt;&lt;code&gt;&lt;span class="diff-line diff-hunk"&gt;@@ -1,3 +1,3 @@&lt;/span&gt;
+&lt;span class="diff-line"&gt;  :root {&lt;/span&gt;
+&lt;span class="diff-line diff-del"&gt;-   --fv-primary: #6d4af5;&lt;/span&gt;
+&lt;span class="diff-line diff-add"&gt;+   --fv-primary: #10b981;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</code></pre>
+      <p>That buys two things. The diff still reads in greyscale, and selecting the block copies a real patch instead of lines stripped of their markers — a <code>::before</code> would have looked identical and produced unusable clipboard text.</p>
+      <p>We got the colours around that content wrong. v1.6.0 painted the <code>+N</code>/<code>−N</code> stats and the <code>@@</code> hunk line with the raw semantic tokens. On the light theme's glass surface, at 12–14px, those measured <strong>1.6–2.9:1</strong>. v1.6.1 darkened them toward the light body text, which lands them at 5.7–8.1:1 — the same convention alerts, badges and chips already used:</p>
+<pre class="snippet"><code>.diff-stat-add { color: var(--fv-success); }
+.diff-stat-del { color: var(--fv-danger); }
+
+/* $body-text-light is #0f172a */
+[data-theme='light'] .diff-stat-add {
+  color: color-mix(in srgb, #0f172a 55%, var(--fv-success));
+}
+[data-theme='light'] .diff-stat-del {
+  color: color-mix(in srgb, #0f172a 55%, var(--fv-danger));
+}</code></pre>
+      <p>The hunk line got the same treatment and also lost an <code>opacity</code> that had been degrading re-branded palettes. The row backgrounds stayed faint on purpose — 14% and 12% <code>color-mix</code> tints — because they are the redundant channel, not the primary one. The header picked up a fix in the same release: a long unbreakable file path used to push the stats out of the clipped box, so it now wraps.</p>
+
+      <h2>Streaming: a caret, a race, and two paths to the same DOM</h2>
+      <p>The caret is one class you add to a bubble while tokens arrive. It is a painted box rather than a <code>▍</code> glyph, specifically so screen readers have nothing to announce:</p>
+<pre class="snippet"><code>.streaming::after {
+  content: '';
+  display: inline-block;
+  width: .5em; height: 1em;
+  background-color: var(--fv-primary-text);
+  animation: fv-caret 1s linear infinite;
+}
+
+/* Hard on/off — steps() on opacity only half-blinks. */
+@keyframes fv-caret {
+  0%, 49.9% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streaming::after { animation: none; }
+}</code></pre>
+      <p>Under reduced motion the caret stays and stops blinking — the "output is live" signal survives, the flicker does not.</p>
+      <p>The JavaScript side, <code>Farvist.stream(el, text)</code>, is where we shipped a real bug. v1.6.0 typed text word by word on a timer with no notion of ownership, so a second call on the same element interleaved with the first and produced garbled text. Any UI where a message can be re-streamed before the first run finishes — regenerate, edit-and-resend, a retried request — hits it. The fix is a WeakMap run token:</p>
+<pre class="snippet"><code>var streamRuns = new WeakMap();
+
+function stream(el, text, opts) {
+  var token = {};
+  streamRuns.set(el, token);
+  // …
+  (function tick() {
+    // Superseded by a newer stream() on this element — stop silently.
+    if (streamRuns.get(el) !== token) { resolve(el); return; }
+    el.textContent += (i ? ' ' : '') + words[i];
+    i++;
+    if (i &lt; words.length) setTimeout(tick, delay);
+    else finish();
+  })();
+}</code></pre>
+      <p>Each call mints a fresh object as its identity and claims the element. Every tick checks whether it is still the owner and stops if not. A WeakMap keyed by the element means a removed message node takes its entry with it. The loser resolves rather than rejecting, because being superseded is not an error and callers awaiting the promise should not have to catch.</p>
+      <p>The other half of the same patch is subtler and matters more. The reduced-motion path and the animated path have to end in the <em>same</em> DOM:</p>
+<pre class="snippet"><code>if (reduced || opts.instant) {
+  el.textContent = String(text);   // render instantly
+  finish();
+  return;
+}
+el.textContent = '';               // …then type into an emptied element
+el.classList.add('streaming');</code></pre>
+      <p>Originally the animated path appended to whatever was already in the element while the instant path replaced it, so the two branches disagreed. Bugs shaped like that only appear for users who have reduced motion enabled — exactly the population absent from your screenshots and your manual testing. The reduced-motion path is not a degraded path; it is the same result without the animation.</p>
+      <p>Two honest limits. <code>stream()</code> writes <code>textContent</code>, so it cannot stream rendered markdown; for markdown you stream plain text and swap in the <code>.prose</code> HTML when the message completes. And it types a string you already hold — it is a presentation helper, not a transport. Real tokens come from your network layer; the caret class and the DOM discipline are the parts that carry over.</p>
+
+      <h2>The parts that only need a paragraph</h2>
+      <p><strong>Citations.</strong> <code>.cite</code> is a superscript pill link, <code>.sources</code> is the ordered footnote list it points at — the RAG answer pattern. The chip stays a real link with a visible focus ring, and the number stays as text so the reference survives copy-paste.</p>
+      <p><strong>Suggestion chips.</strong> <code>.suggestions</code> wraps a row of <code>.suggestion</code> elements that work equally on <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code> — the "try asking…" row every assistant opens with.</p>
+      <p><strong>Attachment pills.</strong> <code>.attachment</code> holds an icon, <code>.attachment-name</code>, <code>.attachment-meta</code> and a labelled <code>.attachment-remove</code>. Its truncation was inert for a release: <code>max-width: 100%</code> resolves circularly inside content-sized flex parents like <code>.prompt-actions</code>, so the ellipsis never triggered. A concrete cap — <code>min(100%, 16rem)</code> — fixed it.</p>
+      <p><strong>Status.</strong> <code>.status</code> is a text label with a coloured dot drawn as an empty pseudo-element. Same principle as the tool call: the dot is redundant, the word is the state. Online and busy pulse a fading ring; reduced motion turns it off.</p>
+      <p><strong>Prompt composer.</strong> <code>.prompt-field</code> uses <code>field-sizing: content</code> to auto-grow between <code>2.75rem</code> and <code>12rem</code>. That is progressive — where it is unsupported you get a fixed-height textarea that scrolls, which is an acceptable floor. The field's own outline is removed and the ring moves to the wrapper via <code>:focus-within</code>, so the whole composer lights up as one control.</p>
+      <p><strong>Named code blocks.</strong> <code>.snippet-header</code> is the filename/language bar assistants put above generated files. It carries <code>padding-right: 6.5rem</code> for a boring reason: the copy button gets wider in its "Copied ✓" state and used to overlap the filename.</p>
+
+      <h2>These are conventions, not standards</h2>
+      <p>Nothing above is specified anywhere. There is no ARIA pattern for "a tool call", no element for "model reasoning", no agreed markup for a citation chip. We picked names that read like the thing they describe and behaviours that fail safely, and in two years some of it will look dated — the interaction patterns in this space are moving much faster than the vocabulary. Treat the class names as a starting point, not a spec.</p>
+      <p>What should outlive the specifics is smaller and duller: put state in text, keep meaning-bearing characters in the content, reach for the native element before writing a widget, and make your reduced-motion path produce the same DOM as your animated one. None of those are chat-UI rules. They are ordinary accessibility practice, applied to a surface new enough that people keep forgetting to apply it.</p>
+      <p>All eleven components are in the <a href="/docs/#ai">docs</a>; six of them — chat, prompt, prose, tool calls, reasoning and status — are assembled into a working screen in the <a href="/examples/ai-console.html">AI console template</a>. The kit is also available on its own as <code>farvist-ai.min.css</code> (6.4 KB gzip) if you want to add an assistant UI to a site that already has its own CSS.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · MIT licensed</p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>

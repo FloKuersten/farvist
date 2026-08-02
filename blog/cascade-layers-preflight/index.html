@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Why @layer makes your CSS lose to Tailwind — Farvist</title>
+  <meta name="description" content="Un-layered author CSS beats every @layer rule, whatever the specificity. That's why Tailwind v3's preflight gutted our layered add-on stylesheet — and how we generated a 0.95 KB fix that can't drift." />
+  <link rel="canonical" href="https://farvist.com/blog/cascade-layers-preflight/" />
+  <meta name="keywords" content="CSS cascade layers, @layer specificity, Tailwind preflight conflict, un-layered CSS, CSS framework compatibility, CSS Cascade 5" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Why @layer makes your CSS lose to Tailwind" />
+  <meta property="og:description" content="For any property, un-layered author CSS beats every layered declaration regardless of selector specificity. Here's how that rule broke a stylesheet we shipped, and the generated fix." />
+  <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
+  <meta property="og:url" content="https://farvist.com/blog/cascade-layers-preflight/" />
+  <meta property="article:published_time" content="2026-08-02" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Why @layer makes your CSS lose to Tailwind" />
+  <meta name="twitter:description" content="A bare element selector outside a layer beats a class selector inside one. What that costs a framework author, and what to do about it." />
+  <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dist/farvist.css" />
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Why @layer makes your CSS lose to Tailwind",
+    "description": "Un-layered author CSS beats every @layer rule regardless of specificity — how that broke a shipped stylesheet, and the generated compatibility sheet that fixed it.",
+    "image": "https://farvist.com/assets/og-image.png",
+    "datePublished": "2026-08-02",
+    "dateModified": "2026-08-02",
+    "author": { "@type": "Person", "name": "FloKuersten" },
+    "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
+    "mainEntityOfPage": "https://farvist.com/blog/cascade-layers-preflight/"
+  }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
+  <style>
+    .article { max-width: 44rem; margin-inline: auto; padding: 2rem 1.25rem 5rem; }
+    .article-head { padding-block: 2rem 1.5rem; }
+    .prose h2 { margin-top: 2.5rem; }
+    .prose pre.snippet { margin-block: 1.25rem; }
+  </style>
+</head>
+<body class="bg-mesh-nebula">
+  <a class="skip-link" href="#main">Skip to article</a>
+
+  <nav class="navbar sticky-top">
+    <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
+    <ul class="navbar-nav" role="list">
+      <li><a class="nav-link" href="/blog/">Blog</a></li>
+      <li><a class="nav-link" href="/docs/">Docs</a></li>
+      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+    </ul>
+  </nav>
+
+  <main id="main" tabindex="-1" class="article">
+    <a class="btn btn-link btn-sm mb-2" href="/blog/" style="padding-left:0;">← All posts</a>
+    <header class="article-head">
+      <div class="d-flex gap-2 mb-3"><span class="chip chip-info">CSS</span><span class="chip">Cascade</span></div>
+      <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Why <span class="text-gradient">@layer makes your CSS lose</span> to Tailwind</h1>
+      <p class="text-muted mb-0">August 2, 2026 · 9 min read</p>
+    </header>
+
+    <article class="prose">
+      <p class="fs-lg">There is a rule in CSS Cascade Level 5 that inverts the instinct most of us have built over a decade of writing stylesheets: for any given property, an <strong>un-layered</strong> author declaration beats <strong>every</strong> layered one — regardless of selector specificity, and regardless of which file loaded last. A bare <code>button { }</code> in someone's reset defeats <code>.btn</code> inside <code>@layer components</code>. We learned this the expensive way, by shipping a stylesheet that was correct, polite, and comprehensively overruled on every Tailwind v3 page it landed on.</p>
+
+      <h2>The rule</h2>
+      <p>The cascade sorts declarations by origin and importance first, then by cascade layer, then by specificity, then by source order. "Layer beats specificity" is the part people remember. The part that bites is <em>where un-layered styles sit in that ordering</em>: for normal (non-<code>!important</code>) author declarations, un-layered styles form the highest-priority band of the author origin. Every layer you declare sits <em>below</em> them, in the order you declared it.</p>
+      <p>So this is a fight you lose, and specificity never enters into it. Here is the smallest thing that reproduces it. The first block is a reduction of the parts of Tailwind v3's preflight that matter; the second is a framework doing the polite, recommended thing:</p>
+<pre class="snippet"><code>/* host page — un-layered, loaded FIRST */
+*, ::before, ::after { border-width: 0; border-style: solid; }
+button { background-color: transparent; background-image: none;
+         padding: 0; font-weight: inherit; color: inherit; }
+ul { list-style: none; margin: 0; padding: 0; }
+h2 { font-size: inherit; font-weight: inherit; }
+
+/* framework — fully layered, loaded SECOND */
+@layer reset, base, layout, components, utilities;
+@layer components {
+  .btn      { padding: 8px 24px; font-weight: 600;
+              background-color: rgb(40,50,60); border: 1px solid rgb(70,80,90); }
+  .prose ul { list-style: disc; padding-left: 24px; }
+  .prose h2 { font-size: 18px; font-weight: 700; }
+}</code></pre>
+      <p>Computed styles for <code>&lt;button class="btn"&gt;</code> and the prose elements, measured in Chrome:</p>
+      <ul>
+        <li><code>border-top-width</code>: <strong>0px</strong> — the universal selector wins.</li>
+        <li><code>padding-left</code>: <strong>0px</strong>, <code>font-weight</code>: <strong>400</strong>, <code>background-color</code>: <strong>rgba(0, 0, 0, 0)</strong> — a bare <code>button</code> selector, specificity (0,0,1), beats <code>.btn</code> at (0,1,0).</li>
+        <li><code>.prose ul</code>: <code>list-style-type</code> <strong>none</strong>, <code>padding-left</code> <strong>0px</strong>.</li>
+        <li><code>.prose h2</code>: <code>font-weight</code> <strong>400</strong>, <code>font-size</code> <strong>16px</strong> — the heading renders pixel-identical to body text.</li>
+      </ul>
+      <p>Every single declaration in the layered block lost. The framework stylesheet is still there, still parsed, still matching — it just never wins a property the host also sets.</p>
+
+      <h2>Why this is specifically a framework author's problem</h2>
+      <p>Emitting everything inside <code>@layer</code> is normally the right call, and it is the behaviour we document and recommend. Farvist declares its order once, in <code>scss/base/_layers.scss</code>:</p>
+<pre class="snippet"><code>@layer reset, base, layout, components, utilities;</code></pre>
+      <p>That buys two things. Utilities beat components without <code>!important</code>, purely by layer order. And any CSS the consumer writes outside a layer beats all of Farvist — no specificity war, no <code>!important</code> arms race. "Write <code>.btn { border-radius: 0 }</code> in your own sheet and you win" is a genuinely nice property to be able to promise.</p>
+      <p>It becomes a liability the moment your stylesheet is an <em>add-on</em> rather than the page's primary framework. <code>dist/farvist-ai.css</code> is exactly that: the AI-interface kit — chat thread, prompt composer, rendered-markdown prose, tool-call cards, diffs, snippets, the ⌘K palette — as a drop-in stylesheet for sites already running Tailwind, Bootstrap or their own CSS, 6.4 KB gzip minified. It deliberately ships no reset, no grid, no utilities. The host page keeps its own. Being fully layered is the whole social contract of that file.</p>
+      <p>The contract holds beautifully against Bootstrap, whose component CSS is un-layered class selectors: Bootstrap's <code>.btn</code> restyles the kit's send button, which is what a host expects. It also holds against Tailwind v4, whose preflight lives inside <code>@layer base</code> — layered, so it sorts below the kit's <code>components</code> layer and loses. The contract collapses against Tailwind v3.</p>
+
+      <h2>Tailwind v3's preflight is un-layered</h2>
+      <p>Preflight in v3 is emitted outside any layer. Against a layered add-on, that makes it undefeatable for every property it touches, and it touches a lot of them. Verified against real <code>tailwindcss@3.4.19</code> output, the ones that mattered to us:</p>
+      <ul>
+        <li>Borders are zeroed globally through a universal-selector rule (and recoloured to <code>#e5e7eb</code>). Every glass edge in the kit is a 1px border — <code>.message-bubble</code>, <code>.prompt</code>, <code>.tool-call</code>, <code>.toast</code>, <code>.command</code>, <code>.diff</code>, <code>pre.snippet</code>, <code>.avatar</code>. All of them vanished: the glass surfaces kept their fills and shadows and lost every edge.</li>
+        <li>Buttons get <code>background-color: transparent</code> and <code>background-image: none</code>, lose their padding, and have <code>font-weight</code> and <code>color</code> set to <code>inherit</code>. The gradient send button lost its padding, its weight and its gradient, and rendered as inherited body text on nothing.</li>
+        <li>Lists lose their markers and indentation; headings get <code>font-size</code> and <code>font-weight</code> set to <code>inherit</code>.</li>
+      </ul>
+      <p>That last one is worth separating from the others, because it is not cosmetic. The kit's <code>.prose</code> scope exists to render model output — markdown that a language model just produced. A bulleted list with no bullets and no indentation is a run of sentences; an <code>&lt;h2&gt;</code> at body weight and body size is not a heading. The document structure the model expressed is still in the DOM, but it is gone from the rendered page. That is information loss, and it is the reason we treated this as a correctness bug rather than a styling nit.</p>
+
+      <h2>Loading your stylesheet later does not help</h2>
+      <p>The instinct on seeing a cascade conflict is to load your file after theirs. In the repro above the layered sheet <em>is</em> second, and it still loses everything. Source order is the last tiebreaker the cascade consults; layer position is settled several steps earlier. Nothing you do with <code>&lt;link&gt;</code> ordering, bundler output order, or injection timing changes a layered-versus-un-layered comparison. Raising specificity does not help either — <code>.prose .message .btn</code> inside a layer still loses to <code>button</code> outside one.</p>
+      <p>There are exactly two ways out: leave the layer, or use <code>!important</code>. And <code>!important</code> is stranger than you would guess — for important declarations, layer order <em>reverses</em>, and un-layered important sits at the <em>bottom</em>. We measured it: an <code>!important</code> declaration inside <code>@layer components</code> beat an <code>!important</code> declaration outside all layers, even though the un-layered rule came first in the file and had identical specificity. Correct per spec, and a fine piece of trivia, but shipping <code>!important</code> from a framework is exactly the rudeness layers were invented to avoid. So: leave the layer.</p>
+
+      <h2>The fix: re-assert exactly what preflight took</h2>
+      <p><code>dist/farvist-ai-compat.css</code> is an un-layered stylesheet, loaded after the Tailwind build, that re-states the specific properties preflight zeroes — and nothing else. Real lines from the shipped file, wrapped here for readability:</p>
+<pre class="snippet"><code>.btn{padding:0.5rem 1.5rem;font-size:1rem;font-weight:600;line-height:1.6;
+     color:var(--fv-btn-color);background-color:var(--fv-btn-bg);
+     border:1px solid var(--fv-btn-border)}
+.btn-gradient-primary{color:var(--fv-btn-color);background-image:var(--fv-gradient-primary)}
+.message-bubble{border:1px solid var(--fv-glass-border)}
+.tool-call{border:1px solid var(--fv-glass-border);border-left:3px solid var(--fv-border-color)}
+.prose ul{margin-bottom:0.75rem;padding-left:1.5rem;list-style:disc}
+.prose h2{font-size:1.125rem;margin-top:1rem;margin-bottom:0.5rem;font-weight:700}</code></pre>
+      <p>Every selector carries exactly one class and nothing heavier: 26 of the 46 rules are a bare class at (0,1,0), and the rest add a type selector where the kit's own scoping needs one — <code>.prose ul</code> at (0,1,1), <code>.prose li + li</code> at (0,1,2). That single class is the whole mechanism, because specificity compares class count before element count. Once you are back in the un-layered band, ordinary rules apply again, and they produce a clean three-way ranking:</p>
+      <ul>
+        <li>Preflight's universal and element selectors, (0,0,0) and (0,0,1) — no class at all, so lowest.</li>
+        <li>The compat sheet's rules, one class each — beats preflight on specificity, however many element selectors preflight stacks up.</li>
+        <li>The host's own class rules, also one class but loaded after — beats the compat sheet on source order.</li>
+      </ul>
+      <p>So a Tailwind v3 host gets its kit back without losing the ability to restyle it. Adding those class rules to the repro restores the button exactly: <code>border-top-width</code> 1px, <code>padding-left</code> 24px, <code>font-weight</code> 600, <code>background-color</code> rgb(40, 50, 60); the list gets <code>disc</code> and its indent back.</p>
+      <p>Note what this file gives up, deliberately. Being un-layered, it no longer defers to the host for the properties it names. We accepted that trade for a bounded set of properties on a bounded set of class names, and shipped it as a separate opt-in file so that hosts which do not need it never pay for it. Tailwind v4 and Bootstrap pages should not load it.</p>
+
+      <h2>Generate the compat sheet; do not hand-write it</h2>
+      <p>A hand-maintained compatibility sheet is a guaranteed future bug: someone changes a border colour token or a button's padding in the Sass, the main build updates, and the compat file quietly starts re-asserting last quarter's values <em>over the top of</em> the current ones. It would fail in the worst possible way — silently, and only on the hosts that need it most.</p>
+      <p>So <code>dist/farvist-ai-compat.css</code> is generated. <code>scripts/gen-ai-compat.mjs</code> parses the compiled, autoprefixed <code>dist/farvist-ai.css</code> into a selector → declarations map, then walks a spec that lists, per selector, which properties preflight is known to damage:</p>
+<pre class="snippet"><code>const CONTROL = ['padding', 'font-size', 'font-weight', 'line-height',
+                 'color', 'background-color', 'border'];
+const SPEC = [
+  ['.btn', CONTROL],
+  ['.btn-gradient-primary', ['color', 'background-image']],
+  ['.message-bubble', ['border']],
+  ['.tool-call', ['border', 'border-left']],
+  ['.prose ul', ['margin-bottom', 'padding-left', 'list-style']],
+  // …50 entries in total
+];</code></pre>
+      <p>Every emitted value is read out of the build. There is no second source of truth, so drift is not merely discouraged, it is unrepresentable. The 50 spec entries collapse to 46 unique selectors in the output — several selectors appear more than once in the spec, grouped by the reason they need rescuing.</p>
+      <p>The interesting design decision is in the error handling, and it is a two-tier rule. Property names are treated as <em>candidates</em>: if the kit never declares <code>font-weight</code> on a given selector, preflight cannot take it away, so a missing property is silently skipped. But a missing <em>selector</em>, or a selector for which not one listed property is found, means the build has moved out from under the spec — and that throws:</p>
+<pre class="snippet"><code>if (missing.length) {
+  throw new Error(`gen-ai-compat: spec entries not found in dist/farvist-ai.css — the build changed; update the SPEC:\n  ${missing.join('\n  ')}`);
+}</code></pre>
+      <p>Rename <code>.tool-call</code>, drop <code>.suggestion</code>, move a border onto a different element, and the build stops with the list of stale entries. The failure mode we care about is a compat file that looks fine and protects nothing; this converts that into a loud build error. The result is 3.7 KB raw, 0.95 KB gzip, and it has its own budget in <code>scripts/check-size.mjs</code> (2 KB gzip) alongside the three main builds, so it cannot balloon unnoticed.</p>
+
+      <h2>The general rule</h2>
+      <p>None of this is about Farvist, or about Tailwind. If you ship CSS that lands on pages you do not control — a framework, a design system consumed by other teams, an embeddable widget — here is the procedure:</p>
+      <ul>
+        <li><strong>Default to layered.</strong> It is still right. It gives your consumers a clean override story and keeps you out of specificity escalation.</li>
+        <li><strong>Inventory the un-layered resets in your ecosystem.</strong> Not the frameworks — the <em>resets</em>. Tailwind v3's preflight, hand-rolled <code>* { margin: 0; padding: 0 }</code> boilerplate, vendored copies of normalize, globals injected by CSS-in-JS runtimes. Any of these that is un-layered outranks all of your CSS, permanently.</li>
+        <li><strong>Compute the intersection.</strong> The properties those resets set, intersected with the properties your components declare. That intersection — not your whole stylesheet — is your exposure. Ours came to 46 selectors, mostly borders and button chrome.</li>
+        <li><strong>Re-assert only the intersection, un-layered, at the lowest specificity that wins.</strong> One class is enough to beat any element or universal selector, however many of them there are. Do not reach for <code>!important</code>, and do not add a second class — every point of specificity you add is a point your consumer has to beat later.</li>
+        <li><strong>Generate it from your compiled output.</strong> If the values can be typed by hand, they will eventually be wrong. Make a missing selector a build failure.</li>
+        <li><strong>Ship it as an opt-in file.</strong> Hosts that do not need the escape hatch should not inherit its impoliteness.</li>
+      </ul>
+
+      <h2>What this does not fix</h2>
+      <p>The compat sheet restores an enumerated list of properties on an enumerated list of selectors. If a host has some other un-layered global rule — a project-wide <code>font-family</code> override, an opinionated <code>* { transition: none }</code> — that rule still wins for its properties, and nothing in the compat file addresses it. This is a targeted patch for one known reset, not a general shield.</p>
+      <p>It is also not a substitute for the other things an add-on stylesheet has to get right. The kit still assumes <code>box-sizing: border-box</code> (Tailwind and Bootstrap both set it globally; a bare page does not), and it is rem-sized against a browser-default 16px root, so a host using the <code>html { font-size: 62.5% }</code> pattern renders the whole kit at roughly 62% scale. Cascade layers have nothing to say about either.</p>
+      <p>And we would not recommend this pattern for a primary framework. If your stylesheet <em>is</em> the page's CSS, un-layered re-assertions just make you harder to override for no benefit. The technique earns its keep in exactly one situation: you are a guest on someone else's page, and the host's reset is destroying information rather than restyling it.</p>
+
+      <h2>The takeaway</h2>
+      <p>We shipped a fully layered stylesheet believing that "layered" meant "well-behaved". It does — but well-behaved is not the same as robust. The moment your CSS shares a page with an un-layered reset, your carefully ordered layers are all sitting below it, and no selector you can write inside them will change that. Test against the real resets your users actually run, because the failure is silent and your own test page will never show it.</p>
+      <p>Everything described here is in the repo: <a href="https://github.com/FloKuersten/farvist/blob/main/scripts/gen-ai-compat.mjs">the generator</a>, the generated <a href="/dist/farvist-ai-compat.css">compat stylesheet</a>, and the <a href="/docs/#install">build notes in the docs</a>. Farvist is MIT-licensed and free.</p>
+    </article>
+
+    <div class="my-5" style="text-align:center;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <hr />
+    <div class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <a class="btn btn-glass" href="/blog/">← All posts</a>
+      <a class="btn btn-gradient-primary" href="/docs/">Read the docs →</a>
+    </div>
+  </main>
+
+  <footer class="glass-strong text-center p-6" style="border-radius:0;">
+    <div class="container">
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · MIT licensed</p>
+    </div>
+  </footer>
+
+  <script src="/assets/farvist.js" defer></script>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>

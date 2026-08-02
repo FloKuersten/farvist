@@ -34,7 +34,7 @@
     "description": "What makes a command palette good — the parts, the keyboard model, and the ARIA pattern.",
     "image": "https://farvist.com/assets/og-image.png",
     "datePublished": "2026-07-16",
-    "dateModified": "2026-07-16",
+    "dateModified": "2026-08-02",
     "author": { "@type": "Person", "name": "FloKuersten" },
     "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
     "mainEntityOfPage": "https://farvist.com/blog/command-palette-ux/"
@@ -65,49 +65,176 @@
     <header class="article-head">
       <div class="d-flex gap-2 mb-3"><span class="chip chip-primary">UX</span><span class="chip">Accessibility</span></div>
       <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">The anatomy of a <span class="text-gradient">command palette</span></h1>
-      <p class="text-muted mb-0">July 16, 2026 · 7 min read</p>
+      <p class="text-muted mb-0">July 16, 2026 · 12 min read</p>
     </header>
 
     <article class="prose">
-      <p class="fs-lg">Somewhere around 2020 the ⌘K menu went from a Superhuman party trick to table stakes. Linear, GitHub, VS Code, Raycast, Notion, Vercel — every serious tool now answers ⌘K with a searchable list of everything you might want to do. It's become the keyboard user's front door. Which means it's worth understanding what actually makes one good, because most hand-rolled versions get one crucial part wrong.</p>
+      <p class="fs-lg">Somewhere around 2020 the ⌘K menu went from a Superhuman party trick to table stakes. Linear, GitHub, VS Code, Raycast, Notion, Vercel — every serious tool now answers ⌘K with a searchable list of everything you might want to do. Most hand-rolled versions still get one crucial part wrong.</p>
 
-      <p>A command palette is really five small things wired together. Here's each, and where the sharp edges are.</p>
+      <p>A command palette is really five small things wired together: a trigger, an overlay, an input that filters, a keyboard model, and an activation contract. Below is each one, with the code Farvist actually ships — <code>scss/components/_command.scss</code> and the <code>.command</code> block of <code>assets/farvist.js</code> — and the sharp edges we hit building it.</p>
 
       <h2>The trigger and the shortcut</h2>
-      <p>Two ways in, always: a visible button (so people who don't know the shortcut can discover it) and the global <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> binding. The shortcut has one gotcha — browsers bind ⌘K/Ctrl+K to the address bar, so you must <code>preventDefault()</code> when you handle it, and you should only grab it when a palette actually exists on the page. Bind it on the document, not an element, so it works no matter where focus is.</p>
-      <pre class="snippet"><code>document.addEventListener('keydown', (e) =&gt; {
-  if ((e.metaKey || e.ctrlKey) &amp;&amp; e.key === 'k') {
-    e.preventDefault();
-    openPalette();
-  }
-});</code></pre>
+      <p>Two ways in, always: a visible button (so people who don't know the shortcut can discover it) and the global <kbd>⌘K</kbd> / <kbd>Ctrl K</kbd> binding. The shortcut has one gotcha — browsers bind ⌘K/Ctrl+K to the address bar, so you must <code>preventDefault()</code> when you handle it. Bind it on the document, not an element, so it works no matter where focus is.</p>
+      <p>The guard matters more than it looks. Farvist only claims the shortcut when a palette is actually present in the DOM, and only after that check does it call <code>preventDefault()</code> — so a page that includes <code>farvist.js</code> but has no palette leaves the browser's own ⌘K alone:</p>
+      <pre class="snippet"><code>if ((e.metaKey || e.ctrlKey) &amp;&amp; (e.key === 'k' || e.key === 'K')
+    &amp;&amp; document.querySelector('dialog.command')) {
+  e.preventDefault();
+  openCommand();
+  return;
+}</code></pre>
+      <p>Two details in there. Testing both <code>'k'</code> and <code>'K'</code> covers Caps Lock and Shift, which change <code>e.key</code> but not the user's intent. And the <code>metaKey || ctrlKey</code> pair deliberately accepts either modifier on every platform rather than sniffing the OS — Ctrl+K on a Mac opens it too.</p>
+      <p>That last decision has a cost we accept knowingly: the handler doesn't exempt text fields, and on macOS <kbd>Ctrl K</kbd> is the readline "kill to end of line" binding. On a page with a palette, pressing it inside a textarea opens the palette instead of deleting the rest of the line. Exempting <code>&lt;textarea&gt;</code> and <code>contenteditable</code> targets would fix that and break "open the palette from anywhere". If your product is an editor, add the exemption.</p>
 
-      <h2>The overlay</h2>
-      <p>Resist the urge to hand-build a modal. The native <code>&lt;dialog&gt;</code> element gives you three things a command palette needs, for free: it traps focus, it closes on <kbd>Esc</kbd>, and its <code>::backdrop</code> dims the page. Open it with <code>dialog.showModal()</code> and you've skipped the most bug-prone part of the whole component. Farvist's palette is exactly this — a <code>&lt;dialog class="command"&gt;</code> — so the overlay behavior is the platform's, not yours to maintain.</p>
+      <h2>The overlay: what the native dialog element gives you, and what it doesn't</h2>
+      <p>Resist the urge to hand-build a modal. Farvist's palette is a <code>&lt;dialog class="command"&gt;</code> opened with <code>showModal()</code>, and that one call buys four things that are genuinely hard to get right by hand: the element is promoted to the <strong>top layer</strong> (so no <code>z-index</code> arms race with sticky headers), everything behind it becomes <strong>inert</strong> (focus can't tab out, clicks don't reach the page), <kbd>Esc</kbd> closes it with no listener of your own, and <code>::backdrop</code> gives you a real pseudo-element to style:</p>
+      <pre class="snippet"><code>.command::backdrop {
+  background-color: rgba(6, 9, 18, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}</code></pre>
+      <p>Three things it does <em>not</em> give you. First, closing on a backdrop click. That's not a <code>&lt;dialog&gt;</code> behaviour — you have to add it, and the trick is that a click on the backdrop reports the dialog itself as its target, so a hit test against the dialog's own box tells the two apart:</p>
+      <pre class="snippet"><code>if (t.matches('dialog.modal, dialog.command')) {
+  var r = t.getBoundingClientRect();
+  if (e.clientX &lt; r.left || e.clientX &gt; r.right ||
+      e.clientY &lt; r.top  || e.clientY &gt; r.bottom) t.close();
+}</code></pre>
+      <p>Note what that approximates: <code>getBoundingClientRect()</code> is a rectangle, and the panel has a <code>1.125rem</code> border radius, so the four rounded corners test as "inside" — a click two pixels into a corner leaves the palette open. The dead zone is a few pixels square; the alternative, point-in-rounded-rect maths, is not worth the bytes.</p>
+      <p>Second, animation. <code>[open]</code> flips <code>display</code>, so you get one shot at an entrance animation and none at an exit; a close is instantaneous. Farvist animates in only, and drops even that under <code>prefers-reduced-motion</code>.</p>
+      <p>Third — and this is the one that bit us in production — <code>&lt;dialog&gt;</code> does not really position itself.</p>
+
+      <h2>The centering bug we shipped, and the fix in 1.7.1</h2>
+      <p>A modal <code>&lt;dialog&gt;</code> looks like it centers itself. It doesn't. It's centered by <code>dialog { margin: auto }</code> in the <em>user-agent stylesheet</em> — an ordinary declaration in the lowest-priority origin, which any author rule beats. From 1.5.0 to 1.7.0 our palette set <code>margin-top: 12vh</code> and <code>margin-bottom: auto</code> for the vertical offset and left the horizontal centering to that UA rule.</p>
+      <p>Any universal margin reset beats the UA and takes the centering with it — including our own. Farvist's reset is <code>@layer reset { * { margin: 0 } }</code>, and because <code>.command</code> never declared a left or right margin, there was nothing in <code>@layer components</code> to win those values back. Rendered against the shipped 1.7.0 stylesheet at 1280&nbsp;px wide, the docs page's own palette markup puts the panel's left edge at 3&nbsp;px instead of 323&nbsp;px — flat against the side of the window. That is what farvist.com served, on the page documenting the component, for four releases.</p>
+      <p>On a host page it degrades further, which is how we finally caught it. The AI kit emits everything in <code>@layer</code>, and un-layered author CSS beats every layer, so a host's <code>* { margin: 0 }</code> overrides the <code>margin-top: 12vh</code> as well: <code>farvist-ai.css</code> 1.7.0 under that reset renders the palette at <code>top: -6px</code>, clipped off the top of the screen. We found that one testing against real host stylesheets for 1.7.1 — the full-build case had been sitting in plain sight the whole time.</p>
+      <p>The fix is to stop borrowing the UA's centering and own it:</p>
+      <pre class="snippet"><code>.command {
+  width: calc(100% - 1.5rem);
+  max-width: 40rem;
+  position: fixed;
+  top: 12vh;          /* near the top, not dead-centre — the ⌘K convention */
+  left: 50%;
+  margin: 0;
+  translate: -50% 0;
+}</code></pre>
+      <p>The interesting line is the last one. The obvious way to pull an element back by half its own width is <code>transform: translateX(-50%)</code> — and that would have silently broken the open animation, because the keyframes already own <code>transform</code>:</p>
+      <pre class="snippet"><code>@keyframes fv-command-in {
+  from { opacity: 0; transform: translateY(-0.5rem) scale(0.99); }
+  to   { opacity: 1; transform: none; }
+}</code></pre>
+      <p>A keyframe that sets <code>transform</code> replaces the property outright. The centering offset would vanish for the duration of the animation and the palette would fly in from half a panel-width to the right — measured mid-animation, the panel sits 320&nbsp;px off-centre with <code>translateX(-50%)</code> and dead centre with <code>translate</code>. That's because <code>translate</code> is an <em>independent transform property</em>, not part of the <code>transform</code> shorthand: the browser composes <code>translate</code>, <code>rotate</code>, <code>scale</code> and <em>then</em> <code>transform</code> into a single matrix, so the offset holds while the keyframes do their thing. Whenever a layout offset and an animation both want to move the same element, split them across <code>translate</code> and <code>transform</code>.</p>
+      <p>Honest footnote: we fixed the palette and not <code>.modal</code>, which still declares no <code>position</code> and no <code>margin</code> of its own. It has the same bug, and it is live right now — open the docs modal against the current <code>dist/farvist.css</code> at 1280&nbsp;px and it renders at <code>left: 5px, top: 18px</code>, not centered. The fix is the same as the palette's. If you are shipping a <code>&lt;dialog&gt;</code> today, position it explicitly and don't inherit centering you didn't declare.</p>
 
       <h2>The input and the filter</h2>
-      <p>When the palette opens, focus goes straight to the input and the list resets. As the user types, you filter the items. The subtlety worth adding: match on more than the visible label. People search for "colors" and expect the "Theming" item; a good palette lets each item carry hidden keywords so synonyms hit. Filter, then make the first surviving item active so <kbd>Enter</kbd> always does something sensible, and show an empty state when nothing matches.</p>
+      <p>Opening through <code>Farvist.command()</code> or ⌘K clears the query, focuses the input explicitly rather than relying on <code>&lt;dialog&gt;</code>'s default focus behaviour, and re-runs the filter so the list starts complete:</p>
+      <pre class="snippet"><code>function openCommand(sel) {
+  var dialog = sel ? document.querySelector(sel) : document.querySelector('dialog.command');
+  if (!dialog || !dialog.showModal) return;
+  dialog.showModal();
+  var input = dialog.querySelector('.command-input');
+  if (input) { input.value = ''; input.focus(); }
+  cmdFilter(dialog);
+}</code></pre>
+      <p>The filter itself is deliberately dumb, and matches on more than the visible label. People search for "colors" and expect the "Theming" item, so each row can carry hidden synonyms in <code>data-fv-keywords</code>:</p>
+      <pre class="snippet"><code>var q = (dialog.querySelector('.command-input').value || '').trim().toLowerCase();
+qsa('.command-item', dialog).forEach(function (item) {
+  var hay = (item.textContent + ' ' + (item.getAttribute('data-fv-keywords') || '')).toLowerCase();
+  item.hidden = !!(q &amp;&amp; hay.indexOf(q) === -1);
+  if (!item.hidden) anyVisible = true;
+});</code></pre>
+      <p>Using the <code>hidden</code> attribute rather than a class is a small win: hidden elements leave the accessibility tree, so the listbox a screen reader sees contains only the matches, without any extra bookkeeping. Two more passes follow. Group headings hide themselves when every item beneath them is filtered out — the loop walks forward from each <code>.command-group</code> until it meets the next one and shows the heading only if it finds a visible item. Then the empty state toggles, and the first surviving row becomes active so <kbd>Enter</kbd> always does something sensible.</p>
 
       <h2>The keyboard model — and the part everyone gets wrong</h2>
-      <p>Here's the mistake in nine out of ten hand-built palettes: as you press ↓, they move real DOM focus onto each list item. It feels right and it's wrong. The moment focus leaves the input, the user can no longer type to keep filtering — they have to tab back. The whole appeal of ⌘K (type <em>and</em> arrow at the same time) is broken.</p>
-      <p>The correct pattern is a <strong>combobox controlling a listbox</strong>, and it's the same one native autocomplete uses. Focus never leaves the input. Instead, you track a "virtual" cursor with <code>aria-activedescendant</code>, which points the input at the id of the currently highlighted option. Arrow keys move that pointer and a CSS class; focus stays put; typing keeps working.</p>
-      <pre class="snippet"><code>&lt;input role="combobox" aria-expanded="true"
-       aria-controls="cmd-list"
-       aria-activedescendant="cmd-item-3"&gt;
-&lt;ul id="cmd-list" role="listbox"&gt;
-  &lt;li id="cmd-item-3" role="option" aria-selected="true"&gt;…&lt;/li&gt;
-&lt;/ul&gt;</code></pre>
-      <p>Two rules that follow from this. The options are <code>&lt;li role="option"&gt;</code> — <em>not</em> links or buttons. An <code>option</code> is not supposed to contain interactive elements, and it shouldn't be focusable itself; activation is your JS reading the active item. And <code>aria-selected</code> tracks the highlight so a screen reader announces "Theming, 2 of 6" as the user arrows through, without ever stealing focus from where they're typing.</p>
+      <p>Here's the mistake in most hand-built palettes: as you press ↓, they move real DOM focus onto each list item. It feels right and it's wrong. The moment focus leaves the input, the user can no longer type to keep filtering — they have to tab back. The whole appeal of ⌘K (type <em>and</em> arrow at the same time) is broken.</p>
+      <p>This is why <strong>roving tabindex is the wrong pattern here</strong>, even though it's the right one for tabs, toolbars and menubars. Roving tabindex works by moving focus and shuffling <code>tabindex="0"</code> / <code>tabindex="-1"</code> between siblings — fine when the widget is the only thing the user is operating, useless when they need to keep typing into a different element while they navigate.</p>
+      <p>The correct pattern is a <strong>combobox controlling a listbox</strong>, the same one native autocomplete uses. Focus never leaves the input. You track a virtual cursor with <code>aria-activedescendant</code>, which points the input at the id of the currently highlighted option. Arrow keys move that pointer and a CSS class; focus stays put; typing keeps working. Farvist wires the static half of that in <code>enhance()</code>, so the markup an author writes stays plain HTML:</p>
+      <pre class="snippet"><code>input.setAttribute('role', 'combobox');
+input.setAttribute('aria-expanded', 'true');
+input.setAttribute('aria-autocomplete', 'list');
+input.setAttribute('autocomplete', 'off');
+input.setAttribute('aria-controls', list.id);
+list.setAttribute('role', 'listbox');
+qsa('.command-item', dialog).forEach(function (item) {
+  item.setAttribute('role', 'option');
+  if (!item.hasAttribute('aria-selected')) item.setAttribute('aria-selected', 'false');
+});
+qsa('.command-group', dialog).forEach(function (g) { g.setAttribute('role', 'presentation'); });</code></pre>
+      <p><code>aria-autocomplete="list"</code> tells assistive tech that typing narrows a list rather than completing the text inline. Native <code>autocomplete="off"</code> is unrelated and equally necessary — without it, the browser's own form-fill dropdown can render over your results.</p>
+      <p>The moving half is one function, and it is the whole trick:</p>
+      <pre class="snippet"><code>function cmdSetActive(dialog, item) {
+  qsa('.command-item.is-active', dialog).forEach(function (el) {
+    el.classList.remove('is-active'); el.setAttribute('aria-selected', 'false');
+  });
+  var input = dialog.querySelector('.command-input');
+  if (item) {
+    item.classList.add('is-active');
+    item.setAttribute('aria-selected', 'true');
+    if (!item.id) item.id = 'fvcmd-' + (++cmdId);
+    if (input) input.setAttribute('aria-activedescendant', item.id);
+    item.scrollIntoView({ block: 'nearest' });
+  } else if (input) {
+    input.removeAttribute('aria-activedescendant');
+  }
+}</code></pre>
+      <p>No <code>.focus()</code> anywhere. Four things move together: the <code>.is-active</code> class for sighted users, <code>aria-selected</code> for the accessibility tree, <code>aria-activedescendant</code> on the input for the virtual cursor, and the scroll position. The ids are generated lazily from a counter — an author writing markup by hand should never have to invent unique ids just so the ARIA has something to point at.</p>
+      <p>The rules that follow. Options are <code>&lt;li role="option"&gt;</code>, <em>not</em> links or buttons — ARIA treats an option's children as presentational, so a real <code>&lt;a&gt;</code> or <code>&lt;button&gt;</code> nested inside one is flattened away before assistive tech ever sees it. And in this pattern the option is never focused, so <code>.command-item</code> gets <code>cursor: pointer</code> and no <code>tabindex</code>, and activation is your JS reading the active item. The highlight is driven by the class, never by <code>:hover</code> alone, so the CSS pairs them explicitly:</p>
+      <pre class="snippet"><code>.command-item.is-active,
+.command-item:hover { background-color: var(--fv-glass-bg-strong); }
+
+.command-item { scroll-margin: 0.5rem; }</code></pre>
+      <p>That <code>scroll-margin</code> exists because of <code>scrollIntoView({ block: 'nearest' })</code>: without it, arrowing to the row at the edge of the scroll container parks it flush against the list's padding, which reads as clipped. Half a rem of breathing room is the whole fix.</p>
+
+      <h2>The keyboard contract, in full</h2>
+      <p>Every behaviour below is implemented in the palette's <code>keydown</code> handler or comes free from <code>&lt;dialog&gt;</code>. "Visible items" means the ones surviving the current filter — hidden rows are excluded from the list before any index maths happens, so arrowing never lands on a row you can't see.</p>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr><th>Key</th><th>Behaviour</th><th>Source</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><kbd>⌘K</kbd> / <kbd>Ctrl K</kbd></td><td>Opens the first palette on the page; clears the query and refocuses the input</td><td>farvist.js</td></tr>
+            <tr><td><kbd>↓</kbd></td><td>Next visible item, wrapping from the last back to the first</td><td>farvist.js</td></tr>
+            <tr><td><kbd>↑</kbd></td><td>Previous visible item, wrapping from the first to the last</td><td>farvist.js</td></tr>
+            <tr><td><kbd>Home</kbd></td><td>First visible item</td><td>farvist.js</td></tr>
+            <tr><td><kbd>End</kbd></td><td>Last visible item</td><td>farvist.js</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>Activates the active item; no-op when nothing is active</td><td>farvist.js</td></tr>
+            <tr><td>Any character</td><td>Re-filters, re-hides empty groups, makes the first match active</td><td>farvist.js</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Closes, and focus returns to whatever had it before</td><td><code>&lt;dialog&gt;</code></td></tr>
+            <tr><td><kbd>Tab</kbd></td><td>Not intercepted — the dialog's focus trap keeps it inside the palette</td><td><code>&lt;dialog&gt;</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Arrow wrapping is a plain modulo, which is the behaviour people expect from every palette they've used. One subtlety: when the filter matches nothing, the handler bails before any of the arrow or Enter branches run, so nothing calls <code>preventDefault()</code> and those keys keep their default behaviour rather than firing against an empty list.</p>
+      <p>Worth noting that <kbd>Home</kbd> and <kbd>End</kbd> work but aren't advertised. The <code>.command-hint</code> footer lists only <kbd>↑</kbd><kbd>↓</kbd> navigate, <kbd>↵</kbd> select, <kbd>esc</kbd> close. Three hints is a footer; listing every binding turns it into a manual, and the people who reach for <kbd>Home</kbd> try it without being told.</p>
 
       <h2>Activation</h2>
-      <p>Enter (or a click) activates the highlighted item. The flexible design is to give each item a value and interpret it: a URL or <code>#anchor</code> navigates; anything else is a named action your app handles. Farvist does this with a <code>data-fv-command</code> attribute — a link value navigates, and any other value fires an <code>fv:command</code> event you listen for:</p>
+      <p>Enter (or a click) activates the highlighted item. The flexible design is to give each item one value and interpret it: a URL or <code>#anchor</code> navigates; anything else is a named action your app handles. Farvist puts that value in <code>data-fv-command</code> and branches on its first character:</p>
+      <pre class="snippet"><code>function runCommand(item) {
+  var dialog = item.closest('dialog.command');
+  var val = item.getAttribute('data-fv-command');
+  if (dialog) dialog.close();
+  if (val &amp;&amp; (val.charAt(0) === '/' || val.charAt(0) === '#' || /^https?:/.test(val))) {
+    window.location.href = val;
+  } else if (dialog) {
+    dialog.dispatchEvent(new CustomEvent('fv:command', { bubbles: true, detail: { value: val, item: item } }));
+  }
+}</code></pre>
+      <p>Anything that isn't a link becomes an event you handle:</p>
       <pre class="snippet"><code>palette.addEventListener('fv:command', (e) =&gt; {
-  if (e.detail.value === 'toggle-theme') Farvist.theme('dark');
+  if (e.detail.value === 'skin-synthwave') Farvist.theme('synthwave');
 });</code></pre>
-      <p>That split — navigation for free, custom actions via an event — keeps the component generic without forcing a framework on you.</p>
+      <p>Three deliberate choices here. The dialog closes <em>before</em> the action runs, so a handler that opens another dialog or moves focus isn't fighting a modal that's still in the top layer. The event <code>bubbles</code>, so you can listen on <code>document</code> and never hold a reference to the palette. And <code>detail</code> carries the element as well as the value, so a handler can read any extra data attributes you hung on the row. That split — navigation for free, custom actions via an event — keeps the component generic without forcing a framework on you.</p>
+
+      <h2>What this doesn't solve</h2>
+      <p>The filter is <code>indexOf</code>. It is substring matching, not fuzzy matching, and the query is one contiguous string — so "dark brand" does not match an item whose keywords are "colors dark skins brand", because the words aren't adjacent. Splitting the query on whitespace and requiring every token to appear is about four more lines and would be a strict improvement; proper fuzzy ranking (the <code>cmdk</code> / Fuse.js class of thing) is a different component with a different weight budget. If your users expect to type "gh" and land on GitHub, you want a scorer, not this.</p>
+      <p>Related: the haystack is <code>item.textContent</code>, which is everything rendered in the row with no separator between child elements. The shortcut hint in <code>.command-kbd</code> is searchable whether you meant it to be or not, and a label that ends immediately before a hint concatenates with it — a row rendering <code>GitHub</code> plus a <code>↗</code> hint produces the string <code>github↗</code>, so a query spanning that boundary won't match. Keep queries short and lean on <code>data-fv-keywords</code>.</p>
+      <p>There is no ranking at all. Results appear in DOM order, so the first item you authored is always the default <kbd>Enter</kbd> target for an empty query. There is no recency, no frecency, no "you ran this yesterday" boost — the things that make Raycast and Linear feel psychic. Those need persistent state; Farvist's palette is stateless markup.</p>
+      <p>There is no virtualization. Every keystroke walks every <code>.command-item</code> in the dialog, and every item stays in the DOM; <code>.command-list</code> is just <code>max-height: min(24rem, 50vh)</code> with <code>overflow-y: auto</code>. For the six-item palette in our docs this is free. For a few hundred it's fine. For a palette over every file in a repo, you want a windowed list and a worker, and you should not start from this component.</p>
+      <p>Nor is it async. The item set is static markup, so a palette that queries a server as you type needs you to inject rows and re-run <code>Farvist.enhance()</code> to apply the roles — <code>enhance()</code> runs once on load and is exported for exactly this.</p>
+      <p>Two accessibility gaps we know about. Filtering doesn't announce anything: there's no live region, so a screen reader user who types four characters that eliminate every result hears silence rather than the empty state. And <code>aria-expanded</code> is set to <code>"true"</code> once and never updated, which is honest while the listbox is on screen and slightly wrong when the filter has emptied it. Both are on the list.</p>
+      <p>One trade-off we chose rather than deferred: <code>.command-group</code> headings get <code>role="presentation"</code>. A listbox's children have to be options or groups, and a bare heading <code>&lt;li&gt;</code> is neither, so the simplest valid fix is to remove it from the accessibility tree. The cost is that the visual grouping doesn't reach screen reader users, who get one flat list of options. The more correct structure — nested <code>role="group"</code> containers with <code>aria-label</code> — means restructuring the markup an author writes, and we judged the flat list the better default. If your groups carry real meaning, that's the version to build.</p>
 
       <h2>Putting it together</h2>
-      <p>Good command palettes feel instant and never trap you. That comes down to: open on ⌘K without hijacking the browser, lean on <code>&lt;dialog&gt;</code> for the overlay, keep focus in the input and steer with <code>aria-activedescendant</code>, and treat items as data you act on rather than links you focus. Get the keyboard model right and the rest is styling.</p>
+      <p>Four decisions carry most of the weight: claim ⌘K only when you have something to open, lean on <code>&lt;dialog&gt;</code> for the top layer and the focus trap but position it yourself, keep focus in the input and steer with <code>aria-activedescendant</code>, and treat items as data you act on rather than links you focus.</p>
       <p>If you'd rather not build it, Farvist ships the whole thing as a <code>.command</code> component — <a href="/docs/#command">try it in the docs</a> (press ⌘K), or read the <a href="/blog/ai-era/">bigger idea</a> behind a framework designed for the keyboard-and-AI era.</p>
     </article>
 
@@ -124,7 +251,7 @@
 
   <footer class="glass-strong text-center p-6" style="border-radius:0;">
     <div class="container">
-      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+      <p class="text-muted mb-0"><a href="/">Home</a> · <a href="/docs/">Docs</a> · <a href="/blog/">Blog</a> · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · MIT licensed</p>
     </div>
   </footer>
 

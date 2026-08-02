@@ -13,7 +13,7 @@
   <url><loc>https://farvist.com/llms-full.txt</loc><lastmod>2026-06-26</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://farvist.com/ai-context.json</loc><lastmod>2026-06-26</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://farvist.com/privacy/</loc><lastmod>2026-07-02</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://farvist.com/blog/</loc><lastmod>2026-07-03</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://farvist.com/blog/</loc><lastmod>2026-08-02</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://farvist.com/blog/ai-era/</loc><lastmod>2026-07-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://farvist.com/blog/bring-your-brand/</loc><lastmod>2026-07-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://farvist.com/themer/</loc><lastmod>2026-07-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -23,6 +23,9 @@
   <url><loc>https://farvist.com/contact/</loc><lastmod>2026-07-16</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
   <url><loc>https://farvist.com/terms/</loc><lastmod>2026-07-16</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://farvist.com/blog/glassmorphism-accessibility/</loc><lastmod>2026-07-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://farvist.com/blog/command-palette-ux/</loc><lastmod>2026-07-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farvist.com/blog/command-palette-ux/</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://farvist.com/blog/glassmorphism-css-guide/</loc><lastmod>2026-07-29</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farvist.com/blog/cascade-layers-preflight/</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farvist.com/blog/three-builds/</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://farvist.com/blog/ai-chat-ui/</loc><lastmod>2026-08-02</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

@@ -34,7 +34,7 @@
     "description": "The color-mix() + custom-property architecture behind Farvist's runtime re-branding.",
     "image": "https://farvist.com/assets/og-image.png",
     "datePublished": "2026-07-03",
-    "dateModified": "2026-07-03",
+    "dateModified": "2026-08-02",
     "author": { "@type": "Person", "name": "FloKuersten" },
     "publisher": { "@type": "Organization", "name": "Farvist", "url": "https://farvist.com" },
     "mainEntityOfPage": "https://farvist.com/blog/bring-your-brand/"
@@ -65,49 +65,147 @@
     <header class="article-head">
       <div class="d-flex gap-2 mb-3"><span class="chip chip-primary">Engineering</span><span class="chip">Theming</span></div>
       <h1 class="fs-4xl fw-black mb-3" style="line-height:1.1;">Runtime theming with <span class="text-gradient">zero build step</span></h1>
-      <p class="text-muted mb-0">July 3, 2026 · 7 min read</p>
+      <p class="text-muted mb-0">July 3, 2026 · 10 min read</p>
     </header>
 
     <article class="prose">
-      <p class="fs-lg">Here's a limitation most CSS frameworks share and rarely say out loud: if you load them from a CDN, you can't really change the colors. The palette was baked in at build time. To make it match your brand you have to install the toolchain, edit a config, and recompile. Farvist's v1.3 release was about removing that constraint entirely. This is how it works.</p>
+      <p class="fs-lg">Here's a limitation most CSS frameworks share and rarely say out loud: if you load them from a CDN, you can't really change the colors. The palette was baked in at build time. To make it match your brand you have to install the toolchain, edit a config, and recompile. Farvist's v1.3 release was about removing that constraint entirely. This is how it works — including the two places where the translation is not as clean as the marketing line suggests.</p>
 
       <h2>The problem with baked colors</h2>
-      <p>A framework built in Sass typically computes derived shades at compile time. A button's hover state is <code>darken($primary, 8%)</code>; a soft badge is <code>rgba($primary, 0.16)</code>; a neon glow is a shadow tuned to the brand. All of that math runs once, during the build, and freezes into hex values in the shipped CSS. Change <code>$primary</code> and you have to run the build again to propagate it.</p>
+      <p>A framework built in Sass typically computes derived shades at compile time. A button's hover state is <code>color.scale($primary, $lightness: 8%)</code>; a soft badge is <code>rgba($primary, 0.16)</code>; a neon glow is a shadow tuned to the brand. All of that math runs once, during the build, and freezes into hex values in the shipped CSS. Change <code>$primary</code> and you have to run the build again to propagate it.</p>
       <p>That's fine if you have a build. But a CDN user — or an AI assistant writing CSS in a sandbox — doesn't. For them, the palette is effectively read-only.</p>
 
       <h2>Step one: mirror every token to a custom property</h2>
-      <p>The first move is to stop consuming Sass variables directly in component rules and instead consume CSS custom properties that are <em>emitted</em> from those Sass variables. The Sass tokens become configuration; the custom properties become the live wiring.</p>
-<pre class="snippet"><code>/* one place emits the tokens */
-:root { --fv-primary: #6d4af5; --fv-info: #22d3ee; /* … */ }
+      <p>The first move is to stop consuming Sass variables directly in component rules and instead consume CSS custom properties that are <em>emitted</em> from those Sass variables. The Sass tokens become configuration; the custom properties become the live wiring. In <code>scss/base/_root.scss</code> that's a loop over the same maps the utility generators use:</p>
+<pre class="snippet"><code>:root {
+  // Theme colors → --fv-primary, --fv-accent, --fv-danger, …
+  @each $name, $value in $theme-colors { --fv-#{$name}: #{$value}; }
+  @each $key,  $value in $grays        { --fv-gray-#{$key}: #{$value}; }
+  // …surfaces, glass, typography, shadows, glows, gradients
+}
 
 /* components read the variable, never the Sass value */
 .text-primary { color: var(--fv-primary); }</code></pre>
-      <p>Now overriding <code>--fv-primary</code> on <code>:root</code> recolors anything that references it — instantly, at runtime, with no rebuild. That alone handles flat colors. The hard part is the <em>derived</em> ones.</p>
+      <p>That block compiles to 55 custom properties on <code>:root</code>, and <code>dist/farvist.css</code> refers back to them 942 times. Overriding <code>--fv-primary</code> recolors anything that references it — instantly, at runtime, with no rebuild. That alone handles flat colors. The hard part is the <em>derived</em> ones.</p>
 
       <h2>Step two: derive shades with color-mix() instead of Sass</h2>
-      <p>This is the key that makes the whole thing work. <code>color-mix()</code> does at runtime what Sass color functions do at build time — and it accepts custom properties as inputs. The translations are close to one-to-one:</p>
-<pre class="snippet"><code>/* build-time Sass          →  runtime CSS                                   */
-rgba($primary, 0.16)        →  color-mix(in srgb, var(--fv-primary) 16%, transparent)
-color.mix($white, $c, 45%)  →  color-mix(in srgb, white 45%, var(--fv-primary))
-color.scale($c, -10%)       →  color-mix(in srgb, var(--fv-primary) 90%, black)</code></pre>
-      <p>Because <code>rgba(C, 0.16)</code> is mathematically the same as mixing 16% of <code>C</code> with transparent, the default output is <em>pixel-identical</em> to the old baked version — we verified that by diffing computed styles across every component against the previous build. But now the inputs are variables, so the same declarations follow a re-brand. Gradients, the frosted-glass mesh backdrops, the body's ambient orbs, hover and active states, focus rings — all of it recolors from one override.</p>
+      <p><code>color-mix()</code> does at runtime what Sass color functions do at build time — and it accepts custom properties as inputs. Four translations cover essentially every derivation in the framework:</p>
+<pre class="snippet"><code>/* build-time Sass                          →  runtime CSS                                            */
+rgba($primary, .16)                         →  color-mix(in srgb, var(--fv-primary) 16%, transparent)
+color.mix($white, $primary, 45%)            →  color-mix(in srgb, white 45%, var(--fv-primary))
+color.scale($primary, $lightness:   8%)     →  color-mix(in srgb, var(--fv-primary) 92%, white)
+color.scale($primary, $lightness: -10%)     →  color-mix(in srgb, var(--fv-primary) 90%, black)</code></pre>
+      <p>The first row is exact, and it is exact for a non-obvious reason: <code>color-mix()</code> interpolates in <em>premultiplied</em> alpha. Mixing a color at 16% with <code>transparent</code> — which is <code>rgba(0,0,0,0)</code> — yields alpha 0.16 and, once un-premultiplied, exactly the original color. Had the spec interpolated straight channels instead, you'd get the color dragged 84% of the way toward black and then made translucent, which is a completely different swatch. The whole soft-badge/alert/chip layer rests on that detail.</p>
+      <p>The second row is exact too: Sass's legacy <code>color.mix()</code> is a plain per-channel sRGB lerp for opaque colors, and so is <code>color-mix(in srgb, …)</code>. <code>color.mix(#ffffff, #6d4af5, 45%)</code> and the hand-written lerp both give <code>rgb(175, 155, 250)</code>.</p>
+      <p>So the same declarations now follow a re-brand. Gradients, the frosted-glass mesh backdrops, the body's ambient orbs, the <code>.bg-spotlight-*</code> washes, hover and active states, focus rings — <code>dist/farvist.css</code> contains 223 <code>color-mix()</code> calls, and they resolve through <code>var(--fv-*)</code>. A compiled button variant is nothing but a block of them:</p>
+<pre class="snippet"><code>.btn-primary {
+  --fv-btn-bg: var(--fv-primary);
+  --fv-btn-color: var(--fv-primary-contrast, #ffffff);
+  --fv-btn-border: var(--fv-primary);
+  --fv-btn-hover-bg: color-mix(in srgb, var(--fv-primary) 92%, white);
+  --fv-btn-hover-border: color-mix(in srgb, var(--fv-primary) 88%, white);
+  --fv-btn-active-bg: color-mix(in srgb, var(--fv-primary) 90%, black);
+  --fv-btn-focus-ring: color-mix(in srgb, var(--fv-primary) 45%, transparent);
+  --fv-btn-glow: 0 0 24px color-mix(in srgb, var(--fv-primary) 55%, transparent);
+}</code></pre>
+
+      <h2>Where the translation is exact — and where it quietly isn't</h2>
+      <p>Rows three and four of that table are the ones worth being careful about, because <code>color.scale()</code> and <code>color-mix()</code> are not the same operation. <code>color.scale($lightness: p)</code> moves HSL lightness a fraction of the way to the endpoint (<code>L' = L + (1 − L)·p</code> going up). <code>color-mix(in srgb, C 92%, white)</code> is a straight per-channel lerp in sRGB. Different spaces, different math.</p>
+      <p>They coincide under a condition. Mixing toward white scales every channel by <code>(1 − p)</code> and adds <code>p</code>, so HSL lightness lands on <code>L(1 − p) + p</code> — algebraically the same place <code>color.scale</code> puts it. Saturation, on the branch HSL uses when <code>L ≥ 0.5</code>, is <code>delta / (2(1 − L))</code>; numerator and denominator both pick up the same <code>(1 − p)</code> factor and it cancels. Hue is untouched. So <strong>for any color at or above 50% HSL lightness, mixing toward white in sRGB is byte-identical to scaling lightness up.</strong> Mixing toward black is the mirror image — exact only when <code>L ≤ 0.5</code>, where the saturation branch is <code>delta / 2L</code> and the factor cancels the same way.</p>
+      <p>Compiled through Dart Sass and rounded to 8-bit, for the default <code>$primary: #6d4af5</code> (HSL lightness 62.5%):</p>
+<pre class="snippet"><code>color.scale(+8%)   → rgb(121, 88, 246)     mix 92% + white → rgb(121, 88, 246)   identical
+color.scale(+28%)  → rgb(150, 125, 248)    mix 72% + white → rgb(150, 125, 248)  identical
+color.scale(−10%)  → rgb( 85, 44, 243)     mix 90% + black → rgb( 98, 67, 221)   drift</code></pre>
+      <p>Eight of the nine theme colors sit above 50% lightness, so for those eight every <code>:hover</code> shade survived the port exactly and the <code>:active</code> fill is where the default look actually moved: sRGB darkening pulls a color toward grey, while HSL scaling holds its saturation — 0.89 before, 0.69 after, for primary. <code>$dark</code> (<code>#0b0f1d</code>, lightness 7.8%) is the mirror case: its <code>:active</code> is exact and its <code>:hover</code> is the one that drifts.</p>
+      <p>We took that trade — it's a fill that only shows while the button is held — but "mathematically equivalent" is only true in one direction per color, and it's worth knowing which direction you're in before you port your own framework this way.</p>
+
+      <h2>The one token that stayed baked</h2>
+      <p>Of the 55 properties <code>:root</code> emits, 54 either hold a literal you'd want to override or a <code>color-mix()</code> expression that follows one. One does not:</p>
+<pre class="snippet"><code>--fv-primary-text: rgb(58.7764705882%, 48.8941176471%, 97.1764705882%);</code></pre>
+      <p>That's <code>color.scale($primary, $lightness: 28%)</code> frozen at build time — a lighter violet for readable text on the dark surface. It exists because the brand primary only reaches <strong>3.74:1</strong> against the <code>#060912</code> body background and fails AA outright; the lightened tint reaches <strong>6.22:1</strong>.</p>
+      <p>Because it's a literal, it does <em>not</em> follow <code>--fv-primary</code>. And it is not a niche token — in the compiled CSS it colors every bare <code>&lt;a&gt;</code>, <code>.btn-link</code>, the resting text of <code>.btn-outline-primary</code>, the <code>.streaming</code> caret, <code>.cite</code> chips, and the active command-palette icon. A "re-brand" that sets only <code>--fv-primary</code> leaves all your links the old violet. That is the real reason the documented snippet is five lines and not three, and why all five built-in skins set <code>primary-text</code> explicitly.</p>
+      <p>The asymmetry is worth noting: <code>primary</code> is the only color with a <code>-text</code> token defined in <code>:root</code>. <code>.btn-outline-success</code> compiles to <code>var(--fv-success-text, var(--fv-success))</code>, and since nothing defines <code>--fv-success-text</code>, it falls through to the live brand color and re-brands correctly on its own. Only the primary path has a baked default sitting in the way.</p>
 
       <h2>The escape hatch: contrast</h2>
-      <p>One thing genuinely doesn't survive the move to runtime: WCAG contrast math. Whether white or black text is readable on a fill depends on the fill, and there's no pure-CSS way to compute "the accessible text color for this variable." So each color exposes an optional companion:</p>
+      <p>One thing genuinely doesn't survive the move to runtime: WCAG contrast math. Whether white or black text is readable on a fill depends on the fill's relative luminance, and there's no pure-CSS way to compute "the accessible text color for this variable." Sass can: <code>contrast-color()</code> in <code>scss/abstracts/_functions.scss</code> does the real thing — sRGB channels linearized, weighted 0.2126 / 0.7152 / 0.0722, both candidates scored — rather than the YIQ shortcut.</p>
+      <p>So the <code>button-variant</code> mixin runs that math at build time and parks the answer inside a <code>var()</code> fallback:</p>
+<pre class="snippet"><code>--fv-btn-color: var(--fv-#{$token}-contrast, #{$text});
+
+/* compiles to */
+.btn-primary   { --fv-btn-color: var(--fv-primary-contrast,   #ffffff); }
+.btn-secondary { --fv-btn-color: var(--fv-secondary-contrast, #0b0f1d); }</code></pre>
+      <p><code>--fv-{color}-contrast</code> is never defined on <code>:root</code>. The only definitions anywhere in the build are the <code>--fv-primary-contrast</code> each of the five skins sets; for every other color it exists only as the named hole in that <code>var()</code>. Define it on <code>:root</code> and it wins; leave it and you get the compile-time answer for the default palette — white for <code>primary</code> (5.32:1) and <code>dark</code>, <code>#0b0f1d</code> for the other seven.</p>
 <pre class="snippet"><code>:root {
   --fv-primary: #f59e0b;            /* a light amber brand    */
   --fv-primary-contrast: #1c1917;   /* dark text on the fill  */
 }</code></pre>
-      <p>The default is computed at build time for the default palette; you only override the contrast token when your brand flips between a light and dark fill. It's the one place the human (or the AI) has to make a judgment call, so it's explicit rather than magic.</p>
+      <p>You need this exactly when your brand crosses the brightness boundary the default sat on — swap violet for amber and <code>#ffffff</code> goes from readable to not. Nothing warns you at runtime. This is the one judgment call the architecture hands back to a human, so it's explicit rather than magic.</p>
 
       <h2>Guarding it in CI</h2>
-      <p>A refactor like this has a sneaky failure mode: someone later writes <code>color: #6d4af5</code> directly in a component, and it silently stops following the theme. So there's a CI gate that greps the compiled CSS and fails the build if any brand color appears outside a <code>--fv-*</code> definition. Runtime theming can't quietly regress, because "quietly" is exactly what the gate is watching for.</p>
+      <p>A refactor like this has a sneaky failure mode: someone later writes <code>color: #6d4af5</code> directly in a component, and it silently stops following the theme. The page still looks right, the tests still pass, and the only symptom is that <em>somebody else's</em> re-brand comes out subtly wrong months later.</p>
+      <p>So <code>scripts/check-theming.mjs</code> walks the compiled CSS line by line. A line matching <code>/^\s*--fv-[\w-]+:/</code> is the sanctioned home for a brand literal; anything else containing one of the brand hexes — or its <code>rgb()</code>/<code>rgba()</code> channel form, since Sass sometimes compiles hexes that way — is an offender. Appending one bad rule to <code>dist/farvist.css</code> and running the gate gives:</p>
+<pre class="snippet"><code>$ node scripts/check-theming.mjs
+✘ check-theming: 1 baked brand color(s) outside --fv-* definitions:
+
+  9266: [primary hex] .demo-regression { color: #6d4af5; }
+$ echo $?
+1</code></pre>
+      <p>It runs in <code>.github/workflows/ci.yml</code> right after the bundle-size budget, so runtime theming can't quietly regress.</p>
+      <p>Being honest about what it isn't: the brand palette is duplicated inside the script, and the script's own comment says so. Change <code>$primary</code> in <code>_variables.scss</code> without updating the <code>BRAND</code> map in <code>check-theming.mjs</code> and the gate keeps passing cheerfully while guarding a color that no longer ships. It catches derivation regressions, which is what it was built for. It is not a general "no hardcoded colors" linter.</p>
+
+      <h2>Skins: the payoff for doing it properly</h2>
+      <p>Once every derived color resolves from a variable, a whole theme is just a small block of token overrides. <code>scss/base/_skins.scss</code> is 26 lines, of which about a dozen do any work:</p>
+<pre class="snippet"><code>@each $skin, $tokens in $skins {
+  :root[data-theme='#{$skin}'],
+  [data-theme='#{$skin}'] {
+    @each $key, $value in $tokens {
+      @if $key == 'color-scheme' { color-scheme: $value; }
+      @else { --fv-#{$key}: #{$value}; }
+    }
+  }
+}</code></pre>
+      <p>Adding a skin means adding a map entry. <code>synthwave</code> is seven custom properties plus <code>color-scheme</code>:</p>
+<pre class="snippet"><code>:root[data-theme=synthwave],
+[data-theme=synthwave] {
+  color-scheme: dark;
+  --fv-primary: #ec4899;
+  --fv-accent: #8b5cf6;
+  --fv-info: #22d3ee;
+  --fv-primary-text: #f9a8d4;
+  --fv-primary-contrast: #2b0517;
+  --fv-body-bg: #12041f;
+  --fv-surface-solid: #1d0b30;
+}</code></pre>
+      <p>Everything else — gradients, glows, meshes, the ambient orbs, hover states, focus rings — follows, because each of those was already a <code>color-mix()</code> over a <code>var()</code>. The light skin, <code>dawn</code>, compiles to sixteen, because flipping to a light surface also means moving the glass fills, the border ink, the code background and the pattern ink. That's the honest cost of a light theme: three of those tokens are your brand and two are its readable text pairings, and the remaining eleven are the surface it has to sit on.</p>
+      <p>Semantic colors stay constant across every skin on purpose. A red error should stay red in synthwave.</p>
+      <p>The second gate, <code>scripts/check-skins.mjs</code>, is the one that earned its keep. It parses the <strong>compiled</strong> CSS — pulling each <code>[data-theme='…']</code> block and its <code>--fv-*</code> hex tokens — and asserts four relationships per skin at ≥4.5:1: <code>primary-text</code>, <code>muted</code> and <code>body-color</code> against that skin's own <code>body-bg</code>, plus <code>primary-contrast</code> against its <code>primary</code>. Grading the shipped artifact rather than the Sass source means a skin can't pass on paper and fail in the bundle.</p>
+      <p>Per the v1.4.0 changelog entry, it caught a 4.40:1 miss in <code>dawn</code> before release. <code>dawn</code> is still the tightest skin in the set, and the numbers show why light themes are where this goes wrong:</p>
+<pre class="snippet"><code>dawn       #c2410c on #faf6f1   =  4.81:1     ← 0.31 of headroom
+synthwave  #f9a8d4 on #12041f   = 10.89:1
+forest     #6ee7b7 on #041410   = 12.38:1
+cyber      #86efac on #02120a   = 13.68:1
+noir       #e5e7eb on #0a0a0b   = 15.98:1</code></pre>
+      <p>A dark skin has enormous headroom; a light one has almost none.</p>
+      <p>That gate has blind spots too, and they're worth stating. It skips the built-in <code>light</code> theme by name (it predates skins). It checks four pairs, not every text-on-surface combination in the framework. And its token regex only matches <code>#hex</code> values, so a skin that wrote its <code>primary-text</code> as <code>rgb()</code> or <code>oklch()</code> would be silently skipped rather than failed.</p>
+
+      <h2>What this doesn't solve</h2>
+      <p><strong>There is no fallback for <code>color-mix()</code>.</strong> Farvist's <code>browserslist</code> floor is Chrome/Edge ≥ 111, Firefox ≥ 113, Safari and iOS Safari ≥ 16.4 — and 223 derivations depend on the function. Every one of them also contains a <code>var()</code>, which is what makes the failure mode nasty: a declaration containing <code>var()</code> parses fine and is only checked after substitution, so on an older engine it is invalid at computed-value time — the property doesn't fall back to an earlier declaration, it resets. A soft badge loses its tint entirely rather than getting a worse one. There is also no build flag that gets you back to baked literals — configuring colors through <code>@use 'farvist/scss/farvist' with (…)</code> changes which values land in the custom properties, but the derivations stay <code>color-mix()</code>. The floor is the floor.</p>
+      <p><strong>Debugging costs more.</strong> DevTools used to show a hex and a swatch on <code>.btn-primary:hover</code>. It now shows <code>color-mix(in srgb, var(--fv-primary) 92%, white)</code>, and answering "why is this the color it is" means checking three places: the component rule, the <code>:root</code> token, and whichever <code>[data-theme]</code> block is currently winning. The bundle did get smaller when we made the change — 20.5 → 20.2 KB gzip at v1.3, because repeated <code>color-mix(in srgb, var(--fv-</code> strings compress far better than scattered hexes, and the full build is 21.3 KB gzip today — but we have not measured a rendering cost either way, so we're not going to claim there isn't one.</p>
+      <p><strong>Contrast is still human judgment.</strong> The gates check what we told them to check. <code>.badge-soft-primary</code> derives its text as a fixed <code>color-mix(in srgb, #ffffff 45%, var(--fv-primary))</code>; 45% is tuned for the default palette and nothing recomputes it when you swap the brand. Re-brand to a pale yellow and that text goes pale on glass, and no CI job will tell you. Runtime theming moves the color. It doesn't move the taste.</p>
+      <p><strong>Not everything follows you, by design.</strong> Shadows are <code>rgba(0, 0, 0, …)</code>, the glass fills are white at 6–14% alpha, the greys are literal. Glass is a material, not a brand, and tinting it with every re-brand would look worse, not better. So "override one variable and everything changes" is shorthand: what changes is everything derived from the brand tokens.</p>
 
       <h2>What it buys</h2>
-      <p>Re-branding the entire framework is now five lines of CSS you can paste anywhere — including into a CDN-only page, or into a prompt. Prebuilt <em>skins</em> like <code>data-theme="synthwave"</code> are nothing more than small blocks of these same token overrides, each checked for contrast in CI. And the thing that made all of it possible — <code>color-mix()</code> — is already in every browser Farvist supports, so there was no baseline cost to pay.</p>
-      <p>The broader lesson: the line between "configuration" and "runtime state" is worth moving as far toward runtime as the platform allows. Every token you can resolve in the browser is a token your users can change without your toolchain. That turns out to matter more than ever, now that some of those users are models.</p>
+      <p>Re-branding the entire framework is five lines of CSS you can paste anywhere — into a CDN-only page, into a Theme Builder, or into a prompt:</p>
+<pre class="snippet"><code>:root {
+  --fv-primary: #10b981;
+  --fv-accent:  #a3e635;
+  --fv-info:    #2dd4bf;
+  --fv-primary-text: #6ee7b7;      /* links + outline buttons  */
+  --fv-primary-contrast: #06281d;  /* text on filled buttons   */
+}</code></pre>
+      <p>Skins are the same five lines with a name attached and a contrast gate behind them. The broader lesson: every token you can resolve in the browser is a token your users can change without your toolchain — and some of those users are now models, which cannot run your toolchain at all.</p>
 
-      <p>You can try it live on the <a href="/#brand">homepage</a> — click a brand and watch the page recolor — or read the <a href="/docs/#theming">theming docs</a>.</p>
+      <p>You can try it live on the <a href="/#brand">homepage</a> — click a brand and watch the page recolor — or use the <a href="/themer/">Theme Builder</a> to generate the block. The <a href="/docs/#theming">theming docs</a> cover the full token list.</p>
     </article>
 
     <div class="my-5" style="text-align:center;">

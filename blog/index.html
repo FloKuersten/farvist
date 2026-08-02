@@ -37,8 +37,6 @@
     .post-card { transition: transform var(--fv-transition), box-shadow var(--fv-transition); }
     .post-card:hover { transform: translateY(-3px); }
   </style>
-  <!-- Google AdSense (Auto ads — this page only) -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6218580857599399" crossorigin="anonymous"></script>
 </head>
 <body class="bg-mesh-nebula">
   <a class="skip-link" href="#main">Skip to posts</a>
@@ -59,12 +57,39 @@
     </header>
 
     <div class="d-grid gap-4">
+      <a class="card post-card" href="/blog/cascade-layers-preflight/" style="text-decoration:none;">
+        <div class="card-body">
+          <div class="d-flex gap-2 mb-2"><span class="chip chip-info">CSS</span><span class="chip">Cascade</span></div>
+          <h2 class="fs-2xl fw-bold mb-2">Why @layer makes your CSS lose to Tailwind</h2>
+          <p class="text-muted mb-3">Un-layered CSS beats any layered rule, whatever the specificity. That one line of the cascade spec is why a polite, fully-layered framework gets stripped bare on a Tailwind v3 page — and what to do about it.</p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">August 2, 2026 · 11 min read · <span class="text-primary">Read →</span></p>
+        </div>
+      </a>
+
+      <a class="card post-card" href="/blog/three-builds/" style="text-decoration:none;">
+        <div class="card-body">
+          <div class="d-flex gap-2 mb-2"><span class="chip chip-primary">Engineering</span><span class="chip">Performance</span></div>
+          <h2 class="fs-2xl fw-bold mb-2">What actually costs bytes in a CSS framework</h2>
+          <p class="text-muted mb-3">We set out to cut the AI components to save weight, measured every layer, and found we'd guessed wrong: the generated utilities dominate the budget and the whole component kit was noise. The numbers, and what they changed.</p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">August 2, 2026 · 8 min read · <span class="text-primary">Read →</span></p>
+        </div>
+      </a>
+
+      <a class="card post-card" href="/blog/ai-chat-ui/" style="text-decoration:none;">
+        <div class="card-body">
+          <div class="d-flex gap-2 mb-2"><span class="chip chip-accent">AI</span><span class="chip">Design</span></div>
+          <h2 class="fs-2xl fw-bold mb-2">The AI chat UI components nobody documents</h2>
+          <p class="text-muted mb-3">Everyone styles a message bubble. Nobody writes down the rest — tool-call cards, reasoning disclosures, streaming carets, diffs and citations — or the traps in each, like rendered markdown fighting your bubble's whitespace.</p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">August 2, 2026 · 11 min read · <span class="text-primary">Read →</span></p>
+        </div>
+      </a>
+
       <a class="card post-card" href="/blog/glassmorphism-css-guide/" style="text-decoration:none;">
         <div class="card-body">
           <div class="d-flex gap-2 mb-2"><span class="chip chip-info">CSS</span><span class="chip">Tutorial</span></div>
           <h2 class="fs-2xl fw-bold mb-2">Glassmorphism in CSS: a practical guide</h2>
-          <p class="text-muted mb-3">Frosted glass is four CSS properties in a trench coat. The complete recipe — <code>backdrop-filter</code>, fills, borders, fallbacks — plus the five mistakes that make glass look cheap. All copy-paste.</p>
-          <p class="text-muted mb-0" style="font-size:.9rem;">July 29, 2026 · 8 min read · <span class="text-primary">Read →</span></p>
+          <p class="text-muted mb-3">Frosted glass is four CSS properties in a trench coat. The complete recipe — <code>backdrop-filter</code>, fills, borders, fallbacks — plus the mistakes that make glass look cheap. All copy-paste.</p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">July 29, 2026 · 12 min read · <span class="text-primary">Read →</span></p>
         </div>
       </a>
 
@@ -73,7 +98,7 @@
           <div class="d-flex gap-2 mb-2"><span class="chip chip-info">Accessibility</span><span class="chip">CSS</span></div>
           <h2 class="fs-2xl fw-bold mb-2">Glassmorphism, done accessibly</h2>
           <p class="text-muted mb-3">Frosted-glass UI looks stunning and fails accessibility more often than any other trend. The four places it breaks — contrast, fallbacks, focus and motion — and the concrete fix for each.</p>
-          <p class="text-muted mb-0" style="font-size:.9rem;">July 16, 2026 · 7 min read · <span class="text-primary">Read →</span></p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">July 16, 2026 · 14 min read · <span class="text-primary">Read →</span></p>
         </div>
       </a>
 
@@ -81,8 +106,8 @@
         <div class="card-body">
           <div class="d-flex gap-2 mb-2"><span class="chip chip-primary">UX</span><span class="chip">Accessibility</span></div>
           <h2 class="fs-2xl fw-bold mb-2">The anatomy of a command palette (⌘K)</h2>
-          <p class="text-muted mb-3">Every dev tool has a ⌘K menu now. What actually makes one good — the five parts, the keyboard model, and the combobox/listbox ARIA pattern nine out of ten hand-built palettes get wrong.</p>
-          <p class="text-muted mb-0" style="font-size:.9rem;">July 16, 2026 · 7 min read · <span class="text-primary">Read →</span></p>
+          <p class="text-muted mb-3">Every dev tool has a ⌘K menu now. What actually makes one good — the five parts, the keyboard model, the combobox/listbox ARIA pattern most hand-built palettes get wrong, and the centering bug we shipped a fix for in 1.7.1.</p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">July 16, 2026 · 12 min read · <span class="text-primary">Read →</span></p>
         </div>
       </a>
 
@@ -91,7 +116,7 @@
           <div class="d-flex gap-2 mb-2"><span class="chip chip-accent">AI</span><span class="chip">Design</span></div>
           <h2 class="fs-2xl fw-bold mb-2">Building a CSS framework for the AI era</h2>
           <p class="text-muted mb-3">AI assistants write UI code every day — but they hallucinate class names and can't run your build step. Three design choices that make Farvist findable, writable, and re-brandable by a model.</p>
-          <p class="text-muted mb-0" style="font-size:.9rem;">July 3, 2026 · 6 min read · <span class="text-primary">Read →</span></p>
+          <p class="text-muted mb-0" style="font-size:.9rem;">July 3, 2026 · 11 min read · <span class="text-primary">Read →</span></p>
         </div>
       </a>
 
@@ -103,10 +128,6 @@
           <p class="text-muted mb-0" style="font-size:.9rem;">July 3, 2026 · 7 min read · <span class="text-primary">Read →</span></p>
         </div>
       </a>
-    </div>
-
-    <div class="my-5" style="text-align:center;">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6218580857599399" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
     </div>
 
     <div class="text-center mt-6">
@@ -123,6 +144,5 @@
   </footer>
 
   <script src="/assets/farvist.js" defer></script>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </body>
 </html>
