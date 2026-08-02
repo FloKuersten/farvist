@@ -2,6 +2,14 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.7.2] — 2026-08-02
+### Fixed
+- **`.modal` was never centered** — the other half of the bug 1.7.1 fixed in the command palette. A modal `<dialog>` is centered by `dialog { margin: auto }` in the *user-agent* stylesheet, which our own `@layer reset { * { margin: 0 } }` beats; `.modal` declared no `position` and no `margin`, so nothing in `@layer components` won those values back. Against the shipped 1.7.1 stylesheet at 1280×900 the docs modal rendered at `left: 5px, top: 18px` — flat in the top-left corner, on the page documenting the component. Now positioned explicitly on both axes (`position: fixed; top: 50%; left: 50%; margin: 0; translate: -50% -50%`), which also survives a host page's un-layered `* { margin: 0 }`. As with the palette, the offset uses `translate` rather than `transform` — the `fv-modal-in` keyframes own `transform` and would replace a transform-based offset for the duration of the open animation.
+### Notes
+- Verified in-browser (headless Chrome, 1280×900) against the real docs modal markup and against a bare host page with an un-layered `* { margin: 0 }`: centered in both, and centered mid-animation. `.modal` is not part of `farvist-ai.css` (the AI kit ships `.command`, not `.modal`), so that build is unaffected.
+- Audited the rest of the framework for the same class of bug: `<dialog>`, `<hr>` and `[popover]` are the only elements Chromium's UA sheet gives *auto* margins. `hr` declares its own margins in `@layer base`, `[popover]` is unused, and no rule anywhere in the sheet targets a bare `dialog` type selector — `.modal` and `.command` were the only two, and both are now positioned explicitly.
+- CSS-only release: `dist/farvist.css` gains the four `.modal` positioning declarations; no JS, markup or token changes.
+
 ## [1.7.1] — 2026-07-29
 Quality patch — an adversarial review of v1.7.0 (27 agents, findings independently reproduced before fixing) confirmed 21 defects, almost all in how the new `farvist-ai.css` add-on behaves on real host pages. All fixed and re-verified in-browser against real Tailwind v3 preflight, a bare light host, and the slim build.
 ### Fixed — farvist-ai.css standalone correctness

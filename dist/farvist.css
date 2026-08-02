@@ -2807,6 +2807,11 @@
   .modal {
     width: calc(100% - 1.5rem);
     max-width: 32rem;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    translate: -50% -50%;
     padding: 0;
     color: var(--fv-body-color);
     border-radius: 1.125rem;

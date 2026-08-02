@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
@@ -16,7 +16,7 @@
       },
       {
         "file": "dist/farvist-slim.min.css",
-        "gzipKb": 19.1,
+        "gzipKb": 19.2,
         "contents": "the framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) — for sites that never render AI conversations"
       },
       {
