@@ -57,6 +57,58 @@ for (const [name, tokens] of Object.entries(skins)) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Inline-code contrast, every theme INCLUDING the built-in light one.
+// This is the gate that was missing: `light` was skipped wholesale above, and
+// pa11y ignores color-contrast, so cyan-on-near-white inline code (1.4:1) shipped.
+// Resolves the color-mix() the light themes use, and composites the translucent
+// code chip over the page background before measuring.
+const rootBlock = (css.match(/:root\s*\{([^}]+)\}/) || [, ''])[1];
+const tokensIn = (body) => Object.fromEntries(
+  [...body.matchAll(/--fv-([\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]));
+const rootTokens = tokensIn(rootBlock);
+const themeBlocks = { default: rootTokens };
+for (const m of css.matchAll(/\[data-theme=['"]?([\w-]+)['"]?\][^{]*\{([^}]+)\}/g)) {
+  themeBlocks[m[1]] = { ...(themeBlocks[m[1]] || {}), ...tokensIn(m[2]) };
+}
+
+const parseColor = (val, tok, depth = 0) => {
+  if (!val || depth > 6) return null;
+  const v = val.trim();
+  let m;
+  if ((m = v.match(/^var\(\s*--fv-([\w-]+)\s*\)$/)))
+    return parseColor(tok[m[1]] ?? rootTokens[m[1]], tok, depth + 1);
+  if (/^#[0-9a-f]{3,8}$/i.test(v)) return [...hexToRgb(v), 1];
+  if ((m = v.match(/^rgba?\(([^)]+)\)$/i))) {
+    const n = m[1].split(/[\s,/]+/).filter(Boolean).map(Number);
+    return [n[0], n[1], n[2], n[3] == null ? 1 : n[3]];
+  }
+  if ((m = v.match(/^color-mix\(\s*in\s+srgb\s*,\s*(.+?)\s+([\d.]+)%\s*,\s*(.+)\)$/i))) {
+    const a = parseColor(m[1], tok, depth + 1), b = parseColor(m[3], tok, depth + 1);
+    if (!a || !b) return null;
+    const w = Number(m[2]) / 100;
+    return [0, 1, 2].map((i) => a[i] * w + b[i] * (1 - w)).concat(a[3] * w + b[3] * (1 - w));
+  }
+  return null;
+};
+const flatten = (fg, bg) => [0, 1, 2].map((i) => fg[i] * fg[3] + bg[i] * (1 - fg[3]));
+const rgbRatio = (a, b) => {
+  const [l1, l2] = [lum(a), lum(b)].sort((x, y) => y - x);
+  return (l1 + 0.05) / (l2 + 0.05);
+};
+
+for (const [name, tok] of Object.entries(themeBlocks)) {
+  const code = parseColor(tok['code-color'] ?? rootTokens['code-color'], tok);
+  const chip = parseColor(tok['code-bg'] ?? rootTokens['code-bg'], tok);
+  const page = parseColor(tok['body-bg'] ?? rootTokens['body-bg'], tok);
+  if (!code || !chip || !page) {
+    failures.push(`${name}: could not resolve code-color/code-bg/body-bg — update the resolver`);
+    continue;
+  }
+  const r = rgbRatio(code.slice(0, 3), flatten(chip, page.slice(0, 3)));
+  if (r < 4.5) failures.push(`${name}: inline code-color on code-bg = ${r.toFixed(2)}:1 — needs >=4.5`);
+}
+
 const count = Object.keys(skins).length;
 if (!count) { console.error('✘ check-skins: no [data-theme] skin blocks found in dist — did the build run?'); process.exit(1); }
 if (failures.length) {
@@ -64,4 +116,4 @@ if (failures.length) {
   for (const f of failures) console.error('  ' + f);
   process.exit(1);
 }
-console.log(`✔ check-skins: ${count} skins, all readable-text tokens ≥4.5:1 on their surfaces`);
+console.log(`✔ check-skins: ${count} skins, all readable-text tokens ≥4.5:1 on their surfaces; inline code ≥4.5:1 in ${Object.keys(themeBlocks).length} themes (incl. light)`);

@@ -61,6 +61,19 @@
     });
   }
 
+  // Was the press that precedes this click started on a dialog's backdrop?
+  // Captured so a drag that merely ENDS outside can't be mistaken for one.
+  var pressStartedOnBackdrop = false;
+  document.addEventListener('pointerdown', function (e) {
+    var t = e.target;
+    pressStartedOnBackdrop = false;
+    if (t instanceof Element && t.matches('dialog.modal, dialog.command')) {
+      var r = t.getBoundingClientRect();
+      pressStartedOnBackdrop = e.clientX < r.left || e.clientX > r.right
+        || e.clientY < r.top || e.clientY > r.bottom;
+    }
+  }, true);
+
   // ---- Click delegation ----
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -112,9 +125,15 @@
       return;
     }
 
+    // Backdrop click closes. A click on the backdrop reports the dialog itself
+    // as its target, so a hit test against the dialog's own box tells the two
+    // apart. Both ends of the interaction must be outside: selecting text in a
+    // field and releasing past the edge synthesizes a click on the dialog at
+    // the release coordinates, which would otherwise dismiss it mid-edit.
     if (t.matches('dialog.modal, dialog.command')) {
       var r = t.getBoundingClientRect();
-      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) t.close();
+      var outside = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      if (outside && pressStartedOnBackdrop) t.close();
     }
 
     // Command-palette item clicked → activate it.
@@ -199,8 +218,10 @@
       var cur = openCmd.querySelector('.command-item.is-active'), ci = items.indexOf(cur), nj = -1;
       if (e.key === 'ArrowDown') nj = (ci + 1) % items.length;
       else if (e.key === 'ArrowUp') nj = (ci - 1 + items.length) % items.length;
-      else if (e.key === 'Home') nj = 0;
-      else if (e.key === 'End') nj = items.length - 1;
+      // Home/End deliberately NOT mapped: in the APG combobox pattern they move
+      // the caret within the query, and stealing them leaves keyboard users
+      // unable to reach the start/end of what they typed. ArrowUp/ArrowDown
+      // already wrap, which covers jump-to-first/last.
       else if (e.key === 'Enter') { if (cur) { e.preventDefault(); runCommand(cur); } return; }
       if (nj > -1) { e.preventDefault(); cmdSetActive(openCmd, items[nj]); }
       return;

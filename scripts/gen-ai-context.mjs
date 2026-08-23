@@ -24,8 +24,18 @@ const builds = [
   { file: 'dist/farvist-ai-compat.css', gzipKb: +gzKb('dist/farvist-ai-compat.css'), contents: 'companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3\'s preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift' },
 ];
 
-// All distinct class selectors actually present in the compiled CSS.
-const classes = [...new Set([...css.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) => m[1]))].sort();
+// All distinct class selectors actually present in the compiled CSS. Only
+// SELECTOR text is scanned (everything between a block's start and its `{`) —
+// scanning raw CSS also harvests dotted words out of declaration values, e.g.
+// `www.w3.org` inside the form-select chevron's data-URI, which used to publish
+// the phantom classes `w3` and `org` and inflate the class total by two.
+const selectors = [];
+for (let k = 0, start = 0; k < css.length; k++) {
+  const ch = css[k];
+  if (ch === '{') { selectors.push(css.slice(start, k)); start = k + 1; }
+  else if (ch === '}' || ch === ';') { start = k + 1; }
+}
+const classes = [...new Set(selectors.flatMap((sel) => [...sel.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) => m[1])))].sort();
 
 // Icon names from the SVG sprite.
 const sprite = readFileSync(join(root, 'assets/icons/farvist-icons.svg'), 'utf8');
@@ -85,25 +95,34 @@ const recipes = [
 const familyDefs = [
   ['col-', 'grid columns'], ['offset-', 'column offsets'], ['g-', 'grid gutters'], ['gx-', 'column gutter'], ['gy-', 'row gutter'],
   ['m-', 'margin'], ['mt-', 'margin-top'], ['mb-', 'margin-bottom'], ['ms-', 'margin-start'], ['me-', 'margin-end'], ['mx-', 'margin-x'], ['my-', 'margin-y'],
-  ['p-', 'padding'], ['pt-', 'padding-top'], ['pb-', 'padding-bottom'], ['ps-', 'padding-start'], ['pe-', 'padding-end'], ['px-', 'padding-x'], ['py-', 'padding-y'],
-  ['d-', 'display'], ['flex-', 'flex'], ['justify-', 'justify-content'], ['align-', 'align-items'], ['gap-', 'gap'], ['order-', 'flex order'],
+  ['p-', 'padding'], ['pt-', 'padding-top'], ['pb-', 'padding-bottom'], ['ps-', 'padding-start'],
+  // `pe-` is padding-end EXCEPT pe-auto/pe-none, which are pointer-events — an
+  // assistant reaching for pe-none as padding would silently make the element
+  // unclickable, so they get a family of their own.
+  ['pe-', 'padding-end', { exclude: ['pe-auto', 'pe-none'] }],
+  ['pe-auto', 'pointer-events (NOT padding): pe-auto | pe-none', { exact: ['pe-auto', 'pe-none'], key: 'pe-auto | pe-none' }],
+  ['px-', 'padding-x'], ['py-', 'padding-y'],
+  ['d-', 'display'], ['flex-', 'flex'], ['justify-', 'justify-content'], ['align-items-', 'align-items'], ['align-self-', 'align-self'], ['gap-', 'gap'], ['order-', 'flex order'],
   ['text-', 'text color / alignment'], ['bg-', 'background (colors, gradients, meshes, patterns, spotlights)'], ['fs-', 'font-size'], ['fw-', 'font-weight'], ['lh-', 'line-height'],
   ['rounded', 'border-radius'], ['border', 'border'], ['shadow-', 'box-shadow'], ['glow', 'neon glow'], ['glass', 'glass surface'],
   ['w-', 'width'], ['h-', 'height'], ['mw-', 'max-width'], ['mh-', 'max-height'], ['opacity-', 'opacity'], ['overflow-', 'overflow'],
   ['position-', 'position'], ['z-', 'z-index'], ['hover-', 'hover effects'], ['animate-', 'animation'],
 ];
 const utilities = {};
-for (const [prefix, desc] of familyDefs) {
-  const matched = classes.filter((c) => c === prefix.replace(/-$/, '') || c.startsWith(prefix));
-  if (matched.length) utilities[prefix + '*'] = { desc, count: matched.length, sample: matched.slice(0, 14) };
+for (const [prefix, desc, opts = {}] of familyDefs) {
+  const matched = opts.exact
+    ? classes.filter((c) => opts.exact.includes(c))
+    : classes.filter((c) => (c === prefix.replace(/-$/, '') || c.startsWith(prefix))
+        && !(opts.exclude || []).includes(c));
+  if (matched.length) utilities[opts.key || prefix + '*'] = { desc, count: matched.length, sample: matched.slice(0, 14) };
 }
 
 const conventions = {
   theming: 'Dark by default. Add data-theme="light" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS. SKINS (v1.4): prebuilt AA-gated theme packs on the same attribute — data-theme="synthwave|cyber|noir|forest|dawn" (dawn is light). JS: Farvist.theme("synthwave") applies + persists; <button data-fv-theme-cycle="synthwave,cyber"> cycles.',
   colors: ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'accent', 'light', 'dark'],
-  breakpoints: { sm: '576px', md: '768px', lg: '992px', xl: '1200px' },
+  breakpoints: { sm: '576px', md: '768px', lg: '992px', xl: '1200px', xxl: '1400px' },
   responsive: 'Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.',
-  spacingScale: '0,1,2,3,4,5,6,7 → 0, .25, .5, .75, 1, 1.5, 2, 3rem (e.g. p-4 = 1rem, gap-3 = .75rem).',
+  spacingScale: '0,1,2,3,4,5,6,7,8 → 0, .25, .5, .75, 1, 1.5, 2, 3, 4rem (e.g. p-4 = 1rem, gap-3 = .75rem). Margins also take negative steps: m-n1..m-n8 (and mt-/mb-/ms-/me-/mx-/my-, per breakpoint).',
   notes: 'For glass to read, give the page a rich background (e.g. body class="bg-mesh-aurora"). Utilities win the cascade (no !important needed by you).',
   js: {
     include: '<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).',
@@ -139,12 +158,12 @@ const components = [
   { name: 'dropdown', classes: ['dropdown (<details>)', 'dropdown-menu', 'dropdown-menu-end', 'dropdown-item', 'dropdown-divider'], example: '<details class="dropdown"><summary class="btn btn-glass">Menu</summary><div class="dropdown-menu">…</div></details>' },
   { name: 'modal', classes: ['modal (<dialog>)', 'modal-header', 'modal-title', 'modal-body', 'modal-footer', 'modal-close'], example: '<button data-fv-open="#m">Open</button><dialog class="modal" id="m">…</dialog>' },
   { name: 'tabs', classes: ['tabs', 'tab (data-fv-tab="#id")', 'tab-panel'], example: '<div class="tabs"><button class="tab active" data-fv-tab="#p1">One</button></div><div class="tab-panel active" id="p1">…</div>' },
-  { name: 'accordion', classes: ['accordion (<details>)', 'accordion-item', 'accordion-header', 'accordion-body'], example: '<details class="accordion-item" open><summary class="accordion-header">Q</summary><div class="accordion-body">A</div></details>' },
+  { name: 'accordion', classes: ['accordion-item (<details>)', '<summary> (styled by element, no class needed)', 'accordion-body'], example: '<details class="accordion-item" open><summary>Q</summary><div class="accordion-body">A</div></details>' },
   { name: 'toast', classes: ['(JS only)'], example: "Farvist.toast({ title: 'Saved', variant: 'success' })" },
   { name: 'tooltip', classes: ['data-tooltip="text"'], example: '<button class="btn btn-glass" data-tooltip="Settings" aria-label="Settings">⚙</button>' },
   { name: 'progress', classes: ['progress', 'progress-bar', 'progress-striped', 'progress-animated'], example: '<div class="progress"><div class="progress-bar" style="width:60%"></div></div>' },
   { name: 'spinner', classes: ['spinner', 'spinner-{sm|lg}', 'spinner-{color}', 'spinner-dots'], example: '<div class="spinner spinner-primary"></div>' },
-  { name: 'skeleton', classes: ['skeleton', 'skeleton-text', 'skeleton-circle'], example: '<div class="skeleton skeleton-text"></div>' },
+  { name: 'skeleton', classes: ['skeleton', 'skeleton-text', 'skeleton-title', 'skeleton-avatar (circular)', 'skeleton-btn'], example: '<div class="skeleton skeleton-text"></div>' },
   { name: 'breadcrumb', classes: ['breadcrumb', 'breadcrumb-item', 'active (gets aria-current)'], example: '<ol class="breadcrumb"><li class="breadcrumb-item active">Now</li></ol>' },
   { name: 'pagination', classes: ['pagination', 'page-item', 'page-link', 'active'], example: '<nav aria-label="Pagination"><ul class="pagination"><li class="page-item active"><a class="page-link" href="#">1</a></li></ul></nav>' },
   { name: 'stepper', classes: ['stepper', 'step', 'step-dot', 'step-label', 'is-active', 'is-done'], example: '<ol class="stepper"><li class="step is-active"><span class="step-dot">1</span><span class="step-label">Plan</span></li></ol>' },
@@ -155,7 +174,7 @@ const components = [
   { name: 'empty-state', classes: ['empty-state', 'empty-state-icon'], example: '<div class="empty-state"><div class="empty-state-icon">📭</div><p>Nothing here yet.</p></div>' },
   { name: 'list-group', classes: ['list-group', 'list-group-item'], example: '<ul class="list-group"><li class="list-group-item">Item</li></ul>' },
   { name: 'callout', classes: ['callout', 'callout-{color}'], example: '<div class="callout callout-accent">Note.</div>' },
-  { name: 'backgrounds', classes: ['bg-mesh-{aurora|sunset|ocean|nebula}', 'bg-grid', 'bg-dots', 'bg-graph', 'bg-spotlight', 'bg-spotlight-{color}', 'bg-fade', 'bg-drift'], example: '<body class="bg-mesh-aurora">' },
+  { name: 'backgrounds', classes: ['bg-mesh-{aurora|sunset|ocean|nebula}', 'bg-grid', 'bg-dots', 'bg-graph', 'bg-spotlight', 'bg-spotlight-{primary|secondary|success|danger|warning|info|accent}', 'bg-fade', 'bg-drift'], example: '<body class="bg-mesh-aurora">' },
   { name: 'chat (AI)', classes: ['chat', 'message', 'message-out (user)', 'message-body', 'message-bubble', 'message-meta', 'message-actions (hover copy/vote row)', 'typing', 'streaming (caret while tokens arrive)', 'cite (superscript source chip)', 'sources (footnote list)'], example: '<div class="chat"><div class="message"><span class="avatar avatar-sm avatar-accent">AI</span><div class="message-body"><div class="message-bubble streaming">Hi</div></div></div></div>' },
   { name: 'prompt (AI)', classes: ['prompt', 'prompt-field', 'prompt-actions', 'prompt-meta'], example: '<form class="prompt"><textarea class="prompt-field" aria-label="Message"></textarea><div class="prompt-actions"><button class="btn btn-gradient-primary">Send</button></div></form>' },
   { name: 'status (AI)', classes: ['status', 'status-{online|busy|idle|error}'], example: '<span class="status status-online">Agent online</span>' },

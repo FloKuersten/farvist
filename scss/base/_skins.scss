@@ -8,9 +8,22 @@
 // Adding a skin = adding a $skins map entry.
 // =============================================================================
 
+@use 'sass:map';
 @use '../abstracts' as *;
 
 @layer base {
+  // Light skins need the same inline-code darkening the built-in light theme
+  // gets: --fv-info is tuned for a dark chip and measures ~3.4:1 on a light one.
+  // Keyed off color-scheme so any future light skin is covered automatically.
+  @each $skin, $tokens in $skins {
+    @if map.get($tokens, 'color-scheme') == light {
+      :root[data-theme='#{$skin}'],
+      [data-theme='#{$skin}'] {
+        --fv-code-color: color-mix(in srgb, var(--fv-info) 40%, var(--fv-body-color));
+      }
+    }
+  }
+
   @each $skin, $tokens in $skins {
     :root[data-theme='#{$skin}'],
     [data-theme='#{$skin}'] {

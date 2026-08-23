@@ -95,7 +95,7 @@
   .filter((n) =&gt; n !== 'light').sort();</code></pre>
       <p>Icon names come out of the sprite's <code>id="i-*"</code> attributes. Build sizes are gzipped at generation time from the real files, so no one ever hand-updates a KB figure:</p>
 <pre class="snippet"><code>const gzKb = (f) =&gt; (gzipSync(readFileSync(join(root, f))).length / 1024).toFixed(1);</code></pre>
-      <p>Nothing in any of those lists is a number a human typed. Right now they report 2,024 class tokens, 55 icons, 5 skins, 55 design tokens, and 21.3 / 19.1 / 6.4 KB gzip across the three builds. Delete a skin and the catalog loses it in the same commit that deletes it.</p>
+      <p>Nothing in any of those lists is a number a human typed. As of v1.7.4 they report 2,022 class tokens, 55 icons, 5 skins, 56 design tokens, and 21.3 / 19.2 / 6.6 KB gzip across the three builds. Delete a skin and the catalog loses it in the same commit that deletes it.</p>
       <p>Generation alone isn't enough, though — generated files still have to be regenerated. CI does that part:</p>
 <pre class="snippet"><code>- name: Build (sass + autoprefixer + ai-context)
   run: |

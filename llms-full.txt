@@ -2,7 +2,7 @@
 
 > A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 1.7.3 · MIT · https://farvist.com · 2024 utility/component classes.
+Version 1.7.4 · MIT · https://farvist.com · 2022 utility/component classes.
 
 ## Install
 ```html
@@ -14,14 +14,14 @@ Or: `npm i farvist`. Dark theme by default — give the page a rich background s
 Three builds (swap the filename in the CDN URL):
 - `dist/farvist.min.css` (~21.3 KB gzip) — everything — all components, utilities, backgrounds, skins, AI kit
 - `dist/farvist-slim.min.css` (~19.2 KB gzip) — the framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) — for sites that never render AI conversations
-- `dist/farvist-ai.min.css` (~6.5 KB gzip) — ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)
-- `dist/farvist-ai-compat.css` (~1 KB gzip) — companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3's preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift
+- `dist/farvist-ai.min.css` (~6.6 KB gzip) — ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)
+- `dist/farvist-ai-compat.css` (~1.1 KB gzip) — companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3's preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift
 
 ## Conventions
 - **Colors:** primary, secondary, success, danger, warning, info, accent, light, dark (use as suffixes: btn-primary, text-success, bg-accent).
 - **Theming:** Dark by default. Add data-theme="light" to <html> to switch at runtime. RE-BRANDING (v1.3): every derived color (gradients, glows, meshes, body orbs, hover/active states, soft tints, focus rings) derives from the --fv-* custom properties at runtime — override --fv-primary / --fv-accent / --fv-info (and optionally --fv-success/danger/warning/secondary) on :root and the whole framework recolors, no build step. Companions: --fv-primary-text (readable tint for text on the dark surface) and --fv-{color}-contrast (text on filled components) when a brand flips between light and dark fills. NEVER re-color by overriding component CSS. SKINS (v1.4): prebuilt AA-gated theme packs on the same attribute — data-theme="synthwave|cyber|noir|forest|dawn" (dawn is light). JS: Farvist.theme("synthwave") applies + persists; <button data-fv-theme-cycle="synthwave,cyber"> cycles.
-- **Breakpoints:** sm=576px, md=768px, lg=992px, xl=1200px. Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.
-- **Spacing scale:** 0,1,2,3,4,5,6,7 → 0, .25, .5, .75, 1, 1.5, 2, 3rem (e.g. p-4 = 1rem, gap-3 = .75rem).
+- **Breakpoints:** sm=576px, md=768px, lg=992px, xl=1200px, xxl=1400px. Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.
+- **Spacing scale:** 0,1,2,3,4,5,6,7,8 → 0, .25, .5, .75, 1, 1.5, 2, 3, 4rem (e.g. p-4 = 1rem, gap-3 = .75rem). Margins also take negative steps: m-n1..m-n8 (and mt-/mb-/ms-/me-/mx-/my-, per breakpoint).
 - **Notes:** For glass to read, give the page a rich background (e.g. body class="bg-mesh-aurora"). Utilities win the cascade (no !important needed by you).
 
 ## JavaScript hooks
@@ -55,13 +55,15 @@ Three builds (swap the filename in the CDN URL):
 - `pt-*` — padding-top (54): pt-0, pt-1, pt-2, pt-3, pt-4, pt-5, pt-6, pt-7, pt-8, pt-lg-0, pt-lg-1, pt-lg-2, pt-lg-3, pt-lg-4, …
 - `pb-*` — padding-bottom (54): pb-0, pb-1, pb-2, pb-3, pb-4, pb-5, pb-6, pb-7, pb-8, pb-lg-0, pb-lg-1, pb-lg-2, pb-lg-3, pb-lg-4, …
 - `ps-*` — padding-start (54): ps-0, ps-1, ps-2, ps-3, ps-4, ps-5, ps-6, ps-7, ps-8, ps-lg-0, ps-lg-1, ps-lg-2, ps-lg-3, ps-lg-4, …
-- `pe-*` — padding-end (56): pe-0, pe-1, pe-2, pe-3, pe-4, pe-5, pe-6, pe-7, pe-8, pe-auto, pe-lg-0, pe-lg-1, pe-lg-2, pe-lg-3, …
+- `pe-*` — padding-end (54): pe-0, pe-1, pe-2, pe-3, pe-4, pe-5, pe-6, pe-7, pe-8, pe-lg-0, pe-lg-1, pe-lg-2, pe-lg-3, pe-lg-4, …
+- `pe-auto | pe-none` — pointer-events (NOT padding): pe-auto | pe-none (2): pe-auto, pe-none
 - `px-*` — padding-x (54): px-0, px-1, px-2, px-3, px-4, px-5, px-6, px-7, px-8, px-lg-0, px-lg-1, px-lg-2, px-lg-3, px-lg-4, …
 - `py-*` — padding-y (54): py-0, py-1, py-2, py-3, py-4, py-5, py-6, py-7, py-8, py-lg-0, py-lg-1, py-lg-2, py-lg-3, py-lg-4, …
 - `d-*` — display (48): d-block, d-flex, d-grid, d-inline, d-inline-block, d-inline-flex, d-lg-block, d-lg-flex, d-lg-grid, d-lg-inline, d-lg-inline-block, d-lg-inline-flex, d-lg-none, d-lg-table, …
 - `flex-*` — flex (66): flex-column, flex-column-reverse, flex-fill, flex-grow-0, flex-grow-1, flex-lg-column, flex-lg-column-reverse, flex-lg-fill, flex-lg-grow-0, flex-lg-grow-1, flex-lg-nowrap, flex-lg-row, flex-lg-row-reverse, flex-lg-shrink-0, …
 - `justify-*` — justify-content (36): justify-content-around, justify-content-between, justify-content-center, justify-content-end, justify-content-evenly, justify-content-lg-around, justify-content-lg-between, justify-content-lg-center, justify-content-lg-end, justify-content-lg-evenly, justify-content-lg-start, justify-content-md-around, justify-content-md-between, justify-content-md-center, …
-- `align-*` — align-items (60): align-items-baseline, align-items-center, align-items-end, align-items-lg-baseline, align-items-lg-center, align-items-lg-end, align-items-lg-start, align-items-lg-stretch, align-items-md-baseline, align-items-md-center, align-items-md-end, align-items-md-start, align-items-md-stretch, align-items-sm-baseline, …
+- `align-items-*` — align-items (30): align-items-baseline, align-items-center, align-items-end, align-items-lg-baseline, align-items-lg-center, align-items-lg-end, align-items-lg-start, align-items-lg-stretch, align-items-md-baseline, align-items-md-center, align-items-md-end, align-items-md-start, align-items-md-stretch, align-items-sm-baseline, …
+- `align-self-*` — align-self (30): align-self-baseline, align-self-center, align-self-end, align-self-lg-baseline, align-self-lg-center, align-self-lg-end, align-self-lg-start, align-self-lg-stretch, align-self-md-baseline, align-self-md-center, align-self-md-end, align-self-md-start, align-self-md-stretch, align-self-sm-baseline, …
 - `gap-*` — gap (9): gap-0, gap-1, gap-2, gap-3, gap-4, gap-5, gap-6, gap-7, gap-8
 - `text-*` — text color / alignment (54): text-accent, text-body, text-break, text-capitalize, text-center, text-danger, text-dark, text-decoration-none, text-decoration-underline, text-end, text-glow, text-gradient, text-gradient-accent, text-gradient-aurora, …
 - `bg-*` — background (colors, gradients, meshes, patterns, spotlights) (51): bg-accent, bg-animated, bg-body, bg-danger, bg-dark, bg-dots, bg-drift, bg-fade, bg-fade-b, bg-fade-x, bg-gradient-accent, bg-gradient-aurora, bg-gradient-primary, bg-gradient-sunset, …
@@ -156,9 +158,9 @@ Classes: `tabs`, `tab (data-fv-tab="#id")`, `tab-panel`
 <div class="tabs"><button class="tab active" data-fv-tab="#p1">One</button></div><div class="tab-panel active" id="p1">…</div>
 ```
 ### accordion
-Classes: `accordion (<details>)`, `accordion-item`, `accordion-header`, `accordion-body`
+Classes: `accordion-item (<details>)`, `<summary> (styled by element, no class needed)`, `accordion-body`
 ```html
-<details class="accordion-item" open><summary class="accordion-header">Q</summary><div class="accordion-body">A</div></details>
+<details class="accordion-item" open><summary>Q</summary><div class="accordion-body">A</div></details>
 ```
 ### toast
 Classes: `(JS only)`
@@ -181,7 +183,7 @@ Classes: `spinner`, `spinner-{sm|lg}`, `spinner-{color}`, `spinner-dots`
 <div class="spinner spinner-primary"></div>
 ```
 ### skeleton
-Classes: `skeleton`, `skeleton-text`, `skeleton-circle`
+Classes: `skeleton`, `skeleton-text`, `skeleton-title`, `skeleton-avatar (circular)`, `skeleton-btn`
 ```html
 <div class="skeleton skeleton-text"></div>
 ```
@@ -236,7 +238,7 @@ Classes: `callout`, `callout-{color}`
 <div class="callout callout-accent">Note.</div>
 ```
 ### backgrounds
-Classes: `bg-mesh-{aurora|sunset|ocean|nebula}`, `bg-grid`, `bg-dots`, `bg-graph`, `bg-spotlight`, `bg-spotlight-{color}`, `bg-fade`, `bg-drift`
+Classes: `bg-mesh-{aurora|sunset|ocean|nebula}`, `bg-grid`, `bg-dots`, `bg-graph`, `bg-spotlight`, `bg-spotlight-{primary|secondary|success|danger|warning|info|accent}`, `bg-fade`, `bg-drift`
 ```html
 <body class="bg-mesh-aurora">
 ```
@@ -333,6 +335,7 @@ Every design token, with its default. Override any of them on :root (or a [data-
   --fv-primary-text: rgb(58.7764705882%, 48.8941176471%, 97.1764705882%);
   --fv-border-color: rgba(255, 255, 255, 0.1);
   --fv-code-bg: rgba(255, 255, 255, 0.07);
+  --fv-code-color: var(--fv-info);
   --fv-bg-pattern: rgba(255, 255, 255, 0.10);
   --fv-glass-bg: rgba(255, 255, 255, 0.06);
   --fv-glass-bg-strong: rgba(255, 255, 255, 0.1);

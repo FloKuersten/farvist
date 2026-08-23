@@ -20,7 +20,9 @@
 //     restyles the send button — usually what you want). Tailwind v3's
 //     preflight is un-layered too and ZEROES borders/button styling globally:
 //     on v3 hosts also load dist/farvist-ai-compat.css after your Tailwind
-//     build. Tailwind v4 (layered preflight) and Bootstrap need no compat.
+//     build — as does a Bootstrap host whose page uses Bootstrap's own .btn
+//     (un-layered, so it overrides the kit's buttons). Tailwind v4's preflight
+//     is layered and needs no compat.
 // Glass surfaces are dark-first; on a light host page, wrap the UI in
 // <div data-theme="light"> (or "dawn").
 //

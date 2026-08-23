@@ -4,7 +4,7 @@ Run these from the project root (`C:\Users\Flo\Farvistrap`). `git`, `gh` (logged
 **FloKuersten**), and `npm` are all installed. The `farvist` name is **available** on npm.
 
 > Heads up: the GitHub repo will be **public** and include the marketing site, examples, docs,
-> Pro samples and `LAUNCH-KIT.md`. `deploy.ps1` (your origin IP) is git-ignored. The npm package
+> Pro samples and `LAUNCH_SHOW_HN.md`. `deploy.ps1` (your origin IP) and `LAUNCH-KIT.md` (internal notes) are git-ignored. The npm package
 > only ships `scss/`, `dist/`, `assets/`, `README`, `LICENSE` (verified via `npm pack --dry-run`).
 
 ---
@@ -50,7 +50,7 @@ gh release create v0.5.0 --title "Farvist v0.5.0" --generate-notes
 
 - **Google Search Console:** add `farvist.com`, then submit `https://farvist.com/sitemap.xml`.
 - Verify the CDN link loads, then update any docs that say "once published".
-- Fire the launch posts from [`LAUNCH-KIT.md`](LAUNCH-KIT.md) (record the GIF first).
+- Fire the launch posts from [`LAUNCH_SHOW_HN.md`](LAUNCH_SHOW_HN.md) (record the GIF first).
 
 ---
 

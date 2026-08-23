@@ -58,7 +58,7 @@
   code {
     padding: 0.2em 0.45em;
     font-size: 0.875em;
-    color: var(--fv-info);
+    color: var(--fv-code-color);
     background-color: var(--fv-code-bg);
     border: $border-width solid var(--fv-border-color);
     border-radius: map.get($radii, 'sm');

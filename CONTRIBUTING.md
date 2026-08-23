@@ -6,7 +6,9 @@ Thanks for your interest! Farvist is MIT-licensed and contributions are welcome.
 
 ```bash
 npm install      # Dart Sass
-npm run dev      # build dist/farvist.css + dist/farvist.min.css
+npm run dev      # all three builds (full/slim/ai), expanded + minified + prefixed,
+                 # plus farvist-ai-compat.css and the AI catalog. Never hand-edit
+                 # dist/, ai-context.json or llms-full.txt — they are generated.
 npm run watch    # rebuild on save
 ```
 
@@ -31,7 +33,7 @@ Everything is generated from design tokens — change the maps, not the output.
 
 1. Fork and branch from `main`.
 2. Make the change, run `npm run dev`, and confirm the demo (`index.html`) still renders.
-3. Update `CHANGELOG.md` under "Unreleased".
+3. Add your entry to `CHANGELOG.md` under a new dated version heading (the file has no "Unreleased" section — every entry is a released version).
 4. Open a PR describing the change and the reasoning.
 
 Bug reports and feature ideas are equally welcome via Issues.

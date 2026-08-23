@@ -36,6 +36,9 @@
     --fv-primary-text: #{color.scale($primary, $lightness: 28%)};
     --fv-border-color: #{$border-color};
     --fv-code-bg: rgba(255, 255, 255, 0.07);
+    // Inline-code text. Info reads at 9.6:1 on the dark chip; light surfaces
+    // darken it below (cyan on a near-white chip measures 1.4:1).
+    --fv-code-color: var(--fv-info);
     --fv-bg-pattern: rgba(255, 255, 255, 0.10); // ink for .bg-grid/.bg-dots/etc.
 
     // Glass surface variables (consumed by the glass() mixin & .glass utilities)
@@ -85,6 +88,9 @@
     --fv-primary-text: var(--fv-primary); // the brand primary reads fine on the light surface
     --fv-border-color: rgba(15, 23, 42, 0.12);
     --fv-code-bg: rgba(15, 23, 42, 0.06);
+    // Mixed toward the body ink so a re-branded --fv-info stays readable:
+    // 40% measures ~6:1 on the light code chip (raw --fv-info is 1.4:1).
+    --fv-code-color: color-mix(in srgb, var(--fv-info) 40%, var(--fv-body-color));
     --fv-bg-pattern: rgba(15, 23, 42, 0.10); // dark ink so patterns read on the light surface
 
     --fv-glass-bg: #{$glass-bg-light};

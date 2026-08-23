@@ -28,16 +28,6 @@
   .command {
     width: calc(100% - #{spacer(5)});
     max-width: 40rem;
-    // Sit near the top rather than dead-centre (the command-menu convention).
-    // Positioned explicitly — not via the UA's `dialog { margin: auto }` —
-    // so universal margin resets (host pages, or our own) can't pin the
-    // palette to the corner. `translate` composes with the transform-based
-    // open animation.
-    position: fixed;
-    top: 12vh;
-    left: 50%;
-    margin: 0;
-    translate: -50% 0;
     padding: 0;
     overflow: hidden;
     color: var(--fv-body-color);
@@ -52,6 +42,19 @@
     }
 
     &[open] { animation: fv-command-in 0.16s ease; }
+  }
+
+  // Sit near the top rather than dead-centre (the command-menu convention).
+  // Positioned explicitly — not via the UA's `dialog { margin: auto }` — so
+  // universal margin resets (host pages, or our own) can't pin the palette to
+  // the corner. `translate` composes with the transform-based open animation.
+  // Scoped to :modal for the same reason as .modal — see _modal.scss.
+  .command:modal {
+    position: fixed;
+    top: 12vh;
+    left: 50%;
+    margin: 0;
+    translate: -50% 0;
   }
 
   .command-search {

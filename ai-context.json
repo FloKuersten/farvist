@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
@@ -21,23 +21,23 @@
       },
       {
         "file": "dist/farvist-ai.min.css",
-        "gzipKb": 6.5,
+        "gzipKb": 6.6,
         "contents": "ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme=\"light\">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)"
       },
       {
         "file": "dist/farvist-ai-compat.css",
-        "gzipKb": 1,
+        "gzipKb": 1.1,
         "contents": "companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3's preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift"
       }
     ]
   },
   "totals": {
-    "classes": 2024,
+    "classes": 2022,
     "components": 42,
     "icons": 55,
     "recipes": 14,
     "skins": 5,
-    "tokens": 55,
+    "tokens": 56,
     "optionalTokens": 26
   },
   "skins": {
@@ -80,6 +80,7 @@
       "--fv-primary-text": "rgb(58.7764705882%, 48.8941176471%, 97.1764705882%)",
       "--fv-border-color": "rgba(255, 255, 255, 0.1)",
       "--fv-code-bg": "rgba(255, 255, 255, 0.07)",
+      "--fv-code-color": "var(--fv-info)",
       "--fv-bg-pattern": "rgba(255, 255, 255, 0.10)",
       "--fv-glass-bg": "rgba(255, 255, 255, 0.06)",
       "--fv-glass-bg-strong": "rgba(255, 255, 255, 0.1)",
@@ -155,10 +156,11 @@
       "sm": "576px",
       "md": "768px",
       "lg": "992px",
-      "xl": "1200px"
+      "xl": "1200px",
+      "xxl": "1400px"
     },
     "responsive": "Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.",
-    "spacingScale": "0,1,2,3,4,5,6,7 → 0, .25, .5, .75, 1, 1.5, 2, 3rem (e.g. p-4 = 1rem, gap-3 = .75rem).",
+    "spacingScale": "0,1,2,3,4,5,6,7,8 → 0, .25, .5, .75, 1, 1.5, 2, 3, 4rem (e.g. p-4 = 1rem, gap-3 = .75rem). Margins also take negative steps: m-n1..m-n8 (and mt-/mb-/ms-/me-/mx-/my-, per breakpoint).",
     "notes": "For glass to read, give the page a rich background (e.g. body class=\"bg-mesh-aurora\"). Utilities win the cascade (no !important needed by you).",
     "js": {
       "include": "<script src=\"https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js\" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).",
@@ -485,7 +487,7 @@
     },
     "pe-*": {
       "desc": "padding-end",
-      "count": 56,
+      "count": 54,
       "sample": [
         "pe-0",
         "pe-1",
@@ -496,11 +498,19 @@
         "pe-6",
         "pe-7",
         "pe-8",
-        "pe-auto",
         "pe-lg-0",
         "pe-lg-1",
         "pe-lg-2",
-        "pe-lg-3"
+        "pe-lg-3",
+        "pe-lg-4"
+      ]
+    },
+    "pe-auto | pe-none": {
+      "desc": "pointer-events (NOT padding): pe-auto | pe-none",
+      "count": 2,
+      "sample": [
+        "pe-auto",
+        "pe-none"
       ]
     },
     "px-*": {
@@ -603,9 +613,9 @@
         "justify-content-md-center"
       ]
     },
-    "align-*": {
+    "align-items-*": {
       "desc": "align-items",
-      "count": 60,
+      "count": 30,
       "sample": [
         "align-items-baseline",
         "align-items-center",
@@ -621,6 +631,26 @@
         "align-items-md-start",
         "align-items-md-stretch",
         "align-items-sm-baseline"
+      ]
+    },
+    "align-self-*": {
+      "desc": "align-self",
+      "count": 30,
+      "sample": [
+        "align-self-baseline",
+        "align-self-center",
+        "align-self-end",
+        "align-self-lg-baseline",
+        "align-self-lg-center",
+        "align-self-lg-end",
+        "align-self-lg-start",
+        "align-self-lg-stretch",
+        "align-self-md-baseline",
+        "align-self-md-center",
+        "align-self-md-end",
+        "align-self-md-start",
+        "align-self-md-stretch",
+        "align-self-sm-baseline"
       ]
     },
     "gap-*": {
@@ -1040,12 +1070,11 @@
     {
       "name": "accordion",
       "classes": [
-        "accordion (<details>)",
-        "accordion-item",
-        "accordion-header",
+        "accordion-item (<details>)",
+        "<summary> (styled by element, no class needed)",
         "accordion-body"
       ],
-      "example": "<details class=\"accordion-item\" open><summary class=\"accordion-header\">Q</summary><div class=\"accordion-body\">A</div></details>"
+      "example": "<details class=\"accordion-item\" open><summary>Q</summary><div class=\"accordion-body\">A</div></details>"
     },
     {
       "name": "toast",
@@ -1086,7 +1115,9 @@
       "classes": [
         "skeleton",
         "skeleton-text",
-        "skeleton-circle"
+        "skeleton-title",
+        "skeleton-avatar (circular)",
+        "skeleton-btn"
       ],
       "example": "<div class=\"skeleton skeleton-text\"></div>"
     },
@@ -1188,7 +1219,7 @@
         "bg-dots",
         "bg-graph",
         "bg-spotlight",
-        "bg-spotlight-{color}",
+        "bg-spotlight-{primary|secondary|success|danger|warning|info|accent}",
         "bg-fade",
         "bg-drift"
       ],

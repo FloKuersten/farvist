@@ -2,18 +2,20 @@
  * Load AFTER your Tailwind v3 build, alongside farvist-ai(.min).css. Un-layered on purpose:
  * v3's un-layered preflight beats the kit's @layer rules for shared properties; these
  * class-selector re-assertions win back exactly the properties preflight zeroes.
- * Tailwind v4 (layered preflight) and Bootstrap hosts do NOT need this file. */
-.btn{padding:0.5rem 1.5rem;font-size:1rem;font-weight:600;line-height:1.6;color:var(--fv-btn-color);background-color:var(--fv-btn-bg);border:1px solid var(--fv-btn-border)}
+ * Also worth loading on a Bootstrap host whose page uses Bootstrap own .btn (un-layered,
+ * so it overrides the kit buttons: padding, weight, radius, glass chrome).
+ * Tailwind v4 preflight is layered and needs nothing. */
+.btn{padding:0.5rem 1.5rem;font-size:1rem;font-weight:600;line-height:1.6;color:var(--fv-btn-color);background-color:var(--fv-btn-bg);border:1px solid var(--fv-btn-border);border-radius:var(--fv-border-radius)}
 .btn-sm{padding:0.25rem 0.75rem;font-size:0.875rem}
 .btn-lg{padding:0.75rem 2rem;font-size:1.125rem}
 .btn-glass{background-color:var(--fv-glass-bg);border:1px solid var(--fv-glass-border)}
 .btn-gradient-primary{color:var(--fv-btn-color);background-image:var(--fv-gradient-primary)}
 .btn-gradient-sunset{color:var(--fv-btn-color);background-image:var(--fv-gradient-sunset)}
 .btn-gradient-aurora{color:var(--fv-btn-color);background-image:var(--fv-gradient-aurora)}
-.copy-btn{padding:0.25rem 0.75rem;font-size:0.875rem;font-weight:500;line-height:1.2;color:var(--fv-muted);background-color:var(--fv-glass-bg-strong);border:1px solid var(--fv-glass-border)}
+.copy-btn{padding:0.25rem 0.75rem;font-size:0.875rem;font-weight:500;line-height:1.2;color:var(--fv-muted);background-color:var(--fv-glass-bg-strong);border:1px solid var(--fv-glass-border);border-radius:0.625rem}
 .toast-close{padding:0;font-size:1.2rem;line-height:1;color:var(--fv-muted);border:0}
-.attachment-remove{font-size:1rem;line-height:1;color:var(--fv-muted);border:0}
-.suggestion{padding:0.25rem 1rem;font-size:0.875rem;color:var(--fv-body-color);background-color:var(--fv-glass-bg);border:1px solid var(--fv-glass-border)}
+.attachment-remove{font-size:1rem;line-height:1;color:var(--fv-muted);border:0;border-radius:50%}
+.suggestion{padding:0.25rem 1rem;font-size:0.875rem;color:var(--fv-body-color);background-color:var(--fv-glass-bg);border:1px solid var(--fv-glass-border);border-radius:50rem}
 .command-input{padding:0.25rem 0;font-size:1.125rem;color:var(--fv-body-color);border:0}
 .prompt-field{padding:0.5rem 0.75rem;font:inherit;color:var(--fv-body-color);border:0}
 .message-bubble{border:1px solid var(--fv-glass-border)}
@@ -25,7 +27,7 @@
 .command-search{border-bottom:1px solid var(--fv-glass-border)}
 .diff{border:1px solid var(--fv-glass-border)}
 .diff-header{border-bottom:1px solid var(--fv-border-color)}
-.snippet-header{border:1px solid var(--fv-border-color)}
+.snippet-header{border:1px solid var(--fv-border-color);border-bottom:0}
 pre.snippet{border:1px solid var(--fv-border-color)}
 .prose pre{border:1px solid var(--fv-border-color);margin:0 0 0.75rem}
 .tool-call-result pre{border:1px solid var(--fv-border-color)}
@@ -49,3 +51,11 @@ pre.snippet{border:1px solid var(--fv-border-color)}
 .prose h6{font-size:1rem;margin-top:1rem;margin-bottom:0.5rem;font-weight:700}
 .icon{display:inline-block}
 .cite{color:var(--fv-primary-text);text-decoration:none}
+.toast-success{border-left-color:var(--fv-success)}
+.toast-danger{border-left-color:var(--fv-danger)}
+.toast-warning{border-left-color:var(--fv-warning)}
+.toast-info{border-left-color:var(--fv-info)}
+.tool-call-done{border-left-color:var(--fv-success)}
+.tool-call-error{border-left-color:var(--fv-danger)}
+.message-out .message-bubble{border-color:transparent}
+.prompt:focus-within{border-color:var(--fv-primary)}
