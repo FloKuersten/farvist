@@ -86,9 +86,14 @@
     animation: fv-gradient-pan 9s ease infinite;
   }
 
+  // Animates `translate`, not `transform`: a running animation replaces the
+  // property it animates, so a transform-based bob would cancel the hover
+  // raise on `.hover-lift` / `.card-glow` for as long as it runs (the shipped
+  // hero cards combine all three). `translate` composes with `transform`
+  // instead of replacing it — the same split the .modal/.command centering uses.
   @keyframes fv-float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-10px); }
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -10px; }
   }
   .animate-float {
     animation: fv-float 6s ease-in-out infinite;

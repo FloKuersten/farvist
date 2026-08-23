@@ -151,6 +151,9 @@
   * {
     margin: 0;
   }
+  [hidden]:not([hidden=until-found]) {
+    display: none !important;
+  }
   html {
     font-size: 16px;
     -webkit-text-size-adjust: 100%;
@@ -231,6 +234,10 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+    .spinner {
+      animation-duration: 1.6s !important;
+      animation-iteration-count: infinite !important;
     }
   }
 }
@@ -2409,9 +2416,6 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .spinner {
-      animation: fv-spin 1.6s linear infinite !important;
-    }
     .spinner-dots > span {
       animation: none;
     }
@@ -8329,10 +8333,10 @@
   }
   @keyframes fv-float {
     0%, 100% {
-      transform: translateY(0);
+      translate: 0 0;
     }
     50% {
-      transform: translateY(-10px);
+      translate: 0 -10px;
     }
   }
   .animate-float {

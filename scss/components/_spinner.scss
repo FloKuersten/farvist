@@ -53,11 +53,12 @@
     50%      { transform: translateY(-0.45rem); opacity: 1; }
   }
 
-  // Keep a slow, continuous spin so the loading indicator stays meaningful. The
-  // !important is required to beat the global reduced-motion reset (which would
-  // otherwise freeze the ring mid-rotation).
+  // The slow continuous spin that keeps the loading indicator meaningful under
+  // reduced motion is re-asserted in @layer reset's own reduced-motion block —
+  // it cannot be done from here, because among important declarations the
+  // earlier layer wins and reset's `animation-duration: 0.01ms !important`
+  // would freeze the ring no matter what this layer declares.
   @media (prefers-reduced-motion: reduce) {
-    .spinner { animation: fv-spin 1.6s linear infinite !important; }
     .spinner-dots > span { animation: none; }
   }
 }

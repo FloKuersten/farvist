@@ -8,15 +8,32 @@
     "wait": 600,
     "chromeLaunchConfig": { "args": ["--no-sandbox", "--disable-dev-shm-usage"] }
   },
+  "comment_urls": "Every page on the site except marketing.html (a noindex meta-refresh redirect to /pro/ — auditing it just re-audits /pro/).",
   "urls": [
     "http://localhost:4000/",
     "http://localhost:4000/docs/",
+    "http://localhost:4000/templates/",
+    "http://localhost:4000/themer/",
+    "http://localhost:4000/about/",
+    "http://localhost:4000/contact/",
+    "http://localhost:4000/pro/",
+    "http://localhost:4000/privacy/",
+    "http://localhost:4000/terms/",
     "http://localhost:4000/blog/",
+    "http://localhost:4000/blog/ai-chat-ui/",
+    "http://localhost:4000/blog/ai-era/",
+    "http://localhost:4000/blog/bring-your-brand/",
     "http://localhost:4000/blog/cascade-layers-preflight/",
+    "http://localhost:4000/blog/command-palette-ux/",
+    "http://localhost:4000/blog/glassmorphism-accessibility/",
+    "http://localhost:4000/blog/glassmorphism-css-guide/",
+    "http://localhost:4000/blog/three-builds/",
     "http://localhost:4000/examples/ai-console.html",
     "http://localhost:4000/examples/ai-addon.html",
     "http://localhost:4000/examples/portfolio.html",
     "http://localhost:4000/examples/dashboard.html",
-    "http://localhost:4000/marketing.html"
+    "http://localhost:4000/examples/auth.html",
+    "http://localhost:4000/examples/blocks.html",
+    "http://localhost:4000/examples/saas.html"
   ]
 }

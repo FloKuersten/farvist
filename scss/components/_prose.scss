@@ -30,8 +30,12 @@
       margin-bottom: spacer(2);
     }
 
+    // Full margin box, not just the bottom: in the full build the reset has
+    // already zeroed the other three sides, but farvist-ai.css ships without a
+    // reset, and on a host page that has none either the UA's own margins leak
+    // through — most visibly `blockquote`'s 40px inline indent on both sides.
     p, ul, ol, pre, blockquote, table {
-      margin-bottom: spacer(3);
+      margin: 0 0 spacer(3);
     }
 
     li + li { margin-top: spacer(1); }
@@ -64,7 +68,7 @@
   .prose-sm {
     font-size: map.get($font-sizes, 'sm');
 
-    p, ul, ol, pre, blockquote, table { margin-bottom: spacer(2); }
+    p, ul, ol, pre, blockquote, table { margin: 0 0 spacer(2); }
     h1, h2, h3, h4, h5, h6 { margin-top: spacer(3); margin-bottom: spacer(1); }
   }
 }

@@ -54,6 +54,30 @@
     }
   }
 
+  // The excluded reset/typography also own these <pre>s' margins; on a host
+  // page that has no reset of its own the UA's `margin: 1em 0` leaks in. Values
+  // mirror the full build's base `pre`. (`.prose pre` is deliberately absent —
+  // the `.prose` margin rule already sets its tighter spacing, and repeating
+  // the selector here would override it.)
+  pre.snippet,
+  .tool-call-result pre {
+    margin: 0 0 spacer(4);
+  }
+
+  // ---- The `hidden` attribute -------------------------------------------------
+  // The full build guards this globally from @layer reset. An add-on must not
+  // ship a page-global `[hidden]` rule, so the guard is scoped to exactly the
+  // kit classes that set a `display` of their own — on those, `hidden` is
+  // otherwise inert, because our author `display` beats the UA's [hidden] rule.
+  // (`.command-item` / `.command-group` carry the same guard in _command.scss.)
+  .attachment, .attachment-remove, .avatar, .avatar-group, .btn, .btn-block,
+  .chat, .cite, .command-hint, .command-item, .command-search, .diff-header,
+  .diff-line, .icon, .message, .message-actions, .prompt, .prompt-actions,
+  .reasoning-summary, .snippet-header, .status, .suggestion, .suggestions,
+  .toast, .toast-container, .tool-call-header, .typing {
+    &[hidden] { display: none !important; }
+  }
+
   // ---- Inline code / kbd chips ----------------------------------------------
   .prose code,
   .prose kbd,

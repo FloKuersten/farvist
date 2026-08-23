@@ -27,19 +27,19 @@
 .diff-header{border-bottom:1px solid var(--fv-border-color)}
 .snippet-header{border:1px solid var(--fv-border-color)}
 pre.snippet{border:1px solid var(--fv-border-color)}
-.prose pre{border:1px solid var(--fv-border-color);margin-bottom:0.75rem}
+.prose pre{border:1px solid var(--fv-border-color);margin:0 0 0.75rem}
 .tool-call-result pre{border:1px solid var(--fv-border-color)}
 .prose th{border-bottom:1px solid var(--fv-border-color)}
 .prose td{border-bottom:1px solid var(--fv-border-color)}
-.prose blockquote{border-left:3px solid var(--fv-primary);margin-bottom:0.75rem;padding-left:1rem}
+.prose blockquote{border-left:3px solid var(--fv-primary);margin:0 0 0.75rem;padding-left:1rem}
 .prose code{border:1px solid var(--fv-border-color)}
 .prose kbd{border:1px solid var(--fv-border-color)}
 .command kbd{border:1px solid var(--fv-border-color)}
 .avatar{border:1px solid var(--fv-glass-border)}
-.prose p{margin-bottom:0.75rem}
-.prose ul{margin-bottom:0.75rem;padding-left:1.5rem;list-style:disc}
-.prose ol{margin-bottom:0.75rem;padding-left:1.5rem;list-style:decimal}
-.prose table{margin-bottom:0.75rem}
+.prose p{margin:0 0 0.75rem}
+.prose ul{margin:0 0 0.75rem;padding-left:1.5rem;list-style:disc}
+.prose ol{margin:0 0 0.75rem;padding-left:1.5rem;list-style:decimal}
+.prose table{margin:0 0 0.75rem}
 .prose li + li{margin-top:0.25rem}
 .prose h1{font-size:1.25rem;margin-top:1rem;margin-bottom:0.5rem;font-weight:700}
 .prose h2{font-size:1.125rem;margin-top:1rem;margin-bottom:0.5rem;font-weight:700}

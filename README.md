@@ -14,7 +14,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 - 🌗 **Dark & light themes** — dark "space" theme by default; flip `data-theme="light"` on `<html>` to retheme at runtime via `--fv-*` custom properties.
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
 - 🧩 **42 glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
-- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 2.5 KB optional JS companion for the interactive bits.
+- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 7.7 KB (gzip) optional JS companion for the interactive bits.
 - 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio, a copy-paste block gallery and an AI-kit add-on demo in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
 - 🪶 **~21 KB gzipped** (139 KB minified) — one file, all 42 components; Sass users can build just the partials they need.
@@ -31,7 +31,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 npm install farvist
 ```
 
-Import the CSS (and the optional 2.5 KB JS) through your bundler:
+Import the CSS (and the optional 7.7 KB JS) through your bundler:
 
 ```js
 import 'farvist/dist/farvist.min.css';
@@ -50,7 +50,7 @@ Via CDN (no build step — live on jsDelivr and unpkg):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css" />
-<!-- optional 2.5 KB companion for modals, tabs, toasts, theme toggle -->
+<!-- optional 7.7 KB gzip companion for modals, tabs, toasts, theme toggle -->
 <script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>
 ```
 
@@ -328,7 +328,7 @@ A 55-icon SVG sprite ships in `assets/icons/`. Icons inherit `currentColor`, so 
 
 Sizes: `.icon` (1em) · `.icon-sm` · `.icon-lg` · `.icon-xl`. Decorative SVGs (`logo.svg`, `patterns/mesh.svg`, `blob.svg`, `grid.svg`, `dots.svg`) live in `assets/`, and theme-aware CSS patterns are built in: `.bg-grid` `.bg-dots` `.bg-noise`.
 
-The optional **2.5 KB** companion powers the interactive components — drop it in with `defer`:
+The optional **7.7 KB gzip** companion powers the interactive components — drop it in with `defer`:
 
 ```html
 <script src="assets/farvist.js" defer></script>
@@ -395,7 +395,7 @@ scss/
     ├── _effects.scss        #   glass, glow, gradient, motion + @supports
     └── _backgrounds.scss    #   mesh gradients, patterns, spotlights, fade-masks
 assets/
-├── farvist.js            # 2.5 KB optional companion (modal, tabs, toast, theme)
+├── farvist.js            # 7.7 KB optional companion (modal, tabs, toast, theme)
 ├── logo.svg                 # wordmark + gradient mark
 ├── icons/farvist-icons.svg   # 55-icon sprite (currentColor)
 └── patterns/                # mesh, blob, grid, dots decorative SVGs

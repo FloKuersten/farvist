@@ -1,5 +1,5 @@
 /*!
- * Farvistrap — tiny vanilla-JS companion (~2.5 KB) for the interactive bits.
+ * Farvistrap — tiny vanilla-JS companion (~7.7 KB gzip) for the interactive bits.
  * No dependencies. Drop it in with: <script src="assets/farvistrap.js" defer></script>
  *
  *   Modals  : <button data-fv-open="#id">  +  <dialog class="modal" id="id">
@@ -96,8 +96,12 @@
 
     var opener = t.closest('[data-fv-open]');
     if (opener) {
-      var dlg = document.querySelector(opener.getAttribute('data-fv-open'));
-      if (dlg && dlg.showModal) dlg.showModal();
+      var sel = opener.getAttribute('data-fv-open');
+      var dlg = document.querySelector(sel);
+      // A palette opened this way needs the same reset+focus ⌘K performs,
+      // otherwise it reopens showing the previous query's filtered list.
+      if (dlg && dlg.classList.contains('command')) openCommand(sel);
+      else if (dlg && dlg.showModal) dlg.showModal();
       return;
     }
 
@@ -121,9 +125,10 @@
     if (tab) activateTab(tab);
 
     if (t.closest('[data-fv-theme-toggle]')) {
-      var root = document.documentElement;
-      if (root.getAttribute('data-theme') === 'light') root.removeAttribute('data-theme');
-      else root.setAttribute('data-theme', 'light');
+      // Route through theme() so the choice is persisted the same way the skin
+      // API persists: a raw attribute flip is undone on the next page load,
+      // because the restore block re-applies whatever skin is still in storage.
+      theme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
     }
 
     // Skin cycler: <button data-fv-theme-cycle="synthwave,cyber,noir"> steps
@@ -175,10 +180,14 @@
       });
     }
 
-    // ⌘K / Ctrl+K opens the command palette (if one exists on the page).
-    if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K') && document.querySelector('dialog.command')) {
+    // ⌘K / Ctrl+K toggles the command palette (if one exists on the page).
+    // Toggling — rather than re-opening — matches the convention, and keeps a
+    // second press from wiping a half-typed query.
+    var cmdDialog = document.querySelector('dialog.command');
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K') && cmdDialog) {
       e.preventDefault();
-      openCommand();
+      if (cmdDialog.open) cmdDialog.close();
+      else openCommand();
       return;
     }
 
@@ -264,7 +273,9 @@
   function openCommand(sel) {
     var dialog = sel ? document.querySelector(sel) : document.querySelector('dialog.command');
     if (!dialog || !dialog.showModal) return;
-    dialog.showModal();
+    // Guarded: calling showModal() on an already-open dialog throws
+    // InvalidStateError on the engines at our support floor.
+    if (!dialog.open) dialog.showModal();
     var input = dialog.querySelector('.command-input');
     if (input) { input.value = ''; input.focus(); }
     cmdFilter(dialog);

@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
@@ -21,12 +21,12 @@
       },
       {
         "file": "dist/farvist-ai.min.css",
-        "gzipKb": 6.4,
+        "gzipKb": 6.5,
         "contents": "ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme=\"light\">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)"
       },
       {
         "file": "dist/farvist-ai-compat.css",
-        "gzipKb": 0.9,
+        "gzipKb": 1,
         "contents": "companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3's preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift"
       }
     ]

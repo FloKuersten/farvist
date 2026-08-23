@@ -2,7 +2,7 @@
 
 > A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.
 
-Version 1.7.2 · MIT · https://farvist.com · 2024 utility/component classes.
+Version 1.7.3 · MIT · https://farvist.com · 2024 utility/component classes.
 
 ## Install
 ```html
@@ -14,8 +14,8 @@ Or: `npm i farvist`. Dark theme by default — give the page a rich background s
 Three builds (swap the filename in the CDN URL):
 - `dist/farvist.min.css` (~21.3 KB gzip) — everything — all components, utilities, backgrounds, skins, AI kit
 - `dist/farvist-slim.min.css` (~19.2 KB gzip) — the framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) — for sites that never render AI conversations
-- `dist/farvist-ai.min.css` (~6.4 KB gzip) — ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)
-- `dist/farvist-ai-compat.css` (~0.9 KB gzip) — companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3's preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift
+- `dist/farvist-ai.min.css` (~6.5 KB gzip) — ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)
+- `dist/farvist-ai-compat.css` (~1 KB gzip) — companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3's preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift
 
 ## Conventions
 - **Colors:** primary, secondary, success, danger, warning, info, accent, light, dark (use as suffixes: btn-primary, text-success, bg-accent).

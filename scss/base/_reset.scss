@@ -18,6 +18,17 @@
     margin: 0;
   }
 
+  // The `hidden` attribute has to actually hide. Every rule we ship is author
+  // CSS, so any `display:` a component or utility sets — in any layer — beats
+  // the UA's `[hidden] { display: none }` and leaves the element on screen.
+  // !important in this, the FIRST layer, wins over every later layer's display
+  // (among important declarations the earlier layer takes precedence), so one
+  // rule here covers all 42 components and every `.d-*` utility.
+  // `until-found` is exempt: it must stay findable and revealable by the UA.
+  [hidden]:not([hidden='until-found']) {
+    display: none !important;
+  }
+
   html {
     font-size: $font-size-root;
     -webkit-text-size-adjust: 100%;
@@ -118,6 +129,17 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+
+    // One exception: a frozen spinner reads as a hung app, so the loading ring
+    // keeps turning — slowly. This has to live in THIS layer, not in
+    // @layer components with the rest of the spinner: among important
+    // declarations the earlier layer wins, so no components-layer !important
+    // can outrank the cap above. Here, same layer, `.spinner` simply
+    // out-specifies `*`.
+    .spinner {
+      animation-duration: 1.6s !important;
+      animation-iteration-count: infinite !important;
     }
   }
 }

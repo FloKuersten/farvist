@@ -151,6 +151,9 @@
   * {
     margin: 0;
   }
+  [hidden]:not([hidden=until-found]) {
+    display: none !important;
+  }
   html {
     font-size: 16px;
     -webkit-text-size-adjust: 100%;
@@ -231,6 +234,10 @@
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+    .spinner {
+      animation-duration: 1.6s !important;
+      animation-iteration-count: infinite !important;
     }
   }
 }
@@ -2409,9 +2416,6 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .spinner {
-      animation: fv-spin 1.6s linear infinite !important;
-    }
     .spinner-dots > span {
       animation: none;
     }
@@ -3763,7 +3767,7 @@
     margin-bottom: 0.5rem;
   }
   .prose p, .prose ul, .prose ol, .prose pre, .prose blockquote, .prose table {
-    margin-bottom: 0.75rem;
+    margin: 0 0 0.75rem;
   }
   .prose li + li {
     margin-top: 0.25rem;
@@ -3789,7 +3793,7 @@
     font-size: 0.875rem;
   }
   .prose-sm p, .prose-sm ul, .prose-sm ol, .prose-sm pre, .prose-sm blockquote, .prose-sm table {
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem;
   }
   .prose-sm h1, .prose-sm h2, .prose-sm h3, .prose-sm h4, .prose-sm h5, .prose-sm h6 {
     margin-top: 0.75rem;
@@ -9122,10 +9126,10 @@
   }
   @keyframes fv-float {
     0%, 100% {
-      transform: translateY(0);
+      translate: 0 0;
     }
     50% {
-      transform: translateY(-10px);
+      translate: 0 -10px;
     }
   }
   .animate-float {
