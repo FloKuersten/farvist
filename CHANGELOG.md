@@ -2,6 +2,16 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.7.6] — 2026-08-24
+Packaging and launch-readiness. No stylesheet changes — all six builds are byte-identical to 1.7.5.
+### Fixed
+- **A stale 51 KB source map has been shipping inside the npm package.** `dist/farvist.css.map` was left over from a Jul 29 build, orphaned ever since — every build script runs `--no-source-map`, and `dist/farvist.css` does not even carry a `sourceMappingURL`, so nothing referenced or regenerated it. It stayed invisible because `*.css.map` is gitignored, and a `files` whitelist in package.json **overrides .gitignore**: `"dist"` swept the whole directory in. It was ~15% of the published tarball, mapping to a stylesheet four releases old. Deleted, and `"!dist/*.map"` added to `files` so it cannot return — verified by dropping a map back on disk and re-packing (still 86 files, still excluded).
+### Added
+- **Opt-in notify form** (`assets/notify.js`) for capturing "tell me when it ships" interest — no third-party script, no cookie, no tracking pixel, one `fetch` on submit. **Disabled by default**: it renders nothing until an endpoint is set, so shipping it changes nothing today. Excluded from the npm package (`"!assets/notify.js"`) since it is site infrastructure, not framework.
+- **New gate: `check:privacy`.** The privacy page states, as a matter of fact, that this site has "no accounts, forms or logins" — which the notify form would falsify the moment it is switched on. On an EU-operated site that is a legal claim, not a nicety, and "remember to update the privacy page" is exactly the kind of thing that gets forgotten. The gate fails the build if a live form and that claim coexist, if a live form ships without a disclosure, or if a disclosure describes a form that no longer exists. It prints the suggested privacy wording on failure. Verified in both directions.
+### Notes
+- Both new gates run in CI. The published package drops from 87 to 86 files and ~51 KB.
+
 ## [1.7.5] — 2026-08-24
 Same-day follow-up to 1.7.4. A pre-publish gate finished reporting after 1.7.4 had already gone out and found two real defects — one of them a documented API that has never worked. Nothing here is a regression from 1.7.4; the Sass bug dates to v0.5.0.
 ### Fixed

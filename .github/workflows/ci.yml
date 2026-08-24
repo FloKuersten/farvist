@@ -53,6 +53,9 @@ jobs:
       - name: Documented Sass API (build-time theming compiles)
         run: npm run check:sass-api
 
+      - name: Privacy-page claims match the site
+        run: npm run check:privacy
+
       - name: Accessibility (axe via pa11y-ci)
         run: |
           npx serve -l 4000 . > /dev/null 2>&1 &
