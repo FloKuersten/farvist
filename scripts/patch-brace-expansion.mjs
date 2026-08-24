@@ -1,5 +1,6 @@
 // =============================================================================
-// Farvist · scripts/patch-brace-expansion.mjs  (runs from "postinstall")
+// Farvist · scripts/patch-brace-expansion.mjs  (runs from "prepare" — NOT postinstall: scripts/ is excluded from the
+// published tarball, so a postinstall hook here breaks every consumer install)
 // -----------------------------------------------------------------------------
 // The 2026 unbounded-expansion advisory considers only brace-expansion >=5.0.8
 // patched, so package.json overrides force v5 tree-wide. But v5's CommonJS

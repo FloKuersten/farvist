@@ -11,6 +11,12 @@
 // =============================================================================
 
 // Cascade-layer order (must come first)
+// Re-export the token layer so consumers can configure it through THIS entry:
+//   @use 'farvist/scss/farvist' with ($primary: #00e0ff);
+// Without the forward the entry only @uses its submodules, so those variables
+// are unreachable and the documented `with (...)` form fails to compile.
+@forward 'abstracts';
+
 @use 'base/layers';
 
 // Base

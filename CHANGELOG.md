@@ -2,6 +2,23 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.7.5] — 2026-08-24
+Same-day follow-up to 1.7.4. A pre-publish gate finished reporting after 1.7.4 had already gone out and found two real defects — one of them a documented API that has never worked. Nothing here is a regression from 1.7.4; the Sass bug dates to v0.5.0.
+### Fixed
+- **The documented build-time theming API never compiled.** README and the docs both teach `@use 'farvist/scss/farvist' with ($primary: …)`, the headline of the "recolor the whole framework" section. It fails with *"This variable was not declared with !default in the @used module"* — the entry files only `@use` their layer modules, so the tokens are never forwarded and nothing is configurable through them. The variables are `!default` in `scss/abstracts/_variables.scss`; they were simply unreachable. Each entry now `@forward`s the token layer, which makes the documented form work on all three builds. Compiled output for the unconfigured builds is **byte-identical** — all six dist files verified unchanged — so this is an API fix with no rendering change. Present since v0.5.0 and shipped in every release including 1.7.4; the runtime `--fv-*` / `data-theme` re-branding was always the working path.
+- **New gate: `check:sass-api`.** Nothing tested the documented Sass surface, which is how it stayed broken for eighteen releases. The gate compiles the exact `with (…)` form against all three entries and asserts the override reaches the compiled custom properties. Verified to fail on the pre-fix source and pass after; wired into CI.
+- **"Bootstrap hosts need nothing" was wrong, and the hedge added in 1.7.4 was still wrong.** 1.7.4 softened it to "if the page uses Bootstrap's own `.btn`" — but the break does not depend on the host's markup at all: the kit's own buttons carry `class="btn"` (9 of the 14 catalog recipes emit it), and Bootstrap ships entirely un-layered, so its `.btn` beats the kit's layered rules unconditionally. Measured against real Bootstrap 5.3.3: padding 8px/24px → 6px/12px, weight 600 → 400, radius 12px → 6px, glass fill and border gone, and button text at **1.2:1** against a dark page — effectively invisible. The compat file restores all of it. Docs, the demo page, cursorrules and the AI entry's own header now say so without the hedge.
+### Fixed — claims and comments
+- The JS companion is **8.5 KB gzip**, not 7.7 — it grew in 1.7.3/1.7.4 and the figure 1.7.4 corrected was already stale by the time it shipped. Fixed in README (5 places), docs, the homepage and the file's own banner.
+- `assets/farvist.js`'s banner still called the project **"Farvistrap"** and told readers to load `assets/farvistrap.js`, a filename that has never shipped. It is the first thing a consumer sees on opening the file.
+- The AI build is **6.6 KB** gzip; several hand-written surfaces still rounded it to "~6 KB" (6.6 rounds to 7).
+- `llms.txt` said 55 design tokens (56 since 1.7.4's `--fv-code-color`), and `farvist.cursorrules` still described the spacing scale as 0–7 — 1.7.4 fixed that in the *generated* catalogs but missed the hand-maintained one.
+- **Icons need a same-origin sprite.** Every icon example shows `<use href="assets/icons/farvist-icons.svg#i-…">` with no note that browsers refuse cross-origin `<use>` — so a CDN quick-start user, following the documented path, gets empty boxes. Measured: same-origin sprite draws an 18×20 box, the identical sprite over a CDN URL draws 0×0. README and cursorrules now say to copy the sprite locally.
+- `blog/ai-era` still argued that the two phantom classes (`w3`, `org`) were deliberately left in the catalog — the thing 1.7.4 removed — and contradicted its own corrected class count 45 lines earlier. Rewritten to say what actually happened.
+- `scripts/patch-brace-expansion.mjs`'s header still claimed it runs from `postinstall`, the hook 1.7.4 removed precisely because it broke every consumer install.
+### Notes
+- All six compiled stylesheets are byte-identical to 1.7.4. The only functional change is the Sass entry forwarding; everything else is documentation, comments and a new CI gate.
+
 ## [1.7.4] — 2026-08-24
 Second pass over the v1.7.2 audit backlog — the 22 findings that were triaged but never verified when the previous run hit its limit. Fourteen held up under reproduction and are fixed here. The theme is the machine catalog: the files an AI assistant reads to learn Farvist were teaching classes that do not exist and hiding ones that do.
 ### Fixed — install

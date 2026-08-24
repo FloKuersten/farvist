@@ -14,11 +14,11 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 - 🌗 **Dark & light themes** — dark "space" theme by default; flip `data-theme="light"` on `<html>` to retheme at runtime via `--fv-*` custom properties.
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
 - 🧩 **42 glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
-- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 7.7 KB (gzip) optional JS companion for the interactive bits.
+- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and an 8.5 KB (gzip) optional JS companion for the interactive bits.
 - 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio, a copy-paste block gallery and an AI-kit add-on demo in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
 - 🪶 **~21 KB gzipped** (139 KB minified) — one file, all 42 components; Sass users can build just the partials they need.
-- 📦 **Three builds** — `farvist.min.css` (everything, ~21 KB gzip), `farvist-slim.min.css` (no AI kit, ~19 KB), and `farvist-ai.min.css` (~6 KB — **only the AI-interface kit**, made to add a chat/agent UI to a site already styled with Tailwind, Bootstrap or custom CSS).
+- 📦 **Three builds** — `farvist.min.css` (everything, ~21 KB gzip), `farvist-slim.min.css` (no AI kit, ~19 KB), and `farvist-ai.min.css` (~6.6 KB — **only the AI-interface kit**, made to add a chat/agent UI to a site already styled with Tailwind, Bootstrap or custom CSS).
 - 🦾 **Modern & accessible** — `@use`/`@forward` modules (no deprecated `@import`), `:focus-visible` rings, `prefers-reduced-motion` support, and a `@supports` fallback for browsers without `backdrop-filter`.
 
 ---
@@ -31,7 +31,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 npm install farvist
 ```
 
-Import the CSS (and the optional 7.7 KB JS) through your bundler:
+Import the CSS (and the optional 8.5 KB JS) through your bundler:
 
 ```js
 import 'farvist/dist/farvist.min.css';
@@ -50,7 +50,7 @@ Via CDN (no build step — live on jsDelivr and unpkg):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css" />
-<!-- optional 7.7 KB gzip companion for modals, tabs, toasts, theme toggle -->
+<!-- optional 8.5 KB gzip companion for modals, tabs, toasts, theme toggle -->
 <script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>
 ```
 
@@ -60,7 +60,7 @@ Three builds share the same class names — swap the filename:
 | ---------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `farvist.min.css`      | ~21 KB | Everything — all 42 components, utilities, backgrounds, skins.                                                                                                         |
 | `farvist-slim.min.css` | ~19 KB | The framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command palette, diff, suggestions, attachment, snippet).      |
-| `farvist-ai.min.css`   | ~6 KB  | Only the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on another framework. No reset/grid/utilities; assumes `box-sizing: border-box` and a 16px root (rem-sized); wrap the UI in `data-theme="light"` on light pages. **Tailwind v3 hosts:** also load `farvist-ai-compat.css` after your Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; v4 and Bootstrap need nothing). [Live demo](https://farvist.com/examples/ai-addon.html). |
+| `farvist-ai.min.css`   | ~6.6 KB  | Only the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on another framework. No reset/grid/utilities; assumes `box-sizing: border-box` and a 16px root (rem-sized); wrap the UI in `data-theme="light"` on light pages. **Tailwind v3 hosts:** also load `farvist-ai-compat.css` after your Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; v4 and Bootstrap need nothing). [Live demo](https://farvist.com/examples/ai-addon.html). |
 
 Or use the local build:
 
@@ -326,9 +326,12 @@ A 55-icon SVG sprite ships in `assets/icons/`. Icons inherit `currentColor`, so 
 <svg class="icon icon-lg text-accent"><use href="assets/icons/farvist-icons.svg#i-star"/></svg>
 ```
 
-Sizes: `.icon` (1em) · `.icon-sm` · `.icon-lg` · `.icon-xl`. Decorative SVGs (`logo.svg`, `patterns/mesh.svg`, `blob.svg`, `grid.svg`, `dots.svg`) live in `assets/`, and theme-aware CSS patterns are built in: `.bg-grid` `.bg-dots` `.bg-noise`.
+Sizes: `.icon` (1em) · `.icon-sm` · `.icon-lg` · `.icon-xl`.
 
-The optional **7.7 KB gzip** companion powers the interactive components — drop it in with `defer`:
+> **Copy the sprite to your own site.** That `href` is same-origin: browsers refuse to resolve `<use>` against another domain, so pointing it at a CDN silently renders nothing (measured: 0×0 box). If you loaded the CSS from a CDN, copy `assets/icons/farvist-icons.svg` into your own project and point the `href` at it there — or inline the sprite once at the top of the page.
+ Decorative SVGs (`logo.svg`, `patterns/mesh.svg`, `blob.svg`, `grid.svg`, `dots.svg`) live in `assets/`, and theme-aware CSS patterns are built in: `.bg-grid` `.bg-dots` `.bg-noise`.
+
+The optional **8.5 KB gzip** companion powers the interactive components — drop it in with `defer`:
 
 ```html
 <script src="assets/farvist.js" defer></script>
@@ -395,7 +398,7 @@ scss/
     ├── _effects.scss        #   glass, glow, gradient, motion + @supports
     └── _backgrounds.scss    #   mesh gradients, patterns, spotlights, fade-masks
 assets/
-├── farvist.js            # 7.7 KB optional companion (modal, tabs, toast, theme)
+├── farvist.js            # 8.5 KB optional companion (modal, tabs, toast, theme)
 ├── logo.svg                 # wordmark + gradient mark
 ├── icons/farvist-icons.svg   # 55-icon sprite (currentColor)
 └── patterns/                # mesh, blob, grid, dots decorative SVGs

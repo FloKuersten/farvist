@@ -1,13 +1,13 @@
 /*!
- * Farvistrap — tiny vanilla-JS companion (~7.7 KB gzip) for the interactive bits.
- * No dependencies. Drop it in with: <script src="assets/farvistrap.js" defer></script>
+ * Farvist — tiny vanilla-JS companion (~8.5 KB gzip) for the interactive bits.
+ * No dependencies. Drop it in with: <script src="assets/farvist.js" defer></script>
  *
  *   Modals  : <button data-fv-open="#id">  +  <dialog class="modal" id="id">
  *             close with [data-fv-dismiss], a backdrop click, or Esc (native)
  *   Tabs    : <button class="tab" data-fv-tab="#panel">  +  <div class="tab-panel" id="panel">
  *             ARIA roles, roving tabindex and arrow-key nav are applied for you
  *   Theme   : <button data-fv-theme-toggle>  (flips data-theme on <html>)
- *   Toasts  : Farvistrap.toast({ title, message, variant, timeout })
+ *   Toasts  : Farvist.toast({ title, message, variant, timeout })
  *   Dropdowns close on an outside click or Esc.
  *
  * On load it also adds role="progressbar" + aria-value* to .progress bars and

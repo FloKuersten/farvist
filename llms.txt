@@ -6,7 +6,7 @@ Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses 
 
 ## Start here (for AI assistants)
 - [Full context](https://farvist.com/llms-full.txt): every convention, component, icon, design token and copy-paste recipe. Paste this into your assistant before generating Farvist markup.
-- [Machine-readable catalog](https://farvist.com/ai-context.json): the same as JSON — components, utility families, 55 design tokens with defaults, skins, icons, 14 recipes.
+- [Machine-readable catalog](https://farvist.com/ai-context.json): the same as JSON — components, utility families, 56 design tokens with defaults, skins, icons, 14 recipes.
 - [.cursorrules file](https://farvist.com/farvist.cursorrules): drop into your project so Cursor/Copilot/Claude generate correct Farvist with zero setup.
 
 ## Docs & tools
@@ -20,7 +20,7 @@ Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses 
 - CDN: `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css">`
 - Optional JS: `<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script>`
 - npm: `npm i farvist`
-- Three builds (swap the filename): `farvist.min.css` (~21 KB gzip, everything) · `farvist-slim.min.css` (~19 KB, no AI kit — the 11 excluded components: chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) · `farvist-ai.min.css` (~6 KB, ONLY the AI-interface kit — add it to a site already on Tailwind/Bootstrap; no reset/grid/utilities, rem-sized against a 16px root, wrap the UI in `data-theme="light"` on light pages; on Tailwind v3 also load `farvist-ai-compat.css` after the Tailwind build).
+- Three builds (swap the filename): `farvist.min.css` (~21 KB gzip, everything) · `farvist-slim.min.css` (~19 KB, no AI kit — the 11 excluded components: chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) · `farvist-ai.min.css` (~6.6 KB, ONLY the AI-interface kit — add it to a site already on Tailwind/Bootstrap; no reset/grid/utilities, rem-sized against a 16px root, wrap the UI in `data-theme="light"` on light pages; on Tailwind v3 also load `farvist-ai-compat.css` after the Tailwind build).
 
 ## Conventions (quick reference)
 - Colors: primary, secondary, success, danger, warning, info, accent, light, dark (suffixes: `btn-primary`, `text-success`, `bg-accent`).

@@ -50,6 +50,9 @@ jobs:
       - name: Skin contrast gate (per-skin WCAG AA)
         run: npm run check:skins
 
+      - name: Documented Sass API (build-time theming compiles)
+        run: npm run check:sass-api
+
       - name: Accessibility (axe via pa11y-ci)
         run: |
           npx serve -l 4000 . > /dev/null 2>&1 &
