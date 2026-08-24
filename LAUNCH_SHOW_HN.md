@@ -81,9 +81,14 @@ slim without the AI components (19 KB), and the AI kit alone (6.6 KB) — plus
 per-module Sass builds (@use only the partials you want).
 
 **"Who's behind it / will it be maintained?"** → Solo, built in the open,
-24 tagged releases with changelogs since June, each feature release followed by an
-adversarial review pass whose findings are reproduced before they are fixed.
+two months of continuous releases, every one with a written changelog, each feature
+release followed by an adversarial review pass whose findings are reproduced before
+they are fixed.
 The framework is MIT and stays free.
+
+> Note to self: do NOT quote a release count until the tags match the CHANGELOG.
+> As of 2026-08-24 there are 16 git tags and 24 changelog entries, and npm/GitHub
+> both still show v1.7.0 - anyone who clicks through will see the gap.
 
 > Note to self: do NOT claim ads fund it — AdSense rejected the site 2026-08-02.
 > If a paid template pack exists by launch day, say so plainly; if not, say
