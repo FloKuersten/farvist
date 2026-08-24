@@ -7,14 +7,18 @@
 
 ## Title (pick one — HN strips "Show HN:" variants down, keep it plain)
 
-Option A (recommended — concrete + differentiated):
-> Show HN: Farvist – a glassmorphism CSS framework your AI assistant can theme
+Option A (recommended — leads with the differentiated build):
+> Show HN: A 6.6 KB drop-in chat/agent UI for sites already on Tailwind or Bootstrap
 
-Option B (Bootstrap hook):
-> Show HN: Farvist – a Bootstrap-style CSS framework built for the AI era
+Option B (framework hook):
+> Show HN: Farvist – a glassmorphism CSS framework your AI assistant can theme
 
 Option C (feature hook):
 > Show HN: I built a CSS framework where re-branding is 5 CSS variables
+
+Note: A and B pitch different products to different crowds. A is narrower but has a
+clearer "I need this today" buyer — anyone building an AI product UI. B is the
+broader framework story. Do not blend them; pick the audience.
 
 **URL:** https://farvist.com
 
@@ -38,9 +42,16 @@ with two bets that I think are worth your skepticism:
    can actually do. Try it: paste https://farvist.com/llms-full.txt into your
    assistant and ask it to build a pricing page.
 
-Numbers, honestly: ~21 KB gzip, 42 components (incl. an AI-app kit: chat, tool-call
-cards, streaming, diffs, ⌘K palette), 5 prebuilt skins, 6 CI gates (axe-core,
-per-skin contrast, size budget, theming purity). The site's own docs run on it.
+There is a third thing I would actually lead with now: the AI-interface kit ships as
+its OWN 6.6 KB stylesheet. If your product is already on Tailwind or Bootstrap and you
+need a chat UI — bubbles, prompt composer, tool-call cards, reasoning disclosures,
+streaming, code diffs, ⌘K palette — you can drop in farvist-ai.min.css without
+adopting a second framework. Everything is emitted in @layer so your own CSS keeps
+winning shared class names. Demo on a simulated non-Farvist page:
+https://farvist.com/examples/ai-addon.html
+
+Numbers, honestly: ~21 KB gzip for the full build, 42 components, 5 prebuilt skins,
+6 CI gates (axe-core, per-skin contrast, size budget, theming purity, dist freshness). The site's own docs run on it.
 
 What it's not: it's not trying to replace Tailwind for design-system teams, and
 the AI angle isn't a moat — any framework could ship an llms.txt tomorrow. I just
@@ -65,11 +76,18 @@ markup; component classes are more stable for a model (and a human) to recall.
 The Bootstrap-compatible utilities are there too.
 
 **"21 KB isn't tiny"** → It's one file with 42 components and zero JS required;
-Bootstrap css alone is ~25 KB gzip. Per-module Sass builds work today
-(@use the partials you want); a prebuilt slim bundle is on the roadmap.
+Bootstrap css alone is ~25 KB gzip. There are three prebuilt bundles now — full (21 KB),
+slim without the AI components (19 KB), and the AI kit alone (6.6 KB) — plus
+per-module Sass builds (@use only the partials you want).
 
 **"Who's behind it / will it be maintained?"** → Solo, built in the open,
-23 releases with changelogs since June. Ads on the docs keep it free; no paid tier.
+24 tagged releases with changelogs since June, each feature release followed by an
+adversarial review pass whose findings are reproduced before they are fixed.
+The framework is MIT and stays free.
+
+> Note to self: do NOT claim ads fund it — AdSense rejected the site 2026-08-02.
+> If a paid template pack exists by launch day, say so plainly; if not, say
+> "nothing to sell you yet" and leave it.
 
 ## Cross-posts (same day, lower effort)
 - r/webdev "Showoff Saturday" (only on Saturdays — else r/css, r/web_design)
