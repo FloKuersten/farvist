@@ -2,7 +2,7 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
-## [1.7.4] — 2026-08-02
+## [1.7.4] — 2026-08-24
 Second pass over the v1.7.2 audit backlog — the 22 findings that were triaged but never verified when the previous run hit its limit. Fourteen held up under reproduction and are fixed here. The theme is the machine catalog: the files an AI assistant reads to learn Farvist were teaching classes that do not exist and hiding ones that do.
 ### Fixed — install
 - **`npm i farvist` would have failed outright.** v1.7.1 added a `postinstall` hook running `scripts/patch-brace-expansion.mjs`, but `scripts/` is not in package.json’s `files` whitelist, so the script is absent from the published tarball — and npm runs a dependency’s `postinstall` on the consumer’s machine. Every install would have died with `MODULE_NOT_FOUND`. It never surfaced because 1.7.1–1.7.3 were never published; 1.7.0, the version on npm today, predates the hook. Reproduced by packing the tarball and installing it into a clean project, then fixed by moving the patch to `prepare`, which still runs for this repo and for `npm ci` in CI but never for someone installing Farvist as a dependency. Re-verified: clean install succeeds, and all eight documented entry points resolve in `node_modules/farvist`.
@@ -27,7 +27,7 @@ Second pass over the v1.7.2 audit backlog — the 22 findings that were triaged 
 - `farvist-ai-compat.css` grows 0.9 → 1.1 KB gzip for the variant re-assertions; `farvist-ai.min.css` 6.5 → 6.6 KB. Catalog totals move to 2,022 classes and 56 tokens.
 - Eight of the 22 backlog findings were not acted on — judged cosmetic, or not worth the churn. None were dropped silently; they are listed in the branch discussion.
 
-## [1.7.3] — 2026-08-02
+## [1.7.3] — 2026-08-23
 Quality patch. An adversarial audit of v1.7.2 (15 agents across 7 dimensions, every finding reproduced in-browser before it was believed) turned up seven defects, four of them the same shape as the bug v1.7.2 had just fixed: a rule that quietly depends on something the cascade takes away.
 ### Fixed
 - **The `hidden` attribute did nothing** on any component or utility that sets a `display` — `.chat`, `.toast`, `.badge`, `.btn`, every `.d-*` class, 42 components in all. Framework CSS is author CSS, so its `display` beats the UA's `[hidden] { display: none }` from any layer; `el.hidden = true` left the element on screen. The symptom had been patched three times in place (`.command-item[hidden]`, `.command-group[hidden]`, and the docs' own nav filter) without the cause being found. Now guarded once in `@layer reset` with `[hidden]:not([hidden='until-found']) { display: none !important }` — important declarations in the *first* layer outrank every later layer, so one rule covers everything. `until-found` is exempt so it stays revealable. `farvist-ai.css` gets the same guard scoped to its own class names, since an add-on must not ship a page-global rule.
