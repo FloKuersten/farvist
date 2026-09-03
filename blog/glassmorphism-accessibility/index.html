@@ -116,7 +116,7 @@ a { color: var(--fv-primary-text); }</code></pre>
   translucent glass over gradient backgrounds in headless, producing
   false positives. …",
 "ignore": ["color-contrast"],</code></pre>
-      <p>Everything else axe checks at <code>WCAG2AA</code> still runs in CI, over six pages: the home page, the docs, three examples (<code>ai-console</code>, <code>ai-addon</code>, <code>dashboard</code>) and the marketing template. Those catch the regressions that slip in between careful reviews — a missing label, a broken heading order, an unlabelled control.</p>
+      <p>Everything else axe checks at <code>WCAG2AA</code> still runs in CI over every page on the site — home, docs, every blog post, every example template, the free blocks, the theme builder and the legal pages (it started as six pages; the list is in <code>.pa11yci.json</code>). Those catch the regressions that slip in between careful reviews — a missing label, a broken heading order, an unlabelled control.</p>
       <p>The honest cost: contrast is now our problem, not the robot's. Any framework that claims to be "axe clean" <em>including</em> contrast while shipping translucent surfaces is either not running the rule or not really shipping glass. Read the config before you believe the badge — ours included.</p>
 
       <h2>What we gate instead</h2>
