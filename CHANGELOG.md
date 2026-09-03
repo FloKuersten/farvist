@@ -2,6 +2,17 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.7.7] — 2026-09-03
+Contrast fix for the AI kit's citation chips, and the gate that should have caught them.
+### Fixed
+- **`.cite` failed WCAG AA in the dark theme** — 3.85:1 for 12px text on the chat templates, and a marginal 4.47:1 in light on `examples/ai-console.html`. The token it uses, `--fv-primary-text`, clears AA against the flat body background (which is all `check-skins` can see), but these chips sit on a translucent chip over translucent glass over a mesh gradient, and that composite is darker. `.cite` now mixes its colour toward `--fv-body-color`, which pulls it away from the surface in *both* themes and keeps runtime re-branding intact because both sides are tokens — the same shape as the `--fv-code-color` fix in 1.7.5. Measured after: 6.14:1 dark and 8.35:1 light on the chat templates, 7.37 / 8.10 on `ai-console`.
+- `examples/ai-cluster.html` nests its composer inside a `.card-footer`, one more translucent layer than the kit assumes, which dropped `.prompt-meta` to 4.41:1 in dark. Fixed page-scoped (5.86:1), since the cause is that page's stacking rather than the component.
+### Added
+- **New gate: `check:ai-contrast`.** It renders every page in `examples/` in a real browser, in both themes, and measures composited contrast for the AI kit's small text (`.cite`, `.tool-call-status`, `.message-meta`, `.command-group`, `.command-hint`, `.prompt-meta`, `.snippet-lang`, `.attachment-meta`) — 44 measurements. A stylesheet parse cannot do this: the effective background is a composite only the renderer knows, which is exactly how 3.85:1 shipped while every static gate passed. `pa11y` cannot either, because `.pa11yci.json` disables axe's `color-contrast` rule on purpose. Verified to fail on the pre-fix stylesheet with precisely the three real failures, and pass after. `puppeteer` is now an explicit devDependency rather than relying on it being hoisted out of `pa11y-ci`.
+### Notes
+- One measurement trap is documented in the gate, because it cost real time: `body` carries `transition: background-color .2s`, so sampling a theme switch too early returns the *previous* theme's background under the *new* theme's text colour. That reports catastrophic ratios (1.69:1) that are not real — an earlier pass in this session nearly "fixed" a framework bug that did not exist on the strength of it. The gate waits 1600ms.
+- No markup or API changes; `dist/farvist.css` gains only the `.cite` colour. All builds unchanged in size except `farvist-ai-compat.css` (1.1 → 1.2 KB gzip).
+
 ## [1.7.6] — 2026-08-24
 Packaging and launch-readiness. No stylesheet changes — all six builds are byte-identical to 1.7.5.
 ### Fixed

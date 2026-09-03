@@ -3542,7 +3542,7 @@
     margin-left: 0.15em;
     font-size: 0.75rem;
     line-height: 1.5;
-    color: var(--fv-primary-text);
+    color: color-mix(in srgb, var(--fv-primary-text) 55%, var(--fv-body-color));
     text-decoration: none;
     vertical-align: super;
     background-color: var(--fv-code-bg);

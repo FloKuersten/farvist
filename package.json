@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "license": "MIT",
   "author": "FloKuersten",
@@ -61,7 +61,8 @@
     "check:skins": "node scripts/check-skins.mjs",
     "check:sass-api": "node scripts/check-sass-api.mjs",
     "check:privacy": "node scripts/check-privacy-claims.mjs",
-    "prepare": "node scripts/patch-brace-expansion.mjs"
+    "prepare": "node scripts/patch-brace-expansion.mjs",
+    "check:ai-contrast": "node scripts/check-ai-contrast.mjs"
   },
   "overrides": {
     "brace-expansion": "^5.0.8"
@@ -78,6 +79,7 @@
     "pa11y-ci": "^4.1.1",
     "postcss": "^8.5.15",
     "postcss-cli": "^11.0.1",
+    "puppeteer": "^24.43.1",
     "sass": "^1.83.0",
     "serve": "^14.2.6",
     "stylelint": "^17.14.0",

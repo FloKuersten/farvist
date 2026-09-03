@@ -50,7 +50,7 @@ pre.snippet{border:1px solid var(--fv-border-color)}
 .prose h5{font-size:1rem;margin-top:1rem;margin-bottom:0.5rem;font-weight:700}
 .prose h6{font-size:1rem;margin-top:1rem;margin-bottom:0.5rem;font-weight:700}
 .icon{display:inline-block}
-.cite{color:var(--fv-primary-text);text-decoration:none}
+.cite{color:color-mix(in srgb, var(--fv-primary-text) 55%, var(--fv-body-color));text-decoration:none}
 .toast-success{border-left-color:var(--fv-success)}
 .toast-danger{border-left-color:var(--fv-danger)}
 .toast-warning{border-left-color:var(--fv-warning)}

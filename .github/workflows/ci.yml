@@ -56,6 +56,9 @@ jobs:
       - name: Privacy-page claims match the site
         run: npm run check:privacy
 
+      - name: AI-kit text contrast (rendered, both themes)
+        run: npm run check:ai-contrast
+
       - name: Accessibility (axe via pa11y-ci)
         run: |
           npx serve -l 4000 . > /dev/null 2>&1 &

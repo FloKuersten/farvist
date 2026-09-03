@@ -138,7 +138,12 @@
     margin-left: 0.15em;
     font-size: map.get($font-sizes, 'xs');
     line-height: 1.5;
-    color: var(--fv-primary-text);
+    // 12px superscript sitting on a translucent chip over translucent glass:
+    // --fv-primary-text alone clears AA on the flat body background but not on
+    // that composite (measured 3.85:1 in dark). Mixing toward the body colour
+    // pulls it away from the surface in BOTH themes and keeps re-branding
+    // intact, since both sides are tokens.
+    color: color-mix(in srgb, var(--fv-primary-text) 55%, var(--fv-body-color));
     text-decoration: none;
     vertical-align: super;
     background-color: var(--fv-code-bg);
