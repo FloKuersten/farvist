@@ -10,9 +10,11 @@
 //
 // Method: over a black/white stripe backdrop, sample a strip of each surface
 // and take the standard deviation of luma. Frosted glass smears the stripes
-// (low spread); unfrosted glass shows them (high spread). The rule is relative
-// so it survives renderer differences: nested glass must be no less frosted
-// than a standalone .glass element on the same page.
+// (low spread); unfrosted glass shows them (high spread). Renderers blur very
+// differently (standalone glass measured 22 on Windows Chromium, 4.5 on CI's
+// Linux Chromium), so both ends are calibrated ON THE RUNNING RENDERER: a
+// standalone .glass (frosted) and the same fill with no backdrop-filter
+// (unfrosted). Nested glass fails if it sits closer to unfrosted than frosted.
 //
 // Run: node scripts/check-nested-glass.mjs
 // =============================================================================
@@ -49,17 +51,26 @@ async function lumaSpread(id) {
   }, png);
 }
 
-const standalone = await lumaSpread('standalone');
+const frosted = await lumaSpread('standalone');
+const unfrosted = await lumaSpread('unfrosted');
 const inNavbar = await lumaSpread('nested');
 const inCard = await lumaSpread('in-card');
 await browser.close();
 
+// The calibration itself must show a clear gap, or the page didn't render the
+// stripes / the blur and the comparison below would be meaningless.
+if (unfrosted - frosted < 30) {
+  console.error(`✘ check-nested-glass: calibration failed — frosted ${frosted.toFixed(1)} vs unfrosted ${unfrosted.toFixed(1)} (need a gap ≥ 30).`);
+  process.exit(1);
+}
+const limit = (frosted + unfrosted) / 2;
 const rows = [['dropdown inside .navbar', inNavbar], ['dropdown inside .card', inCard]];
-const failures = rows.filter(([, v]) => v > standalone);
-for (const [label, v] of rows) console.log(`  ${v > standalone ? '✘' : '✔'} ${label}: luma spread ${v.toFixed(1)} (standalone .glass ${standalone.toFixed(1)})`);
+const failures = rows.filter(([, v]) => v > limit);
+console.log(`  calibration: frosted .glass ${frosted.toFixed(1)} · unfrosted fill ${unfrosted.toFixed(1)} · fail above ${limit.toFixed(1)}`);
+for (const [label, v] of rows) console.log(`  ${v > limit ? '✘' : '✔'} ${label}: luma spread ${v.toFixed(1)}`);
 if (failures.length) {
-  console.error(`✘ check-nested-glass: ${failures.length} nested glass surface(s) less frosted than standalone glass — a Backdrop Root is back.`);
+  console.error(`✘ check-nested-glass: ${failures.length} nested glass surface(s) render closer to unfrosted than frosted — a Backdrop Root is back.`);
   console.error('  An ancestor with backdrop-filter stops nested glass from blurring the page; frost a ::before layer instead (see .navbar).');
   process.exit(1);
 }
-console.log('✔ check-nested-glass: glass nested in the navbar and cards frosts at least as well as standalone glass');
+console.log('✔ check-nested-glass: glass nested in the navbar and cards stays frosted');
