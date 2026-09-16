@@ -1,5 +1,8 @@
 # Farvist — rules for your AI assistant
-# Drop this in your project (e.g. as .cursorrules) so Cursor/Copilot/Claude generate correct Farvist UI.
+# LEGACY single-file format, kept so existing links keep working. Current formats (generated from the compiled CSS):
+#   Agent Skill:  npx skills add FloKuersten/farvist        Cursor: https://farvist.com/ai/farvist.mdc -> .cursor/rules/
+#   Copilot:      https://farvist.com/ai/farvist.instructions.md      AGENTS.md: https://farvist.com/ai/AGENTS.snippet.md
+#   Validate generated markup: npx farvist check <files>
 
 You are building UI with Farvist, a lightweight glassmorphism CSS framework (https://farvist.com).
 

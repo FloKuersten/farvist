@@ -32,8 +32,8 @@ jobs:
         # Porcelain catches modified, deleted (orphaned) AND untracked outputs —
         # `git diff` alone misses the latter two.
         run: |
-          if [ -n "$(git status --porcelain -- dist ai-context.json llms-full.txt)" ]; then
-            git status --porcelain -- dist ai-context.json llms-full.txt
+          if [ -n "$(git status --porcelain -- dist ai-context.json llms-full.txt skills ai .well-known context7.json index.html)" ]; then
+            git status --porcelain -- dist ai-context.json llms-full.txt skills ai .well-known context7.json index.html
             echo "::error::dist/ or generated files are stale, orphaned, or uncommitted — run 'npm run build:all' and commit."
             exit 1
           fi
@@ -67,6 +67,9 @@ jobs:
 
       - name: CDN snippets are version-pinned
         run: npm run check:cdn-pins
+
+      - name: npx farvist check — catches planted mistakes, site markup clean
+        run: npm run check:validator
 
       - name: Accessibility (axe via pa11y-ci)
         run: |

@@ -1,0 +1,17 @@
+{
+  "skills": [
+    {
+      "name": "farvist",
+      "description": "Build web UI with Farvist, a no-build glassmorphism CSS framework (frosted glass, neon gradients, dark-first, theme skins) with an AI-interface kit: chat threads, prompt composer, tool-call and reasoning cards, code diffs, citations and a command palette. Use when the user asks for Farvist, when the project already loads farvist.css or farvist-ai.css, or when they want a glassmorphism or AI chat interface built from plain HTML and CSS rather than a component library. Covers choosing a build, the Bootstrap-style class model, runtime re-branding with --fv-* tokens, skins, accessibility rules, and validating generated markup with npx farvist check.",
+      "files": [
+        "SKILL.md",
+        "references/components.md",
+        "references/ai-kit.md",
+        "references/theming.md",
+        "references/utilities.md",
+        "references/recipes.md",
+        "references/icons.md"
+      ]
+    }
+  ]
+}

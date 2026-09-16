@@ -110,7 +110,7 @@
 
       <section id="install">
         <h2 class="mb-3">Installation</h2>
-        <p class="text-muted mb-3">Drop in one stylesheet — no build step. Add the optional 8.5 KB (gzip) script for modals, tabs, toasts and the theme toggle.</p>
+        <p class="text-muted mb-3">Drop in one stylesheet — no build step. Add the optional ~9 KB (gzip) script for modals, tabs, toasts and the theme toggle.</p>
         <pre class="snippet"><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css"&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js" defer&gt;&lt;/script&gt;</code></pre>
 
@@ -741,13 +741,26 @@ Farvist.enhance();   // re-run progressive enhancement</code></pre>
       </section>
 
       <section id="use-with-ai">
-        <h2 class="mb-3">Use Farvist with your AI ✦</h2>
-        <p class="text-muted mb-3" style="max-width:46rem;">Farvist is built to be <strong>generated correctly by AI assistants</strong>. Point your tool at the machine-readable context, or paste the primer below.</p>
+        <h2 class="mb-3">Use Farvist with your AI ✦ <span class="badge badge-soft-accent">v1.8</span></h2>
+        <p class="text-muted mb-4" style="max-width:46rem;">Farvist is built to be <strong>generated correctly by AI coding agents</strong>. All of the files below are generated from the compiled CSS, so they can't drift from the release you're using. Use as many layers as your tool supports.</p>
+
+        <h3 class="h5 mb-2">1. Install the Agent Skill</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">For Claude Code, Cursor, GitHub Copilot, Codex, Gemini CLI and other <a href="https://agentskills.io" style="text-decoration:underline;">Agent Skills</a> clients. The agent loads a short set of rules, and pulls component, theming and recipe references only when a task needs them.</p>
+        <pre class="snippet"><code>npx skills add FloKuersten/farvist        # from the GitHub repo
+npx skills add https://farvist.com         # or from the site</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">2. Validate what the agent generated</h3>
+        <p class="text-muted mb-2" style="max-width:46rem;">Reports unknown or misspelled classes with a suggestion (including Tailwind habits like <code>flex</code> → <code>d-flex</code>), classes your build doesn't contain (the AI kit on a page that loads <code>farvist-slim</code>), icon sprites loaded cross-origin, unpinned CDN URLs, and <code>farvist-ai</code> on a Bootstrap page without the compat file. <code>--json</code> for agents; exit code 1 on errors. It checks class names and those pitfalls only — not visual design or full accessibility.</p>
+        <pre class="snippet"><code>npx farvist check index.html src/</code></pre>
+
+        <h3 class="h5 mb-2 mt-4">3. Project rules and raw context</h3>
         <ul class="text-muted mb-4" style="max-width:46rem;">
-          <li><a href="https://farvist.com/llms-full.txt">llms-full.txt</a> — every convention, component, icon and copy-paste recipe. Paste this into Cursor / Claude / ChatGPT.</li>
-          <li><a href="https://farvist.com/ai-context.json">ai-context.json</a> — machine-readable catalog (components, utilities, icons, recipes).</li>
-          <li><a href="https://farvist.com/llms.txt">llms.txt</a> — the concise index (llms.txt convention).</li>
-          <li><a href="https://farvist.com/farvist.cursorrules">farvist.cursorrules</a> — drop into your project as <code>.cursorrules</code>.</li>
+          <li><strong>Cursor</strong> — <a href="https://farvist.com/ai/farvist.mdc">ai/farvist.mdc</a>: <code>curl -L https://farvist.com/ai/farvist.mdc --create-dirs -o .cursor/rules/farvist.mdc</code></li>
+          <li><strong>GitHub Copilot</strong> — <a href="https://farvist.com/ai/farvist.instructions.md">ai/farvist.instructions.md</a>, into <code>.github/instructions/</code>.</li>
+          <li><strong>AGENTS.md</strong> (Codex, Copilot, Cursor, Gemini CLI, Devin…) — paste <a href="https://farvist.com/ai/AGENTS.snippet.md">ai/AGENTS.snippet.md</a> into your project's <code>AGENTS.md</code>.</li>
+          <li><strong>MCP docs server</strong> — <a href="https://gitmcp.io/FloKuersten/farvist">gitmcp.io/FloKuersten/farvist</a> serves this repo's docs to any MCP client. The repo also ships a <code>context7.json</code> for Context7.</li>
+          <li><a href="https://farvist.com/llms-full.txt">llms-full.txt</a> — everything in one paste-able file. <a href="https://farvist.com/ai-context.json">ai-context.json</a> — the same as a JSON catalog. <a href="https://farvist.com/llms.txt">llms.txt</a> — the concise index.</li>
+          <li><a href="https://farvist.com/farvist.cursorrules">farvist.cursorrules</a> — the legacy single-file format; Cursor's current rules docs use <code>.cursor/rules/*.mdc</code> (above).</li>
         </ul>
         <h3 class="h5 mb-2">Paste-in primer</h3>
         <pre class="snippet"><code>You are an expert in Farvist, a glassmorphism CSS framework.
@@ -761,7 +774,7 @@ Full context: https://farvist.com/llms-full.txt</code></pre>
 
       <section id="js">
         <h2 class="mb-3">JS companion</h2>
-        <p class="text-muted mb-3">~8.5 KB gzip, no dependencies. It auto-applies ARIA to tabs &amp; progress bars and wires these data-attributes:</p>
+        <p class="text-muted mb-3">~9 KB gzip, no dependencies. It auto-applies ARIA to tabs &amp; progress bars and wires these data-attributes:</p>
         <pre class="snippet"><code>data-fv-open="#id"      // open a &lt;dialog class="modal"&gt;
 data-fv-dismiss          // close the nearest dialog
 data-fv-tab="#panel"     // switch tabs (arrow-key nav included)
@@ -863,7 +876,7 @@ Farvist.enhance();       // re-wire after injecting DOM dynamically</code></pre>
         '#inputs': 'range switch segmented rating slider toggle',
         '#misc': 'icons svg sprite accordion details',
         '#ai': 'chat message prompt agent status prose tool call reasoning streaming citations llm ai model output diff suggestions attachment stream file code',
-        '#use-with-ai': 'ai assistant llms.txt cursor prompt context ai-context copilot chatgpt claude',
+        '#use-with-ai': 'ai assistant agent skill skills npx farvist check validate validator lint llms.txt cursor mdc rules agents.md copilot instructions context7 mcp gitmcp prompt context ai-context chatgpt claude codex gemini',
         '#js': 'javascript farvist.js enhance api toast copy',
         '#a11y': 'accessibility aria wcag keyboard screen reader focus skip link contrast',
         '#contribute': 'contribute github open source'

@@ -11,7 +11,7 @@
 // Run: node scripts/check-cdn-pins.mjs
 // =============================================================================
 import { readFileSync } from 'node:fs';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -20,8 +20,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const UNPINNED = /(?:cdn\.jsdelivr\.net\/npm|unpkg\.com)\/farvist\/(?!@)/g;
 const TEXT = /\.(html?|md|txt|json|mjs|js|cursorrules|mdc|xml|yml|yaml)$/i;
 
-const files = execSync('git ls-files', { cwd: root, encoding: 'utf8' }).split('\n')
-  .filter((f) => f && TEXT.test(f) && !f.startsWith('scripts/check-cdn-pins.mjs'));
+// scripts/fixtures/ holds deliberately-wrong markup that tests `npx farvist check`.
+const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).split('\n')
+  .filter((f) => f && TEXT.test(f) && !f.startsWith('scripts/check-cdn-pins.mjs') && !f.startsWith('scripts/fixtures/'));
 
 const hits = [];
 for (const f of files) {

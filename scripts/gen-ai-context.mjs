@@ -9,6 +9,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { classesFromCss } from './lib/css-classes.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
@@ -21,21 +22,12 @@ const builds = [
   { file: 'dist/farvist.min.css', gzipKb: +gzKb('dist/farvist.min.css'), contents: 'everything — all components, utilities, backgrounds, skins, AI kit' },
   { file: 'dist/farvist-slim.min.css', gzipKb: +gzKb('dist/farvist-slim.min.css'), contents: 'the framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) — for sites that never render AI conversations' },
   { file: 'dist/farvist-ai.min.css', gzipKb: +gzKb('dist/farvist-ai.min.css'), contents: 'ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 AND Bootstrap hosts must ALSO load dist/farvist-ai-compat.css after the host stylesheet: v3\'s un-layered preflight strips the kit\'s borders and button styling, and Bootstrap\'s un-layered .btn overrides the kit\'s own class="btn" buttons on ANY Bootstrap page. Tailwind v4 (layered preflight) needs nothing' },
-  { file: 'dist/farvist-ai-compat.css', gzipKb: +gzKb('dist/farvist-ai-compat.css'), contents: 'companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3\'s preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift' },
+  { file: 'dist/farvist-ai-compat.css', gzipKb: +gzKb('dist/farvist-ai-compat.css'), contents: 'companion for farvist-ai.min.css on Tailwind v3 AND Bootstrap hosts (not Tailwind v4) — un-layered re-assertions of exactly the properties those hosts\' un-layered CSS overrides (borders, button padding/font/background/radius, prose margins/lists/headings), generated from the compiled kit so it cannot drift' },
 ];
 
-// All distinct class selectors actually present in the compiled CSS. Only
-// SELECTOR text is scanned (everything between a block's start and its `{`) —
-// scanning raw CSS also harvests dotted words out of declaration values, e.g.
-// `www.w3.org` inside the form-select chevron's data-URI, which used to publish
-// the phantom classes `w3` and `org` and inflate the class total by two.
-const selectors = [];
-for (let k = 0, start = 0; k < css.length; k++) {
-  const ch = css[k];
-  if (ch === '{') { selectors.push(css.slice(start, k)); start = k + 1; }
-  else if (ch === '}' || ch === ';') { start = k + 1; }
-}
-const classes = [...new Set(selectors.flatMap((sel) => [...sel.matchAll(/\.([a-zA-Z_][\w-]*)/g)].map((m) => m[1])))].sort();
+// All distinct class selectors actually present in the compiled CSS (shared
+// extractor — see scripts/lib/css-classes.mjs for why only selectors are read).
+const classes = classesFromCss(css);
 
 // Icon names from the SVG sprite.
 const sprite = readFileSync(join(root, 'assets/icons/farvist-icons.svg'), 'utf8');

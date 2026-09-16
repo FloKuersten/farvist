@@ -5,9 +5,11 @@
 Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses a class model like Bootstrap's (components + utilities), but token-driven: every color derives from `--fv-*` custom properties at runtime, so overriding ~5 variables re-brands the entire framework — gradients, glows, meshes and hover states included. Built for AI products: chat thread, prompt composer, rendered-markdown `.prose`, tool-call cards, reasoning disclosures, citations, code diffs, prompt suggestions, attachments, a ⌘K command palette, and agent status.
 
 ## Start here (for AI assistants)
+- [Agent Skill](https://farvist.com/.well-known/skills/farvist/SKILL.md): install with `npx skills add FloKuersten/farvist` (or `npx skills add https://farvist.com`) — short rules, with component/theming/recipe references loaded on demand.
+- Validate generated markup: `npx farvist check <files>` — unknown or misspelled classes (with a suggestion), classes missing from the page's build, cross-origin icon sprites, unpinned CDN URLs. `--json`; exit 1 on errors.
 - [Full context](https://farvist.com/llms-full.txt): every convention, component, icon, design token and copy-paste recipe. Paste this into your assistant before generating Farvist markup.
-- [Machine-readable catalog](https://farvist.com/ai-context.json): the same as JSON — components, utility families, 56 design tokens with defaults, skins, icons, 14 recipes.
-- [.cursorrules file](https://farvist.com/farvist.cursorrules): drop into your project so Cursor/Copilot/Claude generate correct Farvist with zero setup.
+- [Machine-readable catalog](https://farvist.com/ai-context.json): the same as JSON — components, utility families, design tokens with defaults, skins, icons, recipes.
+- Project rules: [Cursor .mdc](https://farvist.com/ai/farvist.mdc) · [Copilot instructions](https://farvist.com/ai/farvist.instructions.md) · [AGENTS.md snippet](https://farvist.com/ai/AGENTS.snippet.md) · [legacy .cursorrules](https://farvist.com/farvist.cursorrules). MCP docs server: https://gitmcp.io/FloKuersten/farvist
 
 ## Docs & tools
 - [Documentation](https://farvist.com/docs/): components, utilities, theming + skins, backgrounds, accessibility, the AI kit, the command palette.

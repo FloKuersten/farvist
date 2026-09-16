@@ -1,5 +1,5 @@
 /*!
- * Farvist — tiny vanilla-JS companion (~8.5 KB gzip) for the interactive bits.
+ * Farvist — tiny vanilla-JS companion (~9 KB gzip) for the interactive bits.
  * No dependencies. Drop it in with: <script src="assets/farvist.js" defer></script>
  *
  *   Modals  : <button data-fv-open="#id">  +  <dialog class="modal" id="id">
@@ -16,9 +16,7 @@
 (function () {
   'use strict';
 
-  // Server-side rendering (Next, Nuxt, SvelteKit, Astro…) evaluates imports
-  // where there is no DOM. Bail out instead of throwing `document is not
-  // defined`; the browser bundle then initialises normally on the client.
+  // No DOM (SSR import): bail instead of throwing `document is not defined`.
   if (typeof document === 'undefined') return;
 
   var qsa = function (sel, root) {
@@ -307,16 +305,11 @@
     cmdFilter(dialog);
   }
 
-  // Prompt composer auto-grow. The CSS uses `field-sizing: content`, which is
-  // only Baseline since June 2026 (Firefox 152, Safari 26.2) — below that the
-  // flagship composer stayed one fixed size. Where it's unsupported, size the
-  // textarea to its content; the CSS min/max-height still clamp it.
-  // Decided from the element's COMPUTED style, not CSS.supports(): that also
-  // covers a page that overrides field-sizing, or a composer the stylesheet
-  // hasn't styled yet.
+  // Prompt auto-grow where `field-sizing: content` isn't applied (Firefox <152,
+  // Safari <26.2). Keyed off the computed style, so author overrides count too.
   function growPrompt(el) {
     if (getComputedStyle(el).fieldSizing === 'content') return;
-    el.style.height = '0px'; // collapse first so scrollHeight reports content, not the old height
+    el.style.height = '0px'; // collapse so scrollHeight measures content
     el.style.height = (el.scrollHeight + el.offsetHeight - el.clientHeight) + 'px';
   }
 
@@ -333,9 +326,7 @@
 
   // ---- Progressive ARIA enhancement (tabs + progress) ----
   function enhance() {
-    // Size composers to their content on load (empty ones would otherwise sit
-    // at the textarea's default two rows until the first keystroke).
-    qsa('textarea.prompt-field').forEach(growPrompt);
+    qsa('textarea.prompt-field').forEach(growPrompt); // size on load, incl. empty
 
     // Command palettes: wire the combobox + listbox roles for screen readers.
     qsa('dialog.command').forEach(function (dialog, di) {

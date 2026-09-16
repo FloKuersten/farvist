@@ -14,7 +14,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 - 🌗 **Dark & light themes** — dark "space" theme by default; flip `data-theme="light"` on `<html>` to retheme at runtime via `--fv-*` custom properties.
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
 - 🧩 **42 glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
-- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and an 8.5 KB (gzip) optional JS companion for the interactive bits.
+- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a ~9 KB (gzip) optional JS companion for the interactive bits.
 - 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio, a copy-paste block gallery and an AI-kit add-on demo in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
 - 🪶 **~21 KB gzipped** (139 KB minified) — one file, all 42 components; Sass users can build just the partials they need.
@@ -31,7 +31,7 @@ A lightweight, **Sass-powered CSS framework** with a futuristic, frosted-glass a
 npm install farvist
 ```
 
-Import the CSS (and the optional 8.5 KB JS) through your bundler:
+Import the CSS (and the optional ~9 KB JS) through your bundler:
 
 ```js
 import 'farvist/dist/farvist.min.css';
@@ -50,7 +50,7 @@ Via CDN (no build step — live on jsDelivr and unpkg):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css" />
-<!-- optional 8.5 KB gzip companion for modals, tabs, toasts, theme toggle -->
+<!-- optional ~9 KB gzip companion for modals, tabs, toasts, theme toggle -->
 <script src="https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js" defer></script>
 ```
 
@@ -84,7 +84,7 @@ npm run watch      # rebuild on save
 | ------------------- | ------------------------------------------------------------------ |
 | `npm run build`     | Compile expanded `farvist.css`, `farvist-slim.css`, `farvist-ai.css` |
 | `npm run build:min` | The same three, minified                                           |
-| `npm run dev`       | All of the above + autoprefixer + `ai-context.json`/`llms-full.txt` |
+| `npm run dev`       | All of the above + autoprefixer + the AI catalog, Agent Skill, rule files and class manifest |
 | `npm run watch`     | Recompile on every change                                          |
 
 ---
@@ -331,7 +331,7 @@ Sizes: `.icon` (1em) · `.icon-sm` · `.icon-lg` · `.icon-xl`.
 > **Copy the sprite to your own site.** That `href` is same-origin: browsers refuse to resolve `<use>` against another domain, so pointing it at a CDN silently renders nothing (measured: 0×0 box). If you loaded the CSS from a CDN, copy `assets/icons/farvist-icons.svg` into your own project and point the `href` at it there — or inline the sprite once at the top of the page.
  Decorative SVGs (`logo.svg`, `patterns/mesh.svg`, `blob.svg`, `grid.svg`, `dots.svg`) live in `assets/`, and theme-aware CSS patterns are built in: `.bg-grid` `.bg-dots` `.bg-noise`.
 
-The optional **8.5 KB gzip** companion powers the interactive components — drop it in with `defer`:
+The optional **~9 KB gzip** companion powers the interactive components — drop it in with `defer`:
 
 ```html
 <script src="assets/farvist.js" defer></script>
@@ -370,14 +370,32 @@ Everything else (accordion, dropdown, tooltip, switch, progress…) is pure CSS 
 
 ## For AI assistants
 
-Farvist ships machine-readable context so AI coding tools (Cursor, Claude, Copilot) generate correct markup:
+Farvist is built so AI coding agents generate correct markup. Everything below is generated from the compiled CSS on every build (`npm run build:all`), so it can't drift from the release:
 
-- [`llms-full.txt`](https://farvist.com/llms-full.txt) — every convention, component, **icon, and copy-paste recipe** (whole sections: login, pricing, chat UI, dashboard shell…). Paste it into Cursor / Claude / ChatGPT.
-- [`ai-context.json`](https://farvist.com/ai-context.json) — machine-readable catalog (components, utility families, 55 icons, recipes).
-- [`llms.txt`](https://farvist.com/llms.txt) — concise index (the [llms.txt](https://llmstxt.org) convention).
-- [`farvist.cursorrules`](https://farvist.com/farvist.cursorrules) — drop into your project as `.cursorrules`.
+**1. Install the Agent Skill** — for Claude Code, Cursor, GitHub Copilot, Codex, Gemini CLI and other [Agent Skills](https://agentskills.io) clients:
 
-`robots.txt` welcomes the AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended…) and every page links `/llms.txt`. The catalog is regenerated from the compiled CSS + icon sprite on every build (`npm run build:ai`) and shipped in the npm package.
+```bash
+npx skills add FloKuersten/farvist
+```
+
+It loads a short rule set (the mistakes agents actually make: Tailwind idioms, invented class names, cross-origin icon sprites…) and pulls component, theming and recipe references from [`skills/farvist/`](skills/farvist) only when needed.
+
+**2. Validate what the agent wrote:**
+
+```bash
+npx farvist check index.html src/
+```
+
+It reports unknown or misspelled classes with a suggestion (`flex` → `d-flex`, `btn-glas` → `btn-glass`), classes missing from the page's build (the AI kit on a `farvist-slim` page), icon sprites loaded cross-origin, unpinned CDN URLs, and `farvist-ai` on a Bootstrap page without the compat file. `--json` for agents; exit code 1 on errors. It checks class names and those pitfalls only, not visual design or full accessibility.
+
+**3. Project rules and raw context:**
+
+- [`ai/farvist.mdc`](ai/farvist.mdc) (Cursor `.cursor/rules/`) · [`ai/farvist.instructions.md`](ai/farvist.instructions.md) (Copilot `.github/instructions/`) · [`ai/AGENTS.snippet.md`](ai/AGENTS.snippet.md) (paste into `AGENTS.md`).
+- [`llms-full.txt`](https://farvist.com/llms-full.txt) — every convention, component, icon and copy-paste recipe in one file. [`ai-context.json`](https://farvist.com/ai-context.json) — the same as JSON. [`llms.txt`](https://farvist.com/llms.txt) — the concise index.
+- MCP docs server: [gitmcp.io/FloKuersten/farvist](https://gitmcp.io/FloKuersten/farvist). The repo also ships a [`context7.json`](context7.json).
+- [`farvist.cursorrules`](https://farvist.com/farvist.cursorrules) — the legacy single-file format.
+
+`robots.txt` welcomes the AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended…) and every page links `/llms.txt`.
 
 ## Project structure
 
@@ -398,7 +416,7 @@ scss/
     ├── _effects.scss        #   glass, glow, gradient, motion + @supports
     └── _backgrounds.scss    #   mesh gradients, patterns, spotlights, fade-masks
 assets/
-├── farvist.js            # 8.5 KB optional companion (modal, tabs, toast, theme)
+├── farvist.js            # ~9 KB optional companion (modal, tabs, toast, theme)
 ├── logo.svg                 # wordmark + gradient mark
 ├── icons/farvist-icons.svg   # 55-icon sprite (currentColor)
 └── patterns/                # mesh, blob, grid, dots decorative SVGs
