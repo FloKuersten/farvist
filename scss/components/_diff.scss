@@ -42,13 +42,10 @@
     color: var(--fv-muted);
   }
 
-  .diff-stat-add { color: var(--fv-success); }
-  .diff-stat-del { color: var(--fv-danger); }
-
-  // Light surfaces need darkened semantic text at this 12px size (same
-  // convention as alerts/badges/chips) — raw success/danger fail AA there.
-  [data-theme='light'] .diff-stat-add { color: color-mix(in srgb, #{$body-text-light} 55%, var(--fv-success)); }
-  [data-theme='light'] .diff-stat-del { color: color-mix(in srgb, #{$body-text-light} 55%, var(--fv-danger)); }
+  // Light schemes supply darkened --fv-{name}-text (light-text-tokens): raw
+  // success/danger fail AA as 12px text on light glass.
+  .diff-stat-add { color: var(--fv-success-text, var(--fv-success)); }
+  .diff-stat-del { color: var(--fv-danger-text, var(--fv-danger)); }
 
   // Scoped to .diff so the margin survives .prose pre margins (0,2,0 beats
   // .prose pre's 0,1,1 when a diff sits inside rendered markdown).
@@ -81,11 +78,6 @@
 
   .diff-hunk {
     padding-block: spacer(1);
-    color: var(--fv-info);
-  }
-
-  // Same AA rescue for the hunk line on light surfaces.
-  [data-theme='light'] .diff-hunk {
-    color: color-mix(in srgb, #{$body-text-light} 55%, var(--fv-info));
+    color: var(--fv-info-text, var(--fv-info));
   }
 }

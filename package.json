@@ -62,7 +62,10 @@
     "check:sass-api": "node scripts/check-sass-api.mjs",
     "check:privacy": "node scripts/check-privacy-claims.mjs",
     "prepare": "node scripts/patch-brace-expansion.mjs",
-    "check:ai-contrast": "node scripts/check-ai-contrast.mjs"
+    "check:ai-contrast": "node scripts/check-ai-contrast.mjs",
+    "check:text-contrast": "node scripts/check-text-contrast.mjs",
+    "check:nested-glass": "node scripts/check-nested-glass.mjs",
+    "check:cdn-pins": "node scripts/check-cdn-pins.mjs"
   },
   "overrides": {
     "brace-expansion": "^5.0.12",

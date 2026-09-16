@@ -12,14 +12,16 @@
 @use '../abstracts' as *;
 
 @layer base {
-  // Light skins need the same inline-code darkening the built-in light theme
-  // gets: --fv-info is tuned for a dark chip and measures ~3.4:1 on a light one.
-  // Keyed off color-scheme so any future light skin is covered automatically.
+  // Light skins need the same text darkening the built-in light theme gets:
+  // the semantic hues (and --fv-info in inline code) are tuned for dark glass.
+  // Keyed off color-scheme so any future light skin is covered automatically;
+  // the skin's own map (emitted below, later in source) still wins per token.
   @each $skin, $tokens in $skins {
     @if map.get($tokens, 'color-scheme') == light {
       :root[data-theme='#{$skin}'],
       [data-theme='#{$skin}'] {
         --fv-code-color: color-mix(in srgb, var(--fv-info) 40%, var(--fv-body-color));
+        @include light-text-tokens($with-primary: true);
       }
     }
   }

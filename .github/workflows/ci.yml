@@ -59,6 +59,15 @@ jobs:
       - name: AI-kit text contrast (rendered, both themes)
         run: npm run check:ai-contrast
 
+      - name: Coloured-text contrast (rendered, every theme + skin, page and glass)
+        run: npm run check:text-contrast
+
+      - name: Nested glass stays frosted (no Backdrop Root regressions)
+        run: npm run check:nested-glass
+
+      - name: CDN snippets are version-pinned
+        run: npm run check:cdn-pins
+
       - name: Accessibility (axe via pa11y-ci)
         run: |
           npx serve -l 4000 . > /dev/null 2>&1 &

@@ -27,9 +27,6 @@
     .book-asks .book-row::before { inset: 0 0 0 auto; background: color-mix(in srgb, var(--fv-danger) 22%, transparent); }
     .chat-scroll { max-height: min(36rem, 72vh); overflow-y: auto; margin-bottom: 1rem; } .command-item[aria-disabled="true"] { opacity: .55; }
     .order-actions { display: flex; flex-wrap: wrap; gap: .5rem; padding: .25rem .75rem .65rem; } .narrow-only { display: none; }
-    /* The framework's success/danger tokens are neon; darken them as text on the light theme (the mix the diff component uses). */
-    [data-theme="light"] .text-success { color: color-mix(in srgb, #0f172a 55%, var(--fv-success)); }
-    [data-theme="light"] .text-danger { color: color-mix(in srgb, #0f172a 55%, var(--fv-danger)); }
     @media (max-width: 820px) { .app { grid-template-columns: 1fr; } .sidebar { display: none; } .narrow-only { display: inline-flex; } }
     @media (max-width: 560px) { .book { grid-template-columns: 1fr; } .tiles { grid-template-columns: repeat(2, 1fr); } .tiles > .card:nth-child(n) { grid-column: span 1; } .tiles > .card:first-child { grid-column: span 2; } .tiles .card-body { padding: 1rem; } .tiles .stat-value { font-size: clamp(1.15rem, 5.5vw, 1.875rem); } }
     /* .empty-state-icon is a 3.5rem box (the docs fill it with an emoji);

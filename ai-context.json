@@ -5,8 +5,8 @@
   "homepage": "https://farvist.com",
   "license": "MIT",
   "install": {
-    "cdn": "https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css",
-    "js": "https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js",
+    "cdn": "https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css",
+    "js": "https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js",
     "npm": "npm i farvist",
     "builds": [
       {
@@ -22,7 +22,7 @@
       {
         "file": "dist/farvist-ai.min.css",
         "gzipKb": 6.6,
-        "contents": "ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme=\"light\">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3's un-layered preflight otherwise strips the kit's borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)"
+        "contents": "ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme=\"light\">. Tailwind v3 AND Bootstrap hosts must ALSO load dist/farvist-ai-compat.css after the host stylesheet: v3's un-layered preflight strips the kit's borders and button styling, and Bootstrap's un-layered .btn overrides the kit's own class=\"btn\" buttons on ANY Bootstrap page. Tailwind v4 (layered preflight) needs nothing"
       },
       {
         "file": "dist/farvist-ai-compat.css",
@@ -32,13 +32,13 @@
     ]
   },
   "totals": {
-    "classes": 2022,
+    "classes": 2028,
     "components": 42,
     "icons": 55,
     "recipes": 14,
     "skins": 5,
     "tokens": 56,
-    "optionalTokens": 26
+    "optionalTokens": 27
   },
   "skins": {
     "usage": "<html data-theme=\"NAME\"> or Farvist.theme(\"NAME\") — prebuilt AA-gated theme packs; \"dawn\" is a light skin. Default (no attribute) is the dark glass theme.",
@@ -136,6 +136,7 @@
       "--fv-accent-text": "unset (optional — readable text tint of that color on the page surface)",
       "--fv-light-text": "unset (optional — readable text tint of that color on the page surface)",
       "--fv-dark-text": "unset (optional — readable text tint of that color on the page surface)",
+      "--fv-primary-tint-text": "unset (optional — readable text tint of that color on the page surface)",
       "--fv-status": "unset (optional — per-skin/per-context override; falls back to a compiled default)"
     }
   },
@@ -160,10 +161,10 @@
       "xxl": "1400px"
     },
     "responsive": "Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.",
-    "spacingScale": "0,1,2,3,4,5,6,7,8 → 0, .25, .5, .75, 1, 1.5, 2, 3, 4rem (e.g. p-4 = 1rem, gap-3 = .75rem). Margins also take negative steps: m-n1..m-n8 (and mt-/mb-/ms-/me-/mx-/my-, per breakpoint).",
+    "spacingScale": "0,1,2,3,4,5,6,7,8 → 0, .25, .5, .75, 1, 1.5, 2, 3, 4rem (e.g. p-4 = 1rem, gap-3 = .75rem). Negative margins: m-n*, mt-n*, mb-n*, ms-n*, me-n*, mx-n* (1–8, per breakpoint). Auto margins: m-auto, mt-auto, mb-auto, ms-auto, me-auto, mx-auto, my-auto. s/e/x are logical (inline-start/-end), so they flip in dir=\"rtl\".",
     "notes": "For glass to read, give the page a rich background (e.g. body class=\"bg-mesh-aurora\"). Utilities win the cascade (no !important needed by you).",
     "js": {
-      "include": "<script src=\"https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js\" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).",
+      "include": "<script src=\"https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js\" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).",
       "attributes": {
         "data-fv-open=\"#id\"": "open a <dialog class=\"modal\" id=\"id\">",
         "data-fv-dismiss": "close the nearest dialog",
@@ -387,7 +388,7 @@
     },
     "my-*": {
       "desc": "margin-y",
-      "count": 54,
+      "count": 60,
       "sample": [
         "my-0",
         "my-1",
@@ -398,11 +399,11 @@
         "my-6",
         "my-7",
         "my-8",
+        "my-auto",
         "my-lg-0",
         "my-lg-1",
         "my-lg-2",
-        "my-lg-3",
-        "my-lg-4"
+        "my-lg-3"
       ]
     },
     "p-*": {

@@ -30,6 +30,6 @@
     font-weight: map.get($font-weights, 'semibold');
   }
 
-  .stat-trend-up   { color: var(--fv-success); }
-  .stat-trend-down { color: var(--fv-danger); }
+  .stat-trend-up   { color: var(--fv-success-text, var(--fv-success)); }
+  .stat-trend-down { color: var(--fv-danger-text, var(--fv-danger)); }
 }

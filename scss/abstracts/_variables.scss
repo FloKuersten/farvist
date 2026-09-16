@@ -66,6 +66,11 @@ $muted-dark:     #95a3c4 !default;
 $body-bg-light:   #eef1f8 !default;
 $body-text-light: #0f172a !default;
 $muted-light:     #586b8f !default;
+// Share of the scheme's body ink mixed into semantic text (.text-success,
+// soft badges, alert headings...) on LIGHT surfaces. The hues are tuned for
+// dark glass and fail WCAG AA as text on near-white; mixing toward the runtime
+// ink token (not a compiled colour) keeps re-brands and light skins readable.
+$text-ink-mix: 60% !default;
 
 $border-color: rgba($white, 0.10) !default;
 
@@ -158,6 +163,7 @@ $skins: (
     'accent': #8b5cf6,
     'info': #22d3ee,
     'primary-text': #f9a8d4,
+    'accent-text': #c4b5fd, // raw #8b5cf6 measured 4.16:1 as text on this skin's glass
     'primary-contrast': #2b0517,
     'body-bg': #12041f,
     'surface-solid': #1d0b30,

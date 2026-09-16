@@ -36,7 +36,7 @@ npm publish          # prepublishOnly rebuilds the CSS, then publishes farvist@0
 
 The package is unscoped, so it publishes **publicly** by default. After this:
 - README badges (npm version, bundlephobia min-zip) resolve.
-- CDN goes live: `https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css`
+- CDN goes live: `https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css`
 
 ## 3. Tag the release on GitHub
 

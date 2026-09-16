@@ -16,6 +16,11 @@
 (function () {
   'use strict';
 
+  // Server-side rendering (Next, Nuxt, SvelteKit, Astro…) evaluates imports
+  // where there is no DOM. Bail out instead of throwing `document is not
+  // defined`; the browser bundle then initialises normally on the client.
+  if (typeof document === 'undefined') return;
+
   var qsa = function (sel, root) {
     return Array.prototype.slice.call((root || document).querySelectorAll(sel));
   };
@@ -302,16 +307,36 @@
     cmdFilter(dialog);
   }
 
-  // Type-to-filter (delegated so injected palettes work without re-binding).
+  // Prompt composer auto-grow. The CSS uses `field-sizing: content`, which is
+  // only Baseline since June 2026 (Firefox 152, Safari 26.2) — below that the
+  // flagship composer stayed one fixed size. Where it's unsupported, size the
+  // textarea to its content; the CSS min/max-height still clamp it.
+  // Decided from the element's COMPUTED style, not CSS.supports(): that also
+  // covers a page that overrides field-sizing, or a composer the stylesheet
+  // hasn't styled yet.
+  function growPrompt(el) {
+    if (getComputedStyle(el).fieldSizing === 'content') return;
+    el.style.height = '0px'; // collapse first so scrollHeight reports content, not the old height
+    el.style.height = (el.scrollHeight + el.offsetHeight - el.clientHeight) + 'px';
+  }
+
+  // Delegated so injected palettes and composers work without re-binding.
   document.addEventListener('input', function (e) {
-    if (e.target instanceof Element && e.target.matches('.command-input')) {
+    if (!(e.target instanceof Element)) return;
+    if (e.target.matches('.command-input')) {
       var d = e.target.closest('dialog.command');
       if (d) cmdFilter(d);
+    } else if (e.target.matches('textarea.prompt-field')) {
+      growPrompt(e.target);
     }
   });
 
   // ---- Progressive ARIA enhancement (tabs + progress) ----
   function enhance() {
+    // Size composers to their content on load (empty ones would otherwise sit
+    // at the textarea's default two rows until the first keystroke).
+    qsa('textarea.prompt-field').forEach(growPrompt);
+
     // Command palettes: wire the combobox + listbox roles for screen readers.
     qsa('dialog.command').forEach(function (dialog, di) {
       var input = dialog.querySelector('.command-input');

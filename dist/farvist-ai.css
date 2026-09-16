@@ -67,6 +67,15 @@
     --fv-body-color: #0f172a;
     --fv-muted: #586b8f;
     --fv-primary-text: var(--fv-primary);
+    --fv-secondary-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-secondary));
+    --fv-success-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-success));
+    --fv-danger-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-danger));
+    --fv-warning-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-warning));
+    --fv-info-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-info));
+    --fv-accent-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-accent));
+    --fv-light-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-light));
+    --fv-dark-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-dark));
+    --fv-primary-tint-text: color-mix(in srgb, var(--fv-body-color) 30%, var(--fv-primary-text));
     --fv-border-color: rgba(15, 23, 42, 0.12);
     --fv-code-bg: rgba(15, 23, 42, 0.06);
     --fv-code-color: color-mix(in srgb, var(--fv-info) 40%, var(--fv-body-color));
@@ -81,6 +90,16 @@
   :root[data-theme=dawn],
   [data-theme=dawn] {
     --fv-code-color: color-mix(in srgb, var(--fv-info) 40%, var(--fv-body-color));
+    --fv-primary-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-primary));
+    --fv-secondary-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-secondary));
+    --fv-success-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-success));
+    --fv-danger-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-danger));
+    --fv-warning-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-warning));
+    --fv-info-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-info));
+    --fv-accent-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-accent));
+    --fv-light-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-light));
+    --fv-dark-text: color-mix(in srgb, var(--fv-body-color) 60%, var(--fv-dark));
+    --fv-primary-tint-text: color-mix(in srgb, var(--fv-body-color) 30%, var(--fv-primary-text));
   }
   :root[data-theme=synthwave],
   [data-theme=synthwave] {
@@ -89,6 +108,7 @@
     --fv-accent: #8b5cf6;
     --fv-info: #22d3ee;
     --fv-primary-text: #f9a8d4;
+    --fv-accent-text: #c4b5fd;
     --fv-primary-contrast: #2b0517;
     --fv-body-bg: #12041f;
     --fv-surface-solid: #1d0b30;
@@ -1403,16 +1423,10 @@
     color: var(--fv-muted);
   }
   .diff-stat-add {
-    color: var(--fv-success);
+    color: var(--fv-success-text, var(--fv-success));
   }
   .diff-stat-del {
-    color: var(--fv-danger);
-  }
-  [data-theme=light] .diff-stat-add {
-    color: color-mix(in srgb, #0f172a 55%, var(--fv-success));
-  }
-  [data-theme=light] .diff-stat-del {
-    color: color-mix(in srgb, #0f172a 55%, var(--fv-danger));
+    color: var(--fv-danger-text, var(--fv-danger));
   }
   .diff .diff-body {
     padding: 0.5rem 0;
@@ -1441,10 +1455,7 @@
   }
   .diff-hunk {
     padding-block: 0.25rem;
-    color: var(--fv-info);
-  }
-  [data-theme=light] .diff-hunk {
-    color: color-mix(in srgb, #0f172a 55%, var(--fv-info));
+    color: var(--fv-info-text, var(--fv-info));
   }
 }
 @layer components {

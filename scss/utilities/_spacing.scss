@@ -5,8 +5,9 @@
 // breakpoint — e.g. .mt-3, .px-4, .m-md-5, .py-lg-0, plus negatives & autos.
 //
 //   property abbrev   m = margin      p = padding
-//   side abbrev       t = top   e = end/right   b = bottom   s = start/left
-//                     x = inline (left+right)   y = block (top+bottom)
+//   side abbrev       t = top   e = inline-end   b = bottom   s = inline-start
+//                     x = inline (start+end)   y = top+bottom
+//                     s/e/x are LOGICAL properties, so they flip in dir="rtl".
 //                     ''= all sides
 // =============================================================================
 
@@ -15,13 +16,15 @@
 
 @layer utilities {
 
-  // Side abbreviation -> the physical property/properties it sets.
+  // Side abbreviation -> the property/properties it sets. Start/end/x are
+  // logical (inline-*), so they follow the writing direction; top/bottom stay
+  // physical so .my-* keeps matching .mt-* + .mb-*.
   $spacing-sides: (
     't': top,
-    'e': right,
+    'e': inline-end,
     'b': bottom,
-    's': left,
-    'x': (left, right),
+    's': inline-start,
+    'x': inline,
     'y': (top, bottom),
     '':  all,
   );
@@ -55,12 +58,11 @@
           .m#{$infix}-n#{$size}  { margin: -$length; }
           .mt#{$infix}-n#{$size} { margin-top: -$length; }
           .mb#{$infix}-n#{$size} { margin-bottom: -$length; }
-          .ms#{$infix}-n#{$size} { margin-left: -$length; }
-          .me#{$infix}-n#{$size} { margin-right: -$length; }
-          .mx#{$infix}-n#{$size} {
-            margin-left: -$length;
-            margin-right: -$length;
-          }
+          .ms#{$infix}-n#{$size} { margin-inline-start: -$length; }
+          .me#{$infix}-n#{$size} { margin-inline-end: -$length; }
+          .mx#{$infix}-n#{$size} { margin-inline: -$length; }
+          // No .my-n*: combine .mt-n* + .mb-n*. (48 rules across the breakpoints
+          // measured ~280 B gzip for a pattern no page uses.)
         }
       }
 
@@ -68,11 +70,12 @@
       .m#{$infix}-auto  { margin: auto; }
       .mt#{$infix}-auto { margin-top: auto; }
       .mb#{$infix}-auto { margin-bottom: auto; }
-      .ms#{$infix}-auto { margin-left: auto; }
-      .me#{$infix}-auto { margin-right: auto; }
-      .mx#{$infix}-auto {
-        margin-left: auto;
-        margin-right: auto;
+      .ms#{$infix}-auto { margin-inline-start: auto; }
+      .me#{$infix}-auto { margin-inline-end: auto; }
+      .mx#{$infix}-auto { margin-inline: auto; }
+      .my#{$infix}-auto {
+        margin-top: auto;
+        margin-bottom: auto;
       }
     }
   }

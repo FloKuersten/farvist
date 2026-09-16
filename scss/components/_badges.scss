@@ -33,21 +33,21 @@
   }
 
   // Soft: tinted translucent fill with a colored border + same-hue text.
-  // Dark theme uses a light tint of the hue; the light theme darkens it (below)
-  // so the text clears WCAG AA on a near-white fill.
+  // Dark schemes use a light tint of the hue; light schemes supply a darkened
+  // --fv-{name}-text (light-text-tokens) so the text clears WCAG AA.
   @each $name, $clr in $theme-colors {
     .badge-soft-#{$name} {
-      color: color-mix(in srgb, #{$white} 45%, var(--fv-#{$name}));
+      $text: var(--fv-#{$name}-text, color-mix(in srgb, #{$white} 45%, var(--fv-#{$name})));
+      // Primary: light schemes define --fv-primary-tint-text; dark schemes keep
+      // the white-tinted hue. (Its dark --fv-primary-text is DARKER than that
+      // tint, and measured 5.56:1 vs 7.52:1 here, so it is skipped on purpose.)
+      @if $name == 'primary' {
+        color: var(--fv-primary-tint-text, color-mix(in srgb, #{$white} 45%, var(--fv-primary)));
+      } @else {
+        color: $text;
+      }
       background-color: color-mix(in srgb, var(--fv-#{$name}) 16%, transparent);
       border-color: color-mix(in srgb, var(--fv-#{$name}) 35%, transparent);
-    }
-  }
-
-  [data-theme='light'] {
-    @each $name, $clr in $theme-colors {
-      .badge-soft-#{$name} {
-        color: color-mix(in srgb, #{$body-text-light} 65%, var(--fv-#{$name}));
-      }
     }
   }
 

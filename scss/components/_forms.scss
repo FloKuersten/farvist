@@ -46,12 +46,20 @@
     }
   }
 
+  // The caret is drawn from the --fv-muted TOKEN (two half-square gradients),
+  // not an SVG data URI: a data URI can't read custom properties, so the old
+  // chevron was the dark theme's grey baked in — ~2.4:1 on light glass, below
+  // WCAG 1.4.11's 3:1 for essential graphics, and blind to skins. A <select>
+  // can't host ::after, so backgrounds are the only token-aware option.
   .form-select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2395a3c4' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--fv-muted) 50%),
+      linear-gradient(135deg, var(--fv-muted) 50%, transparent 50%);
     background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1rem;
+    // whole pixels: fractional rem offsets left a hairline seam between halves
+    background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
+    background-size: 6px 6px;
     padding-right: spacer(7);
   }
 
@@ -84,25 +92,49 @@
     cursor: pointer;
   }
 
-  // Stitch controls together horizontally.
+  // Joined controls: one rounded outline around the group, flattened inner
+  // corners, and the shared 1px borders overlapped. First/last are counted
+  // among the CONTROLS only (`:nth-child(1 of …)`), so a hidden <label> or a
+  // feedback message inside the group does not break the joins.
+  $ig-controls: '.form-control, .form-select, .input-group-text, .btn';
+
   .input-group {
     display: flex;
     align-items: stretch;
 
-    .form-control {
+    .form-control,
+    .form-select {
+      position: relative;
       flex: 1 1 auto;
       width: 1%;
       min-width: 0;
     }
+
+    > :is(#{$ig-controls}):not(:nth-child(1 of #{$ig-controls})) {
+      margin-inline-start: calc(-1 * #{$border-width});
+      border-start-start-radius: 0;
+      border-end-start-radius: 0;
+    }
+
+    > :is(#{$ig-controls}):not(:nth-last-child(1 of #{$ig-controls})) {
+      border-start-end-radius: 0;
+      border-end-end-radius: 0;
+    }
+
+    // Keep the focused control's ring above its overlapped neighbours.
+    > :focus,
+    > :focus-within { z-index: 1; }
   }
 
   .input-group-text {
     display: flex;
     align-items: center;
     padding: spacer(2) spacer(3);
+    white-space: nowrap;
     color: var(--fv-muted);
     background-color: var(--fv-glass-bg-strong);
     border: $border-width solid var(--fv-glass-border);
+    border-radius: var(--fv-border-radius);
   }
 
   // Validation states.
@@ -117,12 +149,12 @@
   .valid-feedback {
     margin-top: spacer(1);
     font-size: map.get($font-sizes, 'sm');
-    color: var(--fv-success);
+    color: var(--fv-success-text, var(--fv-success));
   }
 
   .invalid-feedback {
     margin-top: spacer(1);
     font-size: map.get($font-sizes, 'sm');
-    color: var(--fv-danger);
+    color: var(--fv-danger-text, var(--fv-danger));
   }
 }

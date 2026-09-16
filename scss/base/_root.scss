@@ -86,6 +86,7 @@
     --fv-body-color: #{$body-text-light};
     --fv-muted: #{$muted-light};
     --fv-primary-text: var(--fv-primary); // the brand primary reads fine on the light surface
+    @include light-text-tokens;
     --fv-border-color: rgba(15, 23, 42, 0.12);
     --fv-code-bg: rgba(15, 23, 42, 0.06);
     // Mixed toward the body ink so a re-branded --fv-info stays readable:

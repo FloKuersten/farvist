@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farvist nested-glass fixture</title>
+  <link rel="stylesheet" href="../../dist/farvist.css" />
+  <style>
+    /* A deliberately busy, high-contrast backdrop: stripes a frosted surface
+       must smear out. Unfrosted glass leaves them sharp behind the text. */
+    body { background: repeating-linear-gradient(90deg, #000 0 6px, #fff 6px 12px) !important; }
+    .probe { position: absolute; width: 220px; height: 60px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar" style="position:relative; z-index:5;">
+    <a class="navbar-brand" href="#">Brand</a>
+    <details class="dropdown" open>
+      <summary class="btn btn-glass btn-sm">Menu</summary>
+      <div class="dropdown-menu" id="nested"><a class="dropdown-item" href="#">Item one</a><a class="dropdown-item" href="#">Item two</a><a class="dropdown-item" href="#">Item three</a></div>
+    </details>
+  </nav>
+  <div class="card" style="margin:220px 0 0 40px; width:420px;"><div class="card-body" style="height:180px;">
+    <details class="dropdown" open>
+      <summary class="btn btn-glass btn-sm">Card menu</summary>
+      <div class="dropdown-menu" id="in-card"><a class="dropdown-item" href="#">Item one</a><a class="dropdown-item" href="#">Item two</a></div>
+    </details>
+  </div></div>
+  <div class="glass" id="standalone" style="position:absolute; left:560px; top:260px; width:220px; height:110px; border-radius:12px;"></div>
+</body>
+</html>

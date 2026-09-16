@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farvist text-contrast fixture</title>
+  <!-- Theme comes from the URL hash BEFORE the stylesheet applies, so no body
+       background transition can be sampled mid-flight (see check-ai-contrast). -->
+  <script>if (location.hash.length > 1) document.documentElement.setAttribute('data-theme', location.hash.slice(1));</script>
+  <link rel="stylesheet" href="../../dist/farvist.css" />
+</head>
+<body>
+  <!-- Every coloured-TEXT treatment a page can put on the page surface or on
+       glass. Each [data-contrast] element is measured by check-text-contrast. -->
+  <main class="container py-5">
+    <section id="on-body" class="mb-5"></section>
+    <div class="card"><div class="card-body" id="on-card"></div></div>
+  </main>
+  <script>
+    var COLORS = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'accent'];
+    var STATES = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'accent', 'dark'];
+    function build(host, surface) {
+      var h = '';
+      COLORS.forEach(function (c) { h += '<p class="text-' + c + '" data-contrast=".text-' + c + ' on ' + surface + '">Text ' + c + '</p>'; });
+      h += '<p class="text-muted" data-contrast=".text-muted on ' + surface + '">Muted text</p>';
+      h += '<div class="valid-feedback" data-contrast=".valid-feedback on ' + surface + '">Looks good</div>';
+      h += '<div class="invalid-feedback" data-contrast=".invalid-feedback on ' + surface + '">Required</div>';
+      h += '<span class="stat-trend stat-trend-up" data-contrast=".stat-trend-up on ' + surface + '">+12%</span> ';
+      h += '<span class="stat-trend stat-trend-down" data-contrast=".stat-trend-down on ' + surface + '">-3%</span>';
+      STATES.forEach(function (c) {
+        h += '<div class="alert alert-' + c + '" data-contrast=".alert-' + c + ' on ' + surface + '">Alert ' + c + '</div>';
+        h += '<span class="badge badge-soft-' + c + '" data-contrast=".badge-soft-' + c + ' on ' + surface + '">Badge</span> ';
+        h += '<span class="chip chip-' + c + '" data-contrast=".chip-' + c + ' on ' + surface + '">Chip</span> ';
+        h += '<button class="btn btn-outline-' + c + '" data-contrast=".btn-outline-' + c + ' on ' + surface + '">Outline</button> ';
+      });
+      host.innerHTML = h;
+    }
+    build(document.getElementById('on-body'), 'body');
+    build(document.getElementById('on-card'), 'card');
+  </script>
+</body>
+</html>

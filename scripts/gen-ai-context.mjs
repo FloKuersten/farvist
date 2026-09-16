@@ -20,7 +20,7 @@ const gzKb = (f) => (gzipSync(readFileSync(join(root, f))).length / 1024).toFixe
 const builds = [
   { file: 'dist/farvist.min.css', gzipKb: +gzKb('dist/farvist.min.css'), contents: 'everything — all components, utilities, backgrounds, skins, AI kit' },
   { file: 'dist/farvist-slim.min.css', gzipKb: +gzKb('dist/farvist-slim.min.css'), contents: 'the framework without the 11 AI-interface components (chat, prompt, status, prose, tool-call, reasoning, command, diff, suggestions, attachment, snippet) — for sites that never render AI conversations' },
-  { file: 'dist/farvist-ai.min.css', gzipKb: +gzKb('dist/farvist-ai.min.css'), contents: 'ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 hosts must ALSO load dist/farvist-ai-compat.css after the Tailwind build (v3\'s un-layered preflight otherwise strips the kit\'s borders and button styling; Tailwind v4 and Bootstrap hosts need nothing)' },
+  { file: 'dist/farvist-ai.min.css', gzipKb: +gzKb('dist/farvist-ai.min.css'), contents: 'ONLY the AI-interface kit (+ tokens, skins, buttons, avatars, icons, toasts) — an add-on for sites already on Tailwind/Bootstrap/custom CSS. No reset, no typography, no grid or utility classes; assumes box-sizing: border-box and a browser-default 16px root (the kit is rem-sized); on a light host page wrap the UI in <div data-theme="light">. Tailwind v3 AND Bootstrap hosts must ALSO load dist/farvist-ai-compat.css after the host stylesheet: v3\'s un-layered preflight strips the kit\'s borders and button styling, and Bootstrap\'s un-layered .btn overrides the kit\'s own class="btn" buttons on ANY Bootstrap page. Tailwind v4 (layered preflight) needs nothing' },
   { file: 'dist/farvist-ai-compat.css', gzipKb: +gzKb('dist/farvist-ai-compat.css'), contents: 'companion for farvist-ai.min.css on Tailwind v3 hosts only — un-layered re-assertions of exactly the properties v3\'s preflight zeroes (borders, button padding/font/background, prose margins/lists/headings), generated from the compiled kit so it cannot drift' },
 ];
 
@@ -122,10 +122,19 @@ const conventions = {
   colors: ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'accent', 'light', 'dark'],
   breakpoints: { sm: '576px', md: '768px', lg: '992px', xl: '1200px', xxl: '1400px' },
   responsive: 'Insert the breakpoint after the prefix: col-md-6, d-lg-flex, text-md-center.',
-  spacingScale: '0,1,2,3,4,5,6,7,8 → 0, .25, .5, .75, 1, 1.5, 2, 3, 4rem (e.g. p-4 = 1rem, gap-3 = .75rem). Margins also take negative steps: m-n1..m-n8 (and mt-/mb-/ms-/me-/mx-/my-, per breakpoint).',
+  // Derived from the compiled class list: a hand-written version once promised
+  // .my-n* negatives that never existed.
+  spacingScale: (() => {
+    const neg = ['m', 'mt', 'mb', 'ms', 'me', 'mx', 'my'].filter((p) => classes.includes(`${p}-n1`));
+    const negBp = classes.includes('mt-md-n1') ? ', per breakpoint' : '';
+    const auto = ['m', 'mt', 'mb', 'ms', 'me', 'mx', 'my'].filter((p) => classes.includes(`${p}-auto`));
+    return '0,1,2,3,4,5,6,7,8 → 0, .25, .5, .75, 1, 1.5, 2, 3, 4rem (e.g. p-4 = 1rem, gap-3 = .75rem). '
+      + `Negative margins: ${neg.map((p) => p + '-n*').join(', ')} (1–8${negBp}). Auto margins: ${auto.map((p) => p + '-auto').join(', ')}. `
+      + 's/e/x are logical (inline-start/-end), so they flip in dir="rtl".';
+  })(),
   notes: 'For glass to read, give the page a rich background (e.g. body class="bg-mesh-aurora"). Utilities win the cascade (no !important needed by you).',
   js: {
-    include: '<script src="https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).',
+    include: '<script src="https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js" defer></script> — auto-runs enhance() on load (modals, tabs, toasts, theme, copy buttons, auto-ARIA).',
     attributes: {
       'data-fv-open="#id"': 'open a <dialog class="modal" id="id">',
       'data-fv-dismiss': 'close the nearest dialog',
@@ -195,8 +204,8 @@ const out = {
   homepage: pkg.homepage,
   license: pkg.license,
   install: {
-    cdn: 'https://cdn.jsdelivr.net/npm/farvist/dist/farvist.min.css',
-    js: 'https://cdn.jsdelivr.net/npm/farvist/assets/farvist.js',
+    cdn: 'https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css',
+    js: 'https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js',
     npm: 'npm i farvist',
     builds,
   },

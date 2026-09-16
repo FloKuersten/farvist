@@ -73,9 +73,9 @@
   @each $bp in map.keys($grid-breakpoints) {
     $infix: breakpoint-infix($bp);
     @include media-up($bp) {
-      .text#{$infix}-start  { text-align: left; }
+      .text#{$infix}-start  { text-align: start; }
       .text#{$infix}-center { text-align: center; }
-      .text#{$infix}-end    { text-align: right; }
+      .text#{$infix}-end    { text-align: end; }
     }
   }
 
@@ -108,7 +108,14 @@
 
   // -- Color utilities ----------------------------------------------------------
   @each $name, $clr in $theme-colors {
-    .text-#{$name}   { color: var(--fv-#{$name}); }
+    // Text reads the scheme's readable token (see light-text-tokens). `.text-light`
+    // stays the literal colour: it exists for dark backgrounds, and a readable
+    // token would turn it grey where it is used on purpose.
+    @if $name == 'light' {
+      .text-#{$name} { color: var(--fv-#{$name}); }
+    } @else {
+      .text-#{$name} { color: var(--fv-#{$name}-text, var(--fv-#{$name})); }
+    }
     .bg-#{$name}     { background-color: var(--fv-#{$name}); }
     .border-#{$name} { border-color: var(--fv-#{$name}); }
   }
@@ -130,9 +137,9 @@
   .border        { border: $border-width solid var(--fv-border-color); }
   .border-0      { border: 0; }
   .border-top    { border-top: $border-width solid var(--fv-border-color); }
-  .border-end    { border-right: $border-width solid var(--fv-border-color); }
+  .border-end    { border-inline-end: $border-width solid var(--fv-border-color); }
   .border-bottom { border-bottom: $border-width solid var(--fv-border-color); }
-  .border-start  { border-left: $border-width solid var(--fv-border-color); }
+  .border-start  { border-inline-start: $border-width solid var(--fv-border-color); }
 
   @each $key, $value in $radii {
     .rounded-#{$key} { border-radius: $value; }
@@ -168,8 +175,8 @@
   }
   .top-0    { top: 0; }
   .bottom-0 { bottom: 0; }
-  .start-0  { left: 0; }
-  .end-0    { right: 0; }
+  .start-0  { inset-inline-start: 0; }
+  .end-0    { inset-inline-end: 0; }
   .fixed-top {
     position: fixed;
     top: 0;

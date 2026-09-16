@@ -39,27 +39,16 @@
       border-color: color-mix(in srgb, var(--fv-#{$name}) 42%, transparent);
       border-left: 3px solid var(--fv-#{$name});
 
+      // Coloured heading/link read the scheme's readable-text token, so every
+      // light scheme (light theme AND light skins) darkens them for AA.
       .alert-heading {
-        color: var(--fv-#{$name});
+        color: var(--fv-#{$name}-text, var(--fv-#{$name}));
       }
 
       .alert-link {
-        color: var(--fv-#{$name});
+        color: var(--fv-#{$name}-text, var(--fv-#{$name}));
         font-weight: map.get($font-weights, 'semibold');
         text-decoration: underline;
-      }
-    }
-  }
-
-  // In the light theme the near-white alert fill needs darker accent text. Mix
-  // the hue toward the light ink so the heading/link clear WCAG AA (≥ 4.5:1).
-  [data-theme='light'] {
-    @each $name, $clr in $theme-colors {
-      .alert-#{$name} {
-        .alert-heading,
-        .alert-link {
-          color: color-mix(in srgb, #{$body-text-light} 65%, var(--fv-#{$name}));
-        }
       }
     }
   }

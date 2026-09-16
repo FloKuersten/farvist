@@ -93,3 +93,24 @@
     --fv-btn-glow: 0 0 24px #{rgba($bg, 0.55)};
   }
 }
+
+// Readable-text tokens for a LIGHT colour scheme: --fv-{name}-text for every
+// theme colour, mixed toward that scheme's own --fv-body-color. Components read
+// `var(--fv-{name}-text, <dark treatment>)`, so dark schemes keep their look and
+// every light scheme (the built-in light theme and any light skin) gets AA text
+// from this one definition. The per-component [data-theme='light'] patches it
+// replaces never reached light skins: dawn shipped soft badges at 1.15:1.
+// $with-primary: the light theme keeps its raw brand primary (AA there); a
+// skin gets a mixed default that its own 'primary-text' map entry overrides.
+@mixin light-text-tokens($with-primary: false) {
+  @each $name, $value in $theme-colors {
+    @if $name != 'primary' or $with-primary {
+      --fv-#{$name}-text: color-mix(in srgb, var(--fv-body-color) #{$text-ink-mix}, var(--fv-#{$name}));
+    }
+  }
+  // Text on a TINT of its own hue (soft badges, chips) loses contrast to the
+  // tint. The other hues already carry enough ink; primary keeps its vivid brand
+  // value for links, so soft primary text gets extra ink here — light schemes
+  // only, leaving dark schemes untouched.
+  --fv-primary-tint-text: color-mix(in srgb, var(--fv-body-color) 30%, var(--fv-primary-text));
+}
