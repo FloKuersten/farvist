@@ -65,7 +65,8 @@
     "check:ai-contrast": "node scripts/check-ai-contrast.mjs"
   },
   "overrides": {
-    "brace-expansion": "^5.0.8"
+    "brace-expansion": "^5.0.12",
+    "puppeteer": "$puppeteer"
   },
   "browserslist": [
     "chrome >= 111",
@@ -79,7 +80,7 @@
     "pa11y-ci": "^4.1.1",
     "postcss": "^8.5.15",
     "postcss-cli": "^11.0.1",
-    "puppeteer": "^24.43.1",
+    "puppeteer": "^25.11.0",
     "sass": "^1.83.0",
     "serve": "^14.2.6",
     "stylelint": "^17.14.0",
