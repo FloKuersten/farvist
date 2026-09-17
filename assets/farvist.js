@@ -305,13 +305,48 @@
     cmdFilter(dialog);
   }
 
-  // Prompt auto-grow where `field-sizing: content` isn't applied (Firefox <152,
-  // Safari <26.2). Keyed off the computed style, so author overrides count too.
+  // Prompt auto-grow for engines WITHOUT `field-sizing: content` (Firefox <152,
+  // Safari <26.2). Engines that have it are left to the CSS, so an author's
+  // `field-sizing: fixed` still opts out. Composers whose height the author set
+  // (stylesheet or inline) are left alone, and hidden ones are skipped rather
+  // than sized to 0. Re-measured on input, submit/reset, and width changes.
+  var nativeFieldSizing = !!(window.CSS && CSS.supports && CSS.supports('field-sizing', 'content'));
+  var growable = new WeakMap(); // el -> false when the author owns its height
   function growPrompt(el) {
-    if (getComputedStyle(el).fieldSizing === 'content') return;
+    if (nativeFieldSizing || !el.getClientRects().length) return;
+    if (!growable.has(el)) {
+      var own = !!el.style.height;
+      if (!own) { // does the stylesheet set a height? compare with an inline `auto`
+        var styled = getComputedStyle(el).height;
+        el.style.height = 'auto';
+        own = getComputedStyle(el).height !== styled;
+        el.style.height = '';
+      }
+      growable.set(el, !own);
+    }
+    if (!growable.get(el)) return;
     el.style.height = '0px'; // collapse so scrollHeight measures content
     el.style.height = (el.scrollHeight + el.offsetHeight - el.clientHeight) + 'px';
   }
+
+  if (!nativeFieldSizing) {
+    // Apps clear the composer in their own submit handler: measure after it.
+    ['submit', 'reset'].forEach(function (type) {
+      document.addEventListener(type, function (e) {
+        setTimeout(function () { if (e.target.querySelectorAll) qsa('textarea.prompt-field', e.target).forEach(growPrompt); }, 0);
+      });
+    });
+  }
+  // Width changes re-wrap the text (resize, rotation, a hidden composer shown).
+  // Border-box width is watched: a scrollbar appearing at max-height changes the
+  // content width, which would otherwise make this observer oscillate.
+  var promptWidth = new WeakMap();
+  var promptObserver = !nativeFieldSizing && window.ResizeObserver && new ResizeObserver(function (entries) {
+    entries.forEach(function (en) {
+      var w = en.target.offsetWidth;
+      if (w !== promptWidth.get(en.target)) { promptWidth.set(en.target, w); growPrompt(en.target); }
+    });
+  });
 
   // Delegated so injected palettes and composers work without re-binding.
   document.addEventListener('input', function (e) {
@@ -326,7 +361,10 @@
 
   // ---- Progressive ARIA enhancement (tabs + progress) ----
   function enhance() {
-    qsa('textarea.prompt-field').forEach(growPrompt); // size on load, incl. empty
+    qsa('textarea.prompt-field').forEach(function (el) {
+      growPrompt(el); // size on load, incl. empty; also call enhance() after setting .value in code
+      if (promptObserver && !promptWidth.has(el)) { promptWidth.set(el, el.offsetWidth); promptObserver.observe(el); }
+    });
 
     // Command palettes: wire the combobox + listbox roles for screen readers.
     qsa('dialog.command').forEach(function (dialog, di) {

@@ -61,6 +61,13 @@
     background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%;
     background-size: 6px 6px;
     padding-right: spacer(7);
+
+    // Forced colors (Windows High Contrast) drops gradient background images,
+    // which would leave the select looking like a text input. Hand the arrow
+    // back to the platform there.
+    @media (forced-colors: active) {
+      appearance: auto;
+    }
   }
 
   textarea.form-control {

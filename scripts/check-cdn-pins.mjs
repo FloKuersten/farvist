@@ -1,6 +1,6 @@
 // =============================================================================
 // Farvist · scripts/check-cdn-pins.mjs
-// Fails if any tracked file links Farvist from a CDN without a version.
+// Fails if any tracked file links Farvist from a CDN without a version (or @latest).
 //
 // An unversioned jsDelivr URL (…/npm/farvist/dist/…) follows `latest`, so the
 // day a 2.0 removes a class, every page built from those snippets breaks. That
@@ -16,8 +16,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-// unversioned = the package name followed directly by "/", not "@"
-const UNPINNED = /(?:cdn\.jsdelivr\.net\/npm|unpkg\.com)\/farvist\/(?!@)/g;
+// Unpinned = no version (…/farvist/dist/…, or the bare package URL, which serves
+// the main stylesheet) or @latest: both follow the newest release. Same pattern
+// as the unpinned-cdn rule in bin/farvist.mjs.
+const UNPINNED = /(?:cdn\.jsdelivr\.net\/npm|unpkg\.com|cdn\.jsdelivr\.net\/gh\/flokuersten)\/farvist(?:@latest)?(?![\w.@-])/gi;
 const TEXT = /\.(html?|md|txt|json|mjs|js|cursorrules|mdc|xml|yml|yaml)$/i;
 
 // scripts/fixtures/ holds deliberately-wrong markup that tests `npx farvist check`.

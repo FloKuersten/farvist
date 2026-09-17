@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farvist forced-colors fixture</title>
+  <link rel="stylesheet" href="../../dist/farvist.css" />
+</head>
+<body>
+  <!-- Each select is measured by scripts/check-forced-colors.mjs. -->
+  <main class="container py-5">
+    <select class="form-select" id="plain" aria-label="plain"><option>One</option><option>Two</option></select>
+    <div class="input-group mt-3">
+      <span class="input-group-text">Model</span>
+      <select class="form-select" id="grouped" aria-label="grouped"><option>One</option><option>Two</option></select>
+    </div>
+    <div class="card mt-3 p-3" data-theme="light"><select class="form-select" id="light" aria-label="light"><option>One</option></select></div>
+  </main>
+</body>
+</html>

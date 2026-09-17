@@ -23,28 +23,6 @@
     border-left: 0;
     border-radius: 0;
     box-shadow: var(--fv-shadow-md);
-
-    // The frost lives on a layer BEHIND the content, not on the bar. An element
-    // with backdrop-filter becomes a Backdrop Root: a dropdown hanging below the
-    // bar could then blur only the bar's own empty backdrop, and rendered fully
-    // unfrosted (sharp page detail behind the menu text). `position: relative`
-    // loses to .sticky-top/.fixed-top (utilities outrank components).
-    position: relative;
-    isolation: isolate;
-    background-color: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      background-color: var(--fv-glass-bg-strong);
-      backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
-      -webkit-backdrop-filter: blur(var(--fv-glass-blur)) saturate(var(--fv-glass-saturate));
-    }
   }
 
   .navbar-brand {

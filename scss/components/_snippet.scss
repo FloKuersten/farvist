@@ -39,7 +39,7 @@
     }
 
     &.is-copied {
-      color: var(--fv-success);
+      color: var(--fv-success-text, var(--fv-success));
       border-color: var(--fv-success);
     }
   }
@@ -52,7 +52,7 @@
   // Success flash for any other copy trigger (e.g. an icon-only
   // [data-fv-copy] button in a chat .message-actions row).
   .btn.is-copied {
-    color: var(--fv-success);
+    color: var(--fv-success-text, var(--fv-success));
     border-color: var(--fv-success);
   }
 

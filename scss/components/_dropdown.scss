@@ -44,6 +44,18 @@
     animation: fv-dropdown-in 0.15s ease;
   }
 
+  // Glass can't frost through a glass ancestor: the navbar's backdrop-filter
+  // makes it a Backdrop Root, so a menu hanging below the bar blurs nothing and
+  // its text sits on sharp page detail (measured unreadable). Menus inside the
+  // navbar use the opaque surface instead. (1.8.0 moved the navbar's frost to
+  // ::before; that painted over .bg-* utilities and rounded corners, so 1.8.1
+  // restored the navbar and fixes the menu here.)
+  .navbar .dropdown-menu {
+    background-color: var(--fv-surface-solid);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   // Right-aligned variant.
   .dropdown-menu-end {
     left: auto;

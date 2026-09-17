@@ -45,10 +45,33 @@ for (let i = 0; i < lines.length; i++) {
   }
 }
 
+// Readable-text companions are custom-property definitions too, so the scan
+// above allows literals there. But the DEFAULT themes' companions must derive
+// from their brand token, or `:root { --fv-primary: … }` re-brands buttons while
+// .text-primary and alert headings keep the old hue (1.8.0 compiled
+// --fv-primary-text to a constant). Skins may keep hand-tuned literals.
+const block = (selector) => {
+  const at = css.indexOf(selector + ' {');
+  return at < 0 ? '' : css.slice(at, css.indexOf('}', at));
+};
+const derived = [
+  [':root', ['primary-text', 'primary'], ['secondary-text', 'secondary']],
+  [":root[data-theme=light],\n  [data-theme=light]", ['success-text', 'success'], ['danger-text', 'danger'], ['warning-text', 'warning'], ['info-text', 'info'], ['accent-text', 'accent'], ['secondary-text', 'secondary']],
+];
+for (const [selector, ...pairs] of derived) {
+  const body = block(selector);
+  if (!body) { offenders.push(`[derived] no "${selector.replace(/\s+/g, ' ')}" block found in dist/farvist.css`); continue; }
+  for (const [token, brand] of pairs) {
+    const value = (body.match(new RegExp(`--fv-${token}:\\s*([^;]+);`)) || [])[1];
+    if (!value) offenders.push(`[derived] ${selector.split(',')[0]} defines no --fv-${token}`);
+    else if (!value.includes(`var(--fv-${brand})`)) offenders.push(`[derived] ${selector.split(',')[0]} --fv-${token}: ${value.trim()} — must derive from var(--fv-${brand}) so a re-brand follows`);
+  }
+}
+
 if (offenders.length) {
-  console.error(`✘ check-theming: ${offenders.length} baked brand color(s) outside --fv-* definitions:\n`);
+  console.error(`✘ check-theming: ${offenders.length} problem(s) — baked brand colours outside --fv-* definitions, or [derived] text companions that don't follow a re-brand:\n`);
   for (const o of offenders.slice(0, 25)) console.error('  ' + o);
   if (offenders.length > 25) console.error(`  … and ${offenders.length - 25} more`);
   process.exit(1);
 }
-console.log('✔ check-theming: no baked brand colors outside --fv-* definitions — runtime re-branding is complete');
+console.log('✔ check-theming: no baked brand colors outside --fv-* definitions, and the default themes\' text companions derive from their brand tokens — runtime re-branding is complete');

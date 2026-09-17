@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "homepage": "https://farvist.com",
   "license": "MIT",
@@ -37,8 +37,8 @@
     "icons": 55,
     "recipes": 14,
     "skins": 5,
-    "tokens": 56,
-    "optionalTokens": 27
+    "tokens": 57,
+    "optionalTokens": 26
   },
   "skins": {
     "usage": "<html data-theme=\"NAME\"> or Farvist.theme(\"NAME\") — prebuilt AA-gated theme packs; \"dawn\" is a light skin. Default (no attribute) is the dark glass theme.",
@@ -77,7 +77,8 @@
       "--fv-bg-gradient": "radial-gradient(48rem 48rem at 82% -12%, color-mix(in srgb, var(--fv-primary) 28%, transparent), transparent 60%), radial-gradient(36rem 36rem at -8% 18%, color-mix(in srgb, var(--fv-info) 20%, transparent), transparent 58%), radial-gradient(40rem 40rem at 50% 118%, color-mix(in srgb, var(--fv-accent) 18%, transparent), transparent 58%)",
       "--fv-body-color": "#e6ebf5",
       "--fv-muted": "#95a3c4",
-      "--fv-primary-text": "rgb(58.7764705882%, 48.8941176471%, 97.1764705882%)",
+      "--fv-primary-text": "color-mix(in srgb, var(--fv-primary) 72%, #fff)",
+      "--fv-secondary-text": "color-mix(in srgb, var(--fv-secondary) 80%, #fff)",
       "--fv-border-color": "rgba(255, 255, 255, 0.1)",
       "--fv-code-bg": "rgba(255, 255, 255, 0.07)",
       "--fv-code-color": "var(--fv-info)",
@@ -128,7 +129,6 @@
       "--fv-accent-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
       "--fv-light-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
       "--fv-dark-contrast": "unset (optional — readable text color on that color's fills; set it when your brand flips between light and dark)",
-      "--fv-secondary-text": "unset (optional — readable text tint of that color on the page surface)",
       "--fv-success-text": "unset (optional — readable text tint of that color on the page surface)",
       "--fv-danger-text": "unset (optional — readable text tint of that color on the page surface)",
       "--fv-warning-text": "unset (optional — readable text tint of that color on the page surface)",

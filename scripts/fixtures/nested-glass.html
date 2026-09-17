@@ -29,5 +29,14 @@
   <!-- Unfrosted control: the same translucent fill with NO backdrop-filter. Anchors
        the "not frosted" end of the scale on whatever renderer runs the gate. -->
   <div id="unfrosted" style="position:absolute; left:560px; top:400px; width:220px; height:110px; border-radius:12px; background-color:var(--fv-glass-bg);"></div>
+  <!-- The navbar must paint what authors put on it. On a plain black panel: an
+       opaque background utility, an inline background, and a rounded bar. Shadows
+       are off: a bar's shadow would shade the next bar's corner, which must stay
+       the panel's black outside the curve (dark-theme glass is a white tint, invisible on white). -->
+  <div id="panel" style="position:absolute; left:40px; top:580px; width:460px; padding:16px; background:#000;">
+    <nav class="navbar bg-dark shadow-none" id="nav-bg"><a class="navbar-brand" href="#">Utility</a></nav>
+    <nav class="navbar shadow-none mt-3" id="nav-inline" style="background-color:rgb(20,120,60);"><a class="navbar-brand" href="#">Inline</a></nav>
+    <nav class="navbar rounded-2xl shadow-none mt-3" id="nav-round"><a class="navbar-brand" href="#">Rounded</a></nav>
+  </div>
 </body>
 </html>

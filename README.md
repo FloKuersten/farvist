@@ -370,7 +370,7 @@ Everything else (accordion, dropdown, tooltip, switch, progress…) is pure CSS 
 
 ## For AI assistants
 
-Farvist is built so AI coding agents generate correct markup. Everything below is generated from the compiled CSS on every build (`npm run build:all`), so it can't drift from the release:
+Farvist is built so AI coding agents generate correct markup. The Agent Skill, the rule files, the validator's class manifest, `llms-full.txt` and `ai-context.json` are generated from the compiled CSS on every build (`npm run build:all`), so they can't drift from the release (`llms.txt` is the hand-written index):
 
 **1. Install the Agent Skill** — for Claude Code, Cursor, GitHub Copilot, Codex, Gemini CLI and other [Agent Skills](https://agentskills.io) clients:
 
@@ -386,7 +386,7 @@ It loads a short rule set (the mistakes agents actually make: Tailwind idioms, i
 npx farvist check index.html src/
 ```
 
-It reports unknown or misspelled classes with a suggestion (`flex` → `d-flex`, `btn-glas` → `btn-glass`), classes missing from the page's build (the AI kit on a `farvist-slim` page), icon sprites loaded cross-origin, unpinned CDN URLs, and `farvist-ai` on a Bootstrap page without the compat file. `--json` for agents; exit code 1 on errors. It checks class names and those pitfalls only, not visual design or full accessibility.
+It reports unknown or misspelled classes with a suggestion (`flex` → `d-flex`, `btn-glas` → `btn-glass`), classes missing from the page's build (the AI kit on a `farvist-slim` page), icon sprites loaded cross-origin, unpinned or `@latest` CDN URLs, and `farvist-ai` on a Bootstrap page without the compat file. `--json` for agents; exit code 1 on errors. Your own classes aren't flagged: `<style>` blocks and stylesheets a page links or imports by relative path are read automatically, and `--css src/styles.css` adds CSS that arrives another way (a bundle, a global file). On a `farvist-ai` page only the kit's class families are checked, so the host's Bootstrap or Tailwind classes are left alone. It checks class names and those pitfalls only, not visual design or full accessibility.
 
 **3. Project rules and raw context:**
 

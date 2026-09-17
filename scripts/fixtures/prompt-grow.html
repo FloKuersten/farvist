@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farvist prompt auto-grow fixture</title>
+  <link rel="stylesheet" href="../../dist/farvist.css" />
+  <style>
+    body { padding: 1rem; }
+    .author-height { height: 8rem; }        /* the author owns this composer's height */
+    .author-optout { field-sizing: fixed; } /* opts out of native auto-grow */
+    #wrap { width: 900px; }
+  </style>
+</head>
+<body>
+  <!-- Each composer is one scenario of scripts/check-prompt-grow.mjs. -->
+  <form class="prompt" style="width:500px"><textarea class="prompt-field" id="p-empty" aria-label="empty"></textarea></form>
+
+  <form class="prompt" id="f-type" style="width:500px"><textarea class="prompt-field" id="p-type" aria-label="type"></textarea><button type="submit">Send</button></form>
+
+  <form class="prompt" id="f-reset" style="width:500px"><textarea class="prompt-field" id="p-reset" aria-label="reset"></textarea></form>
+
+  <dialog id="dlg"><form class="prompt" style="width:500px"><textarea class="prompt-field" id="p-hidden" aria-label="hidden">line 1
+line 2
+line 3
+line 4
+line 5</textarea></form></dialog>
+
+  <div id="wrap"><form class="prompt"><textarea class="prompt-field" id="p-resize" aria-label="resize">The quick brown fox jumps over the lazy dog while the composer re-wraps its text at a narrower width. The quick brown fox jumps over the lazy dog while the composer re-wraps its text at a narrower width. The quick brown fox jumps over the lazy dog.</textarea></form></div>
+
+  <form class="prompt" style="width:500px"><textarea class="prompt-field author-height" id="p-author" aria-label="author">one
+two
+three
+four
+five
+six</textarea></form>
+
+  <form class="prompt" style="width:500px"><textarea class="prompt-field author-optout" id="p-optout" aria-label="optout"></textarea></form>
+
+  <script>
+    // The standard chat flow: the app clears the composer in its submit handler.
+    document.getElementById('f-type').addEventListener('submit', function (e) {
+      e.preventDefault();
+      document.getElementById('p-type').value = '';
+    });
+  </script>
+  <script src="../../assets/farvist.js"></script>
+</body>
+</html>

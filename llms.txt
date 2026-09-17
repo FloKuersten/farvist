@@ -6,7 +6,7 @@ Farvist is dark-first (add `data-theme="light"` to `<html>` to switch) and uses 
 
 ## Start here (for AI assistants)
 - [Agent Skill](https://farvist.com/.well-known/skills/farvist/SKILL.md): install with `npx skills add FloKuersten/farvist` (or `npx skills add https://farvist.com`) — short rules, with component/theming/recipe references loaded on demand.
-- Validate generated markup: `npx farvist check <files>` — unknown or misspelled classes (with a suggestion), classes missing from the page's build, cross-origin icon sprites, unpinned CDN URLs. `--json`; exit 1 on errors.
+- Validate generated markup: `npx farvist check <files>` — unknown or misspelled classes (with a suggestion), classes missing from the page's build, cross-origin icon sprites, unpinned or @latest CDN URLs. Project classes from `<style>` and relatively linked/imported stylesheets are read automatically; add other project CSS with `--css <file>` rather than renaming classes. `--json`; exit 1 on errors.
 - [Full context](https://farvist.com/llms-full.txt): every convention, component, icon, design token and copy-paste recipe. Paste this into your assistant before generating Farvist markup.
 - [Machine-readable catalog](https://farvist.com/ai-context.json): the same as JSON — components, utility families, design tokens with defaults, skins, icons, recipes.
 - Project rules: [Cursor .mdc](https://farvist.com/ai/farvist.mdc) · [Copilot instructions](https://farvist.com/ai/farvist.instructions.md) · [AGENTS.md snippet](https://farvist.com/ai/AGENTS.snippet.md) · [legacy .cursorrules](https://farvist.com/farvist.cursorrules). MCP docs server: https://gitmcp.io/FloKuersten/farvist

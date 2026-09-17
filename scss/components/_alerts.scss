@@ -40,13 +40,20 @@
       border-left: 3px solid var(--fv-#{$name});
 
       // Coloured heading/link read the scheme's readable-text token, so every
-      // light scheme (light theme AND light skins) darkens them for AA.
+      // light scheme (light theme AND light skins) darkens them for AA. Primary
+      // sits on its own tint here, like a soft badge, so it takes the extra-ink
+      // --fv-primary-tint-text first (light schemes only; 3.95:1 without it).
+      $text: var(--fv-#{$name}-text, var(--fv-#{$name}));
+      @if $name == 'primary' {
+        $text: var(--fv-primary-tint-text, #{$text});
+      }
+
       .alert-heading {
-        color: var(--fv-#{$name}-text, var(--fv-#{$name}));
+        color: $text;
       }
 
       .alert-link {
-        color: var(--fv-#{$name}-text, var(--fv-#{$name}));
+        color: $text;
         font-weight: map.get($font-weights, 'semibold');
         text-decoration: underline;
       }

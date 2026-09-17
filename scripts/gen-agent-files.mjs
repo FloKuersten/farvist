@@ -52,7 +52,7 @@ const RULES = [
     detail: `Load Farvist from a **version-pinned** URL (\`farvist@${MAJOR}\`), never an unversioned one — \`latest\` would silently pick up a future major. Pick the build that matches the page (see the table above).`,
   },
   {
-    short: 'Use only real Farvist classes; never invent class names. Look them up in references/ or llms-full.txt and run `npx farvist check` on generated files.',
+    short: 'Use only real Farvist classes; never invent class names. Look them up in https://farvist.com/llms-full.txt (or node_modules/farvist/skills/farvist/references/) and run `npx farvist check` on generated files.',
     detail: 'Use **only real Farvist classes** — never invent or "guess" a class name. Look it up in the references below, and run `npx farvist check` on the files you generated before you finish.',
   },
   {
@@ -153,7 +153,9 @@ Run the validator on every file you created or changed:
 
 ${fence('bash', 'npx farvist check index.html src/components')}
 
-It reports unknown or misspelled Farvist classes (with a suggestion), classes the page's build doesn't contain (for example an AI-kit class on a page that loads \`farvist-slim\`), icon sprites loaded cross-origin, and unpinned CDN URLs. \`--json\` gives machine-readable output; the exit code is 1 when there are errors. Fix every error, then re-run.
+It reports unknown or misspelled Farvist classes (with a suggestion), classes the page's build doesn't contain (for example an AI-kit class on a page that loads \`farvist-slim\`), icon sprites loaded cross-origin, and unpinned or \`@latest\` CDN URLs. \`--json\` gives machine-readable output; the exit code is 1 when there are errors. Fix every error, then re-run.
+
+Classes the project defines itself are not errors: those in a page's \`<style>\` blocks and in stylesheets it links or imports by relative path are read automatically. If the project's CSS reaches the page another way (a bundle, a global stylesheet, a framework entry file), pass it with \`--css src/styles.css\` (repeatable) — never rename or delete a project class just to satisfy the checker. On a \`farvist-ai\` page only the kit's own class families are checked; the host framework's classes (Bootstrap's \`btn-group\`, Tailwind's utilities) are left alone.
 
 It checks class names and a few documented pitfalls only. It does not judge visual design or full accessibility — keep following the rules above for that.
 `;

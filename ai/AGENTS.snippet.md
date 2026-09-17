@@ -1,8 +1,8 @@
 <!-- Paste into your project's AGENTS.md (read by Codex, Copilot, Cursor, Gemini CLI, Devin and others). -->
-## Farvist (v1.8.0) — CSS framework conventions
+## Farvist (v1.8.1) — CSS framework conventions
 
 - Load Farvist from a version-pinned URL (https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css), never an unversioned one; pick the full, -slim or -ai build to match the page.
-- Use only real Farvist classes; never invent class names. Look them up in references/ or llms-full.txt and run `npx farvist check` on generated files.
+- Use only real Farvist classes; never invent class names. Look them up in https://farvist.com/llms-full.txt (or node_modules/farvist/skills/farvist/references/) and run `npx farvist check` on generated files.
 - Farvist is Bootstrap-style components + utilities, not Tailwind: d-flex (not flex), align-items-center (not items-center), fw-bold (not font-bold), mt-3 (no arbitrary values), col-md-6.
 - Glass needs something to blur: give the page a rich background, e.g. <body class="bg-mesh-aurora">. Glass over a flat colour just looks grey.
 - Wrap rendered LLM markdown in .prose (use .prose.prose-sm inside chat bubbles); message bubbles otherwise preserve raw newlines.

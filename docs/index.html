@@ -742,7 +742,7 @@ Farvist.enhance();   // re-run progressive enhancement</code></pre>
 
       <section id="use-with-ai">
         <h2 class="mb-3">Use Farvist with your AI ✦ <span class="badge badge-soft-accent">v1.8</span></h2>
-        <p class="text-muted mb-4" style="max-width:46rem;">Farvist is built to be <strong>generated correctly by AI coding agents</strong>. All of the files below are generated from the compiled CSS, so they can't drift from the release you're using. Use as many layers as your tool supports.</p>
+        <p class="text-muted mb-4" style="max-width:46rem;">Farvist is built to be <strong>generated correctly by AI coding agents</strong>. The Agent Skill, the rule files, the validator's class list, <code>llms-full.txt</code> and <code>ai-context.json</code> are generated from the compiled CSS, so they can't drift from the release you're using (<code>llms.txt</code> is the hand-written index). Use as many layers as your tool supports.</p>
 
         <h3 class="h5 mb-2">1. Install the Agent Skill</h3>
         <p class="text-muted mb-2" style="max-width:46rem;">For Claude Code, Cursor, GitHub Copilot, Codex, Gemini CLI and other <a href="https://agentskills.io" style="text-decoration:underline;">Agent Skills</a> clients. The agent loads a short set of rules, and pulls component, theming and recipe references only when a task needs them.</p>
@@ -750,8 +750,9 @@ Farvist.enhance();   // re-run progressive enhancement</code></pre>
 npx skills add https://farvist.com         # or from the site</code></pre>
 
         <h3 class="h5 mb-2 mt-4">2. Validate what the agent generated</h3>
-        <p class="text-muted mb-2" style="max-width:46rem;">Reports unknown or misspelled classes with a suggestion (including Tailwind habits like <code>flex</code> → <code>d-flex</code>), classes your build doesn't contain (the AI kit on a page that loads <code>farvist-slim</code>), icon sprites loaded cross-origin, unpinned CDN URLs, and <code>farvist-ai</code> on a Bootstrap page without the compat file. <code>--json</code> for agents; exit code 1 on errors. It checks class names and those pitfalls only — not visual design or full accessibility.</p>
-        <pre class="snippet"><code>npx farvist check index.html src/</code></pre>
+        <p class="text-muted mb-2" style="max-width:46rem;">Reports unknown or misspelled classes with a suggestion (including Tailwind habits like <code>flex</code> → <code>d-flex</code>), classes your build doesn't contain (the AI kit on a page that loads <code>farvist-slim</code>), icon sprites loaded cross-origin, unpinned or <code>@latest</code> CDN URLs, and <code>farvist-ai</code> on a Bootstrap page without the compat file. <code>--json</code> for agents; exit code 1 on errors. Your own classes aren't flagged: <code>&lt;style&gt;</code> blocks and stylesheets a page links or imports by relative path are read automatically, and <code>--css</code> adds CSS that arrives another way. On a <code>farvist-ai</code> page only the kit's class families are checked. It checks class names and those pitfalls only — not visual design or full accessibility.</p>
+        <pre class="snippet"><code>npx farvist check index.html src/
+npx farvist check src/ --css src/styles/global.css   # CSS from a bundle or global file</code></pre>
 
         <h3 class="h5 mb-2 mt-4">3. Project rules and raw context</h3>
         <ul class="text-muted mb-4" style="max-width:46rem;">

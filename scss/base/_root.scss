@@ -33,7 +33,14 @@
     --fv-muted: #{$muted-dark};
     // Lighter primary for readable TEXT on the dark surface (the brand --fv-primary
     // is tuned dark for fills/light-bg, which is too low-contrast as text on dark).
-    --fv-primary-text: #{color.scale($primary, $lightness: 28%)};
+    // A RUNTIME mix so a re-brand of --fv-primary carries into .text-primary and
+    // alert headings. For the default violet it equals the old compile-time
+    // color.scale(+28% lightness) exactly: rgb(149.88, 124.68, 247.8).
+    --fv-primary-text: color-mix(in srgb, var(--fv-primary) 72%, #fff);
+    // The slate secondary is the palette's only mid-luminance hue: as a heading
+    // on its own tint over glass it measured 3.96–4.36:1 on every dark scheme.
+    // Lifted to about --fv-muted's luminance; runtime-mixed so re-brands follow.
+    --fv-secondary-text: color-mix(in srgb, var(--fv-secondary) 80%, #fff);
     --fv-border-color: #{$border-color};
     --fv-code-bg: rgba(255, 255, 255, 0.07);
     // Inline-code text. Info reads at 9.6:1 on the dark chip; light surfaces

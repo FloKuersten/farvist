@@ -62,14 +62,20 @@ jobs:
       - name: Coloured-text contrast (rendered, every theme + skin, page and glass)
         run: npm run check:text-contrast
 
-      - name: Nested glass stays frosted (no Backdrop Root regressions)
+      - name: Nested menus readable; navbar paints its own background and radius
         run: npm run check:nested-glass
+
+      - name: Form select keeps an arrow in forced-colors mode
+        run: npm run check:forced-colors
 
       - name: CDN snippets are version-pinned
         run: npm run check:cdn-pins
 
       - name: npx farvist check — catches planted mistakes, site markup clean
         run: npm run check:validator
+
+      - name: Prompt auto-grow — JS fallback matches native field-sizing
+        run: npm run check:prompt-grow
 
       - name: Accessibility (axe via pa11y-ci)
         run: |

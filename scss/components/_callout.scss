@@ -34,7 +34,7 @@
     .callout-#{$name} {
       border-left-color: var(--fv-#{$name});
 
-      .callout-title { color: var(--fv-#{$name}); }
+      .callout-title { color: var(--fv-#{$name}-text, var(--fv-#{$name})); }
     }
   }
 }

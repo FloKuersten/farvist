@@ -26,8 +26,13 @@
       h += '<div class="invalid-feedback" data-contrast=".invalid-feedback on ' + surface + '">Required</div>';
       h += '<span class="stat-trend stat-trend-up" data-contrast=".stat-trend-up on ' + surface + '">+12%</span> ';
       h += '<span class="stat-trend stat-trend-down" data-contrast=".stat-trend-down on ' + surface + '">-3%</span>';
+      h += ' <button class="btn btn-glass btn-sm is-copied" data-contrast=".btn.is-copied on ' + surface + '">Copied</button>';
+      h += ' <span class="snippet-wrap" style="display:inline-block;position:relative;width:6rem;height:2rem"><button class="copy-btn is-copied" data-contrast=".copy-btn.is-copied on ' + surface + '">Copied</button></span>';
       STATES.forEach(function (c) {
-        h += '<div class="alert alert-' + c + '" data-contrast=".alert-' + c + ' on ' + surface + '">Alert ' + c + '</div>';
+        h += '<div class="alert alert-' + c + '" data-contrast=".alert-' + c + ' on ' + surface + '">Alert ' + c
+          + ' <span class="alert-heading" data-contrast=".alert-' + c + ' .alert-heading on ' + surface + '">Heading</span>'
+          + ' <a class="alert-link" href="#" data-contrast=".alert-' + c + ' .alert-link on ' + surface + '">link</a></div>';
+        h += '<div class="callout callout-' + c + '"><div class="callout-title" data-contrast=".callout-' + c + ' .callout-title on ' + surface + '">Callout ' + c + '</div></div>';
         h += '<span class="badge badge-soft-' + c + '" data-contrast=".badge-soft-' + c + ' on ' + surface + '">Badge</span> ';
         h += '<span class="chip chip-' + c + '" data-contrast=".chip-' + c + ' on ' + surface + '">Chip</span> ';
         h += '<button class="btn btn-outline-' + c + '" data-contrast=".btn-outline-' + c + ' on ' + surface + '">Outline</button> ';
