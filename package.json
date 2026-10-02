@@ -39,6 +39,8 @@
     "!dist/*.map",
     "assets",
     "!assets/notify.js",
+    "!assets/home.css",
+    "!assets/home.js",
     "llms.txt",
     "llms-full.txt",
     "ai-context.json",

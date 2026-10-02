@@ -1,68 +1,91 @@
-# Publishing Farvist — exact commands
+# Releasing Farvist
 
-Run these from the project root (`C:\Users\Flo\Farvistrap`). `git`, `gh` (logged in as
-**FloKuersten**), and `npm` are all installed. The `farvist` name is **available** on npm.
+Farvist is already published as [`farvist` on npm](https://www.npmjs.com/package/farvist) and maintained in the public [`FloKuersten/farvist` repository](https://github.com/FloKuersten/farvist). The website is [farvist.com](https://farvist.com). Run the commands below in a repository checkout using PowerShell; they are a checklist for a new release, not an initial repository setup.
 
-> Heads up: the GitHub repo will be **public** and include the marketing site, examples, docs,
-> Pro samples and `LAUNCH_SHOW_HN.md`. `deploy.ps1` (your origin IP) and `LAUNCH-KIT.md` (internal notes) are git-ignored. The npm package
-> only ships `scss/`, `dist/`, `assets/`, `README`, `LICENSE` (verified via `npm pack --dry-run`).
-
----
-
-## 1. GitHub — create the repo and push
+## 1. Check the current release
 
 ```powershell
-git init -b main
-git add .
-git commit -m "Farvist v0.5.0 — glassmorphism CSS framework"
-
-# creates github.com/FloKuersten/farvist, sets 'origin', and pushes 'main'
-gh repo create farvist --public --source=. --remote=origin --push `
-  --description "A lightweight glassmorphism CSS framework — frosted surfaces, neon glow, a free backgrounds library, 42 components, five skins and dark/light themes."
-
-# discoverability
-gh repo edit FloKuersten/farvist --homepage "https://farvist.com" `
-  --add-topic css --add-topic sass --add-topic css-framework --add-topic glassmorphism `
-  --add-topic ui-kit --add-topic design-tokens --add-topic dark-mode `
-  --add-topic bootstrap-alternative --add-topic tailwind-alternative
+git status --short
+npm view farvist version dist-tags --json
+gh release list --repo FloKuersten/farvist --limit 5
 ```
 
-## 2. npm — publish
+Use a new version for each npm release. An already published name and version cannot be overwritten, including a README-only update. Check the diff and keep local infrastructure files and unrelated work out of the release.
+
+Update `CHANGELOG.md` for the new release, then bump the appropriate version without creating a commit or tag yet:
 
 ```powershell
-npm login            # browser/OTP — authorizes this machine
-npm publish          # prepublishOnly rebuilds the CSS, then publishes farvist@0.5.0 (public)
+npm version patch --no-git-tag-version
 ```
 
-The package is unscoped, so it publishes **publicly** by default. After this:
-- README badges (npm version, bundlephobia min-zip) resolve.
-- CDN goes live: `https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css`
+Use `minor` or `major` when appropriate. This updates `package.json` and `package-lock.json`. Update exact-version install examples to the intended release and keep the CSS and JavaScript examples on the same version.
 
-## 3. Tag the release on GitHub
+## 2. Build and validate
 
-```powershell
-git tag v0.5.0
-git push origin v0.5.0
-gh release create v0.5.0 --title "Farvist v0.5.0" --generate-notes
-```
-
-## 4. After publishing
-
-- **Google Search Console:** add `farvist.com`, then submit `https://farvist.com/sitemap.xml`.
-- Verify the CDN link loads, then update any docs that say "once published".
-- Fire the launch posts from [`LAUNCH_SHOW_HN.md`](LAUNCH_SHOW_HN.md) (record the GIF first).
-
----
-
-## Releasing future versions
+Use Node.js 20 to match `.github/workflows/ci.yml`.
 
 ```powershell
-# bump version in package.json + add a CHANGELOG entry, then:
+npm ci
 npm run build:all
-git add . ; git commit -m "Farvist vX.Y.Z"
-git tag vX.Y.Z ; git push ; git push --tags
-npm publish
-gh release create vX.Y.Z --generate-notes
+npm run lint
+npm run check:size
+npm run check:theming
+npm run check:skins
+npm run check:sass-api
+npm run check:privacy
+npm run check:ai-contrast
+npm run check:text-contrast
+npm run check:nested-glass
+npm run check:forced-colors
+npm run check:cdn-pins
+npm run check:validator
+npm run check:prompt-grow
 ```
 
-(`npm version patch|minor|major` can do the bump + tag + commit in one step if you prefer.)
+For the accessibility scan, run `npx serve -l 4000 .` in one terminal and `npx pa11y-ci` in another. Also check the changed pages in a browser at desktop and mobile widths, including light and dark themes and any changed interactions.
+
+`build:all` produces the CSS builds, AI compatibility CSS, catalog and agent reference files. Review and commit the generated changes with their sources. Do not edit generated files by hand. Repeating the build should leave those outputs unchanged.
+
+## 3. Inspect the npm package
+
+```powershell
+npm pack --dry-run --ignore-scripts
+git diff --check
+git diff --stat
+git status --short
+```
+
+The `files` list in `package.json` controls the package contents. It includes `scss/`, `dist/`, selected `assets/`, the validator CLI in `bin/`, agent skills and rules, and the text/JSON reference files. npm also includes the package metadata, README and MIT license. The website's HTML pages and templates are served from the website and repository, not included as templates in the npm package.
+
+Check that all documented CSS and JavaScript entry points are present, while source maps, `assets/notify.js`, local infrastructure and credentials are absent. `--ignore-scripts` is intentional here: inspect the artifacts that were already built and tested in the previous step.
+
+## 4. Commit, publish and tag
+
+Stage the reviewed release files explicitly, create a release commit, and push the release branch through the repository's normal review process. Commit messages should include an emoji, for example `📦 Release Farvist vX.Y.Z`. Require the [CI workflow](https://github.com/FloKuersten/farvist/actions/workflows/ci.yml) to pass on the commit being released; it also checks that committed build outputs are fresh.
+
+From that verified commit, with npm authentication configured:
+
+```powershell
+npm publish
+```
+
+The package is unscoped and publicly published. `prepublishOnly` runs `build:all`; it does not run the other quality gates. Confirm npm accepted the intended version before creating its GitHub release:
+
+```powershell
+$releaseVersion = node -p "require('./package.json').version"
+npm view "farvist@$releaseVersion" version dist.integrity --json
+git tag "v$releaseVersion"
+git push origin "v$releaseVersion"
+gh release create "v$releaseVersion" --repo FloKuersten/farvist --verify-tag --title "Farvist v$releaseVersion" --notes-file release-notes.md
+```
+
+Prepare `release-notes.md` from the reviewed changelog entry before running the final command. Describe the release's actual behavior and validation. Update the GitHub About description if the product description or component count changed.
+
+## 5. Verify npm, CDN and website separately
+
+- Confirm the npm `latest` tag points to the intended stable release.
+- Load the exact-version CSS and JavaScript URLs used by the install examples from jsDelivr, and confirm the installed CLI reports the expected version with `npx --yes farvist@X.Y.Z --version`.
+- Install the published package into a temporary consumer project and verify the documented imports and Sass customization example.
+- Deploy the website using the existing infrastructure, then check the live homepage, docs and changed templates. A Git push or npm publication does not deploy the website.
+
+There is no publish or deploy job in the checked-in GitHub workflow. `npm run deploy` refers to the maintainer's local `deploy.ps1`, which is intentionally git-ignored. A fresh clone needs that existing deployment setup before the command can work; keep it and its private infrastructure details out of the public repository.

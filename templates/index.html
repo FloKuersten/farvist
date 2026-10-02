@@ -45,13 +45,14 @@
 <body class="bg-mesh-nebula">
   <a class="skip-link" href="#main">Skip to templates</a>
 
-  <nav class="navbar sticky-top">
+  <nav class="navbar sticky-top" aria-label="Main navigation">
     <a class="navbar-brand" href="/"><span class="text-gradient">◆ Farvist</span></a>
-    <ul class="navbar-nav" role="list">
+    <button class="navbar-toggle" type="button" data-fv-nav-toggle aria-controls="nav-primary" aria-expanded="false" aria-label="Toggle menu"><span class="navbar-toggle-icon"></span></button>
+    <ul class="navbar-nav" id="nav-primary" role="list">
       <li><a class="nav-link active" href="/templates/" aria-current="page">Templates</a></li>
       <li><a class="nav-link" href="/blog/">Blog</a></li>
       <li><a class="nav-link" href="/docs/">Docs</a></li>
-      <li><button class="btn btn-glass btn-sm" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
+      <li><button class="btn btn-glass btn-sm" type="button" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button></li>
     </ul>
   </nav>
 
