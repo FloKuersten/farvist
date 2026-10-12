@@ -94,12 +94,30 @@ failing tests and one passing text-rendering test (plus one platform skip).
 After implementation and additional filesystem/modal cases, all 17 applicable
 Windows tests pass. Clipboard results use controlled browser API responses;
 they do not claim that an operating-system clipboard permission prompt was
-exercised. The POSIX device/FIFO cases require the Linux CI run.
+exercised. The POSIX device/FIFO cases are covered by the Linux CI run below.
 
 The existing Pa11y configuration excludes axe's `color-contrast` rule for
 translucent/gradient surfaces; the separate contrast gates above cover the
 configured measurements. Passing these checks is not a full WCAG certification.
 
-Remote Linux/Node 24 CI has not yet completed for these changes. Its result will
-be recorded with the pull request; the local Windows run does not prove the
-two POSIX-only regression cases.
+## Linux CI evidence
+
+[CI run 38205249854](https://github.com/FloKuersten/farvist/actions/runs/38205249854)
+passed for source commit `dd3c2b5efe19440be0aee13b74da462eca9cbf20` on Ubuntu
+24.04, Node.js **24.21.0**, and npm **11.19.0**. It confirms:
+
+- **19/19 safety regressions pass, no skips**, including device-file rejection
+  and FIFO rejection without waiting for a writer.
+- Clean dependency installation, zero runtime dependency advisories, full build,
+  generated-artifact freshness, lint, and every configured quality gate pass.
+- The same 44 AI-text and 910 coloured-text contrast measurements pass.
+- **27/27 Pa11y URLs pass** with zero reported errors under the existing rule configuration.
+
+The safety step uses the runner's installed Google Chrome with sandboxing
+enabled. This avoids the downloaded Chrome for Testing binary's
+[Ubuntu AppArmor namespace restriction](https://pptr.dev/troubleshooting#issues-with-apparmor-on-ubuntu)
+without adding `--no-sandbox` to the new regression suite. Existing rendering
+checks retain their previous browser configuration.
+
+The final documentation update adds this evidence; it does not change the
+application, dependency lockfile, test code, or workflow validated by that run.
