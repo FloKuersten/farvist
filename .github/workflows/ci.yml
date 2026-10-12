@@ -31,6 +31,10 @@ jobs:
         run: npm audit --omit=dev --audit-level=low
 
       - name: CLI and browser safety regressions
+        # The runner's installed Chrome has an AppArmor profile permitting its
+        # sandbox. Downloaded Chrome for Testing does not on Ubuntu 24.04.
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /opt/google/chrome/chrome
         run: npm run check:safety
 
       - name: Build (sass + autoprefixer + ai-context)
