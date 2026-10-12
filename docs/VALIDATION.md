@@ -8,7 +8,7 @@ The changes improve command activation, clipboard feedback, CLI input handling,
 development dependencies, and CI permissions. Local validation passed the build
 and quality checks listed below. The full development dependency audit still
 reports an unresolved upstream advisory; this is not a clean security audit.
-No npm release or production deployment is included in this validation.
+Publication is verified separately from these tests. No production website deployment is covered by this report.
 
 ## Verified changes
 
@@ -121,3 +121,27 @@ checks retain their previous browser configuration.
 
 The final documentation update adds this evidence; it does not change the
 application, dependency lockfile, test code, or workflow validated by that run.
+
+## v1.8.2 release validation
+
+On 2026-10-12, the version bump, exact-version examples and generated references
+were rebuilt and validated locally on Windows (Node.js 25.8.1, npm 11.11.0):
+
+- Clean `npm ci`, `build:all`, and a second build with identical tracked outputs.
+- All 14 lint/quality gates pass, including 17 applicable safety tests; the two
+  POSIX-only cases remain covered by Linux CI.
+- Pa11y passes all 27 configured URLs. The contrast exclusions above still apply.
+- Runtime dependency audit reports zero vulnerabilities. The development-only
+  `braces` advisory described above remains unresolved.
+- The 98-file npm tarball installs in a separate consumer directory. Its CLI
+  reports 1.8.2 and validates the homepage and template index (993 class uses,
+  zero errors/warnings, complete scan). All three packaged Sass entry points
+  compile with a custom primary colour; documented CSS files are present.
+- CSS gzip sizes remain 21.3/19.2/6.6 KiB (full/slim/AI); optional JavaScript is
+  9.8 KiB gzip. No excluded site assets, development scripts or dependencies
+  appear in the tarball.
+
+The initial sandboxed browser attempt was blocked by Windows process access;
+the same browser gates passed when rerun with the required process access.
+Release CI and publication status are available on PR #4 and the v1.8.2 GitHub
+release; the Linux run cited above records the original safety implementation.

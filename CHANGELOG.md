@@ -2,6 +2,19 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.8.2] — 2026-10-12
+
+### Safety fixes
+- Command palettes skip disabled, hidden and inert commands, and recheck availability before activation.
+- Clipboard helpers report success only when copying succeeds, return `Promise<boolean>`, and keep fallback copying within an active modal.
+- The validator rejects missing option values, oversized files and non-regular files. Empty or incomplete scans exit with status 2 and report `complete: false`; automatic CSS discovery reads only relative paths.
+- Updated development dependencies remove eight affected dependency entries. Runtime dependency audits are clean; ten development entries remain affected by the unpatched `braces` advisory GHSA-vfj7-8cjw-p6xm.
+
+### Validation
+- Added 19 safety regression tests covering command activation, clipboard failures, bounded reads and incomplete scans.
+- CI uses Node.js 24, pinned actions, read-only permissions and a runtime dependency audit gate.
+- See `docs/VALIDATION.md` for measured results, CI evidence and remaining limitations.
+
 ## [1.8.1] — 2026-09-17
 **Quality patch.** An adversarial review of 1.8.0 confirmed 20 defects. Four were regressions that 1.8.0 introduced, several were 1.8.0 fixes that only held in the cases its gates happened to test, and some were claims in the 1.8.0 notes that were not true. Each was reproduced before fixing. Each fix below has a gate, and each gate was run against 1.8.0 and fails there.
 ### Fixed — regressions in 1.8.0
