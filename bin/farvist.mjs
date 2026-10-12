@@ -21,12 +21,13 @@
 // Honest scope: class names and a few documented pitfalls. It does not judge
 // visual design or accessibility. Zero dependencies; Node 18+.
 // =============================================================================
-import { readFileSync, readdirSync, statSync, realpathSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, realpathSync, openSync, fstatSync, readSync, closeSync, constants } from 'node:fs';
 import { join, extname, relative, dirname, resolve, basename } from 'node:path';
 
 const MANIFEST_URL = new URL('../dist/farvist.classes.json', import.meta.url);
 const EXTS = new Set(['.html', '.htm', '.jsx', '.tsx', '.vue', '.svelte', '.astro']);
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'build', '.next', '.nuxt', '.svelte-kit', 'coverage']);
+const MAX_INPUT_BYTES = 5_000_000;
 
 // Common Tailwind idioms agents carry over, mapped to the Farvist equivalent.
 const TAILWIND_HINTS = {
@@ -56,7 +57,9 @@ Options:
   -h, --help             Show this help
   -v, --version          Show the Farvist version the manifest was built from
 
-Exit code: 1 if any error was found, 0 otherwise.`;
+Inputs must be regular files no larger than 5 MB each.
+Exit codes: 0 = complete scan without errors; 1 = markup errors;
+            2 = invalid arguments or incomplete scan (skipped/no input files).`;
 }
 
 // ---- args -------------------------------------------------------------------
@@ -71,16 +74,23 @@ if (!argv.length || argv[0] === '-h' || argv[0] === '--help' || argv[0] !== 'che
   process.exit(argv[0] === 'check' || !argv.length || argv[0] === '-h' || argv[0] === '--help' ? 0 : 1);
 }
 const opts = { build: null, css: [], ignore: [], json: false, samples: false, paths: [] };
+function optionValue(option, value) {
+  if (!value || value.startsWith('-')) {
+    console.error(`farvist check: ${option} requires a value`);
+    process.exit(2);
+  }
+  return value;
+}
 for (let i = 1; i < argv.length; i++) {
   const a = argv[i];
   if (a === '--json') opts.json = true;
   else if (a === '--samples') opts.samples = true;
-  else if (a === '--build') opts.build = argv[++i];
-  else if (a.startsWith('--build=')) opts.build = a.slice(8);
-  else if (a === '--css') opts.css.push(argv[++i]);
-  else if (a.startsWith('--css=')) opts.css.push(a.slice(6));
-  else if (a === '--ignore') opts.ignore.push(...String(argv[++i] || '').split(',').filter(Boolean));
-  else if (a.startsWith('--ignore=')) opts.ignore.push(...a.slice(9).split(',').filter(Boolean));
+  else if (a === '--build') opts.build = optionValue(a, argv[++i]);
+  else if (a.startsWith('--build=')) opts.build = optionValue('--build', a.slice(8));
+  else if (a === '--css') opts.css.push(optionValue(a, argv[++i]));
+  else if (a.startsWith('--css=')) opts.css.push(optionValue('--css', a.slice(6)));
+  else if (a === '--ignore') opts.ignore.push(...optionValue(a, argv[++i]).split(',').filter(Boolean));
+  else if (a.startsWith('--ignore=')) opts.ignore.push(...optionValue('--ignore', a.slice(9)).split(',').filter(Boolean));
   else if (a === '-h' || a === '--help') { console.log(usage()); process.exit(0); }
   else if (a.startsWith('-')) { console.error(`farvist check: unknown option ${a}\n\n${usage()}`); process.exit(2); }
   else opts.paths.push(a);
@@ -124,8 +134,31 @@ function classesFromCss(css) {
   return out;
 }
 const USER_CSS = new Set();
+// Bound actual reads as well as the initial size check, so a growing file
+// cannot exhaust memory. O_NONBLOCK avoids waiting for a writer on a POSIX FIFO;
+// fstat rejects devices/pipes and checks the opened file rather than a stale path.
+function readInput(file) {
+  const fd = openSync(file, constants.O_RDONLY | (constants.O_NONBLOCK || 0));
+  try {
+    const st = fstatSync(fd);
+    if (!st.isFile()) throw Object.assign(new Error('input is not a regular file'), { code: 'ENOTFILE' });
+    const tooLarge = () => Object.assign(new Error('input exceeds the 5 MB (5,000,000 bytes) limit'), { code: 'EFBIG' });
+    if (st.size > MAX_INPUT_BYTES) throw tooLarge();
+    const chunks = [];
+    let size = 0;
+    while (true) {
+      const chunk = Buffer.allocUnsafe(Math.min(65536, MAX_INPUT_BYTES - size + 1));
+      const count = readSync(fd, chunk, 0, chunk.length, null);
+      if (!count) break;
+      size += count;
+      if (size > MAX_INPUT_BYTES) throw tooLarge();
+      chunks.push(chunk.subarray(0, count));
+    }
+    return Buffer.concat(chunks, size).toString('utf8');
+  } finally { closeSync(fd); }
+}
 for (const f of opts.css) {
-  try { for (const c of classesFromCss(readFileSync(f, 'utf8'))) USER_CSS.add(c); }
+  try { for (const c of classesFromCss(readInput(f))) USER_CSS.add(c); }
   catch (e) { console.error(`farvist check: cannot read --css ${f}: ${e.message}`); process.exit(2); }
 }
 
@@ -174,9 +207,13 @@ function collect(p, acc, top = true) {
       let cst;
       try { cst = statSync(child); } catch (err) { skipped.push({ path: child, reason: err.code || err.message }); continue; }
       if (cst.isDirectory()) collect(child, acc, false);
-      else if (EXTS.has(extname(e).toLowerCase())) acc.push(child);
+      else if (EXTS.has(extname(e).toLowerCase())) {
+        if (cst.isFile()) acc.push(child);
+        else skipped.push({ path: child, reason: 'ENOTFILE' });
+      }
     }
-  } else acc.push(p);
+  } else if (st.isFile()) acc.push(p);
+  else skipped.push({ path: p, reason: 'ENOTFILE' });
   return acc;
 }
 const files = [...new Set(opts.paths.flatMap((p) => collect(p, [])))];
@@ -200,13 +237,20 @@ function linkedSheetClasses(text, file) {
     ...[...text.matchAll(/\bimport\s+(?:[\w{}\s,*]+\s+from\s+)?["']([^"']+\.css)["']/g)].map((m) => m[1]),
   ];
   for (const ref of refs) {
-    if (!ref || /^(?:[a-z]+:)?\/\//i.test(ref) || ref.startsWith('/') || ref.startsWith('data:')) continue;
+    // Only relative references: never implicitly open URL schemes, drive paths,
+    // or UNC/network shares supplied by the markup. --css remains explicit.
+    if (!ref || /^(?:[a-z][a-z\d+.-]*:|[\\/])/i.test(ref)) continue;
     const clean = ref.split(/[?#]/)[0];
     if (!clean.endsWith('.css') || /^farvist/i.test(basename(clean))) continue;
     const abs = resolve(dirname(file), clean);
     if (!sheetCache.has(abs)) {
       let classes = null;
-      try { if (statSync(abs).size <= 5e6) classes = classesFromCss(readFileSync(abs, 'utf8')); } catch { /* not on disk: nothing to learn */ }
+      try { classes = classesFromCss(readInput(abs)); }
+      catch (e) {
+        // Missing stylesheets may be generated by the application's bundler.
+        // An existing but unreadable/unsafe stylesheet makes the scan incomplete.
+        if (e.code !== 'ENOENT' && e.code !== 'ENOTDIR') skipped.push({ path: abs, reason: e.code || e.message });
+      }
       sheetCache.set(abs, classes);
     }
     for (const c of sheetCache.get(abs) || []) out.add(c);
@@ -228,7 +272,7 @@ let errors = 0, warnings = 0, checkedClasses = 0, dynamicAttrs = 0;
 
 for (const file of files) {
   let raw;
-  try { raw = readFileSync(file, 'utf8'); }
+  try { raw = readInput(file); }
   catch (e) { skipped.push({ path: file, reason: e.code || e.message }); continue; }
   const text = stripComments(raw, extname(file).toLowerCase());
   const problems = [];
@@ -302,8 +346,9 @@ for (const file of files) {
 }
 
 // ---- output -----------------------------------------------------------------
+const complete = skipped.length === 0 && report.length > 0;
 if (opts.json) {
-  console.log(JSON.stringify({ version: manifest.version, summary: { files: report.length, checkedClasses, errors, warnings, dynamicAttrs, skipped: skipped.length }, files: report, skipped }, null, 2));
+  console.log(JSON.stringify({ version: manifest.version, summary: { files: report.length, checkedClasses, errors, warnings, dynamicAttrs, skipped: skipped.length, complete }, files: report, skipped }, null, 2));
 } else {
   for (const r of report) {
     if (!r.problems.length) continue;
@@ -315,6 +360,7 @@ if (opts.json) {
   const summary = `${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'} — ${checkedClasses} Farvist class use${checkedClasses === 1 ? '' : 's'} checked in ${report.length} file${report.length === 1 ? '' : 's'} (Farvist ${manifest.version})`;
   const dyn = dynamicAttrs ? `\n  note: ${dynamicAttrs} dynamic class expression${dynamicAttrs === 1 ? '' : 's'} not checked` : '';
   const skip = skipped.length ? `\n  note: ${skipped.length} unreadable path${skipped.length === 1 ? '' : 's'} skipped: ${skipped.slice(0, 3).map((x) => `${relative(process.cwd(), x.path) || x.path} (${x.reason})`).join(', ')}${skipped.length > 3 ? ', …' : ''}` : '';
-  console.log(`\n${errors ? '✖' : '✔'} ${summary}${dyn}${skip}`);
+  const incomplete = complete ? '' : '\n  validation incomplete: no files checked or input paths could not be read safely';
+  console.log(`\n${errors || !complete ? '✖' : '✔'} ${summary}${dyn}${skip}${incomplete}`);
 }
-process.exit(errors ? 1 : 0);
+process.exit(!complete ? 2 : errors ? 1 : 0);

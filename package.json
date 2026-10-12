@@ -74,11 +74,15 @@
     "build:agent": "node scripts/gen-agent-files.mjs",
     "check:validator": "node scripts/check-validator.mjs",
     "check:prompt-grow": "node scripts/check-prompt-grow.mjs",
-    "check:forced-colors": "node scripts/check-forced-colors.mjs"
+    "check:forced-colors": "node scripts/check-forced-colors.mjs",
+    "check:safety": "node --test --test-timeout=120000 scripts/check-safety.mjs"
   },
   "overrides": {
     "brace-expansion": "^5.0.12",
-    "puppeteer": "$puppeteer"
+    "puppeteer": "$puppeteer",
+    "serve": {
+      "compression": "^1.8.2"
+    }
   },
   "browserslist": [
     "chrome >= 111",
@@ -91,7 +95,7 @@
     "autoprefixer": "^10.5.2",
     "pa11y-ci": "^4.1.1",
     "postcss": "^8.5.15",
-    "postcss-cli": "^11.0.1",
+    "postcss-cli": "^12.0.0",
     "puppeteer": "^25.11.0",
     "sass": "^1.83.0",
     "serve": "^14.2.6",
