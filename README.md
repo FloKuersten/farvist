@@ -59,8 +59,8 @@ Save this as `index.html` and open it in a browser. The CSS and optional script 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My first Farvist page</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1.8.1/dist/farvist.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/farvist@1.8.1/assets/farvist.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1.8.2/dist/farvist.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/farvist@1.8.2/assets/farvist.js" defer></script>
   </head>
   <body>
     <main class="container py-5">
@@ -79,7 +79,7 @@ Save this as `index.html` and open it in a browser. The CSS and optional script 
 </html>
 ```
 
-Remove the script if you only need styles. `farvist@1.8.1` stays on this release; `farvist@1` follows updates within major version 1. Use an exact version when you want to review updates before adopting them.
+Remove the script if you only need styles. `farvist@1.8.2` stays on this release; `farvist@1` follows updates within major version 1. Use an exact version when you want to review updates before adopting them.
 
 ### Choose your build
 
@@ -91,7 +91,7 @@ Choose one main stylesheet for your page. Shared components use the same class n
 | A site without chat or agent interfaces | `farvist-slim.min.css` — full framework minus the 11 AI components | 19.2 KB |
 | An existing site adding chat or agent interfaces | `farvist-ai.min.css` — AI kit plus supporting buttons, avatars, icons and toasts | 6.6 KB |
 
-Measured from the v1.8.1 files using gzip (1 KB = 1,024 bytes). The optional JavaScript is 9.3 KB gzip and has no runtime dependencies. Run `npm run check:size` in a repository checkout to check the CSS sizes and budgets.
+Measured from the v1.8.2 files using gzip (1 KB = 1,024 bytes). The optional JavaScript is 9.8 KB gzip and has no runtime dependencies. Run `npm run check:size` in a repository checkout to check the CSS sizes and budgets.
 
 **Adding the AI kit to an existing framework:** keep your host's reset, layout and utilities. The kit assumes `box-sizing: border-box` and a 16px root font size. On a light page, wrap its UI in `data-theme="light"`. Bootstrap and Tailwind v3 also need `farvist-ai-compat.css` (1.2 KB gzip) after the host stylesheet and AI kit; Tailwind v4's layered preflight needs no compat file. [Integration example](https://farvist.com/examples/ai-addon.html).
 
@@ -371,7 +371,7 @@ It wires modals (`data-fv-open="#id"` / `data-fv-dismiss`), tabs (`data-fv-tab`)
 
 ```js
 Farvist.toast({ title: 'Saved', message: 'All good.', variant: 'success', timeout: 4000 });
-Farvist.copy('text');                    // clipboard with success feedback
+await Farvist.copy('text');              // true only when copying succeeds
 Farvist.theme('synthwave');              // apply + persist a skin
 Farvist.command('#cmd');                 // open a command palette
 await Farvist.stream(el, 'streamed…');   // type text with the caret (reduced-motion safe)
@@ -379,6 +379,8 @@ Farvist.enhance();                       // re-wire ARIA after injecting DOM
 ```
 
 Everything else (accordion, dropdown, tooltip, switch, progress…) is pure CSS and needs no JS.
+
+Command items with `aria-disabled="true"`, `disabled`, `hidden`, or an inert ancestor cannot activate by mouse or keyboard. This is a UI guard; applications must still authorize actions in their own handlers and backend. Clipboard failures return `false` and display failure feedback rather than claiming the text was copied.
 
 ### Layout
 
@@ -417,6 +419,10 @@ npx farvist check index.html src/
 ```
 
 It reports unknown or misspelled classes with a suggestion (`flex` → `d-flex`, `btn-glas` → `btn-glass`), classes missing from the page's build (the AI kit on a `farvist-slim` page), icon sprites loaded cross-origin, unpinned or `@latest` CDN URLs, and `farvist-ai` on a Bootstrap page without the compat file. `--json` for agents; exit code 1 on errors. Your own classes aren't flagged: `<style>` blocks and stylesheets a page links or imports by relative path are read automatically, and `--css src/styles.css` adds CSS that arrives another way (a bundle, a global file). On a `farvist-ai` page only the kit's class families are checked, so the host's Bootstrap or Tailwind classes are left alone. It checks class names and those pitfalls only, not visual design or full accessibility.
+
+The validator exits with `0` for a complete scan without errors, `1` for markup errors, and `2` for invalid arguments or an incomplete scan. Empty scans and unreadable inputs cannot pass; JSON output includes `summary.complete`. Each markup or CSS input is limited to 5 MB. Automatically discovered stylesheets must use relative paths; missing generated stylesheets remain optional. This is a markup check, not a sandbox for untrusted repositories.
+
+See the [validation report](docs/VALIDATION.md) for the tested scope and remaining dependency advisories.
 
 **3. Project rules and raw context:**
 

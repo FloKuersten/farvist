@@ -141,7 +141,7 @@
 
     // Command-palette item clicked → activate it.
     var cmdItem = t.closest('.command-item');
-    if (cmdItem) { runCommand(cmdItem); return; }
+    if (cmdItem) { e.preventDefault(); runCommand(cmdItem); return; }
 
     var tab = t.closest('[data-fv-tab]');
     if (tab) activateTab(tab);
@@ -244,7 +244,10 @@
 
   // ---- Command palette (⌘K) ----
   var cmdId = 0;
-  function cmdItems(dialog) { return qsa('.command-item', dialog).filter(function (el) { return !el.hidden; }); }
+  function cmdEnabled(item) {
+    return !item.matches(':disabled, [disabled]') && !item.closest('[hidden], [inert], [aria-disabled="true"]');
+  }
+  function cmdItems(dialog) { return qsa('.command-item', dialog).filter(cmdEnabled); }
 
   function cmdSetActive(dialog, item) {
     qsa('.command-item.is-active', dialog).forEach(function (el) {
@@ -284,6 +287,9 @@
   }
 
   function runCommand(item) {
+    // Check again at activation: an action can become unavailable after it was
+    // selected, and click activation must obey the same rule as the keyboard.
+    if (!cmdEnabled(item)) return;
     var dialog = item.closest('dialog.command');
     var val = item.getAttribute('data-fv-command');
     if (dialog) dialog.close();
@@ -569,16 +575,48 @@
         }, 1600);
       }
     }
+    function failed() {
+      if (btn) {
+        var label = btn.getAttribute('aria-label'), original = btn.textContent;
+        btn.classList.remove('is-copied');
+        btn.setAttribute('aria-live', 'polite');
+        btn.setAttribute('aria-label', 'Copy failed');
+        if (btn.classList.contains('copy-btn')) btn.textContent = 'Copy failed';
+        setTimeout(function () {
+          if (label === null) btn.removeAttribute('aria-label');
+          else btn.setAttribute('aria-label', label);
+          if (btn.classList.contains('copy-btn')) btn.textContent = original;
+        }, 1600);
+      }
+      toast({ message: 'Copy failed. Select the text and copy it manually.', variant: 'warning' });
+      return false;
+    }
+    function fallback() {
+      if (!legacyCopy(text)) return failed();
+      ok();
+      return true;
+    }
+    // Always return a result, including synchronous permission/API failures.
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(ok, function () { legacyCopy(text); ok(); });
-    } else { legacyCopy(text); ok(); }
+      return Promise.resolve().then(function () { return navigator.clipboard.writeText(text); })
+        .then(function () { ok(); return true; }, fallback);
+    }
+    return Promise.resolve(fallback());
   }
   function legacyCopy(text) {
     var ta = document.createElement('textarea');
+    var active = document.activeElement;
+    // Content outside an open modal is inert, including a temporary textarea.
+    var host = active && active.closest('dialog[open]') || document.body;
     ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); } catch (e) {}
-    ta.remove();
+    try {
+      host.appendChild(ta); ta.select();
+      return document.execCommand('copy') === true;
+    } catch (e) { return false; }
+    finally {
+      ta.remove();
+      if (active && active.isConnected) active.focus({ preventScroll: true });
+    }
   }
 
   // ---- Toasts ----

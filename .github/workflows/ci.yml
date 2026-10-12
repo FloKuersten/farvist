@@ -6,20 +6,36 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   quality:
     name: Quality gates
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          node-version: 20
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
           cache: npm
 
       - name: Install
         run: npm ci
+
+      - name: Published runtime dependency audit
+        run: npm audit --omit=dev --audit-level=low
+
+      - name: CLI and browser safety regressions
+        # The runner's installed Chrome has an AppArmor profile permitting its
+        # sandbox. Downloaded Chrome for Testing does not on Ubuntu 24.04.
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /opt/google/chrome/chrome
+        run: npm run check:safety
 
       - name: Build (sass + autoprefixer + ai-context)
         # Delete generated files first so an orphaned dist file (entry renamed

@@ -4,13 +4,18 @@ Thanks for your interest! Farvist is MIT-licensed and contributions are welcome.
 
 ## Getting set up
 
+Use Node.js 24 for repository development and validation (including Puppeteer and PostCSS CLI). The dependency-free published markup CLI continues to target Node.js 18+.
+
 ```bash
-npm install      # Dart Sass
+npm ci           # locked development dependencies
 npm run dev      # all three builds (full/slim/ai), expanded + minified + prefixed,
                  # plus farvist-ai-compat.css and the AI catalog. Never hand-edit
                  # dist/, ai-context.json or llms-full.txt — they are generated.
 npm run watch    # rebuild on save
+npm run check:safety  # CLI input handling, disabled actions, clipboard and text rendering
 ```
+
+The CI workflow runs the full quality suite and a production dependency audit. Run `npm audit` separately to review development-tool advisories; the [validation report](docs/VALIDATION.md) records known unresolved findings. Keep the `serve` compression override until its pinned dependency includes the upstream fix.
 
 ## Project layout
 

@@ -22,7 +22,7 @@ Use `minor` or `major` when appropriate. This updates `package.json` and `packag
 
 ## 2. Build and validate
 
-Use Node.js 20 to match `.github/workflows/ci.yml`.
+Use Node.js 24 to match `.github/workflows/ci.yml`.
 
 ```powershell
 npm ci
@@ -40,6 +40,7 @@ npm run check:forced-colors
 npm run check:cdn-pins
 npm run check:validator
 npm run check:prompt-grow
+npm run check:safety
 ```
 
 For the accessibility scan, run `npx serve -l 4000 .` in one terminal and `npx pa11y-ci` in another. Also check the changed pages in a browser at desktop and mobile widths, including light and dark themes and any changed interactions.

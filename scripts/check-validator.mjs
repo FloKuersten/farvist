@@ -130,7 +130,8 @@ try {
   rmSync(join(tmp, 'gone'), { recursive: true });
   symlinkSync(tmp, join(tmp, 'sub', 'loop'), 'junction');
   const r = run([tmp]);
-  if (r.code !== 1) failures.push(`symlinks: expected exit 1 (one typo), got ${r.code}`);
+  if (r.code !== 2) failures.push(`symlinks: expected exit 2 (incomplete scan), got ${r.code}`);
+  if (r.out.summary.complete !== false) failures.push('symlinks: broken link must make validation incomplete');
   if (r.out.summary.errors !== 1 || r.out.summary.files !== 1) failures.push(`symlinks: expected 1 error in 1 file, got ${r.out.summary.errors} in ${r.out.summary.files}`);
   if (!(r.out.summary.skipped >= 1)) failures.push(`symlinks: the broken link should be reported as skipped (got ${r.out.summary.skipped})`);
   linkNote = `; broken + looping symlinks skipped (${r.out.summary.skipped})`;
