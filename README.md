@@ -475,6 +475,10 @@ Farvist requires CSS cascade layers (`@layer`) and `color-mix()` for its styling
 
 Building from the SCSS source? Run Autoprefixer on your output, or use the prebuilt `dist/` files.
 
+## Security
+
+Found a vulnerability? Please report it privately — see [SECURITY.md](SECURITY.md). The published package has no runtime dependencies and `farvist.js` has no HTML sinks, so it runs under a strict CSP.
+
 ## License
 
 MIT — do whatever you like.

@@ -30,6 +30,9 @@ jobs:
       - name: Published runtime dependency audit
         run: npm audit --omit=dev --audit-level=low
 
+      - name: Development dependency audit (critical; the known high is tracked in docs/VALIDATION.md)
+        run: npm audit --audit-level=critical
+
       - name: CLI and browser safety regressions
         # The runner's installed Chrome has an AppArmor profile permitting its
         # sandbox. Downloaded Chrome for Testing does not on Ubuntu 24.04.

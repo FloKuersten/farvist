@@ -293,7 +293,11 @@
     var dialog = item.closest('dialog.command');
     var val = item.getAttribute('data-fv-command');
     if (dialog) dialog.close();
-    if (val && (val.charAt(0) === '/' || val.charAt(0) === '#' || /^https?:/.test(val))) {
+    // Navigate only for a same-origin path, a fragment, or an explicit http(s)
+    // URL. A protocol-relative "//host" (or "/\host") is NOT a path, so a
+    // data-fv-command value rendered from untrusted data cannot send the user
+    // off-site. Anything else is an app command and is dispatched as an event.
+    if (val && ((val.charAt(0) === '/' && val.charAt(1) !== '/' && val.charAt(1) !== '\\') || val.charAt(0) === '#' || /^https?:\/\//.test(val))) {
       window.location.href = val;
     } else if (dialog) {
       dialog.dispatchEvent(new CustomEvent('fv:command', { bubbles: true, detail: { value: val, item: item } }));
@@ -655,7 +659,7 @@
     var close = document.createElement('button');
     close.className = 'toast-close';
     close.setAttribute('aria-label', 'Close');
-    close.innerHTML = '&times;';
+    close.textContent = '\u00d7'; // "×" as text: no HTML sink anywhere in this file (strict CSP / Trusted Types safe)
 
     el.appendChild(body);
     el.appendChild(close);
@@ -717,18 +721,25 @@
   // ---- Skins / theme API ----
   // Farvist.theme('synthwave') applies a skin (any [data-theme] value) and
   // persists it; theme('dark') / theme() restores the default.
+  // A skin name is an identifier: a letter, then letters, digits, "_" or "-",
+  // at most 32 characters. Custom skins keep working; any other value (left in
+  // storage by another script or an extension) is ignored, never written into
+  // the document.
+  var THEME_NAME = /^[a-z][a-z0-9_-]{0,31}$/i;
   function theme(name) {
     var root = document.documentElement;
+    if (name && !THEME_NAME.test(name)) return;
     if (!name || name === 'dark' || name === 'default') root.removeAttribute('data-theme');
     else root.setAttribute('data-theme', name);
     try { localStorage.setItem('fv-theme', name || 'dark'); } catch (e) { /* private mode */ }
   }
 
   // Restore a persisted skin as early as this script runs. (For zero flash on
-  // slow pages, inline the same two lines in <head> — see the docs.)
+  // slow pages, inline the same lines in <head> — see the docs.) The stored
+  // value passes the same check as theme()'s argument before it is applied.
   try {
     var savedTheme = localStorage.getItem('fv-theme');
-    if (savedTheme && savedTheme !== 'dark') document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme && savedTheme !== 'dark' && THEME_NAME.test(savedTheme)) document.documentElement.setAttribute('data-theme', savedTheme);
   } catch (e) { /* private mode */ }
 
   // Public API. `Farvist` is the current name; `Farvistrap` kept as an alias.

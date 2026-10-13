@@ -1,0 +1,7 @@
+# Farvist security contact (RFC 9116)
+Contact: https://github.com/FloKuersten/farvist/security/advisories/new
+Contact: mailto:office@kuersten.dev
+Expires: 2027-10-01T00:00:00.000Z
+Preferred-Languages: en, de
+Canonical: https://farvist.com/.well-known/security.txt
+Policy: https://github.com/FloKuersten/farvist/blob/main/SECURITY.md

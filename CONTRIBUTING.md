@@ -41,4 +41,4 @@ Everything is generated from design tokens — change the maps, not the output.
 3. Add your entry to `CHANGELOG.md` under a new dated version heading (the file has no "Unreleased" section — every entry is a released version).
 4. Open a PR describing the change and the reasoning.
 
-Bug reports and feature ideas are equally welcome via Issues.
+Bug reports and feature ideas are equally welcome via Issues. Security problems are the exception: please use the private channels in [SECURITY.md](SECURITY.md) instead of a public issue.

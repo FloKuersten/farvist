@@ -60,31 +60,36 @@ The `files` list in `package.json` controls the package contents. It includes `s
 
 Check that all documented CSS and JavaScript entry points are present, while source maps, `assets/notify.js`, local infrastructure and credentials are absent. `--ignore-scripts` is intentional here: inspect the artifacts that were already built and tested in the previous step.
 
-## 4. Commit, publish and tag
+## 4. Commit, tag and publish
 
 Stage the reviewed release files explicitly, create a release commit, and push the release branch through the repository's normal review process. Commit messages should include an emoji, for example `📦 Release Farvist vX.Y.Z`. Require the [CI workflow](https://github.com/FloKuersten/farvist/actions/workflows/ci.yml) to pass on the commit being released; it also checks that committed build outputs are fresh.
 
-From that verified commit, with npm authentication configured:
+Publishing happens from GitHub Actions, not from a laptop. The [publish workflow](.github/workflows/publish.yml) runs when a GitHub release is published: it checks that the release tag matches `package.json`, that CI's "Quality gates" passed on the tagged commit and that the committed build outputs are fresh, then runs `npm publish` through npm trusted publishing (OIDC). No npm token exists anywhere, and every version gets a provenance attestation tying it to this repository, workflow and commit.
 
-```powershell
-npm publish
-```
-
-The package is unscoped and publicly published. `prepublishOnly` runs `build:all`; it does not run the other quality gates. Confirm npm accepted the intended version before creating its GitHub release:
+Prepare `release-notes.md` from the reviewed changelog entry, then tag the verified commit and create the release:
 
 ```powershell
 $releaseVersion = node -p "require('./package.json').version"
-npm view "farvist@$releaseVersion" version dist.integrity --json
 git tag "v$releaseVersion"
 git push origin "v$releaseVersion"
 gh release create "v$releaseVersion" --repo FloKuersten/farvist --verify-tag --title "Farvist v$releaseVersion" --notes-file release-notes.md
+gh run watch --repo FloKuersten/farvist
 ```
 
-Prepare `release-notes.md` from the reviewed changelog entry before running the final command. Describe the release's actual behavior and validation. Update the GitHub About description if the product description or component count changed.
+Describe the release's actual behavior and validation in the notes. Update the GitHub About description if the product description or component count changed.
+
+### One-time setup: trusted publishing on npm
+
+On npmjs.com open the `farvist` package → Settings → Trusted publishing → add a GitHub Actions publisher with owner `FloKuersten`, repository `farvist`, workflow filename `publish.yml` and no environment. Then, under Publishing access, choose "Require two-factor authentication and disallow tokens", so a leaked or phished token can no longer publish. Until the trusted publisher exists the workflow stops at the publish step with `ENEEDAUTH` and nothing is published.
+
+### Fallback: publish locally
+
+Only if the workflow is unavailable: from the verified commit, with npm 2FA, run `npm publish`, then confirm `npm view "farvist@$releaseVersion" version dist.integrity --json`. A locally published version carries no provenance. Creating the GitHub release afterwards is still safe: the workflow sees the version is already on npm and skips. `prepublishOnly` runs `build:all`; it does not run the other quality gates.
 
 ## 5. Verify npm, CDN and website separately
 
 - Confirm the npm `latest` tag points to the intended stable release.
+- Confirm provenance: `https://registry.npmjs.org/-/npm/v1/attestations/farvist@X.Y.Z` answers 200 and the npm package page shows the Provenance badge.
 - Load the exact-version CSS and JavaScript URLs used by the install examples from jsDelivr, and confirm the installed CLI reports the expected version with `npx --yes farvist@X.Y.Z --version`.
 - Install the published package into a temporary consumer project and verify the documented imports and Sass customization example.
 - Deploy the website using the existing infrastructure, then check the live homepage, docs and changed templates. A Git push or npm publication does not deploy the website.
