@@ -1,0 +1,35 @@
+# Dependabot version updates: weekly, grouped, for the npm dev dependencies and
+# the SHA-pinned GitHub Actions (Dependabot updates the SHA and its "# vX.Y.Z"
+# comment together). Dependabot *security* updates are a repository setting and
+# are enabled separately.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Vienna
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "deps"
+    labels: ["dependencies"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Vienna
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"
+    labels: ["dependencies"]
