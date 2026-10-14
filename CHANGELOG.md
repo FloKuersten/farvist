@@ -2,18 +2,25 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
-## [1.8.3] — 2026-10-13
+## [1.8.3] — 2026-10-14
 
 ### Security
 - `Farvist.theme()` and the start-up restore from `localStorage` accept only identifier-like skin names (a letter, then letters, digits, `_` or `-`, at most 32 characters). Any other stored value is ignored instead of being written into `data-theme`; custom skins keep working.
-- Command palette items whose `data-fv-command` starts with `//` or `/\` are no longer treated as same-origin paths. They dispatch `fv:command` like any other app command, so item data rendered from an untrusted source cannot redirect the page off-site. `#fragment`, `/path` and `http(s)://` values behave as before.
+- Command palette items whose `data-fv-command` starts with `//` or `/\` are no longer treated as same-origin paths. They dispatch `fv:command` like any other app command, so protocol-relative destinations cannot trigger navigation. `#fragment`, `/path` and `http(s)://` values remain supported.
+- Command destinations also reject embedded control characters, which browsers can strip to turn a local-looking path into a protocol-relative URL. Local paths are parsed and checked against the current origin before navigation. Explicit HTTP(S) destinations remain supported.
 - The toast close button's `×` is a text node. `assets/farvist.js` now contains no `innerHTML` or other HTML sink and runs under a strict Content Security Policy or Trusted Types.
-- `SECURITY.md` ships in the npm package; `https://farvist.com/.well-known/security.txt` lists the reporting contacts.
+- `SECURITY.md` ships in the npm package; `.well-known/security.txt` provides reporting contacts for website deployment.
 
 ### Repository
 - Dependabot (npm and GitHub Actions), CodeQL and dependency review run on the repository; CI also audits development dependencies at the critical level.
 - Releases publish from GitHub Actions through npm trusted publishing with provenance (`.github/workflows/publish.yml`). The workflow refuses to publish unless the release tag matches `package.json` and CI passed on the commit.
+- Manual publish retries also require a matching version tag. Publishing requires a successful main-branch run of `ci.yml` on that exact commit and publishes the already-verified tarball without rebuilding it during publication.
 - `docs/SECURITY-HEADERS.md` lists the response headers farvist.com should send, as nginx and Cloudflare configuration.
+
+### Validation and fixes
+- Five new browser regressions cover redirect normalization, allowed navigation, theme validation and restoration, and enforced Trusted Types.
+- Theme inputs reject non-string values instead of coercing them, and saved `dark` or `default` selections restore the default theme consistently.
+- See `docs/VALIDATION.md` for release checks and the remaining development-only `braces` advisory.
 
 ## [1.8.2] — 2026-10-12
 

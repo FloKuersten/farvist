@@ -126,13 +126,20 @@ test('CLI still validates normal input and reports markup errors', () => {
 });
 
 // Each browser test receives a fresh document; only the local companion is loaded.
-async function withPage(run) {
+async function withPage(run, beforeScript) {
   browser ||= await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   page.setDefaultTimeout(5000);
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   try {
+    // Give URL resolution and localStorage a real origin without making any
+    // network requests, including when a redirect regression is reproduced.
+    await page.setRequestInterception(true);
+    page.on('request', (request) => request.respond({
+      contentType: 'text/html', body: '<!doctype html><html><body></body></html>',
+    }));
+    await page.goto('https://farvist.test/');
     await page.setContent(`<!doctype html><html lang="en"><body>
       <dialog class="command" id="cmd">
         <input class="command-input" aria-label="Commands">
@@ -145,6 +152,7 @@ async function withPage(run) {
       <button class="copy-btn" id="copy" aria-label="Copy code" data-fv-copy="example">Copy</button>
       <div id="stream"></div>
     </body></html>`);
+    if (beforeScript) await beforeScript(page);
     await page.addScriptTag({ path: join(root, 'assets/farvist.js') });
     await page.evaluate(() => {
       window.commands = [];
@@ -213,6 +221,98 @@ test('an all-disabled palette has no active command', async () => {
     assert.equal(await page.$eval('.command-input', (el) => el.hasAttribute('aria-activedescendant')), false);
     await page.keyboard.press('Enter');
     assert.deepEqual(await page.evaluate(() => window.commands), []);
+  });
+});
+
+test('command destinations reject protocol-relative and control-obfuscated URLs', async () => {
+  await withPage(async (page) => {
+    const values = ['//example.invalid', '/\\example.invalid', '/\t/example.invalid',
+      '/\n/example.invalid', '/\r\\example.invalid', 'javascript:alert(1)', 'data:text/html,example'];
+    const expected = [];
+    for (const value of values) {
+      const result = await page.evaluate((value) => {
+        const item = document.querySelector('#first');
+        item.setAttribute('data-fv-command', value);
+        Farvist.command('#cmd');
+        item.click();
+        return { commands: window.commands, href: location.href };
+      }, value);
+      expected.push(value);
+      assert.deepEqual(result, { commands: expected, href: 'https://farvist.test/' }, JSON.stringify(value));
+    }
+  });
+});
+
+test('command destinations still allow fragments, local paths and explicit HTTP(S) URLs', async () => {
+  for (const [value, expected] of [
+    ['#section', 'https://farvist.test/#section'],
+    ['/docs/?from=command', 'https://farvist.test/docs/?from=command'],
+    ['https://example.invalid/docs', 'https://example.invalid/docs'],
+    ['http://example.invalid/docs', 'http://example.invalid/docs'],
+  ]) {
+    await withPage(async (page) => {
+      await page.evaluate((value) => {
+        document.querySelector('#first').setAttribute('data-fv-command', value);
+        Farvist.command('#cmd');
+      }, value);
+      await Promise.all([page.waitForNavigation(), page.click('#first')]);
+      assert.equal(page.url(), expected);
+    });
+  }
+});
+
+test('theme API validates the whole name and preserves the current theme on invalid input', async () => {
+  await withPage(async (page) => {
+    const result = await page.evaluate(() => {
+      Farvist.theme('Custom_skin-2');
+      const invalid = ['<img>', 'two words', '1skin', 'a'.repeat(33), 'forest\n', 'forest\r', 'forest\r\n', ['forest'], {}];
+      const rejected = invalid.map((value) => {
+        Farvist.theme(value);
+        return [document.documentElement.getAttribute('data-theme'), localStorage.getItem('fv-theme')];
+      });
+      Farvist.theme('default');
+      const reset = document.documentElement.hasAttribute('data-theme');
+      Farvist.theme('a'.repeat(32));
+      const longest = document.documentElement.getAttribute('data-theme');
+      Farvist.theme();
+      return { rejected, reset, longest, final: document.documentElement.hasAttribute('data-theme') };
+    });
+    assert.deepEqual(result.rejected, Array(9).fill(['Custom_skin-2', 'Custom_skin-2']));
+    assert.equal(result.reset, false);
+    assert.equal(result.longest, 'a'.repeat(32));
+    assert.equal(result.final, false);
+  });
+});
+
+test('stored themes use the same validation and default reset as the theme API', async () => {
+  for (const [saved, expected] of [['forest', 'forest'], ['brand_2', 'brand_2'],
+    ['forest\n', 'cyber'], ['<img>', 'cyber'], ['a'.repeat(33), 'cyber'], ['default', null], ['dark', null]]) {
+    await withPage(async (page) => {
+      assert.equal(await page.$eval('html', (el) => el.getAttribute('data-theme')), expected, JSON.stringify(saved));
+    }, async (page) => {
+      await page.evaluate((saved) => {
+        document.documentElement.setAttribute('data-theme', 'cyber');
+        localStorage.setItem('fv-theme', saved);
+      }, saved);
+    });
+  }
+});
+
+test('toasts render with Trusted Types enforcement enabled', async () => {
+  await withPage(async (page) => {
+    const result = await page.evaluate(() => {
+      const policy = document.createElement('meta');
+      policy.httpEquiv = 'Content-Security-Policy';
+      policy.content = "require-trusted-types-for 'script'; trusted-types 'none'";
+      document.head.appendChild(policy);
+      let enforced = false;
+      try { document.createElement('div').innerHTML = '<b>blocked</b>'; }
+      catch (error) { enforced = error instanceof TypeError; }
+      Farvist.toast({ message: '<b>literal</b>', timeout: 0 });
+      return { enforced, message: document.querySelector('.toast-message').textContent,
+        close: document.querySelector('.toast-close').textContent };
+    });
+    assert.deepEqual(result, { enforced: true, message: '<b>literal</b>', close: '×' });
   });
 });
 

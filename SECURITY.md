@@ -50,15 +50,16 @@ Out of scope:
   contains no `innerHTML` or other HTML sink, so it runs under a strict
   Content Security Policy and Trusted Types. Skin names read back from
   `localStorage` are validated before they touch the document.
-- The CLI opens regular files only, caps every read at 5 MB, resolves
-  stylesheets by relative path only and detects symlink loops
+- The CLI opens regular input files only, caps each input read at 5 MB,
+  automatically resolves relative stylesheets and detects symlink loops.
+  Explicit `--css` paths can also refer to absolute local files
   (`scripts/check-safety.mjs` keeps these behaviours under test).
 - Workflows run with a read-only token, pin every action to a commit SHA and do
   not persist checkout credentials. CodeQL runs on every push and weekly;
   Dependabot keeps actions and dev dependencies current; dependency review
   blocks pull requests that add a vulnerable package.
-- Releases publish from GitHub Actions through npm trusted publishing, so no
-  npm token exists and every version carries a provenance attestation
+- The release workflow uses npm trusted publishing without a long-lived npm
+  token. Releases published through that workflow carry a provenance attestation
   (see [PUBLISHING.md](PUBLISHING.md)).
 - Recommended response headers for farvist.com are documented in
   [docs/SECURITY-HEADERS.md](docs/SECURITY-HEADERS.md).
