@@ -2,6 +2,19 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { test } from 'node:test';
 import { predicateType, verifyProvenance, verifyRelease } from './verify-npm-release.mjs';
+import { stampSiteAssets } from './lib/site-assets.mjs';
+
+test('website assets receive the release version and regenerate idempotently', () => {
+  const original = '<link href="../dist/farvist-ai.min.css" rel="stylesheet"><script defer src="assets/farvist.js?v=1.8.3"></script>';
+  const stamped = stampSiteAssets(original, '1.8.4');
+  assert.equal(stamped, '<link href="../dist/farvist-ai.min.css?v=1.8.4" rel="stylesheet"><script defer src="assets/farvist.js?v=1.8.4"></script>');
+  assert.equal(stampSiteAssets(stamped, '1.8.4'), stamped);
+});
+test('website asset stamping leaves CDN URLs, documentation and unrelated files unchanged', () => {
+  const html = '<script src="https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js"></script>\n' +
+    '&lt;script src="assets/farvist.js"&gt;&lt;/script&gt;\n<link href="assets/home.css">';
+  assert.equal(stampSiteAssets(html, '1.8.4'), html);
+});
 
 const bytes = Buffer.from('verified release fixture');
 const expected = { name: 'farvist', version: '1.8.4', repository: 'FloKuersten/farvist',

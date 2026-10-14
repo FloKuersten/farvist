@@ -16,7 +16,9 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { classesFromCss } from './lib/css-classes.mjs';
+import { stampSiteAssets } from './lib/site-assets.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (f) => readFileSync(join(root, f), 'utf8');
@@ -224,5 +226,10 @@ for (const pattern of [
   stamped = stamped.replace(pattern, (_, before, after) => `${before}${V}${after}`);
 }
 write('index.html', stamped);
+
+// Browsers and the CDN may cache unversioned assets across a deployment.
+const sitePages = execFileSync('git', ['ls-files', '--', '*.html'], { cwd: root, encoding: 'utf8' })
+  .trim().split('\n').filter((path) => path && !path.startsWith('scripts/'));
+for (const path of sitePages) write(path, stampSiteAssets(read(path), V));
 
 console.log(`gen-agent-files: manifest (${full.length} classes, ${manifest.notInSlim.length} not in slim, ${ai.length} in ai) · skill (${Object.keys(references).length} references, ×2) · 3 rule files · context7.json`);

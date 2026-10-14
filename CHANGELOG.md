@@ -11,6 +11,7 @@ All notable changes to Farvist are documented here. Versions follow [SemVer](htt
 
 ### Website and documentation
 - Generate the homepage release badge and link from the package version, alongside its structured metadata.
+- Version local CSS and JavaScript URLs on every site page so cached assets from an earlier release do not outlive a website update.
 - Refresh the website with the released security fixes and security-reporting contact file.
 - Correct the documented development Node version and JavaScript bundle size.
 

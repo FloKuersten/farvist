@@ -76,8 +76,8 @@ jobs:
 
       - name: Committed build artifacts are fresh
         run: |
-          if [ -n "$(git status --porcelain -- dist ai-context.json llms-full.txt skills ai .well-known context7.json index.html)" ]; then
-            git status --porcelain -- dist ai-context.json llms-full.txt skills ai .well-known context7.json index.html
+          if [ -n "$(git status --porcelain -- dist ai-context.json llms-full.txt skills ai .well-known context7.json '*.html')" ]; then
+            git status --porcelain -- dist ai-context.json llms-full.txt skills ai .well-known context7.json '*.html'
             echo "::error::generated files differ from the tagged commit — run 'npm run build:all' and commit before releasing"
             exit 1
           fi

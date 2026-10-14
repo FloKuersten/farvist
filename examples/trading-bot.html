@@ -7,7 +7,7 @@
   <meta name="description" content="Operator console for an algorithmic trading bot, built with the Farvist CSS framework — stat tiles, positions, order book, strategy tabs, risk limits, AI copilot and a kill switch. Simulated data, no backend." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../dist/farvist.css" />
+  <link rel="stylesheet" href="../dist/farvist.css?v=1.8.4" />
   <style>
     .app { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
     .sidebar { position: sticky; top: 0; align-self: start; height: 100vh; padding: 1.25rem 1rem; display: flex; flex-direction: column; gap: .35rem; overflow-y: auto; }
@@ -240,7 +240,7 @@
     <div class="command-hint"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> select</span><span><kbd>esc</kbd> close</span></div>
   </dialog>
 
-  <script src="../assets/farvist.js" defer></script>
+  <script src="../assets/farvist.js?v=1.8.4" defer></script>
   <script>
     (function () {
       var $ = function (id) { return document.getElementById(id); }, qsa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };

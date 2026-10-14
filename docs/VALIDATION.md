@@ -223,12 +223,16 @@ signature check. Existing published versions still have to pass these gates.
 
 Local validation on Node **24.19.0**:
 
-- All **12 release-verification regressions pass**. They reject incorrect
+- All **14 release-verification regressions pass**. They reject incorrect
   package, tarball, repository, workflow, tag and commit evidence, absent
   provenance and corrupt downloads; registry propagation retries are bounded.
+  They also check that site asset versioning is idempotent and leaves external
+  CDN URLs, escaped code samples and unrelated assets unchanged.
 - `build:all` succeeds. The homepage release badge, link and JSON-LD now derive
   from the same package version. CSS and runtime JavaScript remain unchanged
   from 1.8.3; the website receives the security fixes absent from its live 1.8.1.
+  Local CSS/JavaScript URLs carry the release version to avoid reusing assets
+  from the site's observed four-hour cache lifetime.
 - The validator's eight fixtures pass, with a clean site scan of 7,032 class
   uses across 39 files. CDN pins, privacy checks, workflow YAML parsing and
   `git diff --check` pass.
