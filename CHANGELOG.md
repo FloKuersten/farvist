@@ -2,6 +2,18 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.8.4] — 2026-10-15
+
+### Release delivery
+- Configure npm trusted publishing for the repository's `publish.yml` workflow with direct publishing permission. Version 1.8.3 was published using the local 2FA fallback and has no build provenance.
+- Pin the release npm CLI, disable release dependency caching, and verify the public tarball integrity and provenance repository, workflow, tag and commit after publishing. Fresh-install signature verification is required before the workflow succeeds.
+- Retried releases still verify published bytes and provenance; an existing version alone no longer counts as successful verification.
+
+### Website and documentation
+- Generate the homepage release badge and link from the package version, alongside its structured metadata.
+- Refresh the website with the released security fixes and security-reporting contact file.
+- Correct the documented development Node version and JavaScript bundle size.
+
 ## [1.8.3] — 2026-10-14
 
 ### Security
@@ -13,7 +25,7 @@ All notable changes to Farvist are documented here. Versions follow [SemVer](htt
 
 ### Repository
 - Dependabot (npm and GitHub Actions), CodeQL and dependency review run on the repository; CI also audits development dependencies at the critical level.
-- Releases publish from GitHub Actions through npm trusted publishing with provenance (`.github/workflows/publish.yml`). The workflow refuses to publish unless the release tag matches `package.json` and CI passed on the commit.
+- Add a GitHub Actions workflow for npm trusted publishing with provenance (`.github/workflows/publish.yml`). The workflow refuses to publish unless the release tag matches `package.json` and CI passed on the commit. npm rejected its first publish because no trusted publisher was configured; 1.8.3 used the local 2FA fallback and has no build provenance.
 - Manual publish retries also require a matching version tag. Publishing requires a successful main-branch run of `ci.yml` on that exact commit and publishes the already-verified tarball without rebuilding it during publication.
 - `docs/SECURITY-HEADERS.md` lists the response headers farvist.com should send, as nginx and Cloudflare configuration.
 

@@ -16,7 +16,7 @@ A **CSS framework for glass interfaces**: frosted surfaces, neon accents, 42 com
 - 🌗 **Dark & light themes** — dark "space" theme by default; flip `data-theme="light"` on `<html>` to retheme at runtime via `--fv-*` custom properties.
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
 - 🧩 **42 glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
-- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a ~9 KB (gzip) optional JS companion for the interactive bits.
+- 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 10.3 KB (gzip) optional JS companion for the interactive bits.
 - 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio, a copy-paste block gallery and an AI-kit add-on demo in `examples/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
 - 🪶 **~21 KB gzipped** (140 KB minified) — one file, all 42 components; Sass users can build just the partials they need.
@@ -59,8 +59,8 @@ Save this as `index.html` and open it in a browser. The CSS and optional script 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My first Farvist page</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1.8.3/dist/farvist.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/farvist@1.8.3/assets/farvist.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1.8.4/dist/farvist.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/farvist@1.8.4/assets/farvist.js" defer></script>
   </head>
   <body>
     <main class="container py-5">
@@ -79,7 +79,7 @@ Save this as `index.html` and open it in a browser. The CSS and optional script 
 </html>
 ```
 
-Remove the script if you only need styles. `farvist@1.8.3` stays on this release; `farvist@1` follows updates within major version 1. Use an exact version when you want to review updates before adopting them.
+Remove the script if you only need styles. `farvist@1.8.4` stays on this release; `farvist@1` follows updates within major version 1. Use an exact version when you want to review updates before adopting them.
 
 ### Choose your build
 
@@ -91,7 +91,7 @@ Choose one main stylesheet for your page. Shared components use the same class n
 | A site without chat or agent interfaces | `farvist-slim.min.css` — full framework minus the 11 AI components | 19.2 KB |
 | An existing site adding chat or agent interfaces | `farvist-ai.min.css` — AI kit plus supporting buttons, avatars, icons and toasts | 6.6 KB |
 
-Measured from the v1.8.3 files using gzip (1 KB = 1,024 bytes). The optional JavaScript is 10.3 KB gzip and has no runtime dependencies. Run `npm run check:size` in a repository checkout to check the CSS sizes and budgets.
+Measured from the v1.8.4 files using gzip (1 KB = 1,024 bytes). The optional JavaScript is 10.3 KB gzip and has no runtime dependencies. Run `npm run check:size` in a repository checkout to check the CSS sizes and budgets.
 
 **Adding the AI kit to an existing framework:** keep your host's reset, layout and utilities. The kit assumes `box-sizing: border-box` and a 16px root font size. On a light page, wrap its UI in `data-theme="light"`. Bootstrap and Tailwind v3 also need `farvist-ai-compat.css` (1.2 KB gzip) after the host stylesheet and AI kit; Tailwind v4's layered preflight needs no compat file. [Integration example](https://farvist.com/examples/ai-addon.html).
 
@@ -99,7 +99,7 @@ The full and slim builds default to the **dark glass theme**, including a page b
 
 ### Build from source
 
-Clone the repository to work on Farvist itself. Use Node.js 20, which is the version used by CI; the standalone class-checking CLI supports Node.js 18 or newer.
+Clone the repository to work on Farvist itself. Use Node.js 24, which is the version used by CI; the standalone class-checking CLI supports Node.js 18 or newer.
 
 ```bash
 git clone https://github.com/FloKuersten/farvist.git
@@ -361,7 +361,7 @@ Sizes: `.icon` (1em) · `.icon-sm` · `.icon-lg` · `.icon-xl`.
 > **Copy the sprite to your own site.** That `href` is same-origin: browsers refuse to resolve `<use>` against another domain, so pointing it at a CDN silently renders nothing (measured: 0×0 box). If you loaded the CSS from a CDN, copy `assets/icons/farvist-icons.svg` into your own project and point the `href` at it there — or inline the sprite once at the top of the page.
  Decorative SVGs (`logo.svg`, `patterns/mesh.svg`, `blob.svg`, `grid.svg`, `dots.svg`) live in `assets/`, and theme-aware CSS patterns are built in: `.bg-grid` `.bg-dots` `.bg-noise`.
 
-The optional **~9 KB gzip** companion powers the interactive components — drop it in with `defer`:
+The optional **10.3 KB gzip** companion powers the interactive components — drop it in with `defer`:
 
 ```html
 <script src="assets/farvist.js" defer></script>
@@ -452,7 +452,7 @@ scss/
     ├── _effects.scss        #   glass, glow, gradient, motion + @supports
     └── _backgrounds.scss    #   mesh gradients, patterns, spotlights, fade-masks
 assets/
-├── farvist.js            # ~9 KB optional companion (modal, tabs, toast, theme)
+├── farvist.js            # 10.3 KB optional companion (modal, tabs, toast, theme)
 ├── logo.svg                 # wordmark + gradient mark
 ├── icons/farvist-icons.svg   # 55-icon sprite (currentColor)
 └── patterns/                # mesh, blob, grid, dots decorative SVGs

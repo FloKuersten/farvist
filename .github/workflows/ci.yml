@@ -30,6 +30,9 @@ jobs:
       - name: Published runtime dependency audit
         run: npm audit --omit=dev --audit-level=low
 
+      - name: Release verification regressions
+        run: npm run check:release
+
       - name: Development dependency audit (critical; the known high is tracked in docs/VALIDATION.md)
         run: npm audit --audit-level=critical
 

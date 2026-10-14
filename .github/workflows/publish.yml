@@ -6,9 +6,8 @@ name: Publish to npm
 #
 # One-time setup on npmjs.com → package "farvist" → Settings → Trusted publishing:
 #   GitHub Actions · owner FloKuersten · repository farvist ·
-#   workflow filename publish.yml · environment: (none)
-# Until that exists the publish step fails with ENEEDAUTH and nothing is
-# published. Details: PUBLISHING.md.
+#   workflow filename publish.yml · environment: (none) · allow npm publish
+# Missing or mismatched trust can return E404 or ENEEDAUTH. Details: PUBLISHING.md.
 
 on:
   release:
@@ -39,8 +38,11 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-          cache: npm
+          package-manager-cache: false
           registry-url: https://registry.npmjs.org
+
+      - name: Use a known OIDC-capable npm CLI
+        run: npm install --global npm@11.19.0 --ignore-scripts
 
       - name: Require a version tag matching package.json
         run: |
@@ -81,11 +83,11 @@ jobs:
           fi
 
       - name: Package verified artifacts
-        run: npm pack --ignore-scripts
+        run: npm pack --ignore-scripts --json > npm-pack.json
 
       - name: Publish with provenance
-        # A version that is already on npm (e.g. published locally as a fallback)
-        # is skipped instead of failing the run.
+        # Retries never overwrite a version. The verification step below still
+        # requires matching bytes and provenance for the released commit.
         run: |
           NAME="$(node -p "require('./package.json').name")"
           VERSION="$(node -p "require('./package.json').version")"
@@ -94,3 +96,15 @@ jobs:
             exit 0
           fi
           npm publish "${NAME}-${VERSION}.tgz" --provenance --access public
+
+      - name: Verify live tarball and provenance identity
+        run: node scripts/verify-npm-release.mjs npm-pack.json
+
+      - name: Verify registry and provenance signatures from a fresh install
+        run: |
+          NAME="$(node -p "require('./package.json').name")"
+          VERSION="$(node -p "require('./package.json').version")"
+          CONSUMER="$RUNNER_TEMP/farvist-release-check"
+          npm install --prefix "$CONSUMER" "$NAME@$VERSION" --ignore-scripts --no-audit --no-fund
+          npm audit signatures --prefix "$CONSUMER"
+          test "$(node "$CONSUMER/node_modules/$NAME/bin/farvist.mjs" --version)" = "$VERSION"

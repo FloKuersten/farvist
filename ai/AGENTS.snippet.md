@@ -1,5 +1,5 @@
 <!-- Paste into your project's AGENTS.md (read by Codex, Copilot, Cursor, Gemini CLI, Devin and others). -->
-## Farvist (v1.8.3) — CSS framework conventions
+## Farvist (v1.8.4) — CSS framework conventions
 
 - Load Farvist from a version-pinned URL (https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css), never an unversioned one; pick the full, -slim or -ai build to match the page.
 - Use only real Farvist classes; never invent class names. Look them up in https://farvist.com/llms-full.txt (or node_modules/farvist/skills/farvist/references/) and run `npx farvist check` on generated files.

@@ -211,13 +211,17 @@ write('context7.json', JSON.stringify({
 }, null, 2) + '\n');
 
 // ---------------------------------------------------------------------------
-// 6. Stamp the homepage JSON-LD version — hand-edited, it drifted a release
-//    behind more than once (it still said 1.6.1 after 1.7.0 shipped).
+// 6. Keep the homepage metadata and visible release badge on the package version.
 // ---------------------------------------------------------------------------
 const home = read('index.html');
-const stamped = home.replace(/("softwareVersion":\s*")[^"]*(")/, `$1${V}$2`);
-if (stamped === home && !home.includes(`"softwareVersion": "${V}"`)) {
-  throw new Error('gen-agent-files: index.html has no "softwareVersion" to stamp — the JSON-LD block changed; update this step.');
+let stamped = home;
+for (const pattern of [
+  /("softwareVersion":\s*")[^"]*(")/,
+  /(https:\/\/github\.com\/FloKuersten\/farvist\/releases\/tag\/v)[^"\s]*(")/,
+  /(<span data-fv-release-version>v)[^<]*(<\/span>)/,
+]) {
+  if (!pattern.test(stamped)) throw new Error(`gen-agent-files: missing homepage version marker: ${pattern}`);
+  stamped = stamped.replace(pattern, (_, before, after) => `${before}${V}${after}`);
 }
 write('index.html', stamped);
 
