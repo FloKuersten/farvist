@@ -64,7 +64,7 @@ Check that all documented CSS and JavaScript entry points are present, while sou
 
 Stage the reviewed release files explicitly, create a release commit, and push the release branch through the repository's normal review process. Commit messages should include an emoji, for example `📦 Release Farvist vX.Y.Z`. Require the [CI workflow](https://github.com/FloKuersten/farvist/actions/workflows/ci.yml) to pass on the commit being released; it also checks that committed build outputs are fresh.
 
-Publishing happens from GitHub Actions, not from a laptop. The [publish workflow](.github/workflows/publish.yml) runs when a GitHub release is published: it checks that the release tag matches `package.json`, that CI's "Quality gates" passed on the tagged commit and that the committed build outputs are fresh, then runs `npm publish` through npm trusted publishing (OIDC). No npm token exists anywhere, and every version gets a provenance attestation tying it to this repository, workflow and commit.
+The [publish workflow](.github/workflows/publish.yml) runs when a GitHub release is published: it requires a version tag matching `package.json`, a successful main-branch run of `ci.yml` on the tagged commit, and fresh committed build outputs. It then packs those verified files and publishes the tarball through npm trusted publishing (OIDC), with provenance tying it to this repository, workflow and commit. The workflow does not require a long-lived npm token. A manual retry must also target the version tag; branch dispatches are rejected.
 
 Prepare `release-notes.md` from the reviewed changelog entry, then tag the verified commit and create the release:
 
@@ -94,4 +94,4 @@ Only if the workflow is unavailable: from the verified commit, with npm 2FA, run
 - Install the published package into a temporary consumer project and verify the documented imports and Sass customization example.
 - Deploy the website using the existing infrastructure, then check the live homepage, docs and changed templates. A Git push or npm publication does not deploy the website.
 
-There is no publish or deploy job in the checked-in GitHub workflow. `npm run deploy` refers to the maintainer's local `deploy.ps1`, which is intentionally git-ignored. A fresh clone needs that existing deployment setup before the command can work; keep it and its private infrastructure details out of the public repository.
+The GitHub publish workflow releases the npm package only. `npm run deploy` refers to the maintainer's local `deploy.ps1` for website deployment, which is intentionally git-ignored. A fresh clone needs that existing deployment setup before the command can work; keep it and its private infrastructure details out of the public repository.

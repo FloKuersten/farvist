@@ -59,8 +59,8 @@ Save this as `index.html` and open it in a browser. The CSS and optional script 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My first Farvist page</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1.8.2/dist/farvist.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/farvist@1.8.2/assets/farvist.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1.8.3/dist/farvist.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/farvist@1.8.3/assets/farvist.js" defer></script>
   </head>
   <body>
     <main class="container py-5">
@@ -79,7 +79,7 @@ Save this as `index.html` and open it in a browser. The CSS and optional script 
 </html>
 ```
 
-Remove the script if you only need styles. `farvist@1.8.2` stays on this release; `farvist@1` follows updates within major version 1. Use an exact version when you want to review updates before adopting them.
+Remove the script if you only need styles. `farvist@1.8.3` stays on this release; `farvist@1` follows updates within major version 1. Use an exact version when you want to review updates before adopting them.
 
 ### Choose your build
 
@@ -91,7 +91,7 @@ Choose one main stylesheet for your page. Shared components use the same class n
 | A site without chat or agent interfaces | `farvist-slim.min.css` — full framework minus the 11 AI components | 19.2 KB |
 | An existing site adding chat or agent interfaces | `farvist-ai.min.css` — AI kit plus supporting buttons, avatars, icons and toasts | 6.6 KB |
 
-Measured from the v1.8.2 files using gzip (1 KB = 1,024 bytes). The optional JavaScript is 9.8 KB gzip and has no runtime dependencies. Run `npm run check:size` in a repository checkout to check the CSS sizes and budgets.
+Measured from the v1.8.3 files using gzip (1 KB = 1,024 bytes). The optional JavaScript is 10.3 KB gzip and has no runtime dependencies. Run `npm run check:size` in a repository checkout to check the CSS sizes and budgets.
 
 **Adding the AI kit to an existing framework:** keep your host's reset, layout and utilities. The kit assumes `box-sizing: border-box` and a 16px root font size. On a light page, wrap its UI in `data-theme="light"`. Bootstrap and Tailwind v3 also need `farvist-ai-compat.css` (1.2 KB gzip) after the host stylesheet and AI kit; Tailwind v4's layered preflight needs no compat file. [Integration example](https://farvist.com/examples/ai-addon.html).
 

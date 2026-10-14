@@ -143,5 +143,56 @@ were rebuilt and validated locally on Windows (Node.js 25.8.1, npm 11.11.0):
 
 The initial sandboxed browser attempt was blocked by Windows process access;
 the same browser gates passed when rerun with the required process access.
-Release CI and publication status are available on PR #4 and the v1.8.2 GitHub
-release; the Linux run cited above records the original safety implementation.
+The Linux run cited above records the original safety implementation; PR #4
+contains its release changes. On 2026-10-14, npm was independently confirmed to
+serve 1.8.2 as `latest`; no corresponding GitHub release was present.
+
+## v1.8.3 security and release validation
+
+Validated locally on **2026-10-14**, based on merged security commit
+`75eab23599096afc5ea4f02e4fd412df16db35c8`, using Windows, Node.js **25.8.1**,
+npm **11.11.0**, and Chrome through `PUPPETEER_EXECUTABLE_PATH`.
+
+The security follow-up closes a command-navigation bypass: `/\t/example.invalid`
+passed the previous path check, but the browser removes the tab and resolves it
+as a protocol-relative external URL. Commands now reject control characters and
+check the resolved origin of local paths. Fragments, local paths, and explicit
+HTTP(S) destinations remain supported; applications must authorize their own
+commands and decide which explicit external links to render.
+
+Theme names now reject non-string values, and stored `dark` / `default` selections
+both restore the default theme. Five new browser tests cover these behaviors,
+permitted navigation, invalid persisted values, and toast rendering under enforced
+Trusted Types. Before the fixes, three of the five tests failed; all five now pass.
+
+The publishing workflow now requires a matching version tag even on manual
+dispatch, checks a successful main-branch run of `ci.yml` on the exact commit,
+serializes attempts for the same tag, and publishes the verified tarball.
+Its OIDC publishing step does not need a long-lived npm token. Publication and
+provenance must still be confirmed from the registry after the workflow runs.
+
+| Check | Result |
+| --- | --- |
+| Clean locked dependency installation | PASS; 347 development packages installed; compatibility patch applied |
+| `npm run build:all` | PASS; all generated references updated to 1.8.3 |
+| Repeat build | PASS; SHA-256 unchanged for all 31 tracked generated files |
+| Lint, size, theming, skins, Sass API, privacy and CDN pins | PASS |
+| AI and coloured-text contrast | PASS; 44 and 910 measurements respectively |
+| Nested glass, forced colors and prompt auto-grow | PASS; existing rendering and interaction gates |
+| `npm run check:validator` | PASS; eight fixtures, 7,032 class uses across 39 site files, broken/looping links handled |
+| `npm run check:safety` | PASS; 22 tests, with two POSIX-only device/FIFO tests skipped on Windows |
+| Pa11y | PASS; 27/27 URLs, zero errors with the existing contrast exclusion |
+| `npm audit --omit=dev --audit-level=low` | PASS; zero runtime advisories |
+| Full lockfile audit | KNOWN FAILURE; ten high affected-package entries, zero critical, still the development-only `braces` advisory described above |
+| Workflow YAML parsing and `git diff --check` | PASS |
+| Tarball inspection | PASS; 99 files, including `SECURITY.md`; no site-only scripts, development files, source maps or credential/config paths |
+| Offline tarball install in a separate consumer directory | PASS; executable CLI reports 1.8.3, four documented CSS entry points exist, all three Sass entries compile with a custom primary color |
+| Packaged validator | PASS; homepage and template index, 993 class uses, zero errors/warnings, complete scan |
+
+The validator's symlink fixture needed execution outside the Windows filesystem
+sandbox; it passed with that access. Browser regressions intercept their test
+origins and navigation requests rather than contacting external destinations.
+CSS gzip sizes remain 21.3/19.2/6.6 KiB (full/slim/AI), with 1.2 KiB compatibility
+CSS and 10.3 KiB optional JavaScript. No website deployment is covered by this
+release validation. Linux CI and the npm publishing workflow provide the separate
+remote release evidence.

@@ -293,12 +293,19 @@
     var dialog = item.closest('dialog.command');
     var val = item.getAttribute('data-fv-command');
     if (dialog) dialog.close();
-    // Navigate only for a same-origin path, a fragment, or an explicit http(s)
-    // URL. A protocol-relative "//host" (or "/\host") is NOT a path, so a
-    // data-fv-command value rendered from untrusted data cannot send the user
-    // off-site. Anything else is an app command and is dispatched as an event.
-    if (val && ((val.charAt(0) === '/' && val.charAt(1) !== '/' && val.charAt(1) !== '\\') || val.charAt(0) === '#' || /^https?:\/\//.test(val))) {
-      window.location.href = val;
+    // Browsers remove tabs/newlines while parsing URLs: "/\t/host" becomes
+    // "//host". Reject controls before parsing and check the resolved origin
+    // for paths. Explicit HTTP(S) destinations remain supported by design.
+    var path = val && val.charAt(0) === '/' && val.charAt(1) !== '/' && val.charAt(1) !== '\\';
+    var destination = null;
+    if (val && !/[\u0000-\u001f\u007f]/.test(val) && (path || val.charAt(0) === '#' || /^https?:\/\//.test(val))) {
+      try {
+        var parsed = new URL(val, window.location.href);
+        if (!path || parsed.origin === window.location.origin) destination = parsed.href;
+      } catch (e) { /* invalid destinations remain application commands */ }
+    }
+    if (destination) {
+      window.location.href = destination;
     } else if (dialog) {
       dialog.dispatchEvent(new CustomEvent('fv:command', { bubbles: true, detail: { value: val, item: item } }));
     }
@@ -728,7 +735,7 @@
   var THEME_NAME = /^[a-z][a-z0-9_-]{0,31}$/i;
   function theme(name) {
     var root = document.documentElement;
-    if (name && !THEME_NAME.test(name)) return;
+    if (name && (typeof name !== 'string' || !THEME_NAME.test(name))) return;
     if (!name || name === 'dark' || name === 'default') root.removeAttribute('data-theme');
     else root.setAttribute('data-theme', name);
     try { localStorage.setItem('fv-theme', name || 'dark'); } catch (e) { /* private mode */ }
@@ -739,7 +746,10 @@
   // value passes the same check as theme()'s argument before it is applied.
   try {
     var savedTheme = localStorage.getItem('fv-theme');
-    if (savedTheme && savedTheme !== 'dark' && THEME_NAME.test(savedTheme)) document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme && THEME_NAME.test(savedTheme)) {
+      if (savedTheme === 'dark' || savedTheme === 'default') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', savedTheme);
+    }
   } catch (e) { /* private mode */ }
 
   // Public API. `Farvist` is the current name; `Farvistrap` kept as an alias.
