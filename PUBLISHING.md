@@ -41,6 +41,7 @@ npm run check:cdn-pins
 npm run check:validator
 npm run check:prompt-grow
 npm run check:safety
+npm run check:release
 ```
 
 For the accessibility scan, run `npx serve -l 4000 .` in one terminal and `npx pa11y-ci` in another. Also check the changed pages in a browser at desktop and mobile widths, including light and dark themes and any changed interactions.
@@ -64,7 +65,9 @@ Check that all documented CSS and JavaScript entry points are present, while sou
 
 Stage the reviewed release files explicitly, create a release commit, and push the release branch through the repository's normal review process. Commit messages should include an emoji, for example `📦 Release Farvist vX.Y.Z`. Require the [CI workflow](https://github.com/FloKuersten/farvist/actions/workflows/ci.yml) to pass on the commit being released; it also checks that committed build outputs are fresh.
 
-The [publish workflow](.github/workflows/publish.yml) runs when a GitHub release is published: it requires a version tag matching `package.json`, a successful main-branch run of `ci.yml` on the tagged commit, and fresh committed build outputs. It then packs those verified files and publishes the tarball through npm trusted publishing (OIDC), with provenance tying it to this repository, workflow and commit. The workflow does not require a long-lived npm token. A manual retry must also target the version tag; branch dispatches are rejected.
+The [publish workflow](.github/workflows/publish.yml) runs when a GitHub release is published: it requires a version tag matching `package.json`, a successful main-branch run of `ci.yml` on the tagged commit, and fresh committed build outputs. It uses Node 24 and npm 11.19.0, disables dependency caching for the release, then packs the verified files and publishes the tarball through npm trusted publishing (OIDC). No long-lived npm token is needed. A manual retry must also target the version tag; branch dispatches are rejected.
+
+After publication, the workflow waits for registry propagation and verifies the downloaded tarball against its pre-publish SHA-512 integrity. It checks that the SLSA provenance names the correct package, repository, workflow, tag and commit, then installs the registry package in a fresh consumer and runs `npm audit signatures` to validate the registry and provenance signatures. An already-published version skips only the upload: its bytes and provenance still have to pass verification. A locally published version without provenance cannot satisfy this gate.
 
 Prepare `release-notes.md` from the reviewed changelog entry, then tag the verified commit and create the release:
 
@@ -80,16 +83,30 @@ Describe the release's actual behavior and validation in the notes. Update the G
 
 ### One-time setup: trusted publishing on npm
 
-On npmjs.com open the `farvist` package → Settings → Trusted publishing → add a GitHub Actions publisher with owner `FloKuersten`, repository `farvist`, workflow filename `publish.yml` and no environment. Then, under Publishing access, choose "Require two-factor authentication and disallow tokens", so a leaked or phished token can no longer publish. Until the trusted publisher exists the workflow stops at the publish step with `ENEEDAUTH` and nothing is published.
+Inspect existing trust first, using a current npm CLI with Node 24 and the maintainer's npm login. npm requires account 2FA for trust administration:
+
+```powershell
+npx --yes --package=npm@12.2.0 npm trust list farvist
+npx --yes --package=npm@12.2.0 npm trust github farvist --file=publish.yml --repository=FloKuersten/farvist --allow-publish
+```
+
+Create the relationship only if the intended one is absent; inspect any existing configuration before replacing it. The equivalent npm website settings are owner `FloKuersten`, repository `farvist`, workflow filename `publish.yml`, no environment, and **allow direct publishing with `npm publish`**. Stage-only permission cannot run this automatic release workflow. Keep the repository and workflow spelling exact.
+
+A new trusted publisher must complete its first successful publication within two days or npm expires it. Publish a new, validated version through GitHub Actions to activate the relationship and confirm provenance; rerunning an already-published version does not exercise authentication or activate the trust. Never overwrite or unpublish an existing release for this test.
+
+Missing or mismatched trust can return `E404` or `ENEEDAUTH`. A provenance statement appearing in a Sigstore log does not prove npm accepted the package: require the registry and signature checks above. Version 1.8.3 hit this failure because no trusted publisher was configured, then used the documented local fallback.
+
+After the first automated release succeeds, the npm package setting "Require two-factor authentication and disallow tokens" can prevent traditional token-based publishing while retaining OIDC publishing. See the current [npm trusted publishing documentation](https://docs.npmjs.com/trusted-publishers/) and [npm trust command](https://docs.npmjs.com/cli/v12/commands/npm-trust/).
 
 ### Fallback: publish locally
 
-Only if the workflow is unavailable: from the verified commit, with npm 2FA, run `npm publish`, then confirm `npm view "farvist@$releaseVersion" version dist.integrity --json`. A locally published version carries no provenance. Creating the GitHub release afterwards is still safe: the workflow sees the version is already on npm and skips. `prepublishOnly` runs `build:all`; it does not run the other quality gates.
+Only if the workflow is unavailable: pack the verified commit using `npm pack --ignore-scripts`, inspect the tarball, then publish that exact file with npm 2FA using `npm publish "farvist-$releaseVersion.tgz" --access public`. Confirm `npm view "farvist@$releaseVersion" version dist.integrity --json`. A locally published version carries no build provenance, and the automated provenance gate will fail for that version even though it is installable. Document that limitation in the release notes. Publishing a directory instead runs `prepublishOnly`, which rebuilds files but does not run the other quality gates.
 
 ## 5. Verify npm, CDN and website separately
 
 - Confirm the npm `latest` tag points to the intended stable release.
 - Confirm provenance: `https://registry.npmjs.org/-/npm/v1/attestations/farvist@X.Y.Z` answers 200 and the npm package page shows the Provenance badge.
+- Verify signatures from a fresh registry install with `npm audit signatures` and check the attestation's workflow/tag/commit against the released source.
 - Load the exact-version CSS and JavaScript URLs used by the install examples from jsDelivr, and confirm the installed CLI reports the expected version with `npx --yes farvist@X.Y.Z --version`.
 - Install the published package into a temporary consumer project and verify the documented imports and Sass customization example.
 - Deploy the website using the existing infrastructure, then check the live homepage, docs and changed templates. A Git push or npm publication does not deploy the website.

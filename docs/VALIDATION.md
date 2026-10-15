@@ -196,3 +196,51 @@ CSS gzip sizes remain 21.3/19.2/6.6 KiB (full/slim/AI), with 1.2 KiB compatibili
 CSS and 10.3 KiB optional JavaScript. No website deployment is covered by this
 release validation. Linux CI and the npm publishing workflow provide the separate
 remote release evidence.
+
+## v1.8.4 trusted publishing and website validation
+
+Prepared on **2026-10-15** from `b13d43582e1e33c11ff85e8cc5b1f42f1262ebf3`.
+The 1.8.3 main-branch [CI run](https://github.com/FloKuersten/farvist/actions/runs/38602728449)
+passed all gates, including 24/24 safety tests and 27/27 accessibility URLs.
+Version 1.8.3 was subsequently verified live on npm and jsDelivr with matching
+tarball integrity and a valid registry signature, but no build provenance.
+
+The failed 1.8.3 publishing workflow had OIDC permission and generated a
+Sigstore statement, but npm rejected the upload with E404. A current authenticated
+`npm trust list farvist` confirmed that the package had no trusted publisher.
+The required configuration is GitHub repository `FloKuersten/farvist`, workflow
+`publish.yml`, no environment constraint, and permission for direct publishing.
+Its first successful automated publication must complete within npm's two-day
+activation window. Configuration approval and a passing release workflow are
+separate evidence; the release notes record the final registry result.
+
+The revised workflow pins npm 11.19.0 and disables dependency caching for
+release builds. It checks downloaded registry bytes against the packed SHA-512
+integrity, then requires provenance for the expected package, repository,
+workflow, tag and commit. A fresh consumer install runs `npm audit signatures`
+for cryptographic verification; parsing provenance identity alone is not a
+signature check. Existing published versions still have to pass these gates.
+
+Local validation on Node **24.19.0**:
+
+- All **14 release-verification regressions pass**. They reject incorrect
+  package, tarball, repository, workflow, tag and commit evidence, absent
+  provenance and corrupt downloads; registry propagation retries are bounded.
+  They also check that site asset versioning is idempotent and leaves external
+  CDN URLs, escaped code samples and unrelated assets unchanged.
+- `build:all` succeeds. The homepage release badge, link and JSON-LD now derive
+  from the same package version. CSS and runtime JavaScript remain unchanged
+  from 1.8.3; the website receives the security fixes absent from its live 1.8.1.
+  Local CSS/JavaScript URLs carry the release version to avoid reusing assets
+  from the site's observed four-hour cache lifetime.
+- The validator's eight fixtures pass, with a clean site scan of 7,032 class
+  uses across 39 files. CDN pins, privacy checks, workflow YAML parsing and
+  `git diff --check` pass.
+- The 99-file tarball contains the documented entry points and security policy,
+  without private infrastructure, development scripts, dependencies or maps.
+
+The live website was independently observed at 1.8.1 before deployment. Its
+origin passed SSH, nginx configuration and service checks. Website delivery
+uses a backup, verified staged files and post-deploy HTTPS byte comparisons;
+its final result is recorded separately from npm publication. The existing
+development-only `braces` advisory and accessibility scope above still apply.

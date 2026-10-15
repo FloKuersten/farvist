@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "license": "MIT",
   "author": "FloKuersten",
@@ -76,7 +76,8 @@
     "check:validator": "node scripts/check-validator.mjs",
     "check:prompt-grow": "node scripts/check-prompt-grow.mjs",
     "check:forced-colors": "node scripts/check-forced-colors.mjs",
-    "check:safety": "node --test --test-timeout=120000 scripts/check-safety.mjs"
+    "check:safety": "node --test --test-timeout=120000 scripts/check-safety.mjs",
+    "check:release": "node --test scripts/check-release.mjs"
   },
   "overrides": {
     "brace-expansion": "^5.0.12",

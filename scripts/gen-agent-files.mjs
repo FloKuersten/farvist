@@ -16,7 +16,9 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { classesFromCss } from './lib/css-classes.mjs';
+import { stampSiteAssets } from './lib/site-assets.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (f) => readFileSync(join(root, f), 'utf8');
@@ -211,14 +213,23 @@ write('context7.json', JSON.stringify({
 }, null, 2) + '\n');
 
 // ---------------------------------------------------------------------------
-// 6. Stamp the homepage JSON-LD version — hand-edited, it drifted a release
-//    behind more than once (it still said 1.6.1 after 1.7.0 shipped).
+// 6. Keep the homepage metadata and visible release badge on the package version.
 // ---------------------------------------------------------------------------
 const home = read('index.html');
-const stamped = home.replace(/("softwareVersion":\s*")[^"]*(")/, `$1${V}$2`);
-if (stamped === home && !home.includes(`"softwareVersion": "${V}"`)) {
-  throw new Error('gen-agent-files: index.html has no "softwareVersion" to stamp — the JSON-LD block changed; update this step.');
+let stamped = home;
+for (const pattern of [
+  /("softwareVersion":\s*")[^"]*(")/,
+  /(https:\/\/github\.com\/FloKuersten\/farvist\/releases\/tag\/v)[^"\s]*(")/,
+  /(<span data-fv-release-version>v)[^<]*(<\/span>)/,
+]) {
+  if (!pattern.test(stamped)) throw new Error(`gen-agent-files: missing homepage version marker: ${pattern}`);
+  stamped = stamped.replace(pattern, (_, before, after) => `${before}${V}${after}`);
 }
 write('index.html', stamped);
+
+// Browsers and the CDN may cache unversioned assets across a deployment.
+const sitePages = execFileSync('git', ['ls-files', '--', '*.html'], { cwd: root, encoding: 'utf8' })
+  .trim().split('\n').filter((path) => path && !path.startsWith('scripts/'));
+for (const path of sitePages) write(path, stampSiteAssets(read(path), V));
 
 console.log(`gen-agent-files: manifest (${full.length} classes, ${manifest.notInSlim.length} not in slim, ${ai.length} in ai) · skill (${Object.keys(references).length} references, ×2) · 3 rule files · context7.json`);

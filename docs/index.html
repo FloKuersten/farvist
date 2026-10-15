@@ -7,7 +7,7 @@
   <meta name="description" content="Farvist documentation — install, theming, grid, utilities, the backgrounds library, components and the JS companion." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../dist/farvist.css" />
+  <link rel="stylesheet" href="../dist/farvist.css?v=1.8.4" />
   <style>
     .docs { display: grid; grid-template-columns: 240px 1fr; gap: 2.5rem; max-width: 1140px; margin-inline: auto; padding: 1.5rem 1.25rem 6rem; }
     .docs-nav { position: sticky; top: 5rem; align-self: start; max-height: calc(100vh - 7rem); overflow: auto; padding: 1rem; }
@@ -110,7 +110,7 @@
 
       <section id="install">
         <h2 class="mb-3">Installation</h2>
-        <p class="text-muted mb-3">Drop in one stylesheet — no build step. Add the optional ~9 KB (gzip) script for modals, tabs, toasts and the theme toggle.</p>
+        <p class="text-muted mb-3">Drop in one stylesheet — no build step. Add the optional 10.3 KB (gzip) script for modals, tabs, toasts and the theme toggle.</p>
         <pre class="snippet"><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1/dist/farvist.min.css"&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js" defer&gt;&lt;/script&gt;</code></pre>
 
@@ -775,7 +775,7 @@ Full context: https://farvist.com/llms-full.txt</code></pre>
 
       <section id="js">
         <h2 class="mb-3">JS companion</h2>
-        <p class="text-muted mb-3">~9 KB gzip, no dependencies. It auto-applies ARIA to tabs &amp; progress bars and wires these data-attributes:</p>
+        <p class="text-muted mb-3">10.3 KB gzip, no dependencies. It auto-applies ARIA to tabs &amp; progress bars and wires these data-attributes:</p>
         <pre class="snippet"><code>data-fv-open="#id"      // open a &lt;dialog class="modal"&gt;
 data-fv-dismiss          // close the nearest dialog
 data-fv-tab="#panel"     // switch tabs (arrow-key nav included)
@@ -852,7 +852,7 @@ Farvist.enhance();       // re-wire after injecting DOM dynamically</code></pre>
     <div class="modal-footer"><button class="btn btn-gradient-primary" data-fv-dismiss>Got it</button></div>
   </dialog>
 
-  <script src="../assets/farvist.js" defer></script>
+  <script src="../assets/farvist.js?v=1.8.4" defer></script>
   <script>
     // Docs sidebar search — filters the nav by link text + a keyword index, so
     // "flexbox", "dialog" or "dark mode" find the right section. No dependencies.
