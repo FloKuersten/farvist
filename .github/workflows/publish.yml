@@ -105,6 +105,18 @@ jobs:
           NAME="$(node -p "require('./package.json').name")"
           VERSION="$(node -p "require('./package.json').version")"
           CONSUMER="$RUNNER_TEMP/farvist-release-check"
-          npm install --prefix "$CONSUMER" "$NAME@$VERSION" --ignore-scripts --no-audit --no-fund
+          # npm view above can cache the pre-publication package metadata.
+          # Revalidate it and allow the install endpoint time to propagate.
+          for ATTEMPT in {1..10}; do
+            if npm install --prefix "$CONSUMER" "$NAME@$VERSION" --prefer-online --ignore-scripts --no-audit --no-fund 2> "$RUNNER_TEMP/farvist-install.err"; then
+              break
+            fi
+            cat "$RUNNER_TEMP/farvist-install.err" >&2
+            if [ "$ATTEMPT" -eq 10 ] || ! grep -q 'npm error code ETARGET' "$RUNNER_TEMP/farvist-install.err"; then
+              exit 1
+            fi
+            echo "Waiting for install metadata to propagate ($ATTEMPT/10)"
+            sleep 15
+          done
           npm audit signatures --prefix "$CONSUMER"
           test "$(node "$CONSUMER/node_modules/$NAME/bin/farvist.mjs" --version)" = "$VERSION"
