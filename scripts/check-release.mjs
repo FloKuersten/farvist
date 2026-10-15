@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { test } from 'node:test';
-import { predicateType, verifyProvenance, verifyRelease } from './verify-npm-release.mjs';
+import { predicateType, verifyProvenance, verifyRelease, versionFromTag } from './verify-npm-release.mjs';
 import { stampSiteAssets } from './lib/site-assets.mjs';
 
 test('website assets receive the release version and regenerate idempotently', () => {
@@ -85,4 +85,28 @@ test('rejects corrupt downloaded bytes even when the registry metadata matches',
 test('fails after the bounded propagation window', async () => {
   await assert.rejects(verifyRelease(expected, { request: async () => response('', 404),
     pause: async () => {}, attempts: 2 }), /HTTP 404/);
+});
+
+test('rejects request paths containing arbitrary file content or a non-release ref', async () => {
+  for (const ref of ['refs/heads/main', 'refs/tags/v1.8.4?token=secret', 'refs/tags/v1.8.4/../../x', 'refs/tags/v01.8.4']) {
+    assert.throws(() => versionFromTag(ref));
+  }
+  let requests = 0;
+  await assert.rejects(verifyRelease({ ...expected, version: 'secret-file-content' }, {
+    request: async () => { requests++; },
+  }));
+  assert.equal(requests, 0);
+});
+
+test('rejects registry-directed credentials, query strings and alternate tarball destinations', async () => {
+  for (const tarball of ['https://user:pass@registry.npmjs.org/farvist/-/farvist-1.8.4.tgz',
+    'https://registry.npmjs.org/farvist/-/farvist-1.8.4.tgz?secret=value', 'https://example.com/archive.tgz']) {
+    let requests = 0;
+    await assert.rejects(verifyRelease(expected, { request: async (_, options) => {
+      requests++;
+      assert.equal(options.redirect, 'error');
+      return response(JSON.stringify({ version: expected.version, dist: { integrity: expected.integrity, tarball } }));
+    } }), /Unexpected tarball URL/);
+    assert.equal(requests, 1);
+  }
 });

@@ -31,7 +31,10 @@ jobs:
         run: npm audit --omit=dev --audit-level=low
 
       - name: Release verification regressions
-        run: npm run check:release
+        run: |
+          npm run check:release
+          node --test scripts/check-dependency-patch.mjs
+          python3 scripts/deploy/check_website.py
 
       - name: Development dependency audit (critical; the known high is tracked in docs/VALIDATION.md)
         run: npm audit --audit-level=critical

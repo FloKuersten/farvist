@@ -1,0 +1,92 @@
+name: Deploy website
+
+on:
+  workflow_run:
+    workflows: [Publish to npm]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Latest published stable release to redeploy (vX.Y.Z)
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: farvist-production-website
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      github.repository == 'FloKuersten/farvist' && github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+         github.event.workflow_run.head_repository.full_name == 'FloKuersten/farvist'))
+    name: Verify and deploy released website
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: farvist-production
+      url: https://farvist.com
+    steps:
+      # Always use the trusted default-branch automation. Released source is
+      # read as static Git blobs; no scripts/artifacts from the trigger execute.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Require successful publication and CI for the latest release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: python3 scripts/deploy/website.py prepare "$RUNNER_TEMP/website"
+
+      - name: Verify npm provenance for the deployed commit
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_COMMIT: ${{ steps.release.outputs.commit }}
+        run: node scripts/verify-npm-release.mjs --published "refs/tags/$RELEASE_TAG" "$RELEASE_COMMIT"
+
+      - name: Verify registry and provenance signatures
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          npm install --prefix "$RUNNER_TEMP/consumer" "farvist@$RELEASE_VERSION" --ignore-scripts --prefer-online --no-audit --no-fund
+          npm audit signatures --prefix "$RUNNER_TEMP/consumer"
+
+      - name: Deploy atomically and verify public HTTPS files
+        env:
+          WEBSITE_SSH_HOST: ${{ vars.WEBSITE_SSH_HOST }}
+          WEBSITE_SSH_KNOWN_HOSTS: ${{ vars.WEBSITE_SSH_KNOWN_HOSTS }}
+          WEBSITE_SSH_KEY: ${{ secrets.WEBSITE_SSH_KEY }}
+        run: python3 scripts/deploy/website.py transfer "$RUNNER_TEMP/website"
+
+      - name: Record delivery
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_COMMIT: ${{ steps.release.outputs.commit }}
+        run: |
+          printf 'Deployed **%s** at `%s` to https://farvist.com/.\n\nAll manifest files passed origin and public HTTPS verification.\n' "$RELEASE_TAG" "$RELEASE_COMMIT" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save deployment evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: website-verification
+          path: |
+            ${{ runner.temp }}/website/website-manifest.json
+            ${{ runner.temp }}/website/origin-receipt.json
+            ${{ runner.temp }}/website/website-proof.json
+          if-no-files-found: ignore
+          retention-days: 14

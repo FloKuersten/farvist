@@ -11,6 +11,12 @@ import { setTimeout } from 'node:timers/promises';
 export const predicateType = 'https://slsa.dev/provenance/v1';
 const registry = 'https://registry.npmjs.org';
 
+export function versionFromTag(ref) {
+  assert.match(ref || '', /^refs\/tags\/v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/,
+    'Expected a stable version tag');
+  return ref.slice('refs/tags/v'.length);
+}
+
 export function verifyProvenance(attestations, expected) {
   const attestation = attestations.attestations?.find((entry) => entry.predicateType === predicateType);
   assert.ok(attestation?.bundle?.dsseEnvelope?.payload, 'Missing SLSA build provenance');
@@ -35,8 +41,10 @@ export function verifyProvenance(attestations, expected) {
 class PendingPublication extends Error {}
 
 export async function verifyRelease(expected, { request = fetch, pause = setTimeout, attempts = 20 } = {}) {
+  assert.equal(expected.name, 'farvist');
+  assert.equal(expected.version, versionFromTag(expected.ref));
   async function get(url) {
-    const response = await request(url, { signal: AbortSignal.timeout(30000), headers: { 'Cache-Control': 'no-cache' } });
+    const response = await request(url, { redirect: 'error', signal: AbortSignal.timeout(30000), headers: { 'Cache-Control': 'no-cache' } });
     if (response.status === 404 || response.status >= 500) {
       throw new PendingPublication(`${url}: HTTP ${response.status}`);
     }
@@ -48,9 +56,9 @@ export async function verifyRelease(expected, { request = fetch, pause = setTime
       const metadata = await (await get(`${registry}/${expected.name}/${expected.version}`)).json();
       assert.equal(metadata.version, expected.version);
       assert.equal(metadata.dist?.integrity, expected.integrity, 'Registry integrity differs from the packed release');
-      const tarballUrl = new URL(metadata.dist.tarball);
-      assert.equal(tarballUrl.origin, registry, 'Unexpected tarball registry');
-      const tarball = Buffer.from(await (await get(tarballUrl.href)).arrayBuffer());
+      const tarballUrl = `${registry}/farvist/-/farvist-${expected.version}.tgz`;
+      assert.equal(metadata.dist.tarball, tarballUrl, 'Unexpected tarball URL');
+      const tarball = Buffer.from(await (await get(tarballUrl)).arrayBuffer());
       assert.equal(`sha512-${createHash('sha512').update(tarball).digest('base64')}`, expected.integrity,
         'Downloaded registry tarball differs from the packed release');
       const attestations = await (await get(`${registry}/-/npm/v1/attestations/${expected.name}@${expected.version}`)).json();
@@ -66,10 +74,19 @@ export async function verifyRelease(expected, { request = fetch, pause = setTime
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [packed] = JSON.parse(readFileSync(process.argv[2] || 'npm-pack.json', 'utf8'));
-  const expected = { name: packed.name, version: packed.version, integrity: packed.integrity,
-    repository: process.env.GITHUB_REPOSITORY, ref: process.env.GITHUB_REF, commit: process.env.GITHUB_SHA };
-  assert.equal(expected.name, 'farvist');
+  const published = process.argv[2] === '--published';
+  const ref = published ? process.argv[3] : process.env.GITHUB_REF;
+  const version = versionFromTag(ref);
+  const [packed] = published
+    ? [{ name: 'farvist', version, integrity: (await (await fetch(`${registry}/farvist/${version}`,
+      { redirect: 'error', signal: AbortSignal.timeout(30000) })).json()).dist?.integrity }]
+    : JSON.parse(readFileSync(process.argv[2] || 'npm-pack.json', 'utf8'));
+  // Only the public, validated GitHub tag determines outbound request paths.
+  // Local pack metadata supplies the comparison digest, never request data.
+  const expected = { name: 'farvist', version, integrity: packed.integrity,
+    repository: process.env.GITHUB_REPOSITORY, ref, commit: published ? process.argv[4] : process.env.GITHUB_SHA };
+  assert.equal(packed.name, expected.name);
+  assert.equal(packed.version, expected.version);
   assert.equal(expected.repository, 'FloKuersten/farvist');
   assert.equal(expected.ref, `refs/tags/v${expected.version}`);
   assert.match(expected.commit || '', /^[a-f\d]{40}$/);

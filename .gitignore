@@ -16,3 +16,4 @@ _*.site
 LAUNCH-KIT.md
 LAUNCH-POSTS.md
 cf-setup.ps1
+__pycache__/
