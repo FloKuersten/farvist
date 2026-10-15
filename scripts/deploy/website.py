@@ -253,7 +253,11 @@ def public_verify(manifest, output):
     validate_manifest(manifest)
     def request(path):
         url = ORIGIN + path + ('&' if '?' in path else '?') + 'release=' + manifest['commit']
-        with urllib.request.urlopen(urllib.request.Request(url, headers={'Cache-Control': 'no-cache'}), timeout=30) as response:
+        # Cloudflare rejects Python's default user agent (error 1010). Identify
+        # this client truthfully without changing the site's edge protections.
+        headers = {'Cache-Control': 'no-cache',
+                   'User-Agent': 'Farvist-Release-Verifier/1.0 (+https://github.com/FloKuersten/farvist)'}
+        with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as response:
             require(response.url.startswith(ORIGIN), 'Unexpected website redirect')
             return response.read(MAX_FILE + 1)
     def check(item):
@@ -275,10 +279,10 @@ def public_verify(manifest, output):
             (output / 'website-proof.json').write_text(json.dumps(proof, indent=2) + '\n')
             print(f'Public HTTPS verification passed for {len(results)} files at {manifest["commit"]}')
             return proof
-        except Exception:
+        except Exception as error:
             if attempt == 8:
                 raise
-            print(f'Waiting for website propagation ({attempt}/8)', flush=True)
+            print(f'Waiting for website propagation ({attempt}/8): {error}', flush=True)
             time.sleep(10)
 
 
