@@ -109,6 +109,22 @@ Only if the workflow is unavailable: pack the verified commit using `npm pack --
 - Verify signatures from a fresh registry install with `npm audit signatures` and check the attestation's workflow/tag/commit against the released source.
 - Load the exact-version CSS and JavaScript URLs used by the install examples from jsDelivr, and confirm the installed CLI reports the expected version with `npx --yes farvist@X.Y.Z --version`.
 - Install the published package into a temporary consumer project and verify the documented imports and Sass customization example.
-- Deploy the website using the existing infrastructure, then check the live homepage, docs and changed templates. A Git push or npm publication does not deploy the website.
+- Confirm the **Deploy website** workflow succeeds, then check the live homepage, docs and changed templates. A Git push alone does not deploy the website.
 
-The GitHub publish workflow releases the npm package only. `npm run deploy` refers to the maintainer's local `deploy.ps1` for website deployment, which is intentionally git-ignored. A fresh clone needs that existing deployment setup before the command can work; keep it and its private infrastructure details out of the public repository.
+## 6. Automatic website delivery
+
+After **Publish to npm** succeeds, [Deploy website](.github/workflows/deploy-website.yml) automatically deploys the same stable release to [farvist.com](https://farvist.com). It runs trusted automation from `main`, accepts only the latest published GitHub release, requires successful publication and main-branch CI on the exact tagged commit, and verifies npm provenance and registry signatures again. Prereleases and failed publication runs do not deploy.
+
+The workflow packages only allowlisted regular Git files from the release commit. It does not run release scripts or consume upstream workflow artifacts. A dedicated SSH key in the `farvist-production` GitHub environment can only submit a website archive or roll back the current deployment. Its server account has no sudo, shell-command, forwarding, nginx-configuration or SSH-key write access. The host key is pinned. Restrict this environment to the `main` branch; keep the private key in `WEBSITE_SSH_KEY` and the host/known-host entry in environment variables `WEBSITE_SSH_HOST` and `WEBSITE_SSH_KNOWN_HOSTS`.
+
+The root-owned receiver is `scripts/deploy/website.py`, installed as `/usr/local/libexec/farvist-website.py`. Its forced command is `/usr/bin/python3 -I /usr/local/libexec/farvist-website.py receive`. The account may write only `/var/www/farvist`, containing immutable release directories and `current`/`previous` links. nginx serves `current`; deployment requires no privileged service reload. The receiver rejects links, traversal, duplicate paths, oversized archives, checksum mismatches and downgrades. It verifies every file before replacing the `current` symlink atomically. Each successful deployment exposes `release.json` with its version, source commit and file hashes.
+
+After activation, every public file is verified over HTTPS, accounting only for Cloudflare's email-protection rewriting. A failed public check rolls back a newly activated deployment. Evidence is retained in the workflow's `website-verification` artifact. Previous release directories and the original site are retained for operator recovery; monitor disk space and remove only inactive releases when needed.
+
+To retry the latest already-published release without republishing npm:
+
+```powershell
+gh workflow run deploy-website.yml --repo FloKuersten/farvist --ref main -f tag=vX.Y.Z
+```
+
+`npm run deploy` still refers to the maintainer's git-ignored `deploy.ps1`. Routine releases now use GitHub Actions; keep private infrastructure details out of the repository. Receiver updates require a maintainer to install the reviewed file on the server; the deployment key cannot replace its own restrictions.

@@ -13,36 +13,47 @@
 // re-exports `expand` as a callable default while keeping the named exports
 // and the v5 expansion caps. Idempotent; no-ops for brace-expansion < 5.
 // =============================================================================
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, openSync, closeSync, fstatSync, constants, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const MARKER = '/* farvist: callable default export for minimatch@3 consumers */';
 
-function patchDir(dir) {
+export function patchDir(dir) {
   const pkgPath = join(dir, 'package.json');
-  if (!existsSync(pkgPath)) return false;
-  const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+  let pkg;
+  try { pkg = JSON.parse(readFileSync(pkgPath, 'utf8')); }
+  catch (error) { if (error.code === 'ENOENT') return false; throw error; }
   if (pkg.name !== 'brace-expansion' || parseInt(pkg.version, 10) < 5) return false;
   const entry = join(dir, 'dist/commonjs/index.js');
-  if (!existsSync(entry)) throw new Error(`patch-brace-expansion: ${entry} missing — upstream layout changed, update this script.`);
-  const src = readFileSync(entry, 'utf8');
-  if (src.includes(MARKER)) return true; // already patched
-  writeFileSync(entry, src + `\n${MARKER}\nmodule.exports = Object.assign(function (str) { return expand(str); }, module.exports);\n`);
+  // Bind the read and write to the same inode; never reopen a checked path or
+  // create a missing upstream file. O_NOFOLLOW also rejects symlinks on Unix.
+  const fd = openSync(entry, constants.O_RDWR | (constants.O_NOFOLLOW || 0) | (constants.O_NONBLOCK || 0));
+  try {
+    if (!fstatSync(fd).isFile()) throw new Error('brace-expansion entry must be a regular file');
+    const src = readFileSync(fd, 'utf8');
+    if (src.includes(MARKER)) return true;
+    // readFileSync left this descriptor at EOF; append only the wrapper.
+    writeFileSync(fd, `\n${MARKER}\nmodule.exports = Object.assign(function (str) { return expand(str); }, module.exports);\n`);
+  } finally { closeSync(fd); }
   return true;
 }
 
 // The override dedupes to a single root copy, but walk one nesting level too
 // so a future npm layout change can't silently skip the patch.
-let patched = 0;
-const candidates = [join(root, 'node_modules/brace-expansion')];
-const nm = join(root, 'node_modules');
-if (existsSync(nm)) {
-  for (const scope of readdirSync(nm)) {
-    const nested = join(nm, scope, 'node_modules/brace-expansion');
-    if (existsSync(nested)) candidates.push(nested);
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  let patched = 0;
+  const candidates = [join(root, 'node_modules/brace-expansion')];
+  const nm = join(root, 'node_modules');
+  let entries;
+  try { entries = readdirSync(nm, { withFileTypes: true }); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; entries = []; }
+  for (const scope of entries) {
+    if (!scope.isDirectory()) continue;
+    const nested = join(nm, scope.name, 'node_modules/brace-expansion');
+    candidates.push(nested);
   }
+  for (const dir of candidates) if (patchDir(dir)) patched++;
+  console.log(`patch-brace-expansion: ${patched} install(s) patched callable`);
 }
-for (const dir of candidates) if (patchDir(dir)) patched++;
-console.log(`patch-brace-expansion: ${patched} install(s) patched callable`);
