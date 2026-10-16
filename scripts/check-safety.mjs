@@ -19,13 +19,100 @@ after(async () => {
   rmSync(temp, { recursive: true, force: true });
 });
 
-function cli(args) {
+function cli(args, timeout = 10000) {
   const result = spawnSync(process.execPath, [bin, 'check', ...args], {
-    cwd: root, encoding: 'utf8', timeout: 10000, maxBuffer: 1024 * 1024,
+    cwd: root, encoding: 'utf8', timeout, maxBuffer: 8 * 1024 * 1024,
   });
   assert.ifError(result.error);
   return result;
 }
+
+test('CLI finishes malformed imports and unterminated delimiters within a bounded subprocess', () => {
+  const cases = [
+    ['import.html', 'import ' + ' '.repeat(10000) + 'x'],
+    ['imports.html', 'import '.repeat(50000) + 'x'],
+    ['comments.html', '<!--'.repeat(100000)],
+    ['jsx-comments.tsx', '{ /* '.repeat(80000)],
+    ['links.html', '<link '.repeat(60000)],
+    ['styles.html', '<style>'.repeat(50000)],
+    ['icons.html', '<use '.repeat(80000)],
+  ];
+  for (const [name, body] of cases) {
+    const file = join(temp, name);
+    writeFileSync(file, body + '\n<div class="card-bdy"></div>');
+    const result = cli([file, '--json'], 2500);
+    assert.equal(result.status, 1, name);
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.summary.complete, true, name);
+    assert.equal(report.summary.errors, 1, name);
+    assert.equal(report.files[0].problems[0].class, 'card-bdy', name);
+  }
+});
+
+test('CLI preserves all static CSS import forms and case-insensitive quoted tags', () => {
+  const dir = join(temp, 'parser-imports');
+  mkdirSync(dir);
+  const forms = ["import './side.css';", "import styles from './default.css';", "import { card as custom } from './named.css';", "import * as theme from './namespace.css';", "import {\n card,\n btn\n} from\n './multiline.css';"];
+  const names = ['side', 'default', 'named', 'namespace', 'multiline'];
+  names.forEach((name) => writeFileSync(join(dir, name + '.css'), `.card-${name}-custom { color: red; }`));
+  writeFileSync(join(dir, 'linked.css'), '.card-linked-custom { color: red; }');
+  const file = join(dir, 'page.tsx');
+  writeFileSync(file, '<!-- <div class="card-nope"></div> --!>\n' + forms.join('\n') + '\nİ😀\n<LiNk title="a > b" href="linked.css?v=2" REL="alternate stylesheet">\n<STYLE title="a > b">.card-inline-custom { color: red; }</STYLE>\n<div class="' + names.map((name) => `card-${name}-custom`).join(' ') + ' card-linked-custom card-inline-custom card"></div>');
+  const result = cli([file, '--json']);
+  assert.equal(result.status, 0, result.stdout);
+  assert.equal(JSON.parse(result.stdout).summary.errors, 0);
+});
+
+test('CLI ignores fake attributes inside quoted values and retains xlink icon checks', () => {
+  const dir = join(temp, 'parser-attributes');
+  mkdirSync(dir);
+  writeFileSync(join(dir, 'fake.css'), '.card-bdy { color: red; }');
+  const file = join(dir, 'page.html');
+  writeFileSync(file, '<link title="rel=stylesheet href=\'fake.css\'">\n<use title="href=\'https://example.invalid/a.svg#x\'" href="#local"></use>\n<use xlink:href="https://example.invalid/a.svg#x"></use>\n<div class="card-bdy"></div>');
+  const result = cli([file, '--json']);
+  const problems = JSON.parse(result.stdout).files[0].problems;
+  assert.equal(result.status, 1);
+  assert.deepEqual(problems.map((p) => p.rule).sort(), ['cross-origin-icon', 'unknown-class']);
+  assert.equal(problems.find((p) => p.rule === 'cross-origin-icon').line, 3);
+});
+
+test('CLI recovers stylesheet imports after comments and checks tags after style variants', () => {
+  const dir = join(temp, 'parser-recovery');
+  mkdirSync(dir);
+  writeFileSync(join(dir, 'theme.css'), '.card-review-custom { color: red; }');
+  const file = join(dir, 'page.tsx');
+  writeFileSync(file, "// import styles\nimport './theme.css';\n<div className=\"card-review-custom\" />");
+  const imported = cli([file, '--json']);
+  assert.equal(imported.status, 0, imported.stdout);
+  for (const style of ['<style />', '<style>.someclass {}</style >', '<style>']) {
+    writeFileSync(file, style + '\n<link rel="stylesheet" href="theme.css">\n<div className="card-review-custom" />\n<use href="https://example.invalid/a.svg#x"></use>');
+    const result = cli([file, '--json']);
+    assert.equal(result.status, 1, style);
+    assert.deepEqual(JSON.parse(result.stdout).files[0].problems.map((p) => p.rule), ['cross-origin-icon'], style);
+  }
+});
+
+test('CLI keeps comment positions, escaped samples and unclosed comments intact', () => {
+  const file = join(temp, 'parser-positions.tsx');
+  writeFileSync(file, '<!-- class="card-nope"\r\n -->\r\n{ /* className="btn-nope"\r\n */ }\r\n😀<div className="card-bdy" />\r\n&lt;div class="btn-primry"&gt;\r\n<!-- unfinished\r\n<div class="badge-sof-primary"></div>');
+  const result = cli([file, '--json']);
+  const problems = JSON.parse(result.stdout).files[0].problems;
+  assert.deepEqual(problems.map((p) => [p.class, p.line, p.col]), [['card-bdy', 5, 19], ['badge-sof-primary', 8, 13]]);
+  const samples = JSON.parse(cli([file, '--json', '--samples']).stdout).files[0].problems;
+  assert.equal(samples.length, 3);
+  assert.equal(samples[1].class, 'btn-primry');
+});
+
+test('CLI indexes repeated attributes and diagnostic positions without prefix rescans', () => {
+  const file = join(temp, 'parser-repeated.html');
+  writeFileSync(file, '<div class="card"></div>\n'.repeat(25000) + '<div class="btn-primry"></div>\n'.repeat(1500));
+  const result = cli([file, '--json'], 10000);
+  const report = JSON.parse(result.stdout);
+  assert.equal(result.status, 1);
+  assert.equal(report.summary.checkedClasses, 26500);
+  assert.equal(report.summary.errors, 1500);
+  assert.equal(report.files[0].problems.at(-1).line, 26500);
+});
 
 test('CLI rejects missing and empty option values instead of checking the wrong input', () => {
   for (const option of ['--build', '--css', '--ignore']) {

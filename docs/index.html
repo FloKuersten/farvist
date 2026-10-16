@@ -724,9 +724,10 @@ document.querySelector('#cmd')
 &lt;/div&gt;</code></pre>
 
         <h3 class="h5 mb-2 mt-4">Streaming messages (JS)</h3>
-        <p class="text-muted mb-2" style="max-width:46rem;"><code>Farvist.stream(el, text)</code> types text into an element with the <code>.streaming</code> caret and re-runs <code>enhance()</code> when done (instant under reduced motion). Or inject markup yourself and call <code>Farvist.enhance()</code>.</p>
+        <p class="text-muted mb-2" style="max-width:46rem;"><code>Farvist.stream(el, text)</code> types text into an element with the <code>.streaming</code> caret and re-runs <code>enhance()</code> when done (instant under reduced motion). Use it or <code>textContent</code> for untrusted user/model text. Only insert trusted or sanitized HTML, then call <code>Farvist.enhance()</code>; enhancement does not sanitize markup.</p>
 <pre class="snippet"><code>await Farvist.stream(bubble, 'Here is the answer, streamed word by word…');
 
+// bubbleHTML must be trusted or sanitized HTML, never raw user/model output.
 chat.insertAdjacentHTML('beforeend', bubbleHTML);
 Farvist.enhance();   // re-run progressive enhancement</code></pre>
         <button class="btn btn-glass btn-sm mb-3" type="button" id="demo-stream">▶ Try Farvist.stream()</button>

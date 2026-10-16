@@ -207,18 +207,30 @@ qsa('.command-group', dialog).forEach(function (g) { g.setAttribute('role', 'pre
       <p>Worth noting that <kbd>Home</kbd> and <kbd>End</kbd> work but aren't advertised. The <code>.command-hint</code> footer lists only <kbd>↑</kbd><kbd>↓</kbd> navigate, <kbd>↵</kbd> select, <kbd>esc</kbd> close. Three hints is a footer; listing every binding turns it into a manual, and the people who reach for <kbd>Home</kbd> try it without being told.</p>
 
       <h2>Activation</h2>
-      <p>Enter (or a click) activates the highlighted item. The flexible design is to give each item one value and interpret it: a URL or <code>#anchor</code> navigates; anything else is a named action your app handles. Farvist puts that value in <code>data-fv-command</code> and branches on its first character:</p>
+      <p>Enter (or a click) activates an enabled item. Farvist reads <code>data-fv-command</code>, rejects control characters and checks resolved URLs: fragments and same-origin root paths navigate, as do explicit HTTP(S) links. Other values become named actions for your app to authorize. The activation check also handles items disabled after selection:</p>
       <pre class="snippet"><code>function runCommand(item) {
+  if (item.matches(':disabled, [disabled]') ||
+      item.closest('[hidden], [inert], [aria-disabled="true"]')) return;
   var dialog = item.closest('dialog.command');
   var val = item.getAttribute('data-fv-command');
   if (dialog) dialog.close();
-  if (val &amp;&amp; (val.charAt(0) === '/' || val.charAt(0) === '#' || /^https?:/.test(val))) {
-    window.location.href = val;
+  var path = val &amp;&amp; val.charAt(0) === '/' &amp;&amp;
+    val.charAt(1) !== '/' &amp;&amp; val.charAt(1) !== '\\';
+  var destination = null;
+  if (val &amp;&amp; !/[\u0000-\u001f\u007f]/.test(val) &amp;&amp;
+      (path || val.charAt(0) === '#' || /^https?:\/\//.test(val))) {
+    try {
+      var parsed = new URL(val, window.location.href);
+      if (!path || parsed.origin === window.location.origin) destination = parsed.href;
+    } catch (e) { /* invalid destinations remain application commands */ }
+  }
+  if (destination) {
+    window.location.href = destination;
   } else if (dialog) {
     dialog.dispatchEvent(new CustomEvent('fv:command', { bubbles: true, detail: { value: val, item: item } }));
   }
 }</code></pre>
-      <p>Anything that isn't a link becomes an event you handle:</p>
+      <p>Values that do not pass the navigation policy become events. Handle an explicit allowlist of actions; do not evaluate event values as code or forward them into privileged operations. Your application also decides which explicit external links to render:</p>
       <pre class="snippet"><code>palette.addEventListener('fv:command', (e) =&gt; {
   if (e.detail.value === 'skin-synthwave') Farvist.theme('synthwave');
 });</code></pre>
