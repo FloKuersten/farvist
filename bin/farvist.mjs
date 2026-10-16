@@ -23,6 +23,7 @@
 // =============================================================================
 import { readFileSync, readdirSync, statSync, realpathSync, openSync, fstatSync, readSync, closeSync, constants } from 'node:fs';
 import { join, extname, relative, dirname, resolve, basename } from 'node:path';
+import { stripComments, markupTags, cssImports, sourceLocator, escapedSampleChecker } from './markup.mjs';
 
 const MANIFEST_URL = new URL('../dist/farvist.classes.json', import.meta.url);
 const EXTS = new Set(['.html', '.htm', '.jsx', '.tsx', '.vue', '.svelte', '.astro']);
@@ -218,23 +219,15 @@ function collect(p, acc, top = true) {
 }
 const files = [...new Set(opts.paths.flatMap((p) => collect(p, [])))];
 
-// Comments are blanked with spaces (newlines kept) so positions stay exact.
-const blank = (m) => m.replace(/[^\n]/g, ' ');
-function stripComments(text, ext) {
-  let out = text.replace(/<!--[\s\S]*?-->/g, blank);
-  if (['.jsx', '.tsx', '.vue', '.svelte', '.astro'].includes(ext)) out = out.replace(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g, blank);
-  return out;
-}
-
 // Classes from stylesheets a file links or imports by RELATIVE path. Farvist's
 // own builds are skipped, so linking a local farvist-slim.css still reports AI
 // kit classes as wrong-build.
 const sheetCache = new Map();
-function linkedSheetClasses(text, file) {
+function linkedSheetClasses(text, file, tags) {
   const out = new Set();
   const refs = [
-    ...[...text.matchAll(/<link\b[^>]*>/gi)].filter((m) => /\brel\s*=\s*["']?stylesheet/i.test(m[0])).map((m) => (m[0].match(/\bhref\s*=\s*["']([^"']+)["']/i) || [])[1]),
-    ...[...text.matchAll(/\bimport\s+(?:[\w{}\s,*]+\s+from\s+)?["']([^"']+\.css)["']/g)].map((m) => m[1]),
+    ...tags.filter((tag) => tag.name === 'link' && /(?:^|\s)stylesheet(?:\s|$)/i.test(tag.attrs.rel || '')).map((tag) => tag.attrs.href),
+    ...cssImports(text),
   ];
   for (const ref of refs) {
     // Only relative references: never implicitly open URL schemes, drive paths,
@@ -258,12 +251,6 @@ function linkedSheetClasses(text, file) {
   return out;
 }
 
-function lineCol(text, index) {
-  const before = text.slice(0, index);
-  const line = before.split('\n').length;
-  return { line, col: index - before.lastIndexOf('\n') };
-}
-
 // ---- check ------------------------------------------------------------------
 // Same pattern as scripts/check-cdn-pins.mjs.
 const UNPINNED_CDN = /(?:cdn\.jsdelivr\.net\/npm|unpkg\.com|cdn\.jsdelivr\.net\/gh\/flokuersten)\/farvist(?:@latest)?(?![\w.@-])/gi;
@@ -275,9 +262,12 @@ for (const file of files) {
   try { raw = readInput(file); }
   catch (e) { skipped.push({ path: file, reason: e.code || e.message }); continue; }
   const text = stripComments(raw, extname(file).toLowerCase());
+  const tags = [...markupTags(text)];
+  const lineCol = sourceLocator(text);
+  const isSample = escapedSampleChecker(text);
   const problems = [];
   const add = (severity, rule, index, message, extra = {}) => {
-    problems.push({ ...lineCol(text, index), severity, rule, message, ...extra });
+    problems.push({ ...lineCol(index), severity, rule, message, ...extra });
     if (severity === 'error') errors++; else warnings++;
   };
 
@@ -288,8 +278,8 @@ for (const file of files) {
 
   // Classes the file defines itself in <style> blocks are its own, not typos.
   // So are classes from the stylesheets it links or imports.
-  const own = linkedSheetClasses(text, file);
-  for (const m of text.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) for (const c of classesFromCss(m[1])) own.add(c);
+  const own = linkedSheetClasses(text, file, tags);
+  for (const tag of tags) if (tag.name === 'style') for (const c of classesFromCss(tag.body)) own.add(c);
 
   // A plain class/className attribute. The look-behind leaves out bindings whose
   // value is an expression, not a class list: :class, v-bind:class, x-bind:class,
@@ -298,7 +288,7 @@ for (const file of files) {
   for (const m of text.matchAll(attrRe)) {
     // An escaped sample (&lt;div class="…"&gt; in a <pre>) shows markup, often a
     // deliberate "don't": only checked with --samples.
-    if (!opts.samples && text.lastIndexOf('&lt;', m.index) > text.lastIndexOf('<', m.index)) continue;
+    if (!opts.samples && isSample(m.index)) continue;
     const value = m[1] ?? m[2] ?? m[3] ?? '';
     const valueStart = m.index + m[0].indexOf(value);
     if (/\{\{|\$\{|<%|\{%/.test(value)) { dynamicAttrs++; continue; }
@@ -329,8 +319,10 @@ for (const file of files) {
   for (const m of text.matchAll(/\bclassName\s*=\s*\{(?!\s*["'`][^"'`$]*["'`]\s*\})/g)) { dynamicAttrs++; void m; }
 
   // Icon sprite on another origin: browsers refuse cross-origin <use>.
-  for (const m of text.matchAll(/<use\b[^>]*\bhref\s*=\s*["']((?:https?:)?\/\/[^"'#]+)#[^"']*["']/gi)) {
-    add('error', 'cross-origin-icon', m.index, `icon sprite loaded cross-origin (${m[1]}) — browsers block <use> across origins; serve farvist-icons.svg from your own site`);
+  for (const tag of tags) {
+    if (tag.name !== 'use') continue;
+    const m = (tag.attrs.href ?? tag.attrs['xlink:href'] ?? '').match(/^((?:https?:)?\/\/[^"'#]+)#/i);
+    if (m) add('error', 'cross-origin-icon', tag.index, `icon sprite loaded cross-origin (${m[1]}) — browsers block <use> across origins; serve farvist-icons.svg from your own site`);
   }
   // Unpinned CDN: no version, @latest, or the bare package URL (all follow the newest release).
   for (const m of text.matchAll(UNPINNED_CDN)) {
