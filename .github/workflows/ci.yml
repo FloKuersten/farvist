@@ -10,25 +10,6 @@ permissions:
   contents: read
 
 jobs:
-  public-diagnostic:
-    name: Diagnose public release response
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          persist-credentials: false
-      - run: |
-          python3 - <<'PY'
-          import difflib, hashlib, pathlib, urllib.request
-          url = 'https://farvist.com/404.html?release=353c4fbe0f7b46c402fd45e4f7799aab5caaa636'
-          request = urllib.request.Request(url, headers={'User-Agent': 'Farvist-Release-Verifier/1.0 (+https://github.com/FloKuersten/farvist)', 'Cache-Control': 'no-cache'})
-          with urllib.request.urlopen(request, timeout=30) as response:
-              data = response.read(100000)
-              print(response.status, response.url, dict(response.headers))
-          expected = pathlib.Path('404.html').read_text()
-          print('received', len(data), hashlib.sha256(data).hexdigest())
-          print(''.join(difflib.unified_diff(expected.splitlines(True), data.decode().splitlines(True), fromfile='release', tofile='public')))
-          PY
   quality:
     name: Quality gates
     runs-on: ubuntu-latest

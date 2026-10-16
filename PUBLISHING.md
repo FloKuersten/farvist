@@ -121,6 +121,17 @@ The root-owned receiver is `scripts/deploy/website.py`, installed as `/usr/local
 
 After activation, every public file is verified over HTTPS, accounting only for Cloudflare's email-protection rewriting. A failed public check rolls back a newly activated deployment. Evidence is retained in the workflow's `website-verification` artifact. Previous release directories and the original site are retained for operator recovery; monitor disk space and remove only inactive releases when needed.
 
+Keep HTML responses consistent across CDN regions. Cloudflare's automatic Web Analytics can inject a beacon outside the EU, making the public file differ from the released source. The origin's HTTP and HTTPS server blocks must include this HTML location alongside the existing `location /` block:
+
+```nginx
+location ~ \.html$ {
+    add_header Cache-Control "no-cache, no-transform" always;
+    try_files $uri =404;
+}
+```
+
+The header requires HTML revalidation and prevents intermediary payload transformations, including automatic analytics injection. Directory index requests also use this location. CSS, JavaScript and image caching keep their existing behavior. Back up the nginx configuration, run `nginx -t`, reload nginx, then confirm the header on the homepage, a directory page and `/404.html`. See Cloudflare's [automatic Web Analytics setup](https://developers.cloudflare.com/web-analytics/get-started/#sites-proxied-through-cloudflare) and [origin cache-control documentation](https://developers.cloudflare.com/cache/concepts/cache-control/#other). Keep the public hash checks strict; do not strip unexpected scripts to make a deployment pass.
+
 To retry the latest already-published release without republishing npm:
 
 ```powershell
