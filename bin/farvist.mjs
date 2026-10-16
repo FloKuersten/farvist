@@ -355,4 +355,6 @@ if (opts.json) {
   const incomplete = complete ? '' : '\n  validation incomplete: no files checked or input paths could not be read safely';
   console.log(`\n${errors || !complete ? '✖' : '✔'} ${summary}${dyn}${skip}${incomplete}`);
 }
-process.exit(!complete ? 2 : errors ? 1 : 0);
+// Let stdout drain: POSIX pipes are asynchronous, so process.exit() can truncate
+// a large JSON/text report before a calling tool receives the final diagnostics.
+process.exitCode = !complete ? 2 : errors ? 1 : 0;

@@ -7,6 +7,7 @@ All notable changes to Farvist are documented here. Versions follow [SemVer](htt
 ### Security
 - Replace backtracking CLI import/comment/tag matching with forward-only scans so malformed project files cannot stall validation below the existing 5 MB file limit. Preserve source positions, stylesheet discovery, and normal diagnostics; index repeated position/sample lookups instead of rescanning prefixes.
 - Add bounded-process regressions for malformed imports, comments, links, styles and icons, plus import/tag recovery and diagnostic-position cases.
+- Flush complete CLI reports before exiting so large JSON results are not truncated when piped on Linux.
 - Update the command-palette article to show the current disabled-item and URL checks, and clarify that HTML insertion requires trusted or sanitized markup.
 
 ## [1.8.4] — 2026-10-15
