@@ -2,7 +2,7 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
-## [Unreleased]
+## [1.8.5] — 2026-10-16
 
 ### Security
 - Replace backtracking CLI import/comment/tag matching with forward-only scans so malformed project files cannot stall validation below the existing 5 MB file limit. Preserve source positions, stylesheet discovery, and normal diagnostics; index repeated position/sample lookups instead of rescanning prefixes.
