@@ -20,7 +20,7 @@ function blankComments(text, opening, closing) {
 }
 
 export function stripComments(text, ext) {
-  let out = blankComments(text, /<!--/g, /-->/g);
+  let out = blankComments(text, /<!--/g, /--!?>/g);
   if (['.jsx', '.tsx', '.vue', '.svelte', '.astro'].includes(ext)) {
     out = blankComments(out, /\{\s*\/\*/g, /\*\/\s*\}/g);
   }

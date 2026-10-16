@@ -57,7 +57,7 @@ test('CLI preserves all static CSS import forms and case-insensitive quoted tags
   names.forEach((name) => writeFileSync(join(dir, name + '.css'), `.card-${name}-custom { color: red; }`));
   writeFileSync(join(dir, 'linked.css'), '.card-linked-custom { color: red; }');
   const file = join(dir, 'page.tsx');
-  writeFileSync(file, forms.join('\n') + '\nİ😀\n<LiNk title="a > b" href="linked.css?v=2" REL="alternate stylesheet">\n<STYLE title="a > b">.card-inline-custom { color: red; }</STYLE>\n<div class="' + names.map((name) => `card-${name}-custom`).join(' ') + ' card-linked-custom card-inline-custom card"></div>');
+  writeFileSync(file, '<!-- <div class="card-nope"></div> --!>\n' + forms.join('\n') + '\nİ😀\n<LiNk title="a > b" href="linked.css?v=2" REL="alternate stylesheet">\n<STYLE title="a > b">.card-inline-custom { color: red; }</STYLE>\n<div class="' + names.map((name) => `card-${name}-custom`).join(' ') + ' card-linked-custom card-inline-custom card"></div>');
   const result = cli([file, '--json']);
   assert.equal(result.status, 0, result.stdout);
   assert.equal(JSON.parse(result.stdout).summary.errors, 0);
