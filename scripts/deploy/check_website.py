@@ -76,6 +76,32 @@ class DeploymentTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             website.validate_manifest(manifest)
 
+    def test_private_files_are_rejected_even_with_matching_manifest(self):
+        for name in ('assets/contact.php', 'contact/CONTACT.PHP8', 'docs/config.phtml',
+                     'assets/archive.phar', 'assets/contact.php.txt', 'assets/contact.php/index.html',
+                     'assets/secret.key', 'docs/database.sql', 'assets/site.js.bak',
+                     'assets/settings.env.json', 'assets/site.js.map', 'assets/site.js.MAP',
+                     'assets/unknown.bin', 'assets/.env', '.well-known/.git/config'):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp:
+                files, manifest = fixture()
+                data = b'non-secret regression fixture'
+                files[name] = data
+                manifest['files'].append({'path': name, 'bytes': len(data),
+                                         'sha256': hashlib.sha256(data).hexdigest()})
+                with self.assertRaises(ValueError):
+                    website.validate_manifest(manifest)
+                with self.assertRaises(ValueError):
+                    website.unpack(archive(files, manifest), Path(temp))
+                self.assertFalse((Path(temp) / name).exists())
+
+    def test_public_static_formats_remain_supported(self):
+        for name in ('assets/image.webp', 'assets/font.woff2', 'assets/site.js',
+                     'docs/index.html', 'ai/prompt.md', 'ai/rules.mdc',
+                     '.well-known/security.txt', '.well-known/ai-plugin.json',
+                     'farvist.cursorrules', 'ai-context.json'):
+            with self.subTest(name=name):
+                self.assertEqual(website.valid_path(name), name)
+
     @unittest.skipIf(os.name == 'nt', 'Deployment symlinks run on Linux')
     def test_atomic_activation_idempotence_downgrade_and_rollback(self):
         (self.base / 'releases').mkdir()
