@@ -26,6 +26,13 @@ ROOTS = ('index.html', 'marketing.html', '404.html', 'robots.txt', 'ads.txt', 's
 MANIFEST = 'release.json'
 MAX_FILE = 5_000_000
 MAX_TOTAL = 50_000_000
+PUBLIC_SUFFIXES = frozenset(('.html', '.css', '.js', '.mjs', '.json', '.xml', '.txt',
+                            '.md', '.mdc', '.cursorrules', '.svg', '.png', '.jpg', '.jpeg',
+                            '.gif', '.webp', '.avif', '.ico', '.woff', '.woff2', '.ttf',
+                            '.otf', '.eot', '.webmanifest'))
+PRIVATE_SUFFIX = re.compile(r'\.(?:php\d*|phtml|phar|py|pyc|sh|ps1|cgi|pl|rb|asp|aspx|jsp|'
+                            r'env|ini|conf|config|sql|sqlite\d*|db|bak|backup|old|orig|save|'
+                            r'swp|swo|key|pem|p12|pfx|map)(?:[./]|$)', re.IGNORECASE)
 
 
 def require(condition, message):
@@ -50,7 +57,8 @@ def valid_path(name):
     require(all(part not in ('', '.', '..') for part in parts), 'Unsafe site path')
     require(all(not part.startswith('.') for part in parts[1:]), 'Hidden website files are forbidden')
     require(name in ROOTS or parts[0] in ROOTS and len(parts) > 1, 'Path outside website allowlist')
-    require(not name.endswith('.map'), 'Source maps are not public assets')
+    require(not PRIVATE_SUFFIX.search(name), 'Server source, secrets and backups are not public assets')
+    require(PurePosixPath(name).suffix.lower() in PUBLIC_SUFFIXES, 'Unsupported public asset type')
     return name
 
 
