@@ -1,5 +1,27 @@
 # Safety validation report
 
+## Dependency maintenance — 2026-10-25
+
+The current lockfile audit reports zero vulnerabilities across both development
+and production dependencies. This supersedes the historical unresolved audit
+results recorded below; those sections describe their original validation dates.
+
+- Pa11y CI 5.0.0 and Puppeteer 25.16.0 update the browser/accessibility test stack.
+- The resolved dependency tree uses Zod 4.6.7, Undici 7.30.1 and fast-uri 3.1.9,
+  removing the eight affected development-package entries found before maintenance.
+- CI now fails on any reported dependency vulnerability, including low severity,
+  instead of allowing noncritical development advisories.
+- These are development-tooling changes. The published consumer CLI retains its
+  Node 18+ requirement; development and CI continue to target Node 24.
+
+Validation on Windows with Node 25.8.1 and npm 11.11.0 passed a clean `npm ci`,
+full and runtime audits, all existing build/lint/size/theming/rendering/validator
+checks, 28 safety tests (two POSIX-only skips), all 16 release tests, dependency
+patch regressions (one POSIX-only skip), and the nine deployment tests (one
+Windows symlink skip). Generated artifacts have no diff. Pa11y CI 5.0.0 passed
+all 27 configured URLs with zero reported errors under the existing accessibility
+rule configuration. Linux and Node 24 validation runs separately in GitHub CI.
+
 Validated on **2026-10-12** against the safety changes based on
 `11192482a157bb0bd09ebb3363df6378f91c6661` (Farvist 1.8.1).
 This repository did not previously contain a tracked validation report.

@@ -36,8 +36,8 @@ jobs:
           node --test scripts/check-dependency-patch.mjs
           python3 scripts/deploy/check_website.py
 
-      - name: Development dependency audit (critical; the known high is tracked in docs/VALIDATION.md)
-        run: npm audit --audit-level=critical
+      - name: All dependency audit
+        run: npm audit --audit-level=low
 
       - name: CLI and browser safety regressions
         # The runner's installed Chrome has an AppArmor profile permitting its

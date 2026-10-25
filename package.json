@@ -95,10 +95,10 @@
   ],
   "devDependencies": {
     "autoprefixer": "^10.5.2",
-    "pa11y-ci": "^4.1.1",
+    "pa11y-ci": "^5.0.0",
     "postcss": "^8.5.15",
     "postcss-cli": "^12.0.0",
-    "puppeteer": "^25.11.0",
+    "puppeteer": "^25.16.0",
     "sass": "^1.83.0",
     "serve": "^14.2.6",
     "stylelint": "^17.14.0",

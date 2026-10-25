@@ -1,8 +1,7 @@
 name: Dependency review
 
 # Fails a pull request that adds or upgrades to a dependency with a known
-# high/critical advisory. Only the packages the PR changes are judged, so the
-# documented dev-only advisory in docs/VALIDATION.md does not block unrelated PRs.
+# high/critical advisory. CI separately audits the complete dependency tree.
 on:
   pull_request:
     branches: [main]
