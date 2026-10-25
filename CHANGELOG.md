@@ -2,6 +2,16 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.8.6] — 2026-10-25
+
+### Security
+- Update vulnerable development dependencies, including follow-redirects, Pa11y CI, Puppeteer, Zod, Undici and fast-uri. Both the full dependency audit and production audit report zero vulnerabilities at release validation.
+- Require CI to reject dependency advisories at every severity, including development dependencies.
+- Harden website delivery with an explicit static-file allowlist and nginx guards that reject server scripts, private files, keys, databases, backups, source maps and disguised filenames while preserving ACME certificate renewal.
+
+### Release maintenance
+- Refresh package metadata, generated references, website asset versions and exact-version install examples for 1.8.6.
+
 ## [1.8.5] — 2026-10-16
 
 ### Security
