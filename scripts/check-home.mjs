@@ -73,6 +73,27 @@ async function withPage(run, options = {}) {
       else request.abort();
     });
     await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: options.reduced ? 'reduce' : 'no-preference' }]);
+    if (options.pointer) {
+      // Headless hosts disagree about available pointing hardware. Control only
+      // these capability queries; reduced motion and every other query stay native.
+      await page.evaluateOnNewDocument((pointer) => {
+        const nativeMatchMedia = window.matchMedia.bind(window);
+        const fine = pointer === 'fine';
+        const capabilities = new Map([
+          ['(hover:hover)', fine], ['(hover:none)', !fine],
+          ['(pointer:fine)', fine], ['(pointer:coarse)', !fine],
+          ['(hover:hover)and(pointer:fine)', fine],
+        ]);
+        window.matchMedia = (query) => {
+          const result = nativeMatchMedia(query);
+          const normalized = String(query).replace(/\s+/g, '').toLowerCase();
+          if (capabilities.has(normalized)) {
+            Object.defineProperty(result, 'matches', { value: capabilities.get(normalized) });
+          }
+          return result;
+        };
+      }, options.pointer);
+    }
     if (options.javascript === false) await page.setJavaScriptEnabled(false);
     if (options.beforeLoad) await options.beforeLoad(page);
     const response = await page.goto(origin, { waitUntil: 'load' });
@@ -266,7 +287,10 @@ test('pointer tilt is available to precise pointers and stops when motion is pau
       return ['--tilt-x', '--tilt-y'].map((name) => parseFloat(style.getPropertyValue(name)) || 0);
     });
     assert.deepEqual(tilt, [0, 0]);
-  });
+    await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+    await page.waitForFunction(() => document.getElementById('motion-toggle').disabled);
+    assert.equal(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
+  }, { pointer: 'fine' });
   await withPage(async (page) => {
     assert.equal(await page.evaluate(() => matchMedia('(pointer: coarse)').matches), true);
     const card = await page.$('.showcase');
@@ -277,7 +301,7 @@ test('pointer tilt is available to precise pointers and stops when motion is pau
       return ['--tilt-x', '--tilt-y'].map((name) => parseFloat(style.getPropertyValue(name)) || 0);
     });
     assert.deepEqual(tilt, [0, 0]);
-  }, { touch: true });
+  }, { touch: true, pointer: 'coarse' });
 });
 
 test('homepage content remains visible without JavaScript on desktop and mobile', async () => {
