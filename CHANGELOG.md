@@ -2,6 +2,21 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## [1.9.0] — 2026-11-04
+
+### Website motion edition
+- Refresh the homepage with a layered glass hero, pointer-responsive perspective, orbital details, scroll entrances and hover feedback.
+- Add a motion lab with Drift, Orbit and Stack presets, keyboard-accessible duration/travel controls and matching, copyable CSS examples.
+- Respect system reduced-motion preferences, provide a persistent pause control and suspend decorative motion while the page is hidden. Content remains available without JavaScript.
+- Move site styles into `scss/site/home.scss`, compile and prefix them during the normal build, and version homepage CSS/JavaScript URLs with every release.
+- Add browser regressions for motion preferences, controls, keyboard input, mobile layout, static fallback and existing theme/navigation behavior.
+
+The motion lab and its styles are website examples. The framework's public API and CSS bundles remain compatible with 1.8.6.
+
+### Development security
+- Remove the legacy preview and accessibility wrappers that pulled in vulnerable minimatch, redirect and validation dependencies. Run Pa11y directly with the existing 27-page configuration and a local server limited to tracked public assets.
+- Remove the now-unneeded brace-expansion compatibility patch and add regressions for preview file isolation and accessibility failure reporting.
+
 ## [1.8.6] — 2026-10-25
 
 ### Security

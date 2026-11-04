@@ -10,9 +10,23 @@ test('website assets receive the release version and regenerate idempotently', (
   assert.equal(stamped, '<link href="../dist/farvist-ai.min.css?v=1.8.4" rel="stylesheet"><script defer src="assets/farvist.js?v=1.8.4"></script>');
   assert.equal(stampSiteAssets(stamped, '1.8.4'), stamped);
 });
+test('homepage CSS and JavaScript refresh together across release versions', () => {
+  const original = '<link rel="stylesheet" href="assets/home.css">\n' +
+    '<script defer src="/assets/home.js?v=1.8.6"></script>\n' +
+    '<link href="../assets/home.css?v=1.8.6">';
+  const expected = '<link rel="stylesheet" href="assets/home.css?v=1.9.0">\n' +
+    '<script defer src="/assets/home.js?v=1.9.0"></script>\n' +
+    '<link href="../assets/home.css?v=1.9.0">';
+  assert.equal(stampSiteAssets(original, '1.9.0'), expected);
+  assert.equal(stampSiteAssets(expected, '1.9.0'), expected);
+  assert.equal(stampSiteAssets(expected, '1.9.1'), expected.replaceAll('1.9.0', '1.9.1'));
+});
 test('website asset stamping leaves CDN URLs, documentation and unrelated files unchanged', () => {
   const html = '<script src="https://cdn.jsdelivr.net/npm/farvist@1/assets/farvist.js"></script>\n' +
-    '&lt;script src="assets/farvist.js"&gt;&lt;/script&gt;\n<link href="assets/home.css">';
+    '<link href="https://example.com/assets/home.css">\n' +
+    '<script src="//example.com/assets/home.js"></script>\n' +
+    '&lt;script src="assets/farvist.js"&gt;&lt;/script&gt;\n' +
+    '&lt;link href="assets/home.css"&gt;\n<link href="assets/custom.css">';
   assert.equal(stampSiteAssets(html, '1.8.4'), html);
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "farvist",
-  "version": "1.8.6",
+  "version": "1.9.0",
   "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, 42 components and dark/light themes. A drop-in alternative to Bootstrap and Tailwind.",
   "license": "MIT",
   "author": "FloKuersten",
@@ -35,6 +35,7 @@
   ],
   "files": [
     "scss",
+    "!scss/site",
     "dist",
     "!dist/*.map",
     "assets",
@@ -53,21 +54,22 @@
   "scripts": {
     "build": "sass scss/farvist.scss:dist/farvist.css scss/farvist-slim.scss:dist/farvist-slim.css scss/farvist-ai.scss:dist/farvist-ai.css --style=expanded --no-source-map",
     "build:min": "sass scss/farvist.scss:dist/farvist.min.css scss/farvist-slim.scss:dist/farvist-slim.min.css scss/farvist-ai.scss:dist/farvist-ai.min.css --style=compressed --no-source-map",
-    "build:all": "npm run build && npm run build:min && npm run build:prefix && npm run build:compat && npm run build:ai && npm run build:agent",
+    "build:all": "npm run build && npm run build:min && npm run build:prefix && npm run build:site && npm run build:compat && npm run build:ai && npm run build:agent",
+    "build:site": "sass scss/site/home.scss:assets/home.css --style=compressed --no-source-map && postcss assets/home.css -r --no-map",
     "build:compat": "node scripts/gen-ai-compat.mjs",
     "build:prefix": "postcss dist/farvist.css dist/farvist.min.css dist/farvist-slim.css dist/farvist-slim.min.css dist/farvist-ai.css dist/farvist-ai.min.css -r --no-map",
     "build:ai": "node scripts/gen-ai-context.mjs",
-    "watch": "sass --watch scss/farvist.scss:dist/farvist.css scss/farvist-slim.scss:dist/farvist-slim.css scss/farvist-ai.scss:dist/farvist-ai.css --style=expanded --no-source-map",
+    "watch": "sass --watch scss/farvist.scss:dist/farvist.css scss/farvist-slim.scss:dist/farvist-slim.css scss/farvist-ai.scss:dist/farvist-ai.css scss/site/home.scss:assets/home.css --style=expanded --no-source-map",
     "lint": "stylelint \"scss/**/*.scss\"",
     "check:size": "node scripts/check-size.mjs",
     "dev": "npm run build:all",
+    "preview": "node scripts/preview-site.mjs",
     "deploy": "powershell -NoProfile -ExecutionPolicy Bypass -File deploy.ps1",
     "prepublishOnly": "npm run build:all",
     "check:theming": "node scripts/check-theming.mjs",
     "check:skins": "node scripts/check-skins.mjs",
     "check:sass-api": "node scripts/check-sass-api.mjs",
     "check:privacy": "node scripts/check-privacy-claims.mjs",
-    "prepare": "node scripts/patch-brace-expansion.mjs",
     "check:ai-contrast": "node scripts/check-ai-contrast.mjs",
     "check:text-contrast": "node scripts/check-text-contrast.mjs",
     "check:nested-glass": "node scripts/check-nested-glass.mjs",
@@ -77,14 +79,13 @@
     "check:prompt-grow": "node scripts/check-prompt-grow.mjs",
     "check:forced-colors": "node scripts/check-forced-colors.mjs",
     "check:safety": "node --test --test-timeout=120000 scripts/check-safety.mjs",
+    "check:home": "node --test --test-timeout=120000 scripts/check-home.mjs",
+    "check:preview": "node --test scripts/check-preview.mjs",
+    "check:a11y": "node scripts/check-accessibility.mjs",
     "check:release": "node --test scripts/check-release.mjs"
   },
   "overrides": {
-    "brace-expansion": "^5.0.12",
-    "puppeteer": "$puppeteer",
-    "serve": {
-      "compression": "^1.8.2"
-    }
+    "puppeteer": "$puppeteer"
   },
   "browserslist": [
     "chrome >= 111",
@@ -95,15 +96,13 @@
   ],
   "devDependencies": {
     "autoprefixer": "^10.5.2",
-    "pa11y-ci": "^5.0.0",
+    "pa11y": "^10.0.0",
     "postcss": "^8.5.15",
     "postcss-cli": "^12.0.0",
     "puppeteer": "^25.16.0",
     "sass": "^1.83.0",
-    "serve": "^14.2.6",
     "stylelint": "^17.14.0",
-    "stylelint-config-standard-scss": "^17.0.0",
-    "wait-on": "^9.0.10"
+    "stylelint-config-standard-scss": "^17.0.0"
   },
   "bin": {
     "farvist": "bin/farvist.mjs"

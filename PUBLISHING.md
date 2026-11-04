@@ -42,11 +42,13 @@ npm run check:validator
 npm run check:prompt-grow
 npm run check:safety
 npm run check:release
+npm run check:home
+npm run check:a11y
 ```
 
-For the accessibility scan, run `npx serve -l 4000 .` in one terminal and `npx pa11y-ci` in another. Also check the changed pages in a browser at desktop and mobile widths, including light and dark themes and any changed interactions.
+The accessibility scan starts its own loopback server and audits every URL configured in `.pa11yci.json` with Pa11y and axe. For manual inspection, run `npm run preview`, then check the changed pages at desktop and mobile widths, including light and dark themes, motion preferences and changed interactions. The preview serves tracked public files only; add new public assets to Git before previewing them.
 
-`build:all` produces the CSS builds, AI compatibility CSS, catalog and agent reference files. Review and commit the generated changes with their sources. Do not edit generated files by hand. Repeating the build should leave those outputs unchanged.
+`build:all` produces the CSS builds, AI compatibility CSS, homepage CSS, catalog and agent reference files. Edit homepage styles in `scss/site/home.scss`; `build:site` compiles and prefixes `assets/home.css`. Site styles are excluded from the npm package. Review and commit generated changes with their sources. Do not edit generated files by hand. Repeating the build should leave those outputs unchanged.
 
 ## 3. Inspect the npm package
 

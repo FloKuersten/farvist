@@ -9,6 +9,8 @@ const BUDGETS = [
   { file: 'dist/farvist-slim.min.css', kb: 20 },
   { file: 'dist/farvist-ai.min.css', kb: 7 },
   { file: 'dist/farvist-ai-compat.css', kb: 2 },
+  { file: 'assets/home.css', kb: 6 },
+  { file: 'assets/home.js', kb: 5 },
 ];
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
