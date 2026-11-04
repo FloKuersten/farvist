@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Farvist — glass UI, ready to build</title>
+  <title>Farvist — glass UI, made to move</title>
   <meta name="description" content="Build distinctive interfaces with Farvist: 42 glass components, five skins, nine free templates and a ~21 KB CSS bundle. Install from npm or use a CDN. Free and MIT licensed." />
   <meta name="keywords" content="glassmorphism CSS framework, glass UI kit, dark CSS framework, Sass framework, Bootstrap alternative, Tailwind alternative" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Farvist — glass UI, ready to build" />
+  <meta property="og:title" content="Farvist — glass UI, made to move" />
   <meta property="og:url" content="https://farvist.com/" />
   <meta property="og:description" content="Frosted surfaces, neon glow and gradients — generated from Sass tokens. ~21 KB, 42 components, dark/light themes." />
   <meta property="og:image" content="https://farvist.com/assets/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Farvist — glass UI, ready to build" />
+  <meta name="twitter:title" content="Farvist — glass UI, made to move" />
   <meta name="twitter:description" content="A lightweight glassmorphism CSS framework. Free & MIT licensed." />
   <meta name="twitter:image" content="https://farvist.com/assets/og-image.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="dist/farvist.min.css?v=1.8.6" />
-  <link rel="stylesheet" href="assets/home.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dist/farvist.min.css?v=1.9.0" />
+  <link rel="stylesheet" href="assets/home.css?v=1.9.0" />
   <link rel="canonical" href="https://farvist.com/" />
   <script type="application/ld+json">
   {
@@ -33,7 +33,7 @@
     "description": "A lightweight (~21 KB) glassmorphism CSS framework — frosted surfaces, neon glow, gradients, a free backgrounds library, 42 components and dark/light themes. An alternative to Bootstrap and Tailwind.",
     "url": "https://farvist.com",
     "license": "https://opensource.org/licenses/MIT",
-    "softwareVersion": "1.8.6",
+    "softwareVersion": "1.9.0",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -41,6 +41,7 @@
     try {
       var savedTheme = localStorage.getItem('fv-theme');
       if (['light', 'synthwave', 'cyber', 'noir', 'forest', 'dawn'].includes(savedTheme)) document.documentElement.setAttribute('data-theme', savedTheme);
+      if (localStorage.getItem('fv-home-motion') === 'paused') document.documentElement.setAttribute('data-home-motion', 'paused');
     } catch (e) { /* The default theme also works without storage. */ }
   </script>
   <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
@@ -60,10 +61,11 @@
     </a>
     <button class="navbar-toggle" type="button" data-fv-nav-toggle aria-controls="nav-primary" aria-expanded="false" aria-label="Toggle menu"><span class="navbar-toggle-icon"></span></button>
     <ul class="navbar-nav" id="nav-primary" role="list">
-      <li><a class="nav-link" href="#components">Components</a></li>
+      <li><a class="nav-link" href="#motion">Motion lab</a></li>
       <li><a class="nav-link" href="templates/">Templates</a></li>
       <li><a class="nav-link" href="docs/">Documentation</a></li>
       <li><a class="nav-link" href="https://github.com/FloKuersten/farvist">GitHub ↗</a></li>
+      <li><button id="motion-toggle" class="btn btn-glass btn-sm" type="button" aria-pressed="false" hidden>Pause motion</button></li>
       <li><button id="theme-toggle" class="btn btn-glass btn-sm" type="button" aria-label="Switch to light theme">☾ Dark</button></li>
     </ul>
   </nav>
@@ -71,20 +73,25 @@
   <main id="main" tabindex="-1">
   <!-- A working component, with the HTML that makes it. -->
   <header class="hero">
+    <div class="hero-atmosphere" aria-hidden="true"><div class="hero-halo"></div><div class="hero-orbit hero-orbit-one"></div><div class="hero-orbit hero-orbit-two"></div></div>
     <div class="container">
       <div class="hero-grid">
         <div>
-          <a class="release-link" href="https://github.com/FloKuersten/farvist/releases/tag/v1.8.6"><span class="release-dot" aria-hidden="true"></span> <span data-fv-release-version>v1.8.6</span> <span class="text-muted">The glass CSS framework</span><span aria-hidden="true">↗</span></a>
-          <h1>Give your next<br />idea a <span class="text-gradient">glass soul.</span></h1>
-          <p class="hero-description">Frosted surfaces. A little neon. A lot less setup. Build distinctive interfaces with 42 components, expressive backgrounds and themes — all in one lightweight stylesheet.</p>
+          <a class="release-link" href="https://github.com/FloKuersten/farvist/releases/tag/v1.9.0"><span class="release-dot" aria-hidden="true"></span> <span data-fv-release-version>v1.9.0</span> <span class="text-muted">The glass CSS framework</span><span aria-hidden="true">↗</span></a>
+          <p class="hero-edition"><span class="edition-line" aria-hidden="true"></span> The motion edition / 01</p>
+          <h1>Beautiful at rest.<br /><span class="text-gradient">Better in motion.</span></h1>
+          <p class="hero-description">Glass with a little life. Build expressive interfaces with 42 components, rich themes and CSS you can make your own. Lightweight by design. Ready when you are.</p>
           <div class="hero-actions">
             <a href="#install" class="btn btn-gradient-primary">Start building <span aria-hidden="true">→</span></a>
-            <a href="templates/" class="btn btn-glass">Explore templates</a>
+            <a href="#motion" class="btn btn-glass">Play with motion <svg class="home-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18h12V6"/></svg></a>
           </div>
           <div class="hero-install"><code id="hero-install-command">npm install farvist</code><button class="btn btn-glass btn-sm" type="button" data-home-copy="hero-install-command" aria-label="Copy npm install command">Copy</button></div>
           <p class="hero-note"><span>MIT licensed</span><span>No runtime dependencies</span><span>No build step required</span></p>
         </div>
-        <div class="showcase">
+        <div class="hero-scene">
+          <div class="scene-orbit" aria-hidden="true"></div>
+          <div class="scene-note scene-note-top" aria-hidden="true"><svg class="scene-note-icon" viewBox="0 0 32 32"><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6"/></svg><span>LESS STATIC.<br /><strong>MORE YOU.</strong></span></div>
+          <div class="showcase">
           <div class="showcase-toolbar">
             <span class="showcase-label"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span> made with farvist</span>
             <div class="tabs" aria-label="Component example">
@@ -96,12 +103,12 @@
             <div class="card card-glow">
               <div class="card-body">
                 <div class="showcase-kicker"><span class="project-mark" aria-hidden="true">◆</span><span class="badge badge-soft-success">In progress</span></div>
-                <p class="eyebrow text-muted mb-2">Your next big thing</p>
-                <h2 class="mb-2">Something good<br />is taking shape.</h2>
+                <p class="eyebrow text-muted mb-2">A live component preview</p>
+                <h2 class="mb-2">Good ideas<br />don't stand still.</h2>
                 <p class="text-muted fs-sm mb-3">From the first component to the final detail.</p>
                 <div class="d-flex justify-content-between fs-xs text-muted"><span>Project launch · demo</span><span>72%</span></div>
                 <div class="progress"><div class="progress-bar bg-gradient-primary" aria-label="Demo project progress" style="width:72%"></div></div>
-                <div class="showcase-card-footer"><div class="avatar-group" role="group" aria-label="Demo team"><span class="avatar avatar-primary">AL</span><span class="avatar avatar-accent">MK</span><span class="avatar">+2</span></div><a class="btn btn-glass btn-sm" href="examples/dashboard.html">Open dashboard <span aria-hidden="true">↗</span></a></div>
+                <div class="showcase-card-footer"><div class="avatar-group" role="group" aria-label="Demo team"><span class="avatar avatar-primary">AL</span><span class="avatar avatar-accent">MK</span><span class="avatar">+2</span></div><a class="btn btn-glass btn-sm" href="examples/dashboard.html">Open dashboard <svg class="home-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6h12v12"/></svg></a></div>
               </div>
             </div>
           </div>
@@ -121,6 +128,9 @@
 &lt;/article&gt;</code></pre>
           </div>
           <div class="showcase-footer"><span>Real components. Your content.</span><a href="#brand">Try another theme <span aria-hidden="true">↗</span></a></div>
+          </div>
+          <div class="scene-note scene-note-bottom" aria-hidden="true"><span class="scene-note-icon">↗</span><span>YOUR IDEAS.<br /><strong>IN THEIR ELEMENT.</strong></span></div>
+          <p class="scene-caption"><span aria-hidden="true">↔</span> Glass, depth &amp; a little perspective</p>
         </div>
       </div>
       <div class="proof-strip" role="group" aria-label="Framework at a glance">
@@ -133,6 +143,47 @@
   </header>
 
   <div class="container home-main">
+
+    <section id="motion" class="section motion-section" aria-labelledby="motion-heading">
+      <div class="section-heading"><div><p class="eyebrow text-primary fw-bold mb-2">01 / The motion lab</p><h2 id="motion-heading">A little movement.<br />A different feeling.</h2></div><p class="motion-intro">Try a rhythm. Make it yours.<br />Take the CSS with you.</p></div>
+      <div class="motion-lab">
+        <div class="motion-preview">
+          <div class="motion-stage" id="motion-stage" data-preset="drift" aria-hidden="true">
+            <div class="motion-grid"></div>
+            <div class="motion-track"></div>
+            <div class="motion-tile motion-tile-back"><span>01</span><i></i><i></i></div>
+            <div class="motion-tile motion-tile-middle"><span>02</span><i></i><i></i></div>
+            <div class="motion-tile motion-tile-front"><svg class="motion-tile-symbol" viewBox="0 0 32 32"><path d="M16 2v28M2 16h28M6 6l20 20M6 26 26 6"/></svg><strong>Made to move.</strong><small>PURE CSS / YOUR RHYTHM</small></div>
+            <span class="motion-axis motion-axis-x">X</span><span class="motion-axis motion-axis-y">Y</span>
+          </div>
+          <div class="motion-preview-caption"><span class="motion-led" aria-hidden="true"></span><span id="motion-status" role="status">Drift — a slow, floating rhythm.</span></div>
+        </div>
+        <div class="motion-controls">
+          <p class="eyebrow text-muted mb-3">Choose your movement</p>
+          <div class="motion-presets" role="group" aria-label="Animation preset">
+            <button type="button" class="motion-preset" data-motion-preset="drift" aria-pressed="true" disabled><span aria-hidden="true">↕</span> Drift</button>
+            <button type="button" class="motion-preset" data-motion-preset="orbit" aria-pressed="false" disabled><span aria-hidden="true">◌</span> Orbit</button>
+            <button type="button" class="motion-preset" data-motion-preset="stack" aria-pressed="false" disabled><span aria-hidden="true">▱</span> Stack</button>
+          </div>
+          <div class="motion-range"><label for="motion-duration">Duration <output for="motion-duration" id="motion-duration-value">6s</output></label><input type="range" id="motion-duration" min="2" max="10" value="6" step="1" disabled /><div class="motion-range-scale"><span>Quick</span><span>Unhurried</span></div></div>
+          <div class="motion-range"><label for="motion-distance">Travel <output for="motion-distance" id="motion-distance-value">20px</output></label><input type="range" id="motion-distance" min="8" max="32" value="20" step="2" disabled /><div class="motion-range-scale"><span>Subtle</span><span>Expressive</span></div></div>
+          <p class="motion-hint">CSS transforms do the moving. Your system's reduced-motion preference comes first.</p>
+          <noscript><p class="text-muted">Enable JavaScript to adjust the demo. The CSS below works on its own.</p></noscript>
+        </div>
+      </div>
+      <div class="motion-code-header"><span><span class="code-dot" aria-hidden="true"></span> Your next micro-interaction</span><span>CSS · copy &amp; make it yours</span></div>
+      <pre class="snippet motion-code"><code id="motion-css">.your-element {
+  animation: drift 6s ease-in-out infinite;
+}
+@keyframes drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .your-element { animation: none; }
+}</code></pre>
+      <p class="motion-footnote">Site demos, built with SCSS. No animation library. <a href="https://github.com/FloKuersten/farvist/blob/main/scss/site/home.scss">Explore the source ↗</a></p>
+    </section>
 
     <!-- Get started -->
     <section id="install" class="section">
@@ -674,8 +725,8 @@ import 'farvist/assets/farvist.js';</code></pre>
     </div>
   </footer>
 
-  <script src="assets/farvist.js?v=1.8.6" defer></script>
-  <script src="assets/home.js" defer></script>
+  <script src="assets/farvist.js?v=1.9.0" defer></script>
+  <script src="assets/home.js?v=1.9.0" defer></script>
 
 </body>
 </html>

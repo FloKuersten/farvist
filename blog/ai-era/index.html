@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/dist/farvist.css?v=1.8.6" />
+  <link rel="stylesheet" href="/dist/farvist.css?v=1.9.0" />
   <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="/llms.txt" />
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png" />
@@ -188,7 +188,7 @@ if (lower.includes(hex) &amp;&amp; !isVarDef) offenders.push(`${i + 1}: [${name}
 
       <h2>What this doesn't fix</h2>
       <p>None of this makes an AI infallible. A model can still choose an ugly layout, misuse a component, or write inaccessible markup. What these three things do is shrink the <em>error surface</em> — they remove the failures that come from stale knowledge, invented class names, and un-runnable tooling. The taste is still on you (or on how well you prompt).</p>
-      <p>Accessibility is the sharpest example. The recipes carry correct labels and roles, and our main pages are gated on axe via <code>pa11y-ci</code> — but that gate covers <em>our</em> HTML, not the HTML a model writes on your machine. The moment an assistant free-hands a component instead of copying a recipe, every <code>aria-label</code> is a coin flip. Shipping good examples raises the floor; it doesn't install a ceiling.</p>
+      <p>Accessibility is the sharpest example. The recipes carry correct labels and roles, and our main pages are gated on axe via Pa11y — but that gate covers <em>our</em> HTML, not the HTML a model writes on your machine. The moment an assistant free-hands a component instead of copying a recipe, every <code>aria-label</code> is a coin flip. Shipping good examples raises the floor; it doesn't install a ceiling.</p>
       <p>Retrieval isn't guaranteed either. <code>llms.txt</code> is a convention with no enforcement behind it: publishing one does not mean any given model reads it, and we have no telemetry claiming otherwise. The paths we're actually confident in are the ones with a human in them — a developer pasting <code>llms-full.txt</code> into a context window, or dropping <code>farvist.cursorrules</code> into a repo. The crawler-facing files are a bet on where the tooling is going, not a measured win.</p>
       <p>And generation only guarantees that the catalog agrees with the build. If the build is wrong, the catalog is confidently, machine-readably wrong in exactly the same way. Consistency is not correctness; it just means you have one thing to fix instead of two.</p>
       <p>It also isn't a moat in the "nobody can copy this" sense. Any framework could ship an <code>llms.txt</code> tomorrow, and generating a catalog from your own compiled output is maybe 120 lines of Node with no dependencies. The point isn't secrecy; it's that these are the right defaults for the moment we're in, and most frameworks were built for a different one.</p>
@@ -216,7 +216,7 @@ if (lower.includes(hex) &amp;&amp; !isVarDef) offenders.push(`${i + 1}: [${name}
     </div>
   </footer>
 
-  <script src="/assets/farvist.js?v=1.8.6" defer></script>
+  <script src="/assets/farvist.js?v=1.9.0" defer></script>
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </body>
 </html>
