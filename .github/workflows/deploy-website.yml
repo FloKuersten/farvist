@@ -9,7 +9,11 @@ on:
       tag:
         description: Latest published stable release to redeploy (vX.Y.Z)
         type: string
-        required: true
+        required: false
+      website_commit:
+        description: Website-only deployment of the exact current main SHA (leave tag empty)
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -26,7 +30,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' ||
         (github.event.workflow_run.conclusion == 'success' &&
          github.event.workflow_run.head_repository.full_name == 'FloKuersten/farvist'))
-    name: Verify and deploy released website
+    name: Verify and deploy website
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
@@ -45,17 +49,18 @@ jobs:
           node-version: 24
           package-manager-cache: false
 
-      - name: Require successful publication and CI for the latest release
+      - name: Require verified package release and exact-commit main CI
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.tag }}
+          WEBSITE_COMMIT: ${{ inputs.website_commit }}
         run: python3 scripts/deploy/website.py prepare "$RUNNER_TEMP/website"
 
-      - name: Verify npm provenance for the deployed commit
+      - name: Verify npm provenance for the framework release
         env:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
-          RELEASE_COMMIT: ${{ steps.release.outputs.commit }}
+          RELEASE_COMMIT: ${{ steps.release.outputs.release_commit }}
         run: node scripts/verify-npm-release.mjs --published "refs/tags/$RELEASE_TAG" "$RELEASE_COMMIT"
 
       - name: Verify registry and provenance signatures
@@ -76,8 +81,9 @@ jobs:
         env:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
           RELEASE_COMMIT: ${{ steps.release.outputs.commit }}
+          PACKAGE_COMMIT: ${{ steps.release.outputs.release_commit }}
         run: |
-          printf 'Deployed **%s** at `%s` to https://farvist.com/.\n\nAll manifest files passed origin and public HTTPS verification.\n' "$RELEASE_TAG" "$RELEASE_COMMIT" >> "$GITHUB_STEP_SUMMARY"
+          printf 'Deployed website `%s` to https://farvist.com/ using framework **%s** (`%s`).\n\nAll manifest files passed origin and public HTTPS verification.\n' "$RELEASE_COMMIT" "$RELEASE_TAG" "$PACKAGE_COMMIT" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Save deployment evidence
         if: always()

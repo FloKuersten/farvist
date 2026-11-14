@@ -33,6 +33,14 @@ PUBLIC_SUFFIXES = frozenset(('.html', '.css', '.js', '.mjs', '.json', '.xml', '.
 PRIVATE_SUFFIX = re.compile(r'\.(?:php\d*|phtml|phar|py|pyc|sh|ps1|cgi|pl|rb|asp|aspx|jsp|'
                             r'env|ini|conf|config|sql|sqlite\d*|db|bak|backup|old|orig|save|'
                             r'swp|swo|key|pem|p12|pfx|map)(?:[./]|$)', re.IGNORECASE)
+SITE_ASSETS = frozenset(('assets/home.css', 'assets/home.js', 'assets/notify.js',
+                         'assets/templates.css', 'assets/templates.js'))
+RUNTIME_ROOTS = ('scss', 'dist', 'assets', 'bin')
+RUNTIME_METADATA = ('name', 'version', 'main', 'style', 'sass', 'bin', 'exports',
+                    'imports', 'type', 'browser', 'module', 'types', 'typesVersions',
+                    'sideEffects', 'engines', 'dependencies',
+                    'optionalDependencies', 'peerDependencies', 'peerDependenciesMeta',
+                    'bundledDependencies', 'bundleDependencies')
 
 
 def require(condition, message):
@@ -65,6 +73,8 @@ def valid_path(name):
 def validate_manifest(manifest):
     valid_commit(manifest['commit'])
     version_tuple(manifest['version'])
+    revision = manifest.get('revision', 0)
+    require(type(revision) is int and 0 <= revision <= 1_000_000_000, 'Invalid website revision')
     files = manifest['files']
     require(isinstance(files, list) and 1 <= len(files) <= 1000, 'Invalid file count')
     names = set()
@@ -86,6 +96,15 @@ def gh(path):
     return json.loads(subprocess.check_output(['gh', 'api', f'repos/{REPOSITORY}/{path}']))
 
 
+def require_main_ci(commit):
+    checks = gh(f'actions/workflows/ci.yml/runs?head_sha={commit}&branch=main&event=push&status=success')['workflow_runs']
+    require(any(run['head_sha'] == commit and run['head_branch'] == 'main'
+                and run['event'] == 'push' and run['conclusion'] == 'success'
+                and run['path'] == '.github/workflows/ci.yml'
+                and run['head_repository']['full_name'] == REPOSITORY
+                for run in checks), 'Main-branch CI must pass on the exact website commit')
+
+
 def release_gate(tag, event=None):
     require(tag.startswith('v'), 'Invalid release tag')
     version_tuple(tag[1:])
@@ -105,9 +124,38 @@ def release_gate(tag, event=None):
     require(matching, 'No successful npm publication verification for this tag and commit')
     if event is not None:
         require(any(run['id'] == event['id'] for run in matching), 'Untrusted triggering workflow')
-    checks = gh(f'actions/workflows/ci.yml/runs?head_sha={commit}&branch=main&event=push&status=success')['workflow_runs']
-    require(any(run['head_sha'] == commit and run['head_branch'] == 'main' and run['conclusion'] == 'success'
-                for run in checks), 'Main-branch CI must pass on the release commit')
+    require_main_ci(commit)
+    return commit
+
+
+def git_read(repo, *args):
+    return subprocess.check_output(['git', '-C', str(repo), *args])
+
+
+def require_unchanged_runtime(repo, release_commit, website_commit):
+    packages = [json.loads(git_read(repo, 'show', f'{commit}:package.json'))
+                for commit in (release_commit, website_commit)]
+    require(all(packages[0].get(key) == packages[1].get(key) for key in RUNTIME_METADATA),
+            'Website-only deployment cannot change package version or runtime metadata')
+    changes = git_read(repo, 'diff', '--name-only', '--no-renames', '-z',
+                       release_commit, website_commit, '--', *RUNTIME_ROOTS).decode('utf8').split('\0')
+    require(all(not path or path.startswith('scss/site/') or path in SITE_ASSETS for path in changes),
+            'Website-only deployment cannot change framework source or runtime assets')
+
+
+def website_gate(repo, commit, release_commit):
+    valid_commit(commit)
+    valid_commit(release_commit)
+    require(gh('branches/main')['commit']['sha'] == commit,
+            'Website-only deployment requires the exact current main commit')
+    # The checkout is the trusted main revision which supplied this workflow.
+    require(git_read(repo, 'rev-parse', 'HEAD').decode().strip() == commit,
+            'Website commit must match the trusted workflow checkout')
+    require_main_ci(commit)
+    result = subprocess.run(['git', '-C', str(repo), 'merge-base', '--is-ancestor',
+                             release_commit, commit], check=False)
+    require(result.returncode == 0, 'Website commit must descend from the published release')
+    require_unchanged_runtime(repo, release_commit, commit)
     return commit
 
 
@@ -129,7 +177,11 @@ def prepare(repo, commit, version, output):
         data = git('show', f'{commit}:{path}')
         files.append({'path': path, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
         contents[path] = data
-    manifest = validate_manifest({'version': version, 'commit': commit, 'files': files})
+    revision = int(git('rev-list', '--count', commit).decode().strip())
+    require(revision > 0, 'Website revision requires complete Git history')
+    require(git('rev-parse', '--is-shallow-repository').decode().strip() == 'false',
+            'Website revision requires complete Git history')
+    manifest = validate_manifest({'version': version, 'commit': commit, 'revision': revision, 'files': files})
     encoded = json.dumps(manifest, sort_keys=True).encode()
     (output / 'website-manifest.json').write_bytes(encoded)
     contents[MANIFEST] = encoded
@@ -191,28 +243,45 @@ def replace_link(base, name, target):
     os.replace(temporary, base / name)
 
 
+def require_forward_release(old, manifest):
+    require(version_tuple(manifest['version']) >= version_tuple(old['version']), 'Refusing release downgrade')
+    if old['version'] == manifest['version'] and old['commit'] != manifest['commit']:
+        require(manifest.get('revision', 0) > old.get('revision', 0), 'Refusing website revision downgrade')
+
+
 def activate(base, staging, manifest):
+    validate_manifest(manifest)
     current = base / 'current'
     old_manifest = current / MANIFEST
+    old = None
     if old_manifest.is_file():
-        old = json.loads(old_manifest.read_text())
-        require(version_tuple(manifest['version']) >= version_tuple(old['version']), 'Refusing release downgrade')
-        if old['version'] == manifest['version']:
-            require(old['commit'] == manifest['commit'], 'Same version has a different commit')
+        old = validate_manifest(json.loads(old_manifest.read_text()))
+        require_forward_release(old, manifest)
     release = base / 'releases' / f'{manifest["version"]}-{manifest["commit"]}'
     if release.exists():
-        require(json.loads((release / MANIFEST).read_text()) == manifest, 'Existing release manifest differs')
-        verify_directory(release, manifest)
+        existing = validate_manifest(json.loads((release / MANIFEST).read_text()))
+        # Legacy releases have no revision. Preserve their immutable manifest on
+        # a same-commit retry; transfer verifies the manifest actually retained.
+        expected = dict(manifest)
+        if 'revision' not in existing:
+            expected.pop('revision', None)
+        require(existing == expected, 'Existing release manifest differs')
+        verify_directory(release, existing)
+        manifest = existing
+        if old:
+            require_forward_release(old, manifest)
     else:
         staging.chmod(0o755)
         staging.rename(release)
     relative = str(release.relative_to(base))
     old_target = os.readlink(current)
     if old_target == relative:
-        return {'changed': False, 'commit': manifest['commit'], 'files': len(manifest['files'])}
+        return {'changed': False, 'commit': manifest['commit'], 'revision': manifest.get('revision', 0),
+                'files': len(manifest['files'])}
     replace_link(base, 'previous', old_target)
     replace_link(base, 'current', relative)
-    return {'changed': True, 'commit': manifest['commit'], 'files': len(manifest['files'])}
+    return {'changed': True, 'commit': manifest['commit'], 'revision': manifest.get('revision', 0),
+            'files': len(manifest['files'])}
 
 
 def rollback(base, commit):
@@ -309,9 +378,16 @@ def transfer(output):
                '-o', 'ConnectTimeout=15', '-o', 'ServerAliveInterval=15', '-o', 'ServerAliveCountMax=4',
                f'farvist-deploy@{host}']
         receipt = json.loads(subprocess.check_output([*ssh, 'deploy'], input=(output / 'website.tgz').read_bytes(), timeout=120))
-        require(receipt['commit'] == manifest['commit'], 'Origin deployed the wrong commit')
         (output / 'origin-receipt.json').write_text(json.dumps(receipt) + '\n')
         try:
+            require(receipt['commit'] == manifest['commit'], 'Origin deployed the wrong commit')
+            if receipt.get('revision', 0) == 0:
+                # A same-commit retry may be an immutable pre-revision release.
+                require(not receipt['changed'], 'Receiver must support website revisions before activation')
+                manifest.pop('revision', None)
+                (output / 'website-manifest.json').write_text(json.dumps(manifest, sort_keys=True))
+            else:
+                require(receipt['revision'] == manifest['revision'], 'Origin deployed the wrong website revision')
             public_verify(manifest, output)
         except Exception:
             if receipt['changed']:
@@ -330,11 +406,17 @@ def main():
         require(os.environ['GITHUB_REF'] == 'refs/heads/main', 'Website workflow must run from main')
         event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
         run = event.get('workflow_run') if os.environ['GITHUB_EVENT_NAME'] == 'workflow_run' else None
-        tag = run['head_branch'] if run else os.environ['RELEASE_TAG']
-        commit = release_gate(tag, run)
+        website_commit = os.environ.get('WEBSITE_COMMIT', '').strip()
+        tag = run['head_branch'] if run else os.environ.get('RELEASE_TAG', '').strip()
+        require(not (website_commit and (run or tag)), 'Choose a release tag or website commit, not both')
+        if website_commit:
+            tag = gh('releases/latest')['tag_name']
+        require(tag, 'A release tag or website commit is required')
+        release_commit = release_gate(tag, run)
+        commit = website_gate(Path.cwd(), website_commit, release_commit) if website_commit else release_commit
         manifest = prepare(Path.cwd(), commit, tag[1:], output)
         with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
-            stream.write(f'tag={tag}\nversion={tag[1:]}\ncommit={commit}\n')
+            stream.write(f'tag={tag}\nversion={tag[1:]}\ncommit={commit}\nrelease_commit={release_commit}\n')
         print(f'Prepared {len(manifest["files"])} tracked files from {tag} at {commit}')
     elif operation == 'transfer':
         transfer(output)

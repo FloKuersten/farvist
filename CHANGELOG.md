@@ -2,6 +2,13 @@
 
 All notable changes to Farvist are documented here. Versions follow [SemVer](https://semver.org).
 
+## Website update — 2026-11-14
+
+- Make all nine templates available as downloadable HTML starters with complete, copyable source and direct previews.
+- Pin the exported CSS and JavaScript to Farvist 1.9.0 with integrity checks, embed the icon sprite, and resolve documentation links so starters work outside the repository.
+- Add a mobile-friendly, keyboard-accessible source viewer with clear loading, retry and clipboard states. Preview and download links also work without JavaScript.
+- Generate the starters from the maintained examples and verify them in clean consumer folders. Keep the npm package at 1.9.0; website delivery now has a separate verified path.
+
 ## [1.9.0] — 2026-11-04
 
 ### Website motion edition

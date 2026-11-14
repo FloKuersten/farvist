@@ -36,6 +36,15 @@
     "http://localhost:4000/examples/dashboard.html",
     "http://localhost:4000/examples/auth.html",
     "http://localhost:4000/examples/blocks.html",
-    "http://localhost:4000/examples/saas.html"
+    "http://localhost:4000/examples/saas.html",
+    "http://localhost:4000/templates/starters/ai-console.html",
+    "http://localhost:4000/templates/starters/trading-bot.html",
+    "http://localhost:4000/templates/starters/ai-cluster.html",
+    "http://localhost:4000/templates/starters/ai-addon.html",
+    "http://localhost:4000/templates/starters/portfolio.html",
+    "http://localhost:4000/templates/starters/dashboard.html",
+    "http://localhost:4000/templates/starters/auth.html",
+    "http://localhost:4000/templates/starters/blocks.html",
+    "http://localhost:4000/templates/starters/saas.html"
   ]
 }

@@ -42,6 +42,8 @@
     "!assets/notify.js",
     "!assets/home.css",
     "!assets/home.js",
+    "!assets/templates.css",
+    "!assets/templates.js",
     "llms.txt",
     "llms-full.txt",
     "ai-context.json",
@@ -54,12 +56,13 @@
   "scripts": {
     "build": "sass scss/farvist.scss:dist/farvist.css scss/farvist-slim.scss:dist/farvist-slim.css scss/farvist-ai.scss:dist/farvist-ai.css --style=expanded --no-source-map",
     "build:min": "sass scss/farvist.scss:dist/farvist.min.css scss/farvist-slim.scss:dist/farvist-slim.min.css scss/farvist-ai.scss:dist/farvist-ai.min.css --style=compressed --no-source-map",
-    "build:all": "npm run build && npm run build:min && npm run build:prefix && npm run build:site && npm run build:compat && npm run build:ai && npm run build:agent",
-    "build:site": "sass scss/site/home.scss:assets/home.css --style=compressed --no-source-map && postcss assets/home.css -r --no-map",
+    "build:all": "npm run build && npm run build:min && npm run build:prefix && npm run build:site && npm run build:compat && npm run build:ai && npm run build:agent && npm run build:templates",
+    "build:site": "sass scss/site/home.scss:assets/home.css scss/site/templates.scss:assets/templates.css --style=compressed --no-source-map && postcss assets/home.css assets/templates.css -r --no-map",
+    "build:templates": "node scripts/gen-templates.mjs",
     "build:compat": "node scripts/gen-ai-compat.mjs",
     "build:prefix": "postcss dist/farvist.css dist/farvist.min.css dist/farvist-slim.css dist/farvist-slim.min.css dist/farvist-ai.css dist/farvist-ai.min.css -r --no-map",
     "build:ai": "node scripts/gen-ai-context.mjs",
-    "watch": "sass --watch scss/farvist.scss:dist/farvist.css scss/farvist-slim.scss:dist/farvist-slim.css scss/farvist-ai.scss:dist/farvist-ai.css scss/site/home.scss:assets/home.css --style=expanded --no-source-map",
+    "watch": "sass --watch scss/farvist.scss:dist/farvist.css scss/farvist-slim.scss:dist/farvist-slim.css scss/farvist-ai.scss:dist/farvist-ai.css scss/site/home.scss:assets/home.css scss/site/templates.scss:assets/templates.css --style=expanded --no-source-map",
     "lint": "stylelint \"scss/**/*.scss\"",
     "check:size": "node scripts/check-size.mjs",
     "dev": "npm run build:all",
@@ -82,7 +85,8 @@
     "check:home": "node --test --test-timeout=120000 scripts/check-home.mjs",
     "check:preview": "node --test scripts/check-preview.mjs",
     "check:a11y": "node scripts/check-accessibility.mjs",
-    "check:release": "node --test scripts/check-release.mjs"
+    "check:release": "node --test scripts/check-release.mjs",
+    "check:templates": "node --test --test-timeout=120000 scripts/check-templates.mjs"
   },
   "overrides": {
     "puppeteer": "$puppeteer"

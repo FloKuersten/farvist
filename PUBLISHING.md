@@ -43,12 +43,15 @@ npm run check:prompt-grow
 npm run check:safety
 npm run check:release
 npm run check:home
+npm run check:templates
 npm run check:a11y
 ```
 
 The accessibility scan starts its own loopback server and audits every URL configured in `.pa11yci.json` with Pa11y and axe. For manual inspection, run `npm run preview`, then check the changed pages at desktop and mobile widths, including light and dark themes, motion preferences and changed interactions. The preview serves tracked public files only; add new public assets to Git before previewing them.
 
-`build:all` produces the CSS builds, AI compatibility CSS, homepage CSS, catalog and agent reference files. Edit homepage styles in `scss/site/home.scss`; `build:site` compiles and prefixes `assets/home.css`. Site styles are excluded from the npm package. Review and commit generated changes with their sources. Do not edit generated files by hand. Repeating the build should leave those outputs unchanged.
+`build:all` produces the CSS builds, AI compatibility CSS, site CSS, catalog, agent references and template starters. Edit site styles in `scss/site/`; `build:site` compiles and prefixes `assets/home.css` and `assets/templates.css`. Site styles and scripts are excluded from the npm package. Edit the maintained demos in `examples/`; `build:templates` generates all nine `templates/starters/*.html` files with exact-version CDN assets, integrity hashes and embedded icons. Review and commit generated changes with their sources. Do not edit generated files by hand. Repeating the build should leave those outputs unchanged.
+
+`check:templates` opens each export as the only file in a clean consumer folder and checks the gallery's source, clipboard and browser downloads. Its default browser fixtures use the exact local release bytes for deterministic CI. For independent CDN verification, run `$env:FARVIST_LIVE_CDN='1'; npm run check:templates` in PowerShell (or `FARVIST_LIVE_CDN=1 npm run check:templates` on Linux). This also downloads the pinned CDN resources and verifies they match the bytes used for the integrity hashes. The accessibility scan includes the nine exported starters.
 
 ## 3. Inspect the npm package
 
@@ -117,9 +120,11 @@ Only if the workflow is unavailable: pack the verified commit using `npm pack --
 
 After **Publish to npm** succeeds, [Deploy website](.github/workflows/deploy-website.yml) automatically deploys the same stable release to [farvist.com](https://farvist.com). It runs trusted automation from `main`, accepts only the latest published GitHub release, requires successful publication and main-branch CI on the exact tagged commit, and verifies npm provenance and registry signatures again. Prereleases and failed publication runs do not deploy.
 
+Website-only changes can also be deployed manually from an exact, successfully checked `main` commit without creating another npm version. The workflow still verifies the latest published framework release and its provenance; it records and checks the website commit separately. See the website-only procedure below.
+
 The workflow packages only allowlisted regular Git files from the release commit. It does not run release scripts or consume upstream workflow artifacts. A dedicated SSH key in the `farvist-production` GitHub environment can only submit a website archive or roll back the current deployment. Its server account has no sudo, shell-command, forwarding, nginx-configuration or SSH-key write access. The host key is pinned. Restrict this environment to the `main` branch; keep the private key in `WEBSITE_SSH_KEY` and the host/known-host entry in environment variables `WEBSITE_SSH_HOST` and `WEBSITE_SSH_KNOWN_HOSTS`.
 
-The root-owned receiver is `scripts/deploy/website.py`, installed as `/usr/local/libexec/farvist-website.py`. Its forced command is `/usr/bin/python3 -I /usr/local/libexec/farvist-website.py receive`. The account may write only `/var/www/farvist`, containing immutable release directories and `current`/`previous` links. nginx serves `current`; deployment requires no privileged service reload. The receiver rejects links, traversal, duplicate paths, oversized archives, checksum mismatches and downgrades. It verifies every file before replacing the `current` symlink atomically. Each successful deployment exposes `release.json` with its version, source commit and file hashes.
+The root-owned receiver is `scripts/deploy/website.py`, installed as `/usr/local/libexec/farvist-website.py`. Its forced command is `/usr/bin/python3 -I /usr/local/libexec/farvist-website.py receive`. The account may write only `/var/www/farvist`, containing immutable release directories and `current`/`previous` links. nginx serves `current`; deployment requires no privileged service reload. The receiver rejects links, traversal, duplicate paths, oversized archives, checksum mismatches and downgrades. It verifies every file before replacing the `current` symlink atomically. Each successful deployment exposes `release.json` with its framework version, website source commit, revision and file hashes. The revision is the deterministic `git rev-list --count` of the source commit from a complete checkout. Updates with the same framework version must increase that revision; same-commit retries preserve their immutable manifest, including legacy manifests without a revision.
 
 After activation, every public file is verified over HTTPS, accounting only for Cloudflare's email-protection rewriting. A failed public check rolls back a newly activated deployment. Evidence is retained in the workflow's `website-verification` artifact. Previous release directories and the original site are retained for operator recovery; monitor disk space and remove only inactive releases when needed.
 
@@ -139,5 +144,27 @@ To retry the latest already-published release without republishing npm:
 ```powershell
 gh workflow run deploy-website.yml --repo FloKuersten/farvist --ref main -f tag=vX.Y.Z
 ```
+
+If a newer website-only revision of that framework version is already active, a tag retry is refused as a downgrade. Deploy the checked current `main` commit with the procedure below instead. The explicit receiver rollback command remains available for recovery.
+
+### Deploy website-only changes
+
+Keep `package.json` at the currently published framework version. Website-only changes may update pages, templates, site Sass, `assets/home.*`, `assets/templates.*`, `assets/notify.js`, build scripts and development metadata. They may not alter the framework Sass, CSS builds, CLI, other runtime assets or package runtime entry points and dependencies. The workflow compares those files and fields with the latest stable release. Runtime changes need the normal npm release procedure.
+
+Merge the reviewed change into `main` and require `ci.yml` to succeed on that exact commit. Then dispatch with its full SHA and no `tag` input:
+
+```powershell
+$websiteCommit = gh api repos/FloKuersten/farvist/branches/main --jq '.commit.sha'
+gh workflow run deploy-website.yml --repo FloKuersten/farvist --ref main -f "website_commit=$websiteCommit"
+```
+
+The workflow rejects stale branch heads, a checkout that differs from that SHA, failed or unrelated CI, and commits that do not descend from the published release. It verifies npm provenance against the **package release commit**, then deploys and hashes the **website commit**. No publish workflow is triggered. Existing archive allowlists and size limits apply; standalone `.html` starter downloads are supported, while `.zip` files are not currently allowed. Use revisioned filenames or content-hash query strings for changed site-only assets when retaining a framework version, so existing browser caches cannot serve older bytes.
+
+The receiver revision support must be installed once before the first website-only deployment. Using a maintainer's existing privileged server connection (the deployment key cannot do this):
+
+1. Run `python3 scripts/deploy/check_website.py` on Linux from the reviewed checkout; all tests must pass, including atomic activation, legacy retries and rollback.
+2. Record the installed receiver's SHA-256 and save a root-owned backup outside the public web root. Copy the exact reviewed `scripts/deploy/website.py` to a temporary server path and verify its SHA-256 against the checkout.
+3. Install those verified bytes as a root-owned, mode `0644` temporary file beside `/usr/local/libexec/farvist-website.py`, then rename it atomically over the installed receiver. Preserve the forced command, account restrictions and SSH keys. This update needs no nginx reload and does not activate a website release.
+4. Confirm the installed file's hash, owner and permissions, then dispatch the website workflow. Require a successful `website-verification` artifact and check the live templates on desktop and mobile. Public verification failure automatically restores the previous deployment.
 
 `npm run deploy` still refers to the maintainer's git-ignored `deploy.ps1`. Routine releases now use GitHub Actions; keep private infrastructure details out of the repository. Receiver updates require a maintainer to install the reviewed file on the server; the deployment key cannot replace its own restrictions.
