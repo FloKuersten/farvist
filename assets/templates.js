@@ -126,10 +126,16 @@
   dialog.querySelector('[data-source-close]').addEventListener('click', function () { dialog.close(); });
   // Native dialog handles Escape and keeps keyboard focus within the viewer.
   dialog.addEventListener('close', function () {
+    // A previous opening's queued close event must not cancel a newer request.
+    if (dialog.open) return;
     ++requestId;
     if (controller) controller.abort();
     controller = null;
-    if (opener && opener.isConnected) opener.focus();
+    // Native focus restoration normally handles this. Do not steal focus if
+    // the user already moved to another card before the close event arrived.
+    if (opener && opener.isConnected && (document.activeElement === document.body || dialog.contains(document.activeElement))) {
+      opener.focus({ preventScroll: true });
+    }
   });
   retryButton.addEventListener('click', function () { loadSource(currentSlug); });
   selectButton.addEventListener('click', function () {

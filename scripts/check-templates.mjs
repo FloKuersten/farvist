@@ -150,7 +150,15 @@ test('gallery offers working previews, exact source and downloads for all nine t
       await page.keyboard.press('Enter');
       await page.waitForFunction(name => document.querySelector('#template-source-dialog').open
         && document.querySelector('[data-source-download]').getAttribute('download') === `farvist-${name}.html`
-        && !document.querySelector('[data-source-copy]').disabled, {}, name);
+        && !document.querySelector('[data-source-copy]').disabled, {}, name).catch(async error => {
+        const state = await page.evaluate(() => ({
+          open: document.querySelector('#template-source-dialog').open,
+          download: document.querySelector('[data-source-download]').download,
+          status: document.querySelector('#template-source-status').textContent,
+          focus: document.activeElement.outerHTML.slice(0, 250),
+        }));
+        throw new Error(`Source did not open for ${name}: ${JSON.stringify(state)}`, { cause: error });
+      });
       assert.equal(await page.$eval('#template-source-code', el => el.value), sources.get(name));
       assert.equal(await page.$eval('[data-source-download]', el => el.getAttribute('download')), `farvist-${name}.html`);
       await page.click('[data-source-download]');
@@ -216,6 +224,46 @@ test('failed source requests show retry without a false copy success', async () 
     if (unavailable && request.url().endsWith('/starters/auth.html')) { await request.abort(); return true; }
     return false;
   } });
+});
+
+test('reopening before the previous native close event keeps the new source request', async () => {
+  await pageFor(async page => {
+    await page.goto(site.origin + '/templates/');
+    await page.focus('[data-template-source="dashboard"]');
+    await page.keyboard.press('Enter');
+    await page.waitForFunction(() => !document.querySelector('[data-source-copy]').disabled);
+    await page.evaluate(() => {
+      const dialog = document.querySelector('#template-source-dialog');
+      dialog.close();
+      document.querySelector('[data-template-source="auth"]').click();
+      // A queued close event from the old opening may arrive after showModal().
+      dialog.dispatchEvent(new Event('close'));
+    });
+    await page.waitForFunction(() => document.querySelector('#template-source-dialog').open
+      && document.querySelector('[data-source-download]').download === 'farvist-auth.html'
+      && !document.querySelector('[data-source-copy]').disabled);
+    assert.equal(await page.$eval('#template-source-code', element => element.value), sources.get('auth'));
+  });
+});
+
+test('a delayed close event does not steal focus from the next template', async () => {
+  await pageFor(async page => {
+    await page.goto(site.origin + '/templates/');
+    await page.focus('[data-template-source="dashboard"]');
+    await page.keyboard.press('Enter');
+    await page.waitForFunction(() => !document.querySelector('[data-source-copy]').disabled);
+    await page.evaluate(() => {
+      const dialog = document.querySelector('#template-source-dialog');
+      dialog.close();
+      document.querySelector('[data-template-source="auth"]').focus();
+      dialog.dispatchEvent(new Event('close'));
+    });
+    assert.equal(await page.$eval('[data-template-source="auth"]', element => element === document.activeElement), true);
+    await page.keyboard.press('Enter');
+    await page.waitForFunction(() => document.querySelector('#template-source-dialog').open
+      && !document.querySelector('[data-source-copy]').disabled);
+    assert.equal(await page.$eval('#template-source-code', element => element.value), sources.get('auth'));
+  });
 });
 
 test('preview and download remain available without JavaScript', async () => {
