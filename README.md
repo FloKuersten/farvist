@@ -17,7 +17,7 @@ A **CSS framework for glass interfaces**: frosted surfaces, neon accents, 42 com
 - ⚙️ **Auto-generated utilities** — spacing, display, flex, color, glow, gradient, sizing and more, produced by loops instead of hand-writing hundreds of rules.
 - 🧩 **42 glass components** — buttons, badges, alerts, cards, forms, navbar, plus modal, dropdown, tabs, accordion, tooltip, toast, progress, spinner, skeleton, switch, avatar, breadcrumb, pagination, table and chips.
 - 🎨 **Assets included** — a 55-icon SVG set (`currentColor`-driven), decorative SVGs (mesh, blob, grid, dots, logo) and a 10.3 KB (gzip) optional JS companion for the interactive bits.
-- 🖼️ **Premade templates** — an AI console, SaaS landing, dashboard, auth flow, portfolio, a copy-paste block gallery and an AI-kit add-on demo in `examples/`.
+- 🖼️ **Nine ready-to-use templates** — preview, inspect/copy the complete source, or download a single HTML starter from the [template gallery](https://farvist.com/templates/). Each export includes embedded icons and exact-version CDN styles/scripts; save it as `index.html` and open it with an internet connection. The forms, chat, trading and other data are demonstrations; connect your own backend. Maintained demos live in `examples/`, with generated exports in `templates/starters/`.
 - 📐 **12-column flexbox grid** with responsive columns and offsets.
 - 🪶 **~21 KB gzipped** (140 KB minified) — one file, all 42 components; Sass users can build just the partials they need.
 - 📦 **Three builds** — `farvist.min.css` (everything, ~21 KB gzip), `farvist-slim.min.css` (no AI kit, ~19 KB), and `farvist-ai.min.css` (~6.6 KB — **only the AI-interface kit**, made to add a chat/agent UI to a site already styled with Tailwind, Bootstrap or custom CSS).

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--
+Farvist 1.9.0 - ai-console starter
+Farvist starter: ai-console
+Source: https://farvist.com/examples/ai-console.html
+Edit this HTML file to build your own interface. No repository checkout needed.
+Online dependencies: exact-version Farvist CSS/JavaScript and favicons from
+jsDelivr; Google Fonts where linked below. Internet access is required for those
+resources. Icons are embedded and work when this file is opened directly.
+Demo only: sample data, forms, authentication, chat replies, payments and trading
+controls are UI demonstrations; no backend, accounts, AI service or live trades
+are connected. Replace placeholders and connect your own application behavior.
+No notification subscription or analytics scripts are included.
+CSS/JavaScript integrity hashes match the release build; update both the pinned
+version and integrity values together when upgrading those dependencies.
+
+MIT License
+
+Copyright (c) 2026 Farvist
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Console — Farvist template</title>
+  <meta name="description" content="A glass AI chat console template built with the Farvist CSS framework — chat thread, prompt composer, agent status." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/farvist@1.9.0/dist/farvist.min.css" integrity="sha384-/pVTOIdBgoP4npYLNw/cKzdBcf5niggzRzhflgFGh61sRUFb4Q2y/hdVgU21VmVd" crossorigin="anonymous" />
+  <style>
+    html, body { height: 100%; }
+    .app { display: grid; grid-template-columns: 264px 1fr; height: 100vh; }
+    .side { display: flex; flex-direction: column; gap: .4rem; padding: 1rem; overflow-y: auto; }
+    .side .nav-link { display: flex; align-items: center; gap: .6rem; }
+    .main { display: grid; grid-template-rows: auto 1fr auto; height: 100vh; min-width: 0; }
+    .topbar { display: flex; align-items: center; gap: 1rem; padding: .85rem clamp(1rem,3vw,2rem); }
+    .thread { overflow-y: auto; padding: 1.5rem clamp(1rem,4vw,3rem); }
+    .composer { padding: 1rem clamp(1rem,4vw,3rem) 1.5rem; }
+    .tool { font-family: var(--fv-font-mono); font-size: .82rem; }
+    @media (max-width: 820px) { .app { grid-template-columns: 1fr; } .side { display: none; } }
+  </style>
+  <link rel="alternate" type="text/plain" title="Farvist for LLMs" href="https://farvist.com/llms.txt" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/farvist@1.9.0/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/farvist@1.9.0/assets/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/npm/farvist@1.9.0/assets/apple-touch-icon.png" />
+  <meta name="theme-color" content="#060912" />
+</head>
+<body class="bg-mesh-nebula">
+  <!-- Embedded icon sprite; keep this with any copied icon markup. -->
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;overflow:hidden">
+  <defs>
+    <style>
+      symbol { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22 6 12 13 2 6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4z"/><path d="M19 14l.7 2.1 2.1.7-2.1.7L19 20l-.7-2.1L16.2 17l2.1-.7z"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+
+  <!-- AI / chat / dev set -->
+  <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></symbol>
+  <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-message-dots" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><line x1="8" y1="12" x2="8" y2="12"/><line x1="12" y1="12" x2="12" y2="12"/><line x1="16" y1="12" x2="16" y2="12"/></symbol>
+  <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-thumbs-up" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></symbol>
+  <symbol id="i-thumbs-down" viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></symbol>
+  <symbol id="i-wand" viewBox="0 0 24 24"><line x1="4" y1="20" x2="14" y2="10"/><path d="M16 3l.9 2.6L19.5 6.5l-2.6.9L16 10l-.9-2.6L12.5 6.5l2.6-.9z"/></symbol>
+  <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
+  <symbol id="i-command" viewBox="0 0 24 24"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+</svg>
+  <a class="skip-link" href="#main">Skip to messages</a>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="side glass-strong">
+      <a class="navbar-brand mb-2" href="https://farvist.com/"><span class="text-gradient">◆ Farvist AI</span></a>
+      <button class="btn btn-gradient-primary btn-block mb-3"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg> New chat</button>
+      <nav aria-label="Conversations">
+        <a class="nav-link active" href="#" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#i-zap"/></svg> Onboarding flow</a>
+        <a class="nav-link" href="#"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg> Refactor plan</a>
+        <a class="nav-link" href="#"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg> SQL helper</a>
+      </nav>
+      <div class="mt-auto d-grid gap-2">
+        <span class="status status-online">Agent online</span>
+        <details class="dropdown">
+          <summary class="btn btn-glass btn-block" style="cursor:pointer;">Model: Opus 4.8 ▾</summary>
+          <div class="dropdown-menu" style="width:100%;">
+            <button class="dropdown-item">Opus 4.8</button>
+            <button class="dropdown-item">Sonnet 4.6</button>
+            <button class="dropdown-item">Haiku 4.5</button>
+          </div>
+        </details>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar glass">
+        <h1 class="h5 mb-0">Onboarding flow</h1>
+        <span class="badge badge-soft-accent">12k tokens</span>
+        <button class="btn btn-glass btn-sm ms-auto" data-fv-theme-toggle aria-label="Toggle theme">🌙 / ☀️</button>
+      </header>
+
+      <main id="main" tabindex="-1" class="thread">
+        <div class="chat" id="chat">
+          <!-- Assistant -->
+          <div class="message">
+            <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+            <div class="message-body">
+              <div class="message-bubble">Hi! I'm your Farvist assistant. Ask me to scaffold a page, explain a class, or wire up a component.</div>
+              <div class="message-meta">Assistant · just now</div>
+            </div>
+          </div>
+          <!-- User -->
+          <div class="message message-out">
+            <span class="avatar avatar-sm avatar-primary" aria-hidden="true">You</span>
+            <div class="message-body">
+              <div class="message-bubble">Find the docs for the backgrounds library.</div>
+              <div class="message-meta">You</div>
+            </div>
+          </div>
+          <!-- Assistant w/ reasoning + tool call + prose answer + citations + actions -->
+          <div class="message">
+            <span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>
+            <div class="message-body">
+              <details class="reasoning">
+                <summary class="reasoning-summary">Thought for 4 seconds</summary>
+                <div class="reasoning-body">The user wants the docs, so search first, then answer with sources.</div>
+              </details>
+              <div class="tool-call tool-call-done">
+                <div class="tool-call-header"><svg class="icon" aria-hidden="true"><use href="#i-terminal"/></svg><span class="tool-call-name">search_docs</span><span class="tool-call-status">Done</span></div>
+                <div class="tool-call-args">query: "backgrounds library"</div>
+              </div>
+              <div class="message-bubble"><div class="prose prose-sm">
+                <p>The free backgrounds library covers three families<a class="cite" href="#src-bg">1</a>:</p>
+                <ul>
+                  <li><strong>Meshes</strong> — <code>.bg-mesh-aurora</code>, <code>.bg-mesh-sunset</code>, <code>.bg-mesh-ocean</code>, <code>.bg-mesh-nebula</code></li>
+                  <li><strong>Patterns</strong> — <code>.bg-grid</code>, <code>.bg-dots</code>, <code>.bg-graph</code></li>
+                  <li><strong>Spotlights</strong> — <code>.bg-spotlight</code>, <code>.bg-spotlight-primary</code></li>
+                </ul>
+                <ol class="sources"><li id="src-bg"><a href="https://farvist.com/docs/#backgrounds">docs/backgrounds</a></li></ol>
+              </div></div>
+              <div class="message-actions">
+                <button class="btn btn-glass btn-sm" data-fv-copy aria-label="Copy answer"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg></button>
+                <button class="btn btn-glass btn-sm" aria-label="Good response"><svg class="icon" aria-hidden="true"><use href="#i-thumbs-up"/></svg></button>
+                <button class="btn btn-glass btn-sm" aria-label="Bad response"><svg class="icon" aria-hidden="true"><use href="#i-thumbs-down"/></svg></button>
+              </div>
+              <div class="message-meta">Assistant · cited</div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="composer">
+        <form class="prompt" id="composer" autocomplete="off">
+          <textarea class="prompt-field" id="field" aria-label="Message the assistant" placeholder="Message Farvist AI…" rows="1"></textarea>
+          <div class="prompt-actions">
+            <button class="btn btn-glass btn-sm" type="button" aria-label="Attach file"><svg class="icon" aria-hidden="true"><use href="#i-paperclip"/></svg></button>
+            <button class="btn btn-glass btn-sm" type="button" aria-label="Voice input"><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg></button>
+            <span class="prompt-meta" id="count">0 / 4000</span>
+            <button class="btn btn-gradient-primary" type="submit" aria-label="Send message"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg></button>
+          </div>
+        </form>
+      </footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/farvist@1.9.0/assets/farvist.js" defer integrity="sha384-HRUcYRUoguAVdOQNQElYPwNJ7LytaHWfbUenU1+P78UXcfaXkd4CGflpdXh+rfmY" crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      var chat = document.getElementById('chat');
+      var form = document.getElementById('composer');
+      var field = document.getElementById('field');
+      var count = document.getElementById('count');
+      var thread = document.querySelector('.thread');
+
+      field.addEventListener('input', function () {
+        count.textContent = field.value.length + ' / 4000';
+      });
+
+      function bubble(role, html) {
+        var msg = document.createElement('div');
+        msg.className = 'message' + (role === 'out' ? ' message-out' : '');
+        msg.innerHTML =
+          '<span class="avatar avatar-sm ' + (role === 'out' ? 'avatar-primary">You' : 'avatar-accent">AI') + '</span>' +
+          '<div class="message-body"><div class="message-bubble">' + html + '</div>' +
+          '<div class="message-meta">' + (role === 'out' ? 'You' : 'Assistant · now') + '</div></div>';
+        chat.appendChild(msg);
+        thread.scrollTop = thread.scrollHeight;
+        return msg;
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = field.value.trim();
+        if (!text) return;
+        bubble('out', text.replace(/[<&]/g, function (c) { return c === '<' ? '&lt;' : '&amp;'; }));
+        field.value = ''; count.textContent = '0 / 4000';
+
+        // Assistant "thinks", then answers (canned demo — no backend).
+        var thinking = document.createElement('div');
+        thinking.className = 'message';
+        thinking.innerHTML = '<span class="avatar avatar-sm avatar-accent" aria-hidden="true">AI</span>' +
+          '<div class="message-body"><div class="message-bubble"><span class="typing"><span></span><span></span><span></span></span></div></div>';
+        chat.appendChild(thinking);
+        thread.scrollTop = thread.scrollHeight;
+
+        setTimeout(function () {
+          thinking.remove();
+          // Stream the canned reply token-by-token: .streaming shows the caret,
+          // remove it (and re-enhance) when the last chunk lands.
+          var msg = bubble('in', '');
+          var target = msg.querySelector('.message-bubble');
+          target.classList.add('streaming');
+          var reply = "This is a canned reply showing the pattern — append a bubble with .streaming, add tokens as they arrive, then drop the class and call Farvist.enhance() so new bits get their ARIA wired up.";
+          var words = reply.split(' '), i = 0;
+          var tick = setInterval(function () {
+            target.textContent += (i ? ' ' : '') + words[i];
+            thread.scrollTop = thread.scrollHeight;
+            if (++i >= words.length) {
+              clearInterval(tick);
+              target.classList.remove('streaming');
+              if (window.Farvist) Farvist.enhance();
+            }
+          }, 45);
+        }, 900);
+      });
+    })();
+  </script>
+</body>
+</html>

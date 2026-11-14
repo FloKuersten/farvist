@@ -57,8 +57,8 @@ jobs:
         # Porcelain catches modified, deleted (orphaned) AND untracked outputs —
         # `git diff` alone misses the latter two.
         run: |
-          if [ -n "$(git status --porcelain -- dist assets/home.css ai-context.json llms-full.txt skills ai .well-known context7.json '*.html')" ]; then
-            git status --porcelain -- dist assets/home.css ai-context.json llms-full.txt skills ai .well-known context7.json '*.html'
+          if [ -n "$(git status --porcelain -- dist assets/home.css assets/templates.css ai-context.json llms-full.txt skills ai .well-known context7.json '*.html')" ]; then
+            git status --porcelain -- dist assets/home.css assets/templates.css ai-context.json llms-full.txt skills ai .well-known context7.json '*.html'
             echo "::error::dist/ or generated files are stale, orphaned, or uncommitted — run 'npm run build:all' and commit."
             exit 1
           fi
@@ -73,6 +73,11 @@ jobs:
 
       - name: Bundle-size budget
         run: npm run check:size
+
+      - name: Template downloads and gallery interactions
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /opt/google/chrome/chrome
+        run: npm run check:templates
 
       - name: Runtime-theming gate (no baked brand colors)
         run: npm run check:theming

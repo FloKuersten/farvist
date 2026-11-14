@@ -1,0 +1,55 @@
+// Gallery composition. Compiled into assets/templates.css, outside the framework.
+.templates-page .wrap { max-width: 1160px; margin-inline: auto; padding: 1.5rem 1.25rem 5rem; }
+.templates-header { padding-block: clamp(2rem, 6vw, 4rem) 2.5rem; text-align: center; }
+.templates-eyebrow { margin-bottom: 1rem; color: var(--fv-primary-text); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.templates-header h1 { font-size: clamp(2.5rem, 5.5vw, 4.25rem); font-weight: 800; letter-spacing: -0.055em; line-height: 1.1; }
+.templates-intro { max-width: 38rem; margin: 1.25rem auto 2rem; color: var(--fv-muted); font-size: 1.05rem; line-height: 1.7; }
+.templates-guide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding: 1.5rem; border: 1px solid var(--fv-glass-border); border-radius: 1rem; background: var(--fv-glass-bg); text-align: left; }
+.templates-guide p { margin: 0; }
+.templates-guide strong { display: block; margin-bottom: 0.4rem; font-size: 0.875rem; }
+.templates-guide span { display: block; color: var(--fv-muted); font-size: 0.85rem; line-height: 1.6; }
+.templates-network { margin: 1rem 0 0; color: var(--fv-muted); font-size: 0.8rem; line-height: 1.6; }
+.tpl-card { display: flex; flex-direction: column; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+.tpl-card:hover, .tpl-card:focus-within { border-color: color-mix(in srgb, var(--fv-primary-text) 50%, var(--fv-glass-border)); box-shadow: var(--fv-shadow-lg); }
+.tpl-card .card-body { flex: 1; padding: 1.4rem 1.4rem 1.1rem; }
+.tpl-thumb { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 8; border-bottom: 1px solid var(--fv-glass-border); }
+.tpl-thumb > .icon { width: 3rem; height: 3rem; color: var(--fv-body-color); filter: drop-shadow(0 0 16px color-mix(in srgb, var(--fv-primary) 35%, transparent)); }
+.tpl-chrome { position: absolute; top: 0.8rem; left: 0.9rem; display: flex; gap: 0.3rem; }
+.tpl-chrome span { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--fv-muted); opacity: 0.5; }
+.tpl-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; padding: 0 1.4rem 1.2rem; }
+.tpl-actions > .btn { min-height: 44px; padding-inline: 0.75rem; font-size: 0.8rem; }
+.tpl-download { grid-column: 1 / -1; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 44px; border-top: 1px solid var(--fv-glass-border); margin-top: 0.3rem; padding-top: 0.5rem; color: var(--fv-primary-text); font-size: 0.8rem; }
+.tpl-download:hover { color: var(--fv-body-color); }
+.tpl-download:focus-visible, .template-source-preview:focus-visible { outline: 2px solid var(--fv-primary-text); outline-offset: 3px; border-radius: 0.25rem; }
+.template-source { width: min(58rem, calc(100% - 2rem)); max-width: 58rem; max-height: calc(100dvh - 2rem); }
+.template-source[open] { display: flex; flex-direction: column; }
+.template-source .modal-header, .template-source .modal-footer { flex-shrink: 0; }
+.template-source .modal-body { min-height: 0; overflow-y: auto; }
+.template-source .modal-close { width: 44px; height: 44px; flex-shrink: 0; }
+.template-source .modal-close:focus-visible { outline: 2px solid var(--fv-primary-text); outline-offset: 2px; }
+.template-source #template-source-help { margin-bottom: 0.75rem; font-size: 0.85rem; line-height: 1.6; }
+.template-source-status { min-height: 1.5rem; margin-bottom: 0.75rem; color: var(--fv-body-color); font-size: 0.85rem; }
+.template-source-status[data-state='error'] { color: var(--fv-danger-text, var(--fv-body-color)); }
+.template-source-code { width: 100%; height: clamp(12rem, 42dvh, 28rem); min-height: 10rem; resize: vertical; padding: 1rem; font-family: var(--fv-font-mono); font-size: 0.8rem; line-height: 1.6; tab-size: 2; white-space: pre; }
+.template-source-actions { justify-content: flex-start; flex-wrap: wrap; }
+.template-source-actions .btn { min-height: 44px; }
+.template-source-preview { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.5rem; margin-left: auto; font-size: 0.875rem; }
+.templates-page [hidden] { display: none !important; }
+@media (max-width: 600px) {
+  .templates-guide { grid-template-columns: 1fr; gap: 1rem; padding: 1.25rem; }
+  .templates-header { padding-bottom: 2rem; }
+  .templates-header h1 { font-size: clamp(2.1rem, 9vw, 3rem); }
+  .template-source { width: calc(100% - 1rem); max-height: calc(100dvh - 1rem); }
+  .template-source .modal-header, .template-source .modal-body, .template-source .modal-footer { padding: 1rem; }
+  .template-source-code { height: 35dvh; min-height: 8rem; }
+  .template-source-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .template-source-actions .btn { padding-inline: 0.5rem; }
+  .template-source-preview { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tpl-card { transition: none; }
+}
+@media (forced-colors: active) {
+  .tpl-card, .templates-guide, .template-source, .template-source-code { border-color: CanvasText; }
+  .tpl-thumb > .icon { filter: none; }
+}
