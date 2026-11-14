@@ -13,15 +13,34 @@ import { startPreview } from './lib/site-preview.mjs';
 
 const root = new URL('../', import.meta.url);
 const version = JSON.parse(await readFile(new URL('package.json', root))).version;
+assert.match(version, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
 const cdn = `https://cdn.jsdelivr.net/npm/farvist@${version}/`;
 const live = process.env.FARVIST_LIVE_CDN === '1';
 const types = { css: 'text/css', js: 'text/javascript', svg: 'image/svg+xml', png: 'image/png' };
+const assetPaths = [
+  'dist/farvist.min.css', 'dist/farvist-ai.min.css', 'assets/farvist.js',
+  'assets/favicon.svg', 'assets/favicon-32.png', 'assets/apple-touch-icon.png',
+];
 let browser, site, temporary;
 const sources = new Map();
 const dependencies = new Map();
 
 before(async () => {
   temporary = await mkdtemp(join(tmpdir(), 'farvist-starters-'));
+  // Network requests come only from this fixed asset list and package version.
+  // Exported HTML can select a known dependency, never supply a request URL.
+  for (const path of assetPaths) {
+    const url = cdn + path;
+    let body = await readFile(new URL(path, root));
+    if (live) {
+      const response = await fetch(url, { signal: AbortSignal.timeout(30000), redirect: 'error' });
+      assert.equal(response.status, 200, `published asset ${path}`);
+      const published = Buffer.from(await response.arrayBuffer());
+      assert.deepEqual(published, body, `published ${path} must match the bytes used for SRI`);
+      body = published;
+    }
+    dependencies.set(url, { body, contentType: types[path.split('.').pop()] });
+  }
   for (const name of templateNames) {
     const html = await readFile(new URL(`templates/starters/${name}.html`, root), 'utf8');
     sources.set(name, html);
@@ -30,18 +49,7 @@ before(async () => {
     await writeFile(join(folder, 'index.html'), html);
     for (const match of html.matchAll(/(?:href|src)="(https:\/\/cdn\.jsdelivr\.net\/npm\/farvist@[^"#]+)"/g)) {
       assert.ok(match[1].startsWith(cdn), 'every dependency must pin the current exact version');
-      const path = match[1].slice(cdn.length);
-      if (!dependencies.has(match[1])) {
-        let body = await readFile(new URL(path, root));
-        if (live) {
-          const response = await fetch(match[1], { signal: AbortSignal.timeout(30000) });
-          assert.equal(response.status, 200, `published asset ${path}`);
-          const published = Buffer.from(await response.arrayBuffer());
-          assert.deepEqual(published, body, `published ${path} must match the bytes used for SRI`);
-          body = published;
-        }
-        dependencies.set(match[1], { body, contentType: types[path.split('.').pop()] });
-      }
+      assert.ok(dependencies.has(match[1]), `unexpected exported dependency: ${match[1]}`);
     }
   }
   site = await startPreview();

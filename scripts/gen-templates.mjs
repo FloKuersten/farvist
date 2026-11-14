@@ -3,7 +3,7 @@
 // the exact bytes published by the release. Do not hand-edit templates/starters/.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -18,12 +18,15 @@ const normalizeLines = (text) => text.replace(/\r\n?/g, '\n');
 const assetPath = /^\/(?:dist\/farvist(?:-ai-compat|-ai|-slim)?(?:\.min)?\.css|assets\/(?:farvist\.js|favicon\.svg|favicon-32\.png|apple-touch-icon\.png))$/;
 const documentTag = /<[a-z][\w:-]*\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
 const urlAttribute = /(\s(?:href|src|data-fv-command)\s*=\s*)(["'])(.*?)\2/gi;
+const scriptElement = /<script(?=[\s>])((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)<\/script\s*>/gi;
 
 function inlineSprite(source) {
-  const sprite = normalizeLines(source).replace(/<!--[\s\S]*?-->/g, '').match(/<svg\b[\s\S]*<\/svg>/)?.[0];
+  // The repository sprite has a root SVG on its own line, after its XML header
+  // and usage comment. Select that root directly; this is not an XML sanitizer.
+  const sprite = normalizeLines(source).match(/^<svg\b[^\n]*>[\s\S]*<\/svg>\s*$/m)?.[0];
   assert.ok(sprite, 'Icon source must contain an SVG sprite');
   return sprite.replace(/<svg\b[^>]*>/, '<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;overflow:hidden">')
-    .replace(/[\t ]+$/gm, '');
+    .replace(/[\t ]+$/gm, '').trimEnd();
 }
 
 function absoluteSiteLink(url) {
@@ -47,25 +50,7 @@ export function renderTemplate(name, { root = repositoryRoot, version, sprite, l
   // notably the trading demo's "flatten positions" empty state.
   html = html.replace(/(?:\.\.\/|\/)?assets\/icons\/farvist-icons\.svg#(i-[\w-]+)/g, '#$1');
 
-  // Inline scripts are otherwise kept byte-for-byte (apart from line endings).
-  // Shield them while rewriting actual HTML attributes, not JS string literals
-  // or the escaped source-code examples displayed in the AI demo.
-  const scripts = [];
-  html = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi, (tag, attributes, body) => {
-    const source = attributes.match(/\bsrc\s*=\s*(["'])(.*?)\1/i)?.[2];
-    if (source) {
-      if (/(?:^|\/)notify\.js(?:[?#]|$)|googletagmanager|google-analytics|cloudflareinsights/i.test(source)) return '';
-      const url = new URL(source, base);
-      assert.equal(url.origin, siteOrigin, `Unexpected external script in ${name}: ${source}`);
-      assert.equal(url.pathname, '/assets/farvist.js', `Unsupported script dependency in ${name}: ${source}`);
-      return tag;
-    }
-    assert.ok(!/(?:fetch\s*\(|sendBeacon\s*\(|new\s+(?:WebSocket|EventSource)\b)/.test(body), `${name}: review network behavior before exporting an inline script`);
-    scripts.push(tag);
-    return `\u0000FARVIST_INLINE_${scripts.length - 1}\u0000`;
-  });
-
-  html = html.replace(documentTag, (tag) => {
+  const rewriteTag = (tag) => {
     let integrity;
     const result = tag.replace(urlAttribute, (attribute, prefix, quote, value) => {
       if (!value || value.startsWith('#') || /^(?:[a-z][\w+.-]*:|\/\/)/i.test(value)) return attribute;
@@ -87,9 +72,42 @@ export function renderTemplate(name, { root = repositoryRoot, version, sprite, l
     if (!integrity) return result;
     return result.replace(/\s+(?:integrity|crossorigin)\s*=\s*(["']).*?\1/gi, '')
       .replace(/\s*\/?>(?=$)/, (ending) => ` integrity="${integrity}" crossorigin="anonymous"${ending}`);
-  });
+  };
 
-  html = html.replace(/\u0000FARVIST_INLINE_(\d+)\u0000/g, (_, index) => scripts[Number(index)]);
+  // These are trusted repository examples, not third-party HTML to sanitize.
+  // Preserve inline scripts as complete segments, and rewrite markup between
+  // them. Omit the known website notification dependency; any other dependency
+  // except the Farvist runtime fails the build and requires an explicit review.
+  const scripts = [...html.matchAll(scriptElement)];
+  assert.equal(scripts.length, [...html.matchAll(/<script(?=[\s/>])/gi)].length,
+    `${name}: unsupported or unclosed script element`);
+  const segments = [];
+  let cursor = 0;
+  for (const match of scripts) {
+    const [tag, attributes, body] = match;
+    segments.push(html.slice(cursor, match.index).replace(documentTag, rewriteTag));
+    const sources = [...attributes.matchAll(/(?:^|\s)src\s*=\s*(["'])(.*?)\1/gi)];
+    if (/(?:^|\s)src\s*=/i.test(attributes)) {
+      assert.equal(sources.length, 1, `${name}: script dependencies need one quoted src`);
+      const source = sources[0][2];
+      const url = new URL(source, base);
+      assert.equal(url.origin, siteOrigin, `Unexpected external script in ${name}: ${source}`);
+      assert.equal(body.trim(), '', `${name}: external script elements must not contain inline code`);
+      if (url.pathname === '/assets/notify.js' && !url.search && !url.hash) {
+        // This site-only dependency is intentionally absent from portable demos.
+      } else {
+        assert.equal(url.pathname, '/assets/farvist.js', `Unsupported script dependency in ${name}: ${source}`);
+        segments.push(tag.replace(documentTag, rewriteTag));
+      }
+    } else {
+      assert.ok(!/(?:fetch\s*\(|sendBeacon\s*\(|new\s+(?:WebSocket|EventSource)\b)/.test(body),
+        `${name}: review network behavior before exporting an inline script`);
+      segments.push(tag);
+    }
+    cursor = match.index + tag.length;
+  }
+  segments.push(html.slice(cursor).replace(documentTag, rewriteTag));
+  html = segments.join('');
   // The add-on has a CSS comment naming its original repository dependency.
   html = html.replace(/\.\.\/dist\/(farvist(?:-ai|-slim)?\.css)/g,
     (_, file) => `${cdn}/dist/${file.replace(/\.css$/, '.min.css')}`);
@@ -137,7 +155,10 @@ export function generateTemplates({ root = repositoryRoot } = {}) {
   mkdirSync(output, { recursive: true });
   for (const template of templates) {
     const file = join(output, `${template.name}.html`);
-    if (!existsSync(file) || readFileSync(file, 'utf8') !== template.html) writeFileSync(file, template.html);
+    let existing;
+    try { existing = readFileSync(file, 'utf8'); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
+    if (existing !== template.html) writeFileSync(file, template.html);
   }
   return templates;
 }
