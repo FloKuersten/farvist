@@ -8,11 +8,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import puppeteer from 'puppeteer';
+import packageMetadata from '../package.json' with { type: 'json' };
 import { renderTemplate, templateNames } from './gen-templates.mjs';
 import { startPreview } from './lib/site-preview.mjs';
 
 const root = new URL('../', import.meta.url);
-const version = JSON.parse(await readFile(new URL('package.json', root))).version;
+const version = packageMetadata.version;
 assert.match(version, /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
 const cdn = `https://cdn.jsdelivr.net/npm/farvist@${version}/`;
 const live = process.env.FARVIST_LIVE_CDN === '1';
